@@ -1,2 +1,11 @@
-# TideBitWallet
-Chrome Extension for TideWallet3
+# Porting from TideWallet3 Flutter
+
+## run dev
+```
+flutter run -d chrome
+```
+
+## build
+```
+flutter build web
+```
