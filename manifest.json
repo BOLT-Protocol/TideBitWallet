@@ -24,10 +24,16 @@
     "service_worker": "background.js"
   },
 
+  "oauth2": {
+    "client_id": "yourExtensionOAuthClientIDWillGoHere.apps.googleusercontent.com",
+    "scopes":["https://www.googleapis.com/auth/contacts.readonly"]
+  },
+
   "permissions": [
     "contextMenus",
     "storage",
-    "activeTab"
+    "activeTab",
+    "identity"
   ],
   "content_scripts": [
 
