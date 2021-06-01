@@ -11,7 +11,7 @@
       "128": "img/icon128.png"
     },
     "default_title": "TideBit Wallet",
-    "default_popup": "TideBitWallet.html"
+    "default_popup": "/html/welcome.html"
   },
 
   "icons": {
