@@ -1,13 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>TideBit Wallet</title>
+  <meta name="appleid-signin-client-id" content="com.tideisun.tidewallet-web.service">
+  <meta name="appleid-signin-scope" content="name email">
+  <meta name="appleid-signin-redirect-uri" content="https://oauth.tidebit.network/redirect">
+  <meta name="appleid-signin-state" content="">
+  <meta name="appleid-signin-use-popup" content="true">
+
   <style>
     body {
       background-image: url('/img/welcome_bg.png');
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-size: cover;
+      margin: 50px;
     }
   
     img {
@@ -21,12 +28,26 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    #appleid-signin {
+      width: 210px;
+      height: 40px;
+      margin-left: auto;
+      margin-right: auto;
+      background-image: url("./../img/apple-id-continue-with.png");
+      z-index: 110;
+      border-radius: 9px;
+    }
+
   </style>
+  <script type="text/javascript" src="/javascript/appleid.auth.js"></script>
 </head>
 <body>
   <img src="/img/logo_type.png" alt="TideBitWallet">
   <p>
     <button>oauth</button>
+    <div></div>
+    <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in"></div>
     <script type="text/javascript" src="/javascript/oauth.js"></script>
   </p>
 </body>
