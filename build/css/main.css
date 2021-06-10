@@ -92,13 +92,13 @@ body {
     display: flex;
     flex-direction: row;
     font-weight: 400; }
-  .header__overview .header__title {
+  .header--overview .header__title {
     font-size: 2rem;
     font-weight: 400; }
-  .header__overview .balance {
+  .header--overview .balance {
     font-size: 2.4rem;
     font-weight: 600; }
-  .header__overview .currency-unit {
+  .header--overview .currency-unit {
     font-size: 1.36rem;
     font-weight: 400; }
 

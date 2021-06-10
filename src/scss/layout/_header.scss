@@ -19,15 +19,15 @@
     font-weight: 400;
   }
 
-  &__overview &__title {
+  &--overview &__title {
     font-size: $default-font-size * 1.25;
     font-weight: 400;
   }
-  &__overview .balance {
+  &--overview .balance {
     font-size: $default-font-size * 1.5;
     font-weight: 600;
   }
-  &__overview .currency-unit {
+  &--overview .currency-unit {
     font-size: $default-font-size * 0.85;
     font-weight: 400;
   }
