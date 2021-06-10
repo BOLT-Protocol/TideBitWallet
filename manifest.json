@@ -1,23 +1,23 @@
 {
-  "name": "TideBit Wallet",
-  "description": "A Crypto Wallet in your Browser",
-  "version": "0.1.0",
   "manifest_version": 3,
-  "background": {
-    "service_worker": "build/javascript/bundle.js"
-  },
-  "permissions": ["storage", "activeTab", "scripting"],
+  "name": "TideBit Wallet",
+  "version": "0.1.0",
   "action": {
-    "default_popup": "TideBitWallet.html",
+    "default_popup": "background.html",
     "default_icon": {
       "16": "build/image/icon16.png",
       "48": "build/image/icon48.png",
       "128": "build/image/icon128.png"
     }
   },
+  "description": "A Crypto Wallet in your Browser",
   "icons": {
     "16": "build/image/icon16.png",
     "48": "build/image/icon48.png",
     "128": "build/image/icon128.png"
-  }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["management", "storage", "activeTab", "scripting"]
 }

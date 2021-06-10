@@ -1,6 +1,6 @@
 // https://unicode-table.com/cn/2248/
 
-const header = (parentElement, userBalance, currencyUint) => {
+const header = ( userBalance, currencyUint) => {
   const markup = `
   <header class="header header--overview">
     <div class="header__title">Total Asset</div>
@@ -11,7 +11,7 @@ const header = (parentElement, userBalance, currencyUint) => {
     </div>
   </header>;
   `;
-  parentElement.insertAdjacentHTML("afterbegin", markup);
+  return markup;
 };
 
 export default header;

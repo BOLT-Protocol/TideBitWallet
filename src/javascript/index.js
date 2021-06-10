@@ -1,5 +1,5 @@
+// import "./layout/scaffold";
 import overview from "./screen/overview";
-import * as elements from "./document/elements";
 
 const getUser = () => {
   return {
@@ -61,9 +61,11 @@ const updateWalletSetup = (mode = "development", currency = "usd") => {
   };
 };
 
-(() => {
-  console.log("start");
+const renderOverviewPage = () => {
+  console.log("renderOverviewPage");
   const user = getUser();
-  const wallet = updateWalletSetup('development', 'USD');
-//   overview(elements.scaffold, user, wallet);
-})();
+  const wallet = updateWalletSetup("development", "USD");
+  overview(user, wallet);
+};
+
+renderOverviewPage();
