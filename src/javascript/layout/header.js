@@ -1,6 +1,6 @@
 // https://unicode-table.com/cn/2248/
 
-const header = ( userBalance, currencyUint) => {
+const header = (userBalance, currencyUint) => {
   const markup = `
   <header class="header header--overview">
     <div class="header__title">Total Asset</div>
@@ -9,7 +9,7 @@ const header = ( userBalance, currencyUint) => {
       <span class="user-total-balance">${userBalance}</span>
       <span class="currency-unit">${currencyUint}</span>
     </div>
-  </header>;
+  </header>
   `;
   return markup;
 };

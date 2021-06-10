@@ -1,11 +1,3 @@
-/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -15,7 +7,7 @@
   \************************************/
 /***/ ((module) => {
 
-eval("module.exports = \"../image/icon128.png\";\n\n//# sourceURL=webpack://tidebitwallet/./src/image/icon/icon128.png?");
+module.exports = "../image/icon128.png";
 
 /***/ }),
 
@@ -25,7 +17,7 @@ eval("module.exports = \"../image/icon128.png\";\n\n//# sourceURL=webpack://tide
   \***********************************/
 /***/ ((module) => {
 
-eval("module.exports = \"../image/icon16.png\";\n\n//# sourceURL=webpack://tidebitwallet/./src/image/icon/icon16.png?");
+module.exports = "../image/icon16.png";
 
 /***/ }),
 
@@ -35,7 +27,7 @@ eval("module.exports = \"../image/icon16.png\";\n\n//# sourceURL=webpack://tideb
   \***********************************/
 /***/ ((module) => {
 
-eval("module.exports = \"../image/icon48.png\";\n\n//# sourceURL=webpack://tidebitwallet/./src/image/icon/icon48.png?");
+module.exports = "../image/icon48.png";
 
 /***/ }),
 
@@ -46,7 +38,227 @@ eval("module.exports = \"../image/icon48.png\";\n\n//# sourceURL=webpack://tideb
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-eval("\n\n/* eslint-env browser */\n\n/*\n  eslint-disable\n  no-console,\n  func-names\n*/\nvar normalizeUrl = __webpack_require__(/*! ./normalize-url */ \"./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js\");\n\nvar srcByModuleId = Object.create(null);\nvar noDocument = typeof document === 'undefined';\nvar forEach = Array.prototype.forEach;\n\nfunction debounce(fn, time) {\n  var timeout = 0;\n  return function () {\n    var self = this; // eslint-disable-next-line prefer-rest-params\n\n    var args = arguments;\n\n    var functionCall = function functionCall() {\n      return fn.apply(self, args);\n    };\n\n    clearTimeout(timeout);\n    timeout = setTimeout(functionCall, time);\n  };\n}\n\nfunction noop() {}\n\nfunction getCurrentScriptUrl(moduleId) {\n  var src = srcByModuleId[moduleId];\n\n  if (!src) {\n    if (document.currentScript) {\n      src = document.currentScript.src;\n    } else {\n      var scripts = document.getElementsByTagName('script');\n      var lastScriptTag = scripts[scripts.length - 1];\n\n      if (lastScriptTag) {\n        src = lastScriptTag.src;\n      }\n    }\n\n    srcByModuleId[moduleId] = src;\n  }\n\n  return function (fileMap) {\n    if (!src) {\n      return null;\n    }\n\n    var splitResult = src.split(/([^\\\\/]+)\\.js$/);\n    var filename = splitResult && splitResult[1];\n\n    if (!filename) {\n      return [src.replace('.js', '.css')];\n    }\n\n    if (!fileMap) {\n      return [src.replace('.js', '.css')];\n    }\n\n    return fileMap.split(',').map(function (mapRule) {\n      var reg = new RegExp(\"\".concat(filename, \"\\\\.js$\"), 'g');\n      return normalizeUrl(src.replace(reg, \"\".concat(mapRule.replace(/{fileName}/g, filename), \".css\")));\n    });\n  };\n}\n\nfunction updateCss(el, url) {\n  if (!url) {\n    if (!el.href) {\n      return;\n    } // eslint-disable-next-line\n\n\n    url = el.href.split('?')[0];\n  }\n\n  if (!isUrlRequest(url)) {\n    return;\n  }\n\n  if (el.isLoaded === false) {\n    // We seem to be about to replace a css link that hasn't loaded yet.\n    // We're probably changing the same file more than once.\n    return;\n  }\n\n  if (!url || !(url.indexOf('.css') > -1)) {\n    return;\n  } // eslint-disable-next-line no-param-reassign\n\n\n  el.visited = true;\n  var newEl = el.cloneNode();\n  newEl.isLoaded = false;\n  newEl.addEventListener('load', function () {\n    if (newEl.isLoaded) {\n      return;\n    }\n\n    newEl.isLoaded = true;\n    el.parentNode.removeChild(el);\n  });\n  newEl.addEventListener('error', function () {\n    if (newEl.isLoaded) {\n      return;\n    }\n\n    newEl.isLoaded = true;\n    el.parentNode.removeChild(el);\n  });\n  newEl.href = \"\".concat(url, \"?\").concat(Date.now());\n\n  if (el.nextSibling) {\n    el.parentNode.insertBefore(newEl, el.nextSibling);\n  } else {\n    el.parentNode.appendChild(newEl);\n  }\n}\n\nfunction getReloadUrl(href, src) {\n  var ret; // eslint-disable-next-line no-param-reassign\n\n  href = normalizeUrl(href, {\n    stripWWW: false\n  }); // eslint-disable-next-line array-callback-return\n\n  src.some(function (url) {\n    if (href.indexOf(src) > -1) {\n      ret = url;\n    }\n  });\n  return ret;\n}\n\nfunction reloadStyle(src) {\n  if (!src) {\n    return false;\n  }\n\n  var elements = document.querySelectorAll('link');\n  var loaded = false;\n  forEach.call(elements, function (el) {\n    if (!el.href) {\n      return;\n    }\n\n    var url = getReloadUrl(el.href, src);\n\n    if (!isUrlRequest(url)) {\n      return;\n    }\n\n    if (el.visited === true) {\n      return;\n    }\n\n    if (url) {\n      updateCss(el, url);\n      loaded = true;\n    }\n  });\n  return loaded;\n}\n\nfunction reloadAll() {\n  var elements = document.querySelectorAll('link');\n  forEach.call(elements, function (el) {\n    if (el.visited === true) {\n      return;\n    }\n\n    updateCss(el);\n  });\n}\n\nfunction isUrlRequest(url) {\n  // An URL is not an request if\n  // It is not http or https\n  if (!/^https?:/i.test(url)) {\n    return false;\n  }\n\n  return true;\n}\n\nmodule.exports = function (moduleId, options) {\n  if (noDocument) {\n    console.log('no window.document found, will not HMR CSS');\n    return noop;\n  }\n\n  var getScriptSrc = getCurrentScriptUrl(moduleId);\n\n  function update() {\n    var src = getScriptSrc(options.filename);\n    var reloaded = reloadStyle(src);\n\n    if (options.locals) {\n      console.log('[HMR] Detected local css modules. Reload all css');\n      reloadAll();\n      return;\n    }\n\n    if (reloaded) {\n      console.log('[HMR] css reload %s', src.join(' '));\n    } else {\n      console.log('[HMR] Reload all css');\n      reloadAll();\n    }\n  }\n\n  return debounce(update, 50);\n};\n\n//# sourceURL=webpack://tidebitwallet/./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js?");
+
+
+/* eslint-env browser */
+
+/*
+  eslint-disable
+  no-console,
+  func-names
+*/
+var normalizeUrl = __webpack_require__(/*! ./normalize-url */ "./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js");
+
+var srcByModuleId = Object.create(null);
+var noDocument = typeof document === 'undefined';
+var forEach = Array.prototype.forEach;
+
+function debounce(fn, time) {
+  var timeout = 0;
+  return function () {
+    var self = this; // eslint-disable-next-line prefer-rest-params
+
+    var args = arguments;
+
+    var functionCall = function functionCall() {
+      return fn.apply(self, args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
+}
+
+function noop() {}
+
+function getCurrentScriptUrl(moduleId) {
+  var src = srcByModuleId[moduleId];
+
+  if (!src) {
+    if (document.currentScript) {
+      src = document.currentScript.src;
+    } else {
+      var scripts = document.getElementsByTagName('script');
+      var lastScriptTag = scripts[scripts.length - 1];
+
+      if (lastScriptTag) {
+        src = lastScriptTag.src;
+      }
+    }
+
+    srcByModuleId[moduleId] = src;
+  }
+
+  return function (fileMap) {
+    if (!src) {
+      return null;
+    }
+
+    var splitResult = src.split(/([^\\/]+)\.js$/);
+    var filename = splitResult && splitResult[1];
+
+    if (!filename) {
+      return [src.replace('.js', '.css')];
+    }
+
+    if (!fileMap) {
+      return [src.replace('.js', '.css')];
+    }
+
+    return fileMap.split(',').map(function (mapRule) {
+      var reg = new RegExp("".concat(filename, "\\.js$"), 'g');
+      return normalizeUrl(src.replace(reg, "".concat(mapRule.replace(/{fileName}/g, filename), ".css")));
+    });
+  };
+}
+
+function updateCss(el, url) {
+  if (!url) {
+    if (!el.href) {
+      return;
+    } // eslint-disable-next-line
+
+
+    url = el.href.split('?')[0];
+  }
+
+  if (!isUrlRequest(url)) {
+    return;
+  }
+
+  if (el.isLoaded === false) {
+    // We seem to be about to replace a css link that hasn't loaded yet.
+    // We're probably changing the same file more than once.
+    return;
+  }
+
+  if (!url || !(url.indexOf('.css') > -1)) {
+    return;
+  } // eslint-disable-next-line no-param-reassign
+
+
+  el.visited = true;
+  var newEl = el.cloneNode();
+  newEl.isLoaded = false;
+  newEl.addEventListener('load', function () {
+    if (newEl.isLoaded) {
+      return;
+    }
+
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.addEventListener('error', function () {
+    if (newEl.isLoaded) {
+      return;
+    }
+
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.href = "".concat(url, "?").concat(Date.now());
+
+  if (el.nextSibling) {
+    el.parentNode.insertBefore(newEl, el.nextSibling);
+  } else {
+    el.parentNode.appendChild(newEl);
+  }
+}
+
+function getReloadUrl(href, src) {
+  var ret; // eslint-disable-next-line no-param-reassign
+
+  href = normalizeUrl(href, {
+    stripWWW: false
+  }); // eslint-disable-next-line array-callback-return
+
+  src.some(function (url) {
+    if (href.indexOf(src) > -1) {
+      ret = url;
+    }
+  });
+  return ret;
+}
+
+function reloadStyle(src) {
+  if (!src) {
+    return false;
+  }
+
+  var elements = document.querySelectorAll('link');
+  var loaded = false;
+  forEach.call(elements, function (el) {
+    if (!el.href) {
+      return;
+    }
+
+    var url = getReloadUrl(el.href, src);
+
+    if (!isUrlRequest(url)) {
+      return;
+    }
+
+    if (el.visited === true) {
+      return;
+    }
+
+    if (url) {
+      updateCss(el, url);
+      loaded = true;
+    }
+  });
+  return loaded;
+}
+
+function reloadAll() {
+  var elements = document.querySelectorAll('link');
+  forEach.call(elements, function (el) {
+    if (el.visited === true) {
+      return;
+    }
+
+    updateCss(el);
+  });
+}
+
+function isUrlRequest(url) {
+  // An URL is not an request if
+  // It is not http or https
+  if (!/^https?:/i.test(url)) {
+    return false;
+  }
+
+  return true;
+}
+
+module.exports = function (moduleId, options) {
+  if (noDocument) {
+    console.log('no window.document found, will not HMR CSS');
+    return noop;
+  }
+
+  var getScriptSrc = getCurrentScriptUrl(moduleId);
+
+  function update() {
+    var src = getScriptSrc(options.filename);
+    var reloaded = reloadStyle(src);
+
+    if (options.locals) {
+      console.log('[HMR] Detected local css modules. Reload all css');
+      reloadAll();
+      return;
+    }
+
+    if (reloaded) {
+      console.log('[HMR] css reload %s', src.join(' '));
+    } else {
+      console.log('[HMR] Reload all css');
+      reloadAll();
+    }
+  }
+
+  return debounce(update, 50);
+};
 
 /***/ }),
 
@@ -57,7 +269,41 @@ eval("\n\n/* eslint-env browser */\n\n/*\n  eslint-disable\n  no-console,\n  fun
 /***/ ((module) => {
 
 "use strict";
-eval("\n\n/* eslint-disable */\nfunction normalizeUrl(pathComponents) {\n  return pathComponents.reduce(function (accumulator, item) {\n    switch (item) {\n      case '..':\n        accumulator.pop();\n        break;\n\n      case '.':\n        break;\n\n      default:\n        accumulator.push(item);\n    }\n\n    return accumulator;\n  }, []).join('/');\n}\n\nmodule.exports = function (urlString) {\n  urlString = urlString.trim();\n\n  if (/^data:/i.test(urlString)) {\n    return urlString;\n  }\n\n  var protocol = urlString.indexOf('//') !== -1 ? urlString.split('//')[0] + '//' : '';\n  var components = urlString.replace(new RegExp(protocol, 'i'), '').split('/');\n  var host = components[0].toLowerCase().replace(/\\.$/, '');\n  components[0] = '';\n  var path = normalizeUrl(components);\n  return protocol + host + path;\n};\n\n//# sourceURL=webpack://tidebitwallet/./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js?");
+
+
+/* eslint-disable */
+function normalizeUrl(pathComponents) {
+  return pathComponents.reduce(function (accumulator, item) {
+    switch (item) {
+      case '..':
+        accumulator.pop();
+        break;
+
+      case '.':
+        break;
+
+      default:
+        accumulator.push(item);
+    }
+
+    return accumulator;
+  }, []).join('/');
+}
+
+module.exports = function (urlString) {
+  urlString = urlString.trim();
+
+  if (/^data:/i.test(urlString)) {
+    return urlString;
+  }
+
+  var protocol = urlString.indexOf('//') !== -1 ? urlString.split('//')[0] + '//' : '';
+  var components = urlString.replace(new RegExp(protocol, 'i'), '').split('/');
+  var host = components[0].toLowerCase().replace(/\.$/, '');
+  components[0] = '';
+  var path = normalizeUrl(components);
+  return protocol + host + path;
+};
 
 /***/ }),
 
@@ -68,7 +314,16 @@ eval("\n\n/* eslint-disable */\nfunction normalizeUrl(pathComponents) {\n  retur
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n    if(true) {\n      // 1623333162988\n      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ \"./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js\")(module.id, {\"locals\":false});\n      module.hot.dispose(cssReload);\n      module.hot.accept(undefined, cssReload);\n    }\n  \n\n//# sourceURL=webpack://tidebitwallet/./src/scss/main.scss?");
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+    if(true) {
+      // 1623341475499
+      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
 
 /***/ }),
 
@@ -79,7 +334,23 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst navigatorItemsData = [\n  {\n    screen: \"overview\",\n    iconHtml: `<i class=\"fas fa-wallet\"></i>`,\n  },\n  {\n    screen: 'settings',\n    iconHtml: `<i class=\"fas fa-cog\"></i>`,\n  },\n];\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (navigatorItemsData);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/constant/bottom_navigator_data.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const navigatorItemsData = [
+  {
+    screen: "overview",
+    iconHtml: `<i class="fas fa-wallet"></i>`,
+  },
+  {
+    screen: 'settings',
+    iconHtml: `<i class="fas fa-cog"></i>`,
+  },
+];
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (navigatorItemsData);
+
 
 /***/ }),
 
@@ -90,7 +361,80 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./screen/overview */ \"./src/javascript/screen/overview.js\");\n// import \"./layout/scaffold\";\n\n\nconst getUser = () => {\n  return {\n    totalAsset: 52.29,\n    accounts: [\n      {\n        name: \"Bitcoin\",\n        symbol: \"BTC\",\n        network: \"mainnet\",\n        decimals: 8,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/btc.png\",\n        balance: 0,\n      },\n      {\n        name: \"Bitcoin\",\n        symbol: \"BTC\",\n        network: \"testnet\",\n        decimals: 8,\n        pulish: false,\n        image: \"https://www.tidebit.one/icons/btc.png\",\n        balance: 0,\n      },\n      {\n        name: \"Ethereum\",\n        symbol: \"ETH\",\n        network: \"mainnet\",\n        decimals: 18,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 0,\n      },\n      {\n        name: \"Ethereum\",\n        symbol: \"ETH\",\n        network: \"ropsten\",\n        decimals: 18,\n        pulish: false,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 2,\n      },\n      {\n        name: \"Tidetain\",\n        symbol: \"TTN\",\n        network: \"mainnet\",\n        decimals: 18,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 0,\n      },\n    ],\n  };\n};\n\nconst updateWalletSetup = (mode = \"development\", currency = \"usd\") => {\n  return {\n    mode: mode,\n    currency: currency,\n  };\n};\n\nconst renderOverviewPage = () => {\n  console.log(\"renderOverviewPage\");\n  const user = getUser();\n  const wallet = updateWalletSetup(\"development\", \"USD\");\n  (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(user, wallet);\n};\n\nrenderOverviewPage();\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/index.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
+// import "./layout/scaffold";
+
+
+const getUser = () => {
+  return {
+    totalAsset: 52.29,
+    accounts: [
+      {
+        name: "Bitcoin",
+        symbol: "BTC",
+        network: "mainnet",
+        decimals: 8,
+        pulish: true,
+        image: "https://www.tidebit.one/icons/btc.png",
+        balance: 0,
+      },
+      {
+        name: "Bitcoin",
+        symbol: "BTC",
+        network: "testnet",
+        decimals: 8,
+        pulish: false,
+        image: "https://www.tidebit.one/icons/btc.png",
+        balance: 0,
+      },
+      {
+        name: "Ethereum",
+        symbol: "ETH",
+        network: "mainnet",
+        decimals: 18,
+        pulish: true,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 0,
+      },
+      {
+        name: "Ethereum",
+        symbol: "ETH",
+        network: "ropsten",
+        decimals: 18,
+        pulish: false,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 2,
+      },
+      {
+        name: "Tidetain",
+        symbol: "TTN",
+        network: "mainnet",
+        decimals: 18,
+        pulish: true,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 0,
+      },
+    ],
+  };
+};
+
+const updateWalletSetup = (mode = "development", currency = "usd") => {
+  return {
+    mode: mode,
+    currency: currency,
+  };
+};
+
+const renderOverviewPage = () => {
+  console.log("renderOverviewPage");
+  const user = getUser();
+  const wallet = updateWalletSetup("development", "USD");
+  (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(user, wallet);
+};
+
+renderOverviewPage();
+
 
 /***/ }),
 
@@ -101,7 +445,30 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scr
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bottom_navigation_item */ \"./src/javascript/widget/bottom_navigation_item.js\");\n/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ \"./src/javascript/constant/bottom_navigator_data.js\");\n\n\n\n// parentElement = document.querySelector('.scaffold');\nconst bottomNavigator = () => {\n  const bottomNavigatorBar = document.createElement(\"footer\");\n  bottomNavigatorBar.classList = [\"bottom-navigator\"];\n  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((itemData) => {\n    bottomNavigatorBar.insertAdjacentHTML(\n      \"beforeend\",\n      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default)(itemData.iconHtml)\n    );\n  });\n  return bottomNavigatorBar;\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/layout/bottom_navigatior.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bottom_navigation_item */ "./src/javascript/widget/bottom_navigation_item.js");
+/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
+
+
+
+// parentElement = document.querySelector('.scaffold');
+const bottomNavigator = () => {
+  const bottomNavigatorBar = document.createElement("footer");
+  bottomNavigatorBar.classList = ["bottom-navigator"];
+  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((itemData) => {
+    bottomNavigatorBar.insertAdjacentHTML(
+      "beforeend",
+      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default)(itemData.iconHtml)
+    );
+  });
+  return bottomNavigatorBar;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);
+
 
 /***/ }),
 
@@ -112,7 +479,28 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// https://unicode-table.com/cn/2248/\n\nconst header = ( userBalance, currencyUint) => {\n  const markup = `\n  <header class=\"header header--overview\">\n    <div class=\"header__title\">Total Asset</div>\n    <div class=\"header__title-sub\">\n      <span class=\"almost-equal-to\">&#8776;</span>\n      <span class=\"user-total-balance\">${userBalance}</span>\n      <span class=\"currency-unit\">${currencyUint}</span>\n    </div>\n  </header>;\n  `;\n  return markup;\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/layout/header.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// https://unicode-table.com/cn/2248/
+
+const header = (userBalance, currencyUint) => {
+  const markup = `
+  <header class="header header--overview">
+    <div class="header__title">Total Asset</div>
+    <div class="header__title-sub">
+      <span class="almost-equal-to">&#8776;</span>
+      <span class="user-total-balance">${userBalance}</span>
+      <span class="currency-unit">${currencyUint}</span>
+    </div>
+  </header>
+  `;
+  return markup;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);
+
 
 /***/ }),
 
@@ -123,7 +511,49 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ Scaffold)\n/* harmony export */ });\n// https://developers.google.com/web/fundamentals/web-components/customelements\nclass Scaffold extends HTMLElement {\n  // Can define constructor arguments if you wish.\n  constructor() {\n    // If you define a constructor, always call super() first!\n    // This is specific to CE and required by the spec.\n    super();\n  }\n\n  connectedCallback() {\n    // create an element with some default HTML:\n    this.innerHTML = `<main></main>`;\n    this.className = \"scaffold\";\n  }\n\n  /**\n   * @param {HTMLElement} element\n   */\n  set header(element) {\n    this.insertAdjacentHTML(\"afterbegin\", element);\n  }\n\n  /**\n   * @param {HTMLElement} element\n   */\n  set body(element) {\n    this.innerHTML = element;\n  }\n\n  /**\n   * @param {HTMLElement} element\n   */\n  set bottomNavigator(element) {\n    this.insertAdjacentElement(\"beforeend\", element);\n  }\n}\n\n// module.exports.Scaffold;\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/layout/scaffold.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Scaffold)
+/* harmony export */ });
+// https://developers.google.com/web/fundamentals/web-components/customelements
+class Scaffold extends HTMLElement {
+  // Can define constructor arguments if you wish.
+  constructor() {
+    // If you define a constructor, always call super() first!
+    // This is specific to CE and required by the spec.
+    super();
+  }
+
+  connectedCallback() {
+    // create an element with some default HTML:
+    this.innerHTML = `<main></main>`;
+    this.className = "scaffold";
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  set header(element) {
+    this.insertAdjacentHTML("afterbegin", element);
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  set body(element) {
+    this.innerHTML = element;
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  set bottomNavigator(element) {
+    this.insertAdjacentElement("beforeend", element);
+  }
+}
+
+// module.exports.Scaffold;
+
 
 /***/ }),
 
@@ -134,7 +564,37 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ \"./src/javascript/layout/scaffold.js\");\n/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ \"./src/javascript/layout/header.js\");\n/* harmony import */ var _layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bottom_navigatior */ \"./src/javascript/layout/bottom_navigatior.js\");\n\n\n\n\ncustomElements.define(\"scaffold-widget\", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);\n\nconst overview = (user, wallet) => {\n  console.log('overview called');\n  const scaffold = document.createElement(\"scaffold-widget\");\n  document.body.insertAdjacentElement(\"afterbegin\", scaffold);\n  console.log('scaffold', scaffold);\n  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(user.totalAsset, wallet.currency);\n  scaffold.bottomNavigator =  (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__.default)();\n  console.log('scaffold', scaffold);\n\n  // ============================================================\n  // const scaffold = document.createElement(\"div\");\n  // scaffold.className = \".scaffold\";\n  // scaffold.insertAdjacentHTML(\n  //   \"afterbegin\",\n  //   header(user.totalAsset, wallet.currency)\n  // );\n  // scaffold.insertAdjacentHTML(bottomNavigator());\n  // return scaffold;\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/screen/overview.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bottom_navigatior */ "./src/javascript/layout/bottom_navigatior.js");
+
+
+
+
+customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
+
+const overview = (user, wallet) => {
+  const scaffold = document.createElement("scaffold-widget");
+  document.body.insertAdjacentElement("afterbegin", scaffold);
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(user.totalAsset, wallet.currency);
+  scaffold.bottomNavigator =  (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__.default)();
+  // ============================================================
+  // const scaffold = document.createElement("div");
+  // scaffold.className = ".scaffold";
+  // scaffold.insertAdjacentHTML(
+  //   "afterbegin",
+  //   header(user.totalAsset, wallet.currency)
+  // );
+  // scaffold.insertAdjacentHTML(bottomNavigator());
+  // return scaffold;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
+
 
 /***/ }),
 
@@ -145,7 +605,21 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst bottomNavigatorItem = (iconHtml) => {\n    const markup = `\n    <input type=\"radio\" name=\"bottom-navigator\" class=\"bottom-navigator__item\" id=\"settings\">\n    <label class=\"bottom-navigator__button\" for=\"settings\">\n        <div class=\"bottom-navigator__icon\">${iconHtml}</div>\n    </label>\n    `;\n    return markup;\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigatorItem);\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/widget/bottom_navigation_item.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const bottomNavigatorItem = (iconHtml) => {
+    const markup = `
+    <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="settings">
+    <label class="bottom-navigator__button" for="settings">
+        <div class="bottom-navigator__icon">${iconHtml}</div>
+    </label>
+    `;
+    return markup;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigatorItem);
 
 /***/ }),
 
@@ -156,7 +630,14 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ \"./src/scss/main.scss\");\n/* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ \"./src/javascript/index.js\");\n\n__webpack_require__ (/*! ./image/icon/icon16.png */ \"./src/image/icon/icon16.png\");\n__webpack_require__ (/*! ./image/icon/icon48.png */ \"./src/image/icon/icon48.png\");\n__webpack_require__ (/*! ./image/icon/icon128.png */ \"./src/image/icon/icon128.png\");\n\n\n//# sourceURL=webpack://tidebitwallet/./src/main.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ "./src/scss/main.scss");
+/* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ "./src/javascript/index.js");
+
+__webpack_require__ (/*! ./image/icon/icon16.png */ "./src/image/icon/icon16.png");
+__webpack_require__ (/*! ./image/icon/icon48.png */ "./src/image/icon/icon48.png");
+__webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.png");
+
 
 /***/ })
 
@@ -242,7 +723,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scs
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("ae71395172c6ad81acd7")
+/******/ 		__webpack_require__.h = () => ("3b7a6369e2b1ec8fa645")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -1318,3 +1799,4 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scs
 /******/ 	
 /******/ })()
 ;
+//# sourceMappingURL=bundle.js.map

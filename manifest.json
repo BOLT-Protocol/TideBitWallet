@@ -3,12 +3,13 @@
   "name": "TideBit Wallet",
   "version": "0.1.0",
   "action": {
-    "default_popup": "background.html",
     "default_icon": {
       "16": "build/image/icon16.png",
       "48": "build/image/icon48.png",
       "128": "build/image/icon128.png"
-    }
+    },
+    "default_title": "TideBit",
+    "default_popup": "popup.html"
   },
   "description": "A Crypto Wallet in your Browser",
   "icons": {

@@ -26,8 +26,6 @@ html {
   font-size: 10px; }
 
 body {
-  width: 358px;
-  height: 600px;
   box-sizing: border-box; }
 
 footer {
@@ -123,3 +121,5 @@ body {
     .account-item__icon img {
       width: 100%; }
 
+
+/*# sourceMappingURL=main.css.map*/

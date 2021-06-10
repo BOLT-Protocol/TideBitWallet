@@ -56,6 +56,7 @@ const frontend = {
       }),
       new webpack.HotModuleReplacementPlugin(),
     ],
+    devtool: 'cheap-module-source-map'
   };
 
   module.exports = [frontend];
