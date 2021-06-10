@@ -17,7 +17,7 @@ export default class Scaffold extends HTMLElement {
    * @param {HTMLElement} element
    */
   set header(element) {
-    this.insertAdjacentHTML("afterbegin", element);
+    this.insertAdjacentElement("afterbegin", element);
   }
 
   /**

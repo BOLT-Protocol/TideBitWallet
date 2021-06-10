@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623341475499
+      // 1623343491982
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -486,17 +486,18 @@ __webpack_require__.r(__webpack_exports__);
 // https://unicode-table.com/cn/2248/
 
 const header = (userBalance, currencyUint) => {
+  const header = document.createElement("header");
+  header.classList=['header header--overview'];
   const markup = `
-  <header class="header header--overview">
     <div class="header__title">Total Asset</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
       <span class="user-total-balance">${userBalance}</span>
       <span class="currency-unit">${currencyUint}</span>
     </div>
-  </header>
   `;
-  return markup;
+  header.insertAdjacentHTML('afterbegin', markup);
+  return header;
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);
@@ -534,7 +535,7 @@ class Scaffold extends HTMLElement {
    * @param {HTMLElement} element
    */
   set header(element) {
-    this.insertAdjacentHTML("afterbegin", element);
+    this.insertAdjacentElement("afterbegin", element);
   }
 
   /**
@@ -723,7 +724,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("3b7a6369e2b1ec8fa645")
+/******/ 		__webpack_require__.h = () => ("34d9b41255c191095ed1")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
