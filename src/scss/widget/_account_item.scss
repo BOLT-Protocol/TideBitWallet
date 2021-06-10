@@ -1,0 +1,21 @@
+.account-item {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-white;
+  align-items: center;
+  padding: 1rem;
+  color: $color-grey-dark-1;
+  &.publish {
+    color: $color-grey-dark-2;
+  }
+  &__icon {
+    width: 3rem;
+    & img {
+      width: 100%;
+    }
+  }
+  &__symbol {
+  }
+  &__balance {
+  }
+}

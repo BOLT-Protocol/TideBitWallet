@@ -10,25 +10,13 @@
 html {
   // This defines what 1rem is
   font-size: 10px; //1 rem = 10px; 10px/16px = 62.5%
-
-  @include respond(tab-land) {
-    // width < 1200?
-    font-size: 9px; //1 rem = 9px, 9/16 = 50%
-  }
-
-  @include respond(tab-port) {
-    // width < 900?
-    font-size: 8px; //1 rem = 8px, 8/16 = 50%
-  }
-
-  // @include respond(big-desktop) {
-  //   font-size: 12px; //1rem = 12, 12/16
-  // }
 }
 
 body {
   width: 358px;
   height: 600px;
+  // width: 100vw;
+  // height: 100vh;
   box-sizing: border-box;
 }
 

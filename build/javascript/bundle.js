@@ -68,7 +68,95 @@ eval("\n\n/* eslint-disable */\nfunction normalizeUrl(pathComponents) {\n  retur
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n    if(true) {\n      // 1623301922653\n      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ \"./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js\")(module.id, {\"locals\":false});\n      module.hot.dispose(cssReload);\n      module.hot.accept(undefined, cssReload);\n    }\n  \n\n//# sourceURL=webpack://tidebitwallet/./src/scss/main.scss?");
+eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n    if(true) {\n      // 1623318124789\n      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ \"./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js\")(module.id, {\"locals\":false});\n      module.hot.dispose(cssReload);\n      module.hot.accept(undefined, cssReload);\n    }\n  \n\n//# sourceURL=webpack://tidebitwallet/./src/scss/main.scss?");
+
+/***/ }),
+
+/***/ "./src/javascript/constant/bottom_navigator_data.js":
+/*!**********************************************************!*\
+  !*** ./src/javascript/constant/bottom_navigator_data.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst navigatorItemsData = [\n  {\n    screen: \"overview\",\n    iconHtml: `<i class=\"fas fa-wallet\"></i>`,\n  },\n  {\n    screen: 'settings',\n    iconHtml: `<i class=\"fas fa-cog\"></i>`,\n  },\n];\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (navigatorItemsData);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/constant/bottom_navigator_data.js?");
+
+/***/ }),
+
+/***/ "./src/javascript/document/elements.js":
+/*!*********************************************!*\
+  !*** ./src/javascript/document/elements.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"scaffold\": () => (/* binding */ scaffold)\n/* harmony export */ });\n// layout\nconst scaffold = document.querySelector('.scaffold');\n// export const bottomNavigator = document.querySelector('.bottom-navigator');\n// export const header = document.querySelector('.header');\n\n// // common widget\n\n// // user info\n// export const userTotalBalance = document.querySelector('.user-total-balance');\n\n// // waller info\n// export const currencyUnit = document.querySelector('.header .currency-unit');\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/document/elements.js?");
+
+/***/ }),
+
+/***/ "./src/javascript/index.js":
+/*!*********************************!*\
+  !*** ./src/javascript/index.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./screen/overview */ \"./src/javascript/screen/overview.js\");\n/* harmony import */ var _document_elements__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./document/elements */ \"./src/javascript/document/elements.js\");\n\n\n\nconst getUser = () => {\n  return {\n    totalAsset: 52.29,\n    accounts: [\n      {\n        name: \"Bitcoin\",\n        symbol: \"BTC\",\n        network: \"mainnet\",\n        decimals: 8,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/btc.png\",\n        balance: 0,\n      },\n      {\n        name: \"Bitcoin\",\n        symbol: \"BTC\",\n        network: \"testnet\",\n        decimals: 8,\n        pulish: false,\n        image: \"https://www.tidebit.one/icons/btc.png\",\n        balance: 0,\n      },\n      {\n        name: \"Ethereum\",\n        symbol: \"ETH\",\n        network: \"mainnet\",\n        decimals: 18,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 0,\n      },\n      {\n        name: \"Ethereum\",\n        symbol: \"ETH\",\n        network: \"ropsten\",\n        decimals: 18,\n        pulish: false,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 2,\n      },\n      {\n        name: \"Tidetain\",\n        symbol: \"TTN\",\n        network: \"mainnet\",\n        decimals: 18,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 0,\n      },\n    ],\n  };\n};\n\nconst updateWalletSetup = (mode = \"development\", currency = \"usd\") => {\n  return {\n    mode: mode,\n    currency: currency,\n  };\n};\n\n(() => {\n  console.log(\"start\");\n  const user = getUser();\n  const wallet = updateWalletSetup('development', 'USD');\n//   overview(elements.scaffold, user, wallet);\n})();\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/index.js?");
+
+/***/ }),
+
+/***/ "./src/javascript/layout/bottom_navigatior.js":
+/*!****************************************************!*\
+  !*** ./src/javascript/layout/bottom_navigatior.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _widget_bottom_navigator_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bottom_navigator_bar */ \"./src/javascript/widget/bottom_navigator_bar.js\");\n/* harmony import */ var _widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/bottom_navigation_item */ \"./src/javascript/widget/bottom_navigation_item.js\");\n/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ \"./src/javascript/constant/bottom_navigator_data.js\");\n\n\n\n\n// parentElement = document.querySelector('.scaffold');\nconst bottomNavigator = (parentElement) => {\n  parentElement.insertAdjacentHTML(\"beforeend\", _widget_bottom_navigator_bar__WEBPACK_IMPORTED_MODULE_0__.widget);\n  const bottomNavigatorBarEl = document.querySelector(\n    _widget_bottom_navigator_bar__WEBPACK_IMPORTED_MODULE_0__.className\n  );\n  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_2__.default.forEach((itemData) => {\n    bottomNavigatorBarEl.insertAdjacentHTML(\n      \"beforeend\",\n      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_1__.default)(itemData.iconHtml)\n    );\n  });\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/layout/bottom_navigatior.js?");
+
+/***/ }),
+
+/***/ "./src/javascript/layout/header.js":
+/*!*****************************************!*\
+  !*** ./src/javascript/layout/header.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// https://unicode-table.com/cn/2248/\n\nconst header = (parentElement, userBalance, currencyUint) => {\n  const markup = `\n  <header class=\"header header--overview\">\n    <div class=\"header__title\">Total Asset</div>\n    <div class=\"header__title-sub\">\n      <span class=\"almost-equal-to\">&#8776;</span>\n      <span class=\"user-total-balance\">${userBalance}</span>\n      <span class=\"currency-unit\">${currencyUint}</span>\n    </div>\n  </header>;\n  `;\n  parentElement.insertAdjacentHTML(\"afterbegin\", markup);\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/layout/header.js?");
+
+/***/ }),
+
+/***/ "./src/javascript/screen/overview.js":
+/*!*******************************************!*\
+  !*** ./src/javascript/screen/overview.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ \"./src/javascript/layout/header.js\");\n/* harmony import */ var _layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigatior */ \"./src/javascript/layout/bottom_navigatior.js\");\n\n\n\n// parentElement = document.querySelector(\".scaffold\");\nconst overview = (parentElement, user, wallet) => {\n  (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(parentElement, user.totalAsset, wallet.currency);\n  (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_1__.default)(parentElement);\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/screen/overview.js?");
+
+/***/ }),
+
+/***/ "./src/javascript/widget/bottom_navigation_item.js":
+/*!*********************************************************!*\
+  !*** ./src/javascript/widget/bottom_navigation_item.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst bottomNavigatorItem = (iconHtml) => {\n    const markup = `\n    <input type=\"radio\" name=\"bottom-navigator\" class=\"bottom-navigator__item\" id=\"settings\">\n    <label class=\"bottom-navigator__button\" for=\"settings\">\n        <div class=\"bottom-navigator__icon\">${iconHtml}</div>\n    </label>\n    `;\n    return markup;\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigatorItem);\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/widget/bottom_navigation_item.js?");
+
+/***/ }),
+
+/***/ "./src/javascript/widget/bottom_navigator_bar.js":
+/*!*******************************************************!*\
+  !*** ./src/javascript/widget/bottom_navigator_bar.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"className\": () => (/* binding */ className),\n/* harmony export */   \"widget\": () => (/* binding */ widget)\n/* harmony export */ });\nconst bottomNavigatorBar = () => {\n  const markup = `<footer class=\"bottom-navigator\"><>\n    `;\n  return markup;\n};\n\nconst className = \".bottom-navigator\";\nconst widget = bottomNavigatorBar;\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/widget/bottom_navigator_bar.js?");
 
 /***/ }),
 
@@ -79,7 +167,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ \"./src/scss/main.scss\");\n\n__webpack_require__ (/*! ./image/icon/icon16.png */ \"./src/image/icon/icon16.png\");\n__webpack_require__ (/*! ./image/icon/icon48.png */ \"./src/image/icon/icon48.png\");\n__webpack_require__ (/*! ./image/icon/icon128.png */ \"./src/image/icon/icon128.png\");\n\n//# sourceURL=webpack://tidebitwallet/./src/main.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ \"./src/scss/main.scss\");\n/* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ \"./src/javascript/index.js\");\n\n__webpack_require__ (/*! ./image/icon/icon16.png */ \"./src/image/icon/icon16.png\");\n__webpack_require__ (/*! ./image/icon/icon48.png */ \"./src/image/icon/icon48.png\");\n__webpack_require__ (/*! ./image/icon/icon128.png */ \"./src/image/icon/icon128.png\");\n\n\n//# sourceURL=webpack://tidebitwallet/./src/main.js?");
 
 /***/ })
 
@@ -128,6 +216,18 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scs
 /******/ 	__webpack_require__.i = [];
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/get javascript update chunk filename */
 /******/ 	(() => {
 /******/ 		// This function allow to reference all chunks
@@ -153,7 +253,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scs
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("8242675544c971a76866")
+/******/ 		__webpack_require__.h = () => ("da1682969fc738cd4001")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
