@@ -27,11 +27,9 @@ html {
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  width: 358px;
+  height: 600px;
   box-sizing: border-box;
-  background-color: $color-white;
 }
 
 footer {
