@@ -1,35 +1,23 @@
 {
-  "manifest_version": 3,
   "name": "TideBit Wallet",
+  "description": "A Crypto Wallet in your Browser",
   "version": "0.1.0",
-  "description": "A HD Wallet for TideBit Chain, Ethereum and Bitcoin",
-
-  "action": {
-    "default_icon": {
-      "16": "img/icon16.png",
-      "48": "img/icon48.png",
-      "128": "img/icon128.png"
-    },
-    "default_title": "TideBit Wallet",
-    "default_popup": "TideBitWallet.html"
-  },
-
-  "icons": {
-    "16": "img/icon16.png",
-    "48": "img/icon48.png",
-    "128": "img/icon128.png"
-  },
-
+  "manifest_version": 3,
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "build/javascript/bundle.js"
   },
-
-  "permissions": [
-    "contextMenus",
-    "storage",
-    "activeTab"
-  ],
-  "content_scripts": [
-
-  ]
+  "permissions": ["storage", "activeTab", "scripting"],
+  "action": {
+    "default_popup": "TideBitWallet.html",
+    "default_icon": {
+      "16": "build/image/icon16.png",
+      "48": "build/image/icon48.png",
+      "128": "build/image/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "build/image/icon16.png",
+    "48": "build/image/icon48.png",
+    "128": "build/image/icon128.png"
+  }
 }
