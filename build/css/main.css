@@ -1,0 +1,125 @@
+/*
+0 - 600px:      Phone
+600 - 900px:    Tablet portrait
+900 - 1200px:   Tablet landscape
+[1200 - 1800] is where our normal styles apply
+1800px + :      Big desktop
+
+$breakpoint arguement choices:
+- phone
+- tab-port
+- tab-land
+- big-desktop
+
+ORDER: Base + typography > general layout + grid > page layout > components
+
+1em = 16px
+*/
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit; }
+
+html {
+  font-size: 10px; }
+
+body {
+  width: 358px;
+  height: 600px;
+  box-sizing: border-box; }
+
+footer {
+  margin-top: auto; }
+
+ul {
+  list-style: none; }
+
+li {
+  list-style-type: none; }
+
+a,
+a:hover,
+a:visited {
+  color: #4ECDC4;
+  text-decoration: none; }
+
+body {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  /*font-size: 16px;*/
+  line-height: 1.7;
+  color: #000; }
+
+.scaffold {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #F7F8F9; }
+
+.bottom-navigator {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; }
+  .bottom-navigator__item {
+    display: none; }
+  .bottom-navigator__button {
+    padding: 2rem 0;
+    width: 100%; }
+  .bottom-navigator__icon {
+    text-align: center;
+    font-size: 1.6rem; }
+  .bottom-navigator__icon > i {
+    color: #555; }
+  .bottom-navigator__item:checked + * .bottom-navigator__icon > i {
+    color: #4ECDC4; }
+
+.header {
+  background-image: linear-gradient(to right, #4ECDC4, #446CB3);
+  color: white;
+  font-size: 1.6rem; }
+  .header--account, .header--overview {
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 0;
+    align-items: center;
+    justify-self: center; }
+  .header--appbar {
+    display: flex;
+    flex-direction: row;
+    font-weight: 400; }
+  .header--overview .header__title {
+    font-size: 2rem;
+    font-weight: 400; }
+  .header--overview .balance {
+    font-size: 2.4rem;
+    font-weight: 600; }
+  .header--overview .currency-unit {
+    font-size: 1.36rem;
+    font-weight: 400; }
+
+.account-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 5px; }
+
+.account-item {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  align-items: center;
+  padding: 1rem;
+  color: #9B9B9B;
+  font-size: 0.96rem; }
+  .account-item.publish {
+    color: #555; }
+  .account-item__icon {
+    width: 3rem; }
+    .account-item__icon img {
+      width: 100%; }
+

@@ -1,0 +1,34 @@
+.header {
+  background-image: linear-gradient(to right, $color-primary, $color-secondary);
+  color: white;
+  font-size: $default-font-size;
+
+  &--account,
+  &--overview {
+    //   min-height: $header-height;
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 0;
+    align-items: center;
+    justify-self: center;
+  }
+
+  &--appbar {
+    display: flex;
+    flex-direction: row;
+    font-weight: 400;
+  }
+
+  &--overview &__title {
+    font-size: $default-font-size * 1.25;
+    font-weight: 400;
+  }
+  &--overview .balance {
+    font-size: $default-font-size * 1.5;
+    font-weight: 600;
+  }
+  &--overview .currency-unit {
+    font-size: $default-font-size * 0.85;
+    font-weight: 400;
+  }
+}

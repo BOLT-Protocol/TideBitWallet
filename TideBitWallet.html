@@ -1,14 +1,102 @@
 <!DOCTYPE html>
-<html>
+
 <head>
+  <!-- fontawesome -->
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+  <!-- custom css -->
+  <link rel="stylesheet" href="build/css/main.css" />
   <title>TideBit Wallet</title>
-  <script src="lib/bn.js" type="text/javascript"></script>
-  <script src="lib/secp256k1.js" type="text/javascript"></script>
-  <script src="lib/main.js" type="text/javascript"></script>
 </head>
+
 <body>
-  <p>TideBit Wallet</p>
+  <div class="scaffold">
+    <header class="header header--overview">
+      <div class="header__title">Total Asset</div>
+      <div class="header__title-sub">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="balance">52.29</span>
+        <span class="currency-unit">USD</span>
+      </div>
+    </header>
+    <main class="overview">
+      <div class="account-list">
+        <div class="account-item publish">
+          <div class="account-item__icon">
+            <img src="https://www.tidebit.one/icons/btc.png" alt="BTC">
+          </div>
+          <div class="account-item__symbol">BTC</div>
+          <div class="account-item__balance">0</div>
+          <div class="account-item__to-currency">
+            <span class="almost-equal-to">&#8776;</span>
+            <span class="balance">0</span>
+            <span class="currency-unit">USD</span>
+          </div>
+        </div>
+        <div class="account-item">
+          <div class="account-item__icon">
+            <img src="https://www.tidebit.one/icons/btc.png" alt="BTC">
+          </div>
+          <div class="account-item__symbol">BTC</div>
+          <div class="account-item__balance">0</div>
+          <div class="account-item__to-currency">
+            <span class="almost-equal-to">&#8776;</span>
+            <span class="balance">0</span>
+            <span class="currency-unit">USD</span>
+          </div>
+        </div>
+        <div class="account-item publish">
+          <div class="account-item__icon">
+            <img src="https://www.tidebit.one/icons/eth.png" alt="ETH">
+          </div>
+          <div class="account-item__symbol">ETH</div>
+          <div class="account-item__balance">0</div>
+          <div class="account-item__to-currency">
+            <span class="almost-equal-to">&#8776;</span>
+            <span class="balance">0</span>
+            <span class="currency-unit">USD</span>
+          </div>
+        </div>
+        <div class="account-item">
+          <div class="account-item__icon">
+            <img src="https://www.tidebit.one/icons/eth.png" alt="ETH">
+          </div>
+          <div class="account-item__symbol">ETH</div>
+          <div class="account-item__balance">2</div>
+          <div class="account-item__to-currency">
+            <span class="almost-equal-to">&#8776;</span>
+            <span class="balance">52.29</span>
+            <span class="currency-unit">USD</span>
+          </div>
+        </div>
+        <div class="account-item publish">
+          <div class="account-item__icon">
+            <img src="https://www.tidebit.one/icons/eth.png" alt="TTH">
+          </div>
+          <div class="account-item__symbol">TTH</div>
+          <div class="account-item__balance">0</div>
+          <div class="account-item__to-currency">
+            <span class="almost-equal-to">&#8776;</span>
+            <span class="balance">0</span>
+            <span class="currency-unit">USD</span>
+          </div>
+        </div>
+      </div>
+    </main>
 
+    <footer class="bottom-navigator">
+      <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="account-list" checked>
+      <label class="bottom-navigator__button" for="account-list">
+        <div class="bottom-navigator__icon"><i class="fas fa-wallet"></i></div>
+      </label>
+      <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="settings">
+      <label class="bottom-navigator__button" for="settings">
+        <div class="bottom-navigator__icon"><i class="fas fa-cog"></i></div>
+      </label>
+    </footer>
 
+  </div>
 </body>
+<script type="module" src="build/javascript/bundle.js"></script>
+
 </html>
