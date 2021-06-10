@@ -5,6 +5,7 @@
   align-items: center;
   padding: 1rem;
   color: $color-grey-dark-1;
+  font-size: $default-font-size * 0.6;
   &.publish {
     color: $color-grey-dark-2;
   }
