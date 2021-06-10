@@ -1,0 +1,62 @@
+/*
+0 - 600px:      Phone
+600 - 900px:    Tablet portrait
+900 - 1200px:   Tablet landscape
+[1200 - 1800] is where our normal styles apply
+1800px + :      Big desktop
+
+$breakpoint arguement choices:
+- phone
+- tab-port
+- tab-land
+- big-desktop
+
+ORDER: Base + typography > general layout + grid > page layout > components
+
+1em = 16px
+*/
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit; }
+
+html {
+  font-size: 10px; }
+  @media only screen and (max-width: 54em) {
+    html {
+      font-size: 9px; } }
+  @media only screen and (max-width: 42em) {
+    html {
+      font-size: 8px; } }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: #fff; }
+
+footer {
+  margin-top: auto; }
+
+ul {
+  list-style: none; }
+
+li {
+  list-style-type: none; }
+
+a,
+a:hover,
+a:visited {
+  color: #4ECDC4;
+  text-decoration: none; }
+
+body {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  /*font-size: 16px;*/
+  line-height: 1.7;
+  color: #000; }
+
