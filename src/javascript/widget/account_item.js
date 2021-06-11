@@ -1,9 +1,11 @@
 class AccountItem extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.addEventListener("click", () => {
+    this.addEventListener("click", (event) => {
       if (this.account) {
         // navigator to account
+        console.log(`event: ${event}`);
+        console.log(`this.account: ${this.account}`);
       } else {
         return;
       }

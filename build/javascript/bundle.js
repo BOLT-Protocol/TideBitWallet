@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623379635704
+      // 1623393102126
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -363,89 +363,18 @@ const navigatorItemsData = [
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ui */ "./src/javascript/ui.js");
 
 
 
-const getUser = () => {
-  return {
-    totalAsset: 52.29,
-    accounts: [
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
-        name: "Bitcoin",
-        symbol: "BTC",
-        network: "mainnet",
-        decimals: 8,
-        publish: true,
-        image: "https://www.tidebit.one/icons/btc.png",
-        balance: 0,
-        inUSD: 0,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
-        name: "Bitcoin",
-        symbol: "BTC",
-        network: "testnet",
-        decimals: 8,
-        publish: false,
-        image: "https://www.tidebit.one/icons/btc.png",
-        balance: 0,
-        inUSD: 0,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
-        name: "Ethereum",
-        symbol: "ETH",
-        network: "mainnet",
-        decimals: 18,
-        publish: true,
-        image: "https://www.tidebit.one/icons/eth.png",
-        balance: 0,
-        inUSD: 0,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
-        name: "Ethereum",
-        symbol: "ETH",
-        network: "ropsten",
-        decimals: 18,
-        publish: false,
-        image: "https://www.tidebit.one/icons/eth.png",
-        balance: 2,
-        inUSD: 52.29,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
-        name: "Tidetain",
-        symbol: "TTN",
-        network: "mainnet",
-        decimals: 18,
-        publish: true,
-        image: "https://www.tidebit.one/icons/eth.png",
-        balance: 0,
-        inUSD: 0,
-      },
-    ],
-  };
-};
+const start = async()=> {
+  console.log('start');
+  (0,_ui__WEBPACK_IMPORTED_MODULE_0__.default)();
+}
 
-const updateWalletSetup = (mode, fiat) => {
-  return {
-    mode: mode,
-    fiat: fiat,
-  };
-};
+start();
 
-const renderOverviewPage = () => {
-  console.log("renderOverviewPage");
-  const user = getUser();
-  const wallet = updateWalletSetup("development", { symbol: "USD", inUSD: 1 });
-  (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(user, wallet.fiat);
-};
 
-renderOverviewPage();
 
 
 /***/ }),
@@ -475,6 +404,7 @@ const accountsContainer = (accounts, fiat) => {
       account: account,
       fiat: fiat,
     };
+    // accountItem.callback = callback;
     accountList.insertAdjacentElement("beforeend", accountItem);
   });
   return accountList;
@@ -485,10 +415,10 @@ const accountsContainer = (accounts, fiat) => {
 
 /***/ }),
 
-/***/ "./src/javascript/layout/bottom_navigatior.js":
-/*!****************************************************!*\
-  !*** ./src/javascript/layout/bottom_navigatior.js ***!
-  \****************************************************/
+/***/ "./src/javascript/layout/bottom_navigator.js":
+/*!***************************************************!*\
+  !*** ./src/javascript/layout/bottom_navigator.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -501,15 +431,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// parentElement = document.querySelector('.scaffold');
-const bottomNavigator = (screen) => {
+customElements.define("bottom-navigator-item", _widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default);
+
+const bottomNavigator = (state, callback) => {
   const bottomNavigatorBar = document.createElement("footer");
   bottomNavigatorBar.classList = ["bottom-navigator"];
   _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((itemData) => {
-    bottomNavigatorBar.insertAdjacentHTML(
-      "beforeend",
-      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default)(itemData, screen)
-    );
+    const navigatorItem = document.createElement("bottom-navigator-item");
+    navigatorItem.callback = callback;
+    navigatorItem.child = {
+      itemData: itemData,
+      state: state,
+    };
+    bottomNavigatorBar.insertAdjacentElement("beforeend", navigatorItem);
   });
   return bottomNavigatorBar;
 };
@@ -616,36 +550,158 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bottom_navigatior */ "./src/javascript/layout/bottom_navigatior.js");
-/* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
+/* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
 
 
 
 
-
-customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
-
-const overview = (user, fiat, screen) => {
-  const scaffold = document.createElement("scaffold-widget");
-  document.body.insertAdjacentElement("afterbegin", scaffold);
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(user.totalAsset, fiat.symbol);
-  scaffold.bottomNavigator = (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__.default)(screen);
-  switch (screen) {
+const overview = (scaffold, state) => {
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state.user.totalAsset, state.walletConfig.fiat.symbol);
+  scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  switch (state.screen) {
     case "accounts":
-      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_3__.default)(user.accounts, fiat);
+      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state.user.accounts, state.walletConfig.fiat);
       break;
     case "settings":
+      const container = document.createElement("div");
+      container.innerHTML = `<div>This is Setting page</div>`;
+      scaffold.body = container;
       break;
     default:
-      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_3__.default)(user.accounts, fiat);
+      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state.user.accounts, state.walletConfig.fiat);
       break;
   }
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
 
+
+/***/ }),
+
+/***/ "./src/javascript/ui.js":
+/*!******************************!*\
+  !*** ./src/javascript/ui.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ launchTideBitUi)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
+// MVC: View
+
+
+
+
+
+// root element
+customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
+const root = document.createElement("scaffold-widget");
+document.body.insertAdjacentElement("afterbegin", root);
+
+
+const state = {};
+
+const getUser = () => {
+    return {
+        totalAsset: 52.29,
+        accounts: [{
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                name: "Bitcoin",
+                symbol: "BTC",
+                network: "mainnet",
+                decimals: 8,
+                publish: true,
+                image: "https://www.tidebit.one/icons/btc.png",
+                balance: 0,
+                inUSD: 0,
+            },
+            {
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                name: "Bitcoin",
+                symbol: "BTC",
+                network: "testnet",
+                decimals: 8,
+                publish: false,
+                image: "https://www.tidebit.one/icons/btc.png",
+                balance: 0,
+                inUSD: 0,
+            },
+            {
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                name: "Ethereum",
+                symbol: "ETH",
+                network: "mainnet",
+                decimals: 18,
+                publish: true,
+                image: "https://www.tidebit.one/icons/eth.png",
+                balance: 0,
+                inUSD: 0,
+            },
+            {
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                name: "Ethereum",
+                symbol: "ETH",
+                network: "ropsten",
+                decimals: 18,
+                publish: false,
+                image: "https://www.tidebit.one/icons/eth.png",
+                balance: 2,
+                inUSD: 52.29,
+            },
+            {
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                name: "Tidetain",
+                symbol: "TTN",
+                network: "mainnet",
+                decimals: 18,
+                publish: true,
+                image: "https://www.tidebit.one/icons/eth.png",
+                balance: 0,
+                inUSD: 0,
+            },
+        ],
+    };
+};
+
+const setWallet = (mode, fiat) => {
+    return {
+        mode: mode,
+        fiat: fiat,
+    };
+};
+
+const startApp = () => {
+    state.user = getUser();
+    state.walletConfig = setWallet("development", {
+        symbol: "USD",
+        inUSD: 1
+    });
+    state.screen = 'accounts';
+    route(state);
+};
+
+const route = (state) => {
+    // document.body.replaceChildren();
+    switch (state.screen) {
+        case 'accounts':
+        case 'settings':
+            (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
+            break;
+        case 'account':
+            // account();
+    }
+}
+
+function launchTideBitUi(options, callback) {
+    startApp();
+}
 
 /***/ }),
 
@@ -689,6 +745,15 @@ __webpack_require__.r(__webpack_exports__);
 class AccountItem extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
+    this.addEventListener("click", (event) => {
+      if (this.account) {
+        // navigator to account
+        console.log(`event: ${event}`);
+        console.log(`this.account: ${this.account}`);
+      } else {
+        return;
+      }
+    });
   }
 
   get publish() {
@@ -757,19 +822,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const bottomNavigatorItem = (itemData, screen) => {
+class BottomNavigatorItem extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", (event) => {
+      // this.callback({ ...state, screen: itemData.screen });
+    });
+  }
+
+  // set callback(func) {
+  //   this.callback = func;
+  // }
+
+  set child(data) {
+    this.className = "bottom-navigator";
+    this.itemData = data.itemData;
+    this.state = data.state;
+    this.insertAdjacentHTML(
+      "afterbegin",
+      bottomNavigatorItem(this.itemData, this.state)
+    );
+  }
+}
+
+const bottomNavigatorItem = (itemData, state) => {
   const markup = `
-    <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
-      itemData.screen
-    }" ${itemData.checked || itemData.screen === screen ? "checked" : ""}>
-    <label class="bottom-navigator__button" for="${itemData.screen}">
-        <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
-    </label>
-    `;
+      <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
+        itemData.screen
+      }" ${
+    itemData.checked || itemData.screen === state.screen ? "checked" : ""
+  }>
+      <label class="bottom-navigator__button" for="${itemData.screen}">
+          <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
+      </label>
+      `;
   return markup;
 };
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigatorItem);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigatorItem);
 
 
 /***/ }),
@@ -874,7 +964,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("4f8c4c5810a1c46e71fb")
+/******/ 		__webpack_require__.h = () => ("57caf8ff4bb567ae9cfb")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

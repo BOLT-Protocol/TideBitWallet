@@ -11,6 +11,7 @@ const accountsContainer = (accounts, fiat) => {
       account: account,
       fiat: fiat,
     };
+    // accountItem.callback = callback;
     accountList.insertAdjacentElement("beforeend", accountItem);
   });
   return accountList;
