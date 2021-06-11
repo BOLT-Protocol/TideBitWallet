@@ -1,4 +1,28 @@
 // https://unicode-table.com/cn/2248/
+import route from "../utils/route";
+class BackButton extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", () => {
+      if (this.state.screen) {
+        route(this.state);
+      }
+    });
+  }
+  connectedCallback() {
+    this.className = "header__leading";
+    this.innerHTML = `<i class="fas fa-arrow-left">`;
+  }
+  set icon(iconHTML) {
+    this.innerHTML = iconHTML;
+  }
+  set onClick(state){
+    this.state = state;
+  }
+ 
+}
+customElements.define("back-button", BackButton);
+
 const getHeaderInfo = (screen) => {
   switch (screen) {
     case "transaction":
@@ -21,9 +45,11 @@ const overviewHeader = (totalAsset, fiatSymbol) => {
   `;
   return markup;
 };
-const accountHeader = (account, fiat) => {
+
+const accountHeader = (state) => {
+  const account = state.account;
+  const fiat = state.walletConfig.fiat;
   const markup = `
-  <div class="header__leading"><i class="fas fa-arrow-left"></i></div>
   <div class="header__icon">
     <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
   </div>
@@ -35,25 +61,31 @@ const accountHeader = (account, fiat) => {
     <span class="currency-unit">${fiat.symbol}</span>
   </div>
   `;
-  return markup;
+  const backButton = document.createElement("back-button");
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "accounts";
+  backButton.onClick = _state;
+  return [markup, backButton];
 };
-const defaultHeader = (screen) => {
-  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(screen);
+const defaultHeader = (state) => {
+  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(state.screen);
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "account";
   const markup = `
-      <div class="header__leading">${
-        leadingHTML ? leadingHTML : '<i class="fas fa-arrow-left"></i>'
-      }</div>
       <div class="header__title">${screenTitle}</div>
       <div class="header__action ${actionHTML ? "" : "disabled"}">${
     actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
   }</div>
   `;
-  return markup;
+  const backButton = document.createElement("back-button");
+  if (leadingHTML) backButton.icon = leadingHTML;
+  backButton.onClick = _state;
+  return [markup, backButton];
 };
 
 const header = (state) => {
   const header = document.createElement("header");
-  let markup;
+  let markup, backButton;
   switch (state.screen) {
     case "accounts":
     case "settings":
@@ -65,14 +97,16 @@ const header = (state) => {
       break;
     case "account":
       header.classList = ["header header--account"];
-      markup = accountHeader(state.account, state.walletConfig.fiat.symbol);
+      // markup = accountHeader(state.account, state.walletConfig.fiat);
+      [markup, backButton] = accountHeader(state);
+      header.insertAdjacentElement("afterbegin", backButton);
       break;
     default:
       header.classList = ["header header--default"];
-      markup = defaultHeader(state.screen);
+      [markup, backButton] = defaultHeader(state);
+      header.insertAdjacentElement("afterbegin", backButton);
   }
-
-  header.insertAdjacentHTML("afterbegin", markup);
+  header.insertAdjacentHTML("beforeend", markup);
   return header;
 };
 

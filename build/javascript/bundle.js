@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623419574322
+      // 1623426613968
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -403,7 +403,6 @@ const accountsContainer = (state) => {
     accountItem.child = {
       state: state,
       account: account,
-      // fiat: state.walletConfig.fiat,
     };
     
     accountList.insertAdjacentElement("beforeend", accountItem);
@@ -465,7 +464,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 // https://unicode-table.com/cn/2248/
+
+class BackButton extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", () => {
+      if (this.state.screen) {
+        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
+      }
+    });
+  }
+  connectedCallback() {
+    this.className = "header__leading";
+    this.innerHTML = `<i class="fas fa-arrow-left">`;
+  }
+  set icon(iconHTML) {
+    this.innerHTML = iconHTML;
+  }
+  set onClick(state){
+    this.state = state;
+  }
+ 
+}
+customElements.define("back-button", BackButton);
+
 const getHeaderInfo = (screen) => {
   switch (screen) {
     case "transaction":
@@ -488,9 +512,11 @@ const overviewHeader = (totalAsset, fiatSymbol) => {
   `;
   return markup;
 };
-const accountHeader = (account, fiat) => {
+
+const accountHeader = (state) => {
+  const account = state.account;
+  const fiat = state.walletConfig.fiat;
   const markup = `
-  <div class="header__leading"><i class="fas fa-arrow-left"></i></div>
   <div class="header__icon">
     <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
   </div>
@@ -502,25 +528,31 @@ const accountHeader = (account, fiat) => {
     <span class="currency-unit">${fiat.symbol}</span>
   </div>
   `;
-  return markup;
+  const backButton = document.createElement("back-button");
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "accounts";
+  backButton.onClick = _state;
+  return [markup, backButton];
 };
-const defaultHeader = (screen) => {
-  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(screen);
+const defaultHeader = (state) => {
+  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(state.screen);
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "account";
   const markup = `
-      <div class="header__leading">${
-        leadingHTML ? leadingHTML : '<i class="fas fa-arrow-left"></i>'
-      }</div>
       <div class="header__title">${screenTitle}</div>
       <div class="header__action ${actionHTML ? "" : "disabled"}">${
     actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
   }</div>
   `;
-  return markup;
+  const backButton = document.createElement("back-button");
+  if (leadingHTML) backButton.icon = leadingHTML;
+  backButton.onClick = _state;
+  return [markup, backButton];
 };
 
 const header = (state) => {
   const header = document.createElement("header");
-  let markup;
+  let markup, backButton;
   switch (state.screen) {
     case "accounts":
     case "settings":
@@ -532,14 +564,16 @@ const header = (state) => {
       break;
     case "account":
       header.classList = ["header header--account"];
-      markup = accountHeader(state.account, state.walletConfig.fiat.symbol);
+      // markup = accountHeader(state.account, state.walletConfig.fiat);
+      [markup, backButton] = accountHeader(state);
+      header.insertAdjacentElement("afterbegin", backButton);
       break;
     default:
       header.classList = ["header header--default"];
-      markup = defaultHeader(state.screen);
+      [markup, backButton] = defaultHeader(state);
+      header.insertAdjacentElement("afterbegin", backButton);
   }
-
-  header.insertAdjacentHTML("afterbegin", markup);
+  header.insertAdjacentHTML("beforeend", markup);
   return header;
 };
 
@@ -616,6 +650,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const account = (scaffold, state) => {
+    console.log(JSON.stringify(state));
     scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 }
 
@@ -803,7 +838,6 @@ const setup = () => {
 };
 
 const route = (state) => {
-  console.log(state.toString());
   const root = setup();
   switch (state.screen) {
     case "accounts":
@@ -935,19 +969,19 @@ class AccountItem extends HTMLElement {
     }
   }
 
-  exchange(fiat) {
-    if (fiat) {
-      this.account.infiat = this.account.inUSD / fiat.inUSD;
+  exchange() {
+    if (this.fiat) {
+      this.account.infiat = this.account.inUSD / this.fiat.inUSD;
       return;
     }
     return;
   }
 
   set child(data) {
-    this.state = { ...data.state };
-    this.account = data.account;
+    this.state = JSON.parse(JSON.stringify(data.state));
+    this.account = JSON.parse(JSON.stringify(data.account));
     this.fiat = this.state.walletConfig.fiat;
-    this.exchange(this.fiat);
+    this.exchange();
     this.insertAdjacentHTML("afterbegin", accountItem(this.account, this.fiat));
     this.publish = this.account.publish;
     this.id = this.account.id;
@@ -996,14 +1030,15 @@ class BottomNavigatorItem extends HTMLElement {
   constructor() {
     super();
     this.addEventListener("click", (event) => {
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)({ ...this.state, screen: this.itemData.screen });
+      this.state.screen = this.itemData.screen;
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
     });
   }
 
   set child(data) {
     this.className = "bottom-navigator";
     this.itemData = data.itemData;
-    this.state = { ...data.state };
+    this.state = JSON.parse(JSON.stringify(data.state));
     this.insertAdjacentHTML(
       "afterbegin",
       bottomNavigatorItem(this.itemData, this.state)
@@ -1130,7 +1165,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("19fc4e0c1ccbee17bef6")
+/******/ 		__webpack_require__.h = () => ("780c0ac3b87f49d83f49")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

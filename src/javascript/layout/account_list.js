@@ -10,7 +10,6 @@ const accountsContainer = (state) => {
     accountItem.child = {
       state: state,
       account: account,
-      // fiat: state.walletConfig.fiat,
     };
     
     accountList.insertAdjacentElement("beforeend", accountItem);

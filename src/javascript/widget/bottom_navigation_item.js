@@ -3,14 +3,15 @@ class BottomNavigatorItem extends HTMLElement {
   constructor() {
     super();
     this.addEventListener("click", (event) => {
-      route({ ...this.state, screen: this.itemData.screen });
+      this.state.screen = this.itemData.screen;
+      route(this.state);
     });
   }
 
   set child(data) {
     this.className = "bottom-navigator";
     this.itemData = data.itemData;
-    this.state = { ...data.state };
+    this.state = JSON.parse(JSON.stringify(data.state));
     this.insertAdjacentHTML(
       "afterbegin",
       bottomNavigatorItem(this.itemData, this.state)

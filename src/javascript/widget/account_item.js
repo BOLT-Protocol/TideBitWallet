@@ -26,19 +26,19 @@ class AccountItem extends HTMLElement {
     }
   }
 
-  exchange(fiat) {
-    if (fiat) {
-      this.account.infiat = this.account.inUSD / fiat.inUSD;
+  exchange() {
+    if (this.fiat) {
+      this.account.infiat = this.account.inUSD / this.fiat.inUSD;
       return;
     }
     return;
   }
 
   set child(data) {
-    this.state = { ...data.state };
-    this.account = data.account;
+    this.state = JSON.parse(JSON.stringify(data.state));
+    this.account = JSON.parse(JSON.stringify(data.account));
     this.fiat = this.state.walletConfig.fiat;
-    this.exchange(this.fiat);
+    this.exchange();
     this.insertAdjacentHTML("afterbegin", accountItem(this.account, this.fiat));
     this.publish = this.account.publish;
     this.id = this.account.id;
