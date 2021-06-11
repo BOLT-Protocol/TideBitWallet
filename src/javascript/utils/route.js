@@ -1,4 +1,5 @@
 import overview from "../screen/overview";
+import account from "../screen/account";
 import Scaffold from "../layout/scaffold";
 
 customElements.define("scaffold-widget", Scaffold);
@@ -18,7 +19,7 @@ const route = (state) => {
       overview(root, state);
       break;
     case "account":
-    // account();
+    account(root, state);
   }
 };
 

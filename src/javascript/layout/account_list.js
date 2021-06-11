@@ -2,16 +2,17 @@ import AccountItem from "../widget/account_item";
 
 customElements.define("account-item", AccountItem);
 
-const accountsContainer = (accounts, fiat) => {
+const accountsContainer = (state) => {
   const accountList = document.createElement("div");
   accountList.className = "account-list";
-  accounts.forEach((account) => {
+  state.user.accounts.forEach((account) => {
     const accountItem = document.createElement("account-item");
     accountItem.child = {
+      state: state,
       account: account,
-      fiat: fiat,
+      fiat: state.walletConfig.fiat,
     };
-    // accountItem.callback = callback;
+    
     accountList.insertAdjacentElement("beforeend", accountItem);
   });
   return accountList;

@@ -21,11 +21,25 @@ const overviewHeader = (totalAsset, fiatSymbol) => {
   `;
   return markup;
 };
-const accountHeader = () => {};
+const accountHeader = (account, fiat) => {
+  const markup = `
+  <div class="header__leading"><i class="fas fa-arrow-left"></i></div>
+  <div class="header__icon">
+    <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
+  </div>
+  <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
+  <div class="header__title">${account.balance}</div>
+  <div class="header__title-sub">
+    <span class="almost-equal-to">&#8776;</span>
+    <span class="balance">${account.infiat}</span>
+    <span class="currency-unit">${fiat.symbol}</span>
+  </div>
+  `;
+  return markup;
+};
 const defaultHeader = (screen) => {
   const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(screen);
   const markup = `
-  <header class="header header--default">
       <div class="header__leading">${
         leadingHTML ? leadingHTML : '<i class="fas fa-arrow-left"></i>'
       }</div>
@@ -33,7 +47,6 @@ const defaultHeader = (screen) => {
       <div class="header__action ${actionHTML ? "" : "disabled"}">${
     actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
   }</div>
-  </header>
   `;
   return markup;
 };

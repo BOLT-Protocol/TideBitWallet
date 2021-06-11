@@ -86,6 +86,8 @@ body {
     padding: 4rem 0;
     align-items: center;
     justify-self: center; }
+  .header--account {
+    padding: 2rem; }
   .header--default {
     display: flex;
     flex-direction: row;
@@ -108,6 +110,33 @@ body {
     font-weight: 600; }
   .header--overview .currency-unit {
     font-size: 1.36rem;
+    font-weight: 400; }
+  .header--account .header__leading {
+    width: 100%;
+    text-align: left; }
+    .header--account .header__leading > i {
+      font-weight: 400; }
+  .header--account .header__icon {
+    width: 6rem;
+    height: 6rem;
+    background-color: #fff;
+    border-radius: 100%;
+    position: relative; }
+    .header--account .header__icon img {
+      width: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); }
+  .header--account .header__icon-title {
+    font-size: 1.28rem; }
+  .header--account .header__title {
+    font-size: 2rem;
+    font-weight: 400; }
+  .header--account .almost-equal-to,
+  .header--account .balance,
+  .header--account .currency-unit {
+    font-size: 1.28rem;
     font-weight: 400; }
 
 .account-list {

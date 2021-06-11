@@ -1,11 +1,15 @@
+import route from "../utils/route";
 class AccountItem extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
     this.addEventListener("click", (event) => {
       if (this.account) {
-        // navigator to account
-        console.log(`event: ${event}`);
-        console.log(`this.account: ${this.account}`);
+        route({
+          ...this.state,
+          account: this.account,
+          backward: "accounts",
+          screen: "account",
+        });
       } else {
         return;
       }
@@ -33,6 +37,7 @@ class AccountItem extends HTMLElement {
   }
 
   set child(data) {
+    this.state = data.state;
     this.account = data.account;
     this.fiat = data.fiat;
     this.exchange(this.fiat);
@@ -49,7 +54,7 @@ class AccountItem extends HTMLElement {
 const accountItem = (account, fiat) => {
   const markup = `
   <div class="account-item__icon">
-      <img src=${account.image} alt="BTC">
+      <img src=${account.image} alt=${account.symbol.toUpperCase()}>
   </div>
   <div class="account-item__symbol">${account.symbol.toUpperCase()}</div>
   <div class="account-item__balance">${account.balance}</div>

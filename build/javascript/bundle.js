@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623396620506
+      // 1623399352885
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -395,16 +395,17 @@ __webpack_require__.r(__webpack_exports__);
 
 customElements.define("account-item", _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default);
 
-const accountsContainer = (accounts, fiat) => {
+const accountsContainer = (state) => {
   const accountList = document.createElement("div");
   accountList.className = "account-list";
-  accounts.forEach((account) => {
+  state.user.accounts.forEach((account) => {
     const accountItem = document.createElement("account-item");
     accountItem.child = {
+      state: state,
       account: account,
-      fiat: fiat,
+      fiat: state.walletConfig.fiat,
     };
-    // accountItem.callback = callback;
+    
     accountList.insertAdjacentElement("beforeend", accountItem);
   });
   return accountList;
@@ -465,6 +466,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // https://unicode-table.com/cn/2248/
+const getHeaderInfo = (screen) => {
+  switch (screen) {
+    case "transaction":
+      return { screenTitle: "Send Coin" };
+    case "bill":
+      return { screenTitle: "Transaction Detail" };
+    case "address":
+      return { screenTitle: "My Wallet" };
+  }
+};
 
 const overviewHeader = (totalAsset, fiatSymbol) => {
   const markup = `
@@ -477,10 +488,25 @@ const overviewHeader = (totalAsset, fiatSymbol) => {
   `;
   return markup;
 };
-const accountHeader = () => {};
-const defaultHeader = (screenTitle, leadingHTML, actionHTML) => {
+const accountHeader = (account, fiat) => {
   const markup = `
-  <header class="header header--default">
+  <div class="header__leading"><i class="fas fa-arrow-left"></i></div>
+  <div class="header__icon">
+    <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
+  </div>
+  <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
+  <div class="header__title">${account.balance}</div>
+  <div class="header__title-sub">
+    <span class="almost-equal-to">&#8776;</span>
+    <span class="balance">${account.infiat}</span>
+    <span class="currency-unit">${fiat.symbol}</span>
+  </div>
+  `;
+  return markup;
+};
+const defaultHeader = (screen) => {
+  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(screen);
+  const markup = `
       <div class="header__leading">${
         leadingHTML ? leadingHTML : '<i class="fas fa-arrow-left"></i>'
       }</div>
@@ -488,7 +514,6 @@ const defaultHeader = (screenTitle, leadingHTML, actionHTML) => {
       <div class="header__action ${actionHTML ? "" : "disabled"}">${
     actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
   }</div>
-  </header>
   `;
   return markup;
 };
@@ -504,6 +529,14 @@ const header = (state) => {
         state.user.totalAsset,
         state.walletConfig.fiat.symbol
       );
+      break;
+    case "account":
+      header.classList = ["header header--account"];
+      markup = accountHeader(state.account, state.walletConfig.fiat.symbol);
+      break;
+    default:
+      header.classList = ["header header--default"];
+      markup = defaultHeader(state.screen);
   }
 
   header.insertAdjacentHTML("afterbegin", markup);
@@ -568,6 +601,28 @@ class Scaffold extends HTMLElement {
 
 /***/ }),
 
+/***/ "./src/javascript/screen/account.js":
+/*!******************************************!*\
+  !*** ./src/javascript/screen/account.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+
+
+const account = (scaffold, state) => {
+    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
+
+/***/ }),
+
 /***/ "./src/javascript/screen/overview.js":
 /*!*******************************************!*\
   !*** ./src/javascript/screen/overview.js ***!
@@ -591,7 +646,8 @@ const overview = (scaffold, state) => {
   scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
   switch (state.screen) {
     case "accounts":
-      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state.user.accounts, state.walletConfig.fiat);
+      // scaffold.body = accountsContainer(state.user.accounts, state.walletConfig.fiat);
+      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
     case "settings":
       const container = document.createElement("div");
@@ -729,11 +785,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 
 
 
-customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default);
+
+customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default);
 
 const setup = () => {
   document.body.replaceChildren();
@@ -750,7 +808,7 @@ const route = (state) => {
       (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(root, state);
       break;
     case "account":
-    // account();
+    (0,_screen_account__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
   }
 };
 
@@ -796,6 +854,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
 class AccountItem extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
@@ -803,7 +863,20 @@ class AccountItem extends HTMLElement {
       if (this.account) {
         // navigator to account
         console.log(`event: ${event}`);
-        console.log(`this.account: ${this.account}`);
+        console.log(
+          `this.account: ${{
+            ...this.state,
+            account: this.account,
+            backward: "accounts",
+            screen: "account",
+          }}`
+        );
+        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)({
+          ...this.state,
+          account: this.account,
+          backward: "accounts",
+          screen: "account",
+        });
       } else {
         return;
       }
@@ -831,6 +904,7 @@ class AccountItem extends HTMLElement {
   }
 
   set child(data) {
+    this.state = data.state;
     this.account = data.account;
     this.fiat = data.fiat;
     this.exchange(this.fiat);
@@ -847,7 +921,7 @@ class AccountItem extends HTMLElement {
 const accountItem = (account, fiat) => {
   const markup = `
   <div class="account-item__icon">
-      <img src=${account.image} alt="BTC">
+      <img src=${account.image} alt=${account.symbol.toUpperCase()}>
   </div>
   <div class="account-item__symbol">${account.symbol.toUpperCase()}</div>
   <div class="account-item__balance">${account.balance}</div>
@@ -1016,7 +1090,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("8fea7b45c006b571bc34")
+/******/ 		__webpack_require__.h = () => ("ae2429d19df96e288469")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

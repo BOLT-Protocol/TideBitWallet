@@ -7,7 +7,8 @@ const overview = (scaffold, state) => {
   scaffold.bottomNavigator = bottomNavigator(state);
   switch (state.screen) {
     case "accounts":
-      scaffold.body = accountsContainer(state.user.accounts, state.walletConfig.fiat);
+      // scaffold.body = accountsContainer(state.user.accounts, state.walletConfig.fiat);
+      scaffold.body = accountsContainer(state);
       break;
     case "settings":
       const container = document.createElement("div");
