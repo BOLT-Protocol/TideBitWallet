@@ -1,15 +1,10 @@
 // MVC: View
-import Scaffold from "./layout/scaffold";
-import overview from "./screen/overview";
+import route from './utils/route';
+
 
 import {
     randomHex
 } from "./utils/utils";
-
-// root element
-customElements.define("scaffold-widget", Scaffold);
-const root = document.createElement("scaffold-widget");
-document.body.insertAdjacentElement("afterbegin", root);
 
 
 const state = {};
@@ -93,17 +88,6 @@ const startApp = () => {
     route(state);
 };
 
-const route = (state) => {
-    // document.body.replaceChildren();
-    switch (state.screen) {
-        case 'accounts':
-        case 'settings':
-            overview(root, state);
-            break;
-        case 'account':
-            // account();
-    }
-}
 
 export default function launchTideBitUi(options, callback) {
     startApp();

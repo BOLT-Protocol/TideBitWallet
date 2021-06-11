@@ -1,14 +1,11 @@
+import route from '../utils/route';
 class BottomNavigatorItem extends HTMLElement {
   constructor() {
     super();
     this.addEventListener("click", (event) => {
-      // this.callback({ ...state, screen: itemData.screen });
+      route({ ...this.state, screen: this.itemData.screen });
     });
   }
-
-  // set callback(func) {
-  //   this.callback = func;
-  // }
 
   set child(data) {
     this.className = "bottom-navigator";

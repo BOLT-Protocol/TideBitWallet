@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623393102126
+      // 1623393811230
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -591,19 +591,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ launchTideBitUi)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
 // MVC: View
 
 
 
 
-
-// root element
-customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
-const root = document.createElement("scaffold-widget");
-document.body.insertAdjacentElement("afterbegin", root);
 
 
 const state = {};
@@ -612,7 +606,7 @@ const getUser = () => {
     return {
         totalAsset: 52.29,
         accounts: [{
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
                 name: "Bitcoin",
                 symbol: "BTC",
                 network: "mainnet",
@@ -623,7 +617,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
                 name: "Bitcoin",
                 symbol: "BTC",
                 network: "testnet",
@@ -634,7 +628,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
                 name: "Ethereum",
                 symbol: "ETH",
                 network: "mainnet",
@@ -645,7 +639,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
                 name: "Ethereum",
                 symbol: "ETH",
                 network: "ropsten",
@@ -656,7 +650,7 @@ const getUser = () => {
                 inUSD: 52.29,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
                 name: "Tidetain",
                 symbol: "TTN",
                 network: "mainnet",
@@ -684,24 +678,55 @@ const startApp = () => {
         inUSD: 1
     });
     state.screen = 'accounts';
-    route(state);
+    (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 };
 
-const route = (state) => {
-    // document.body.replaceChildren();
-    switch (state.screen) {
-        case 'accounts':
-        case 'settings':
-            (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
-            break;
-        case 'account':
-            // account();
-    }
-}
 
 function launchTideBitUi(options, callback) {
     startApp();
 }
+
+/***/ }),
+
+/***/ "./src/javascript/utils/route.js":
+/*!***************************************!*\
+  !*** ./src/javascript/utils/route.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+
+
+
+customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default);
+
+const setup = () => {
+  document.body.replaceChildren();
+  const root = document.createElement("scaffold-widget");
+  document.body.insertAdjacentElement("afterbegin", root);
+  return root;
+};
+
+const route = (state) => {
+  const root = setup();
+  switch (state.screen) {
+    case "accounts":
+    case "settings":
+      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(root, state);
+      break;
+    case "account":
+    // account();
+  }
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (route);
+
 
 /***/ }),
 
@@ -822,17 +847,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
 class BottomNavigatorItem extends HTMLElement {
   constructor() {
     super();
     this.addEventListener("click", (event) => {
-      // this.callback({ ...state, screen: itemData.screen });
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)({ ...this.state, screen: this.itemData.screen });
     });
   }
-
-  // set callback(func) {
-  //   this.callback = func;
-  // }
 
   set child(data) {
     this.className = "bottom-navigator";
@@ -964,7 +987,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("57caf8ff4bb567ae9cfb")
+/******/ 		__webpack_require__.h = () => ("b5b5e15b162e5cc51ede")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
