@@ -1,6 +1,6 @@
 const navigatorItemsData = [
   {
-    screen: "overview",
+    screen: "accounts",
     iconHtml: `<i class="fas fa-wallet"></i>`,
     checked: true, // default
   },

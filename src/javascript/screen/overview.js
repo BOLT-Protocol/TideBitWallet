@@ -5,21 +5,21 @@ import accountsContainer from "../layout/account_list";
 
 customElements.define("scaffold-widget", Scaffold);
 
-const overview = (user, fiat) => {
+const overview = (user, fiat, screen) => {
   const scaffold = document.createElement("scaffold-widget");
   document.body.insertAdjacentElement("afterbegin", scaffold);
   scaffold.header = header(user.totalAsset, fiat.symbol);
-  scaffold.bottomNavigator = bottomNavigator();
-  scaffold.body = accountsContainer(user.accounts, fiat);
-  // ============================================================
-  // const scaffold = document.createElement("div");
-  // scaffold.className = ".scaffold";
-  // scaffold.insertAdjacentHTML(
-  //   "afterbegin",
-  //   header(user.totalAsset, wallet.currency)
-  // );
-  // scaffold.insertAdjacentHTML(bottomNavigator());
-  // return scaffold;
+  scaffold.bottomNavigator = bottomNavigator(screen);
+  switch (screen) {
+    case "accounts":
+      scaffold.body = accountsContainer(user.accounts, fiat);
+      break;
+    case "settings":
+      break;
+    default:
+      scaffold.body = accountsContainer(user.accounts, fiat);
+      break;
+  }
 };
 
 export default overview;

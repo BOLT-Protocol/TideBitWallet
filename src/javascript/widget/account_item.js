@@ -8,7 +8,6 @@ class AccountItem extends HTMLElement {
   }
 
   set publish(val) {
-    console.log(val);
     if (val) {
       this.setAttribute("publish", "");
     } else {
@@ -30,6 +29,7 @@ class AccountItem extends HTMLElement {
     this.exchange(this.fiat);
     this.insertAdjacentHTML("afterbegin", accountItem(this.account, this.fiat));
     this.publish = this.account.publish;
+    this.id = this.account.id;
   }
 
   connectedCallback() {

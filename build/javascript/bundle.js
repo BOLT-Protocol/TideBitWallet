@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623378267491
+      // 1623379635704
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -340,7 +340,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 const navigatorItemsData = [
   {
-    screen: "overview",
+    screen: "accounts",
     iconHtml: `<i class="fas fa-wallet"></i>`,
     checked: true, // default
   },
@@ -363,8 +363,9 @@ const navigatorItemsData = [
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
-// import "./layout/scaffold";
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
+
 
 
 const getUser = () => {
@@ -372,6 +373,7 @@ const getUser = () => {
     totalAsset: 52.29,
     accounts: [
       {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "mainnet",
@@ -379,9 +381,10 @@ const getUser = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
       {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "testnet",
@@ -389,9 +392,10 @@ const getUser = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
       {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
         name: "Ethereum",
         symbol: "ETH",
         network: "mainnet",
@@ -399,9 +403,10 @@ const getUser = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
       {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
         name: "Ethereum",
         symbol: "ETH",
         network: "ropsten",
@@ -412,6 +417,7 @@ const getUser = () => {
         inUSD: 52.29,
       },
       {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32),
         name: "Tidetain",
         symbol: "TTN",
         network: "mainnet",
@@ -419,7 +425,7 @@ const getUser = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
     ],
   };
@@ -436,7 +442,7 @@ const renderOverviewPage = () => {
   console.log("renderOverviewPage");
   const user = getUser();
   const wallet = updateWalletSetup("development", { symbol: "USD", inUSD: 1 });
-  (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(user, wallet.fiat);
+  (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(user, wallet.fiat);
 };
 
 renderOverviewPage();
@@ -496,13 +502,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // parentElement = document.querySelector('.scaffold');
-const bottomNavigator = () => {
+const bottomNavigator = (screen) => {
   const bottomNavigatorBar = document.createElement("footer");
   bottomNavigatorBar.classList = ["bottom-navigator"];
   _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((itemData) => {
     bottomNavigatorBar.insertAdjacentHTML(
       "beforeend",
-      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default)(itemData)
+      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default)(itemData, screen)
     );
   });
   return bottomNavigatorBar;
@@ -621,25 +627,51 @@ __webpack_require__.r(__webpack_exports__);
 
 customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
 
-const overview = (user, fiat) => {
+const overview = (user, fiat, screen) => {
   const scaffold = document.createElement("scaffold-widget");
   document.body.insertAdjacentElement("afterbegin", scaffold);
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(user.totalAsset, fiat.symbol);
-  scaffold.bottomNavigator = (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__.default)();
-  scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_3__.default)(user.accounts, fiat);
-  // ============================================================
-  // const scaffold = document.createElement("div");
-  // scaffold.className = ".scaffold";
-  // scaffold.insertAdjacentHTML(
-  //   "afterbegin",
-  //   header(user.totalAsset, wallet.currency)
-  // );
-  // scaffold.insertAdjacentHTML(bottomNavigator());
-  // return scaffold;
+  scaffold.bottomNavigator = (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__.default)(screen);
+  switch (screen) {
+    case "accounts":
+      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_3__.default)(user.accounts, fiat);
+      break;
+    case "settings":
+      break;
+    default:
+      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_3__.default)(user.accounts, fiat);
+      break;
+  }
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
 
+
+/***/ }),
+
+/***/ "./src/javascript/utils/utils.js":
+/*!***************************************!*\
+  !*** ./src/javascript/utils/utils.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "randomHex": () => (/* binding */ randomHex)
+/* harmony export */ });
+const randomHex = (n) => {
+    var ID = "";
+    var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    n = parseInt(n);
+    if (!(n > 0)) {
+      n = 8;
+    }
+    while (ID.length < n) {
+      ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
+    }
+    return ID;
+  };
 
 /***/ }),
 
@@ -664,7 +696,6 @@ class AccountItem extends HTMLElement {
   }
 
   set publish(val) {
-    console.log(val);
     if (val) {
       this.setAttribute("publish", "");
     } else {
@@ -686,6 +717,7 @@ class AccountItem extends HTMLElement {
     this.exchange(this.fiat);
     this.insertAdjacentHTML("afterbegin", accountItem(this.account, this.fiat));
     this.publish = this.account.publish;
+    this.id = this.account.id;
   }
 
   connectedCallback() {
@@ -725,11 +757,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const bottomNavigatorItem = (itemData) => {
+const bottomNavigatorItem = (itemData, screen) => {
   const markup = `
     <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
       itemData.screen
-    }" ${itemData.checked ? "checked" : ""}>
+    }" ${itemData.checked || itemData.screen === screen ? "checked" : ""}>
     <label class="bottom-navigator__button" for="${itemData.screen}">
         <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
     </label>
@@ -842,7 +874,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("9850d7659d55ab0a50a5")
+/******/ 		__webpack_require__.h = () => ("4f8c4c5810a1c46e71fb")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

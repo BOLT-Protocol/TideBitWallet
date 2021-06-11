@@ -1,4 +1,4 @@
-// import "./layout/scaffold";
+import { randomHex } from "./utils/utils";
 import overview from "./screen/overview";
 
 const getUser = () => {
@@ -6,6 +6,7 @@ const getUser = () => {
     totalAsset: 52.29,
     accounts: [
       {
+        id: randomHex(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "mainnet",
@@ -13,9 +14,10 @@ const getUser = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
       {
+        id: randomHex(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "testnet",
@@ -23,9 +25,10 @@ const getUser = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
       {
+        id: randomHex(32),
         name: "Ethereum",
         symbol: "ETH",
         network: "mainnet",
@@ -33,9 +36,10 @@ const getUser = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
       {
+        id: randomHex(32),
         name: "Ethereum",
         symbol: "ETH",
         network: "ropsten",
@@ -46,6 +50,7 @@ const getUser = () => {
         inUSD: 52.29,
       },
       {
+        id: randomHex(32),
         name: "Tidetain",
         symbol: "TTN",
         network: "mainnet",
@@ -53,7 +58,7 @@ const getUser = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD:0
+        inUSD: 0,
       },
     ],
   };
