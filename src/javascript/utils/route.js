@@ -12,6 +12,7 @@ const setup = () => {
 };
 
 const route = (state) => {
+  console.log(state.toString());
   const root = setup();
   switch (state.screen) {
     case "accounts":
@@ -19,7 +20,7 @@ const route = (state) => {
       overview(root, state);
       break;
     case "account":
-    account(root, state);
+      account(root, state);
   }
 };
 

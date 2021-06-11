@@ -4,12 +4,10 @@ class AccountItem extends HTMLElement {
     super(); // always call super() first in the constructor.
     this.addEventListener("click", (event) => {
       if (this.account) {
-        route({
-          ...this.state,
-          account: this.account,
-          backward: "accounts",
-          screen: "account",
-        });
+        this.state.account = this.account;
+        this.state.backward = "accounts";
+        this.state.screen = "account";
+        route(this.state);
       } else {
         return;
       }
@@ -37,9 +35,9 @@ class AccountItem extends HTMLElement {
   }
 
   set child(data) {
-    this.state = data.state;
+    this.state = { ...data.state };
     this.account = data.account;
-    this.fiat = data.fiat;
+    this.fiat = this.state.walletConfig.fiat;
     this.exchange(this.fiat);
     this.insertAdjacentHTML("afterbegin", accountItem(this.account, this.fiat));
     this.publish = this.account.publish;

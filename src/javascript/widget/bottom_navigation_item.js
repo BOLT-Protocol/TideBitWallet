@@ -1,4 +1,4 @@
-import route from '../utils/route';
+import route from "../utils/route";
 class BottomNavigatorItem extends HTMLElement {
   constructor() {
     super();
@@ -10,7 +10,7 @@ class BottomNavigatorItem extends HTMLElement {
   set child(data) {
     this.className = "bottom-navigator";
     this.itemData = data.itemData;
-    this.state = data.state;
+    this.state = { ...data.state };
     this.insertAdjacentHTML(
       "afterbegin",
       bottomNavigatorItem(this.itemData, this.state)

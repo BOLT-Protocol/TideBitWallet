@@ -16,7 +16,7 @@ const overview = (scaffold, state) => {
       scaffold.body = container;
       break;
     default:
-      scaffold.body = accountsContainer(state.user.accounts, state.walletConfig.fiat);
+      scaffold.body = accountsContainer(state);
       break;
   }
 };
