@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+  <title>TideBit Wallet</title>
   <!-- fontawesome -->
   <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
     integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
   <!-- custom css -->
-  <link rel="stylesheet" href="build/css/main.css" />
-  <title>TideBit Wallet</title>
+  <link rel="stylesheet" href="../../build/css/main.css" />
 </head>
 
-<body>
+<body style="width:357px; height:600px;">
   <div class="scaffold">
-    <header class="header header--overview">
-      <div class="header__title">Total Asset</div>
-      <div class="header__title-sub">
+    <header class="header header--default">
+      <div class="header__leading"><i class="fas fa-arrow-left"></i></div>
+      <div class="header__title">Transaction Detail</div>
+      <div class="header__action disabled"><i class="fas fa-ellipsis-h"></i></div>
+      <!-- <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
         <span class="balance">52.29</span>
         <span class="currency-unit">USD</span>
-      </div>
+      </div> -->
     </header>
     <main class="overview">
       <div class="account-list">
@@ -97,6 +101,4 @@
 
   </div>
 </body>
-<script type="module" src="build/javascript/bundle.js"></script>
-
 </html>

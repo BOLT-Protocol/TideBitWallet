@@ -3,7 +3,7 @@ import bottomNavigator from "../layout/bottom_navigator";
 import accountsContainer from "../layout/account_list";
 
 const overview = (scaffold, state) => {
-  scaffold.header = header(state.user.totalAsset, state.walletConfig.fiat.symbol);
+  scaffold.header = header(state);
   scaffold.bottomNavigator = bottomNavigator(state);
   switch (state.screen) {
     case "accounts":

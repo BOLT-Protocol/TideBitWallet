@@ -13,10 +13,24 @@
     justify-self: center;
   }
 
-  &--appbar {
+  &--default {
     display: flex;
     flex-direction: row;
     font-weight: 400;
+    padding: 2rem 1rem;
+  }
+
+  &--default &__title {
+    width: 100%;
+    text-align: center;
+  }
+
+  &--default &__leading.disabled,
+  &--default &__action.disabled {
+    opacity: 0;
+    & > i {
+      opacity: 0;
+    }
   }
 
   &--overview &__title {

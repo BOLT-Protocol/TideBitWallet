@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623393811230
+      // 1623396620506
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -466,18 +466,47 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 // https://unicode-table.com/cn/2248/
 
-const header = (userBalance, currencyUint) => {
-  const header = document.createElement("header");
-  header.classList=['header header--overview'];
+const overviewHeader = (totalAsset, fiatSymbol) => {
   const markup = `
     <div class="header__title">Total Asset</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
-      <span class="user-total-balance">${userBalance}</span>
-      <span class="currency-unit">${currencyUint}</span>
+      <span class="user-total-balance">${totalAsset}</span>
+      <span class="currency-unit">${fiatSymbol}</span>
     </div>
   `;
-  header.insertAdjacentHTML('afterbegin', markup);
+  return markup;
+};
+const accountHeader = () => {};
+const defaultHeader = (screenTitle, leadingHTML, actionHTML) => {
+  const markup = `
+  <header class="header header--default">
+      <div class="header__leading">${
+        leadingHTML ? leadingHTML : '<i class="fas fa-arrow-left"></i>'
+      }</div>
+      <div class="header__title">${screenTitle}</div>
+      <div class="header__action ${actionHTML ? "" : "disabled"}">${
+    actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
+  }</div>
+  </header>
+  `;
+  return markup;
+};
+
+const header = (state) => {
+  const header = document.createElement("header");
+  let markup;
+  switch (state.screen) {
+    case "accounts":
+    case "settings":
+      header.classList = ["header header--overview"];
+      markup = overviewHeader(
+        state.user.totalAsset,
+        state.walletConfig.fiat.symbol
+      );
+  }
+
+  header.insertAdjacentHTML("afterbegin", markup);
   return header;
 };
 
@@ -558,7 +587,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const overview = (scaffold, state) => {
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state.user.totalAsset, state.walletConfig.fiat.symbol);
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
   scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
   switch (state.screen) {
     case "accounts":
@@ -987,7 +1016,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b5b5e15b162e5cc51ede")
+/******/ 		__webpack_require__.h = () => ("8fea7b45c006b571bc34")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

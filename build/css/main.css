@@ -86,10 +86,20 @@ body {
     padding: 4rem 0;
     align-items: center;
     justify-self: center; }
-  .header--appbar {
+  .header--default {
     display: flex;
     flex-direction: row;
-    font-weight: 400; }
+    font-weight: 400;
+    padding: 2rem 1rem; }
+  .header--default .header__title {
+    width: 100%;
+    text-align: center; }
+  .header--default .header__leading.disabled,
+  .header--default .header__action.disabled {
+    opacity: 0; }
+    .header--default .header__leading.disabled > i,
+    .header--default .header__action.disabled > i {
+      opacity: 0; }
   .header--overview .header__title {
     font-size: 2rem;
     font-weight: 400; }
