@@ -2,9 +2,7 @@
 import route from './utils/route';
 
 
-import {
-    randomHex
-} from "./utils/utils";
+import * as utils from "./utils/utils";
 
 
 const state = {};
@@ -13,7 +11,7 @@ const getUser = () => {
     return {
         totalAsset: 52.29,
         accounts: [{
-                id: randomHex(32),
+                id: utils.randomHex(32),
                 name: "Bitcoin",
                 symbol: "BTC",
                 network: "mainnet",
@@ -24,7 +22,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: randomHex(32),
+                id: utils.randomHex(32),
                 name: "Bitcoin",
                 symbol: "BTC",
                 network: "testnet",
@@ -35,7 +33,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: randomHex(32),
+                id: utils.randomHex(32),
                 name: "Ethereum",
                 symbol: "ETH",
                 network: "mainnet",
@@ -46,7 +44,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: randomHex(32),
+                id: utils.randomHex(32),
                 name: "Ethereum",
                 symbol: "ETH",
                 network: "ropsten",
@@ -57,7 +55,7 @@ const getUser = () => {
                 inUSD: 52.29,
             },
             {
-                id: randomHex(32),
+                id: utils.randomHex(32),
                 name: "Tidetain",
                 symbol: "TTN",
                 network: "mainnet",
@@ -86,6 +84,8 @@ const startApp = () => {
     });
     state.screen = 'accounts';
     route(state);
+    // --
+    utils.dateFormatter(Date.now());
 };
 
 

@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623403430998
+      // 1623419574322
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -691,7 +691,7 @@ const getUser = () => {
     return {
         totalAsset: 52.29,
         accounts: [{
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
                 name: "Bitcoin",
                 symbol: "BTC",
                 network: "mainnet",
@@ -702,7 +702,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
                 name: "Bitcoin",
                 symbol: "BTC",
                 network: "testnet",
@@ -713,7 +713,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
                 name: "Ethereum",
                 symbol: "ETH",
                 network: "mainnet",
@@ -724,7 +724,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
                 name: "Ethereum",
                 symbol: "ETH",
                 network: "ropsten",
@@ -735,7 +735,7 @@ const getUser = () => {
                 inUSD: 52.29,
             },
             {
-                id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex)(32),
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
                 name: "Tidetain",
                 symbol: "TTN",
                 network: "mainnet",
@@ -764,6 +764,8 @@ const startApp = () => {
     });
     state.screen = 'accounts';
     (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+    // --
+    _utils_utils__WEBPACK_IMPORTED_MODULE_1__.dateFormatter(Date.now());
 };
 
 
@@ -827,20 +829,69 @@ const route = (state) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "randomHex": () => (/* binding */ randomHex)
+/* harmony export */   "randomHex": () => (/* binding */ randomHex),
+/* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter)
 /* harmony export */ });
 const randomHex = (n) => {
-    var ID = "";
-    var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    n = parseInt(n);
-    if (!(n > 0)) {
-      n = 8;
-    }
-    while (ID.length < n) {
-      ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
-    }
-    return ID;
-  };
+  var ID = "";
+  var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  n = parseInt(n);
+  if (!(n > 0)) {
+    n = 8;
+  }
+  while (ID.length < n) {
+    ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
+  }
+  return ID;
+};
+
+const pad = (n) => {
+  return n < 10 ? "0" + n : n;
+};
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const dateFormatter = (timestamp) => {
+  const dateTime = new Date(timestamp);
+  const date = dateTime.getDate();
+  const month = dateTime.getMonth();
+  const year = dateTime.getFullYear();
+  let hours = dateTime.getHours();
+  const minutes = dateTime.getMinutes();
+  let suffix = "AM";
+  if (hours - 12 > 0) {
+    hours -= 12;
+    suffix = "PM";
+  }
+  const mmddyyyykkmm =
+    monthNames[month] +
+    " " +
+    pad(date) +
+    "," +
+    year +
+    " " +
+    hours +
+    ":" +
+    pad(minutes) +
+    " " +
+    suffix;
+  console.log(`mmddyyyykkmm: ${mmddyyyykkmm}`);
+
+  return mmddyyyykkmm;
+};
+
 
 /***/ }),
 
@@ -1079,7 +1130,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("45cf70023f88ac7b0d96")
+/******/ 		__webpack_require__.h = () => ("19fc4e0c1ccbee17bef6")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

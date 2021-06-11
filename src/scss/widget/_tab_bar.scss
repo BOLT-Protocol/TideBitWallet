@@ -1,6 +1,7 @@
 .tab-bar {
   display: flex;
   flex-direction: row;
+  border-bottom: 1px solid $color-grey-light-2;
 
   &__item {
     display: none;
