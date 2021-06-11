@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623343491982
+      // 1623376617262
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -375,65 +375,105 @@ const getUser = () => {
         symbol: "BTC",
         network: "mainnet",
         decimals: 8,
-        pulish: true,
+        publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
+        inUSD:0
       },
       {
         name: "Bitcoin",
         symbol: "BTC",
         network: "testnet",
         decimals: 8,
-        pulish: false,
+        publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
+        inUSD:0
       },
       {
         name: "Ethereum",
         symbol: "ETH",
         network: "mainnet",
         decimals: 18,
-        pulish: true,
+        publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
+        inUSD:0
       },
       {
         name: "Ethereum",
         symbol: "ETH",
         network: "ropsten",
         decimals: 18,
-        pulish: false,
+        publish: false,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 2,
+        inUSD: 52.29,
       },
       {
         name: "Tidetain",
         symbol: "TTN",
         network: "mainnet",
         decimals: 18,
-        pulish: true,
+        publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
+        inUSD:0
       },
     ],
   };
 };
 
-const updateWalletSetup = (mode = "development", currency = "usd") => {
+const updateWalletSetup = (mode, fiat) => {
   return {
     mode: mode,
-    currency: currency,
+    fiat: fiat,
   };
 };
 
 const renderOverviewPage = () => {
   console.log("renderOverviewPage");
   const user = getUser();
-  const wallet = updateWalletSetup("development", "USD");
-  (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(user, wallet);
+  const wallet = updateWalletSetup("development", { symbol: "USD", inUSD: 1 });
+  (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(user, wallet.fiat);
 };
 
 renderOverviewPage();
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/account_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/layout/account_list.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/account_item */ "./src/javascript/widget/account_item.js");
+
+
+customElements.define("account-item", _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default);
+
+const accountsContainer = (accounts, fiat) => {
+  const accountList = document.createElement("div");
+  accountList.className = "account-list";
+  accounts.forEach((account) => {
+    const accountItem = document.createElement("account-item");
+    accountItem.child = {
+      account: account,
+      fiat: fiat,
+    };
+    accountList.insertAdjacentElement("beforeend", accountItem);
+  });
+  return accountList;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (accountsContainer);
 
 
 /***/ }),
@@ -542,7 +582,7 @@ class Scaffold extends HTMLElement {
    * @param {HTMLElement} element
    */
   set body(element) {
-    this.innerHTML = element;
+    this.childNodes[1].insertAdjacentElement("afterbegin", element);
   }
 
   /**
@@ -572,17 +612,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 /* harmony import */ var _layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bottom_navigatior */ "./src/javascript/layout/bottom_navigatior.js");
+/* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
+
 
 
 
 
 customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
 
-const overview = (user, wallet) => {
+const overview = (user, fiat) => {
   const scaffold = document.createElement("scaffold-widget");
   document.body.insertAdjacentElement("afterbegin", scaffold);
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(user.totalAsset, wallet.currency);
-  scaffold.bottomNavigator =  (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__.default)();
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(user.totalAsset, fiat.symbol);
+  scaffold.bottomNavigator = (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_2__.default)();
+  scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_3__.default)(user.accounts, fiat);
   // ============================================================
   // const scaffold = document.createElement("div");
   // scaffold.className = ".scaffold";
@@ -595,6 +638,77 @@ const overview = (user, wallet) => {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/account_item.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/widget/account_item.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class AccountItem extends HTMLElement {
+  constructor() {
+    super(); // always call super() first in the constructor.
+  }
+
+  get publish() {
+    return this.hasAttribute("publish");
+  }
+
+  set publish(val) {
+    console.log(val);
+    if (val) {
+      this.setAttribute("publish", "");
+    } else {
+      this.removeAttribute("publish");
+    }
+  }
+
+  exchange(fiat) {
+    if (fiat) {
+      this.account.infiat = this.account.inUSD / fiat.inUSD;
+      return;
+    }
+    return;
+  }
+
+  set child(data) {
+    this.account = data.account;
+    this.fiat = data.fiat;
+    this.exchange(this.fiat);
+    this.insertAdjacentHTML("afterbegin", accountItem(this.account, this.fiat));
+    this.publish = this.account.publish;
+  }
+
+  connectedCallback() {
+    this.className = "account-item";
+  }
+}
+
+const accountItem = (account, fiat) => {
+  const markup = `
+  <div class="account-item__icon">
+      <img src=${account.image} alt="BTC">
+  </div>
+  <div class="account-item__symbol">${account.symbol.toUpperCase()}</div>
+  <div class="account-item__balance">${account.balance}</div>
+  <div class="account-item__to-currency">
+      <span class="almost-equal-to">&#8776;</span>
+      <span class="balance">${account.infiat}</span>
+      <span class="currency-unit">${fiat.symbol}</span>
+  </div>
+    `;
+  return markup;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountItem);
 
 
 /***/ }),
@@ -724,7 +838,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("34d9b41255c191095ed1")
+/******/ 		__webpack_require__.h = () => ("2a3fab35266ee7505d46")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

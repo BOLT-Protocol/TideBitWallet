@@ -10,62 +10,67 @@ const getUser = () => {
         symbol: "BTC",
         network: "mainnet",
         decimals: 8,
-        pulish: true,
+        publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
+        inUSD:0
       },
       {
         name: "Bitcoin",
         symbol: "BTC",
         network: "testnet",
         decimals: 8,
-        pulish: false,
+        publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
+        inUSD:0
       },
       {
         name: "Ethereum",
         symbol: "ETH",
         network: "mainnet",
         decimals: 18,
-        pulish: true,
+        publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
+        inUSD:0
       },
       {
         name: "Ethereum",
         symbol: "ETH",
         network: "ropsten",
         decimals: 18,
-        pulish: false,
+        publish: false,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 2,
+        inUSD: 52.29,
       },
       {
         name: "Tidetain",
         symbol: "TTN",
         network: "mainnet",
         decimals: 18,
-        pulish: true,
+        publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
+        inUSD:0
       },
     ],
   };
 };
 
-const updateWalletSetup = (mode = "development", currency = "usd") => {
+const updateWalletSetup = (mode, fiat) => {
   return {
     mode: mode,
-    currency: currency,
+    fiat: fiat,
   };
 };
 
 const renderOverviewPage = () => {
   console.log("renderOverviewPage");
   const user = getUser();
-  const wallet = updateWalletSetup("development", "USD");
-  overview(user, wallet);
+  const wallet = updateWalletSetup("development", { symbol: "USD", inUSD: 1 });
+  overview(user, wallet.fiat);
 };
 
 renderOverviewPage();

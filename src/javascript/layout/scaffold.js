@@ -24,7 +24,7 @@ export default class Scaffold extends HTMLElement {
    * @param {HTMLElement} element
    */
   set body(element) {
-    this.innerHTML = element;
+    this.childNodes[1].insertAdjacentElement("afterbegin", element);
   }
 
   /**
