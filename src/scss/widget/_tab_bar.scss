@@ -1,0 +1,35 @@
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+
+  &__item {
+    display: none;
+  }
+  & label[for="send"],
+  & label[for="send"] * {
+    color: $color-tertiary;
+  }
+
+  & label[for="receive"],
+  & label[for="receive"] * {
+    color: $color-secondary;
+  }
+
+  &__button {
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: row;
+    background-color: $color-white;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__icon {
+    margin-right: 1rem;
+    width: 2rem;
+    & img {
+      width: 100%;
+    }
+  }
+}

@@ -26,82 +26,97 @@
         <span class="currency-unit">USD</span>
       </div>
     </header>
-    <main class="overview">
-      <div class="account-list">
-        <div class="account-item publish">
-          <div class="account-item__icon">
-            <img src="https://www.tidebit.one/icons/btc.png" alt="BTC">
+    <main class="account">
+
+      <div class="tab-bar">
+        <input type="radio" name="tab-bar" class="tab-bar__item" id="send" checked>
+        <label class="tab-bar__button" for="send">
+          <div class="tab-bar__icon"><img src="../../src/image/icon/ic_send_black.png" alt="icon"></div>
+          <div class="tab-bar__text">Send</i></div>
+        </label>
+        <input type="radio" name="tab-bar" class="tab-bar__item" id="receive">
+        <label class="tab-bar__button" for="receive">
+          <div class="tab-bar__icon"><img src="../../src/image/icon/ic_receive_black.png" alt="icon"></div>
+          <div class="tab-bar__text">Receive</i></div>
+        </label>
+      </div>
+
+      <div class="bill-list">
+        <div class="bill-item pending">
+          <div class="bill-item__main">
+            <div class="bill-item__icon">
+              <img src="../../src/image/icon/ic_send_black.png" alt="icon">
+            </div>
+            <div class="bill-item__title">
+              <div class="bill-item__action">Send</div>
+              <div class="bill-item__detail">
+                <span class="bill-item__direction">Transfer to</span>
+                <span class="bill-item__address">0xd885...dded01</span>
+              </div>
+            </div>
+            <div class="bill-item__suffix">
+              <div class="bill-item__amount">- 0.1 ETH</div>
+              <div class="bill-item__time">Jun 11,2021, 16:48 PM</div>
+            </div>
           </div>
-          <div class="account-item__symbol">BTC</div>
-          <div class="account-item__balance">0</div>
-          <div class="account-item__to-currency">
-            <span class="almost-equal-to">&#8776;</span>
-            <span class="balance">0</span>
-            <span class="currency-unit">USD</span>
+
+          <div class="bill-item__sub">
+            <div class="bill-item__progress"><span style="width: 33.3%"></span></div>
           </div>
+
         </div>
-        <div class="account-item">
-          <div class="account-item__icon">
-            <img src="https://www.tidebit.one/icons/btc.png" alt="BTC">
+        <div class="bill-item">
+          <div class="bill-item__main">
+            <div class="bill-item__icon">
+              <img src="../../src/image/icon/ic_receive_black.png" alt="icon">
+            </div>
+            <div class="bill-item__title">
+              <div class="bill-item__action">Receive</div>
+              <div class="bill-item__detail">
+                <span class="bill-item__direction">Receive from</span>
+                <span class="bill-item__address">0xd885...dded01</span>
+              </div>
+            </div>
+            <div class="bill-item__suffix">
+              <div class="bill-item__amount"> 1 ETH</div>
+              <div class="bill-item__time">May 01,2021, 09:18 AM</div>
+            </div>
           </div>
-          <div class="account-item__symbol">BTC</div>
-          <div class="account-item__balance">0</div>
-          <div class="account-item__to-currency">
-            <span class="almost-equal-to">&#8776;</span>
-            <span class="balance">0</span>
-            <span class="currency-unit">USD</span>
+
+          <div class="bill-item__sub">
+            <div class="bill-item__progress"><span style="width: 100%"></span></div>
           </div>
+
         </div>
-        <div class="account-item publish">
-          <div class="account-item__icon">
-            <img src="https://www.tidebit.one/icons/eth.png" alt="ETH">
+        <div class="bill-item">
+          <div class="bill-item__main">
+            <div class="bill-item__icon">
+              <img src="../../src/image/icon/ic_receive_black.png" alt="icon">
+            </div>
+            <div class="bill-item__title">
+              <div class="bill-item__action">Receive</div>
+              <div class="bill-item__detail">
+                <span class="bill-item__direction">Receive from</span>
+                <span class="bill-item__address">0xd885...dded01</span>
+              </div>
+            </div>
+            <div class="bill-item__suffix">
+              <div class="bill-item__amount">1 ETH</div>
+              <div class="bill-item__time">April 01,2021, 17:08 PM</div>
+            </div>
           </div>
-          <div class="account-item__symbol">ETH</div>
-          <div class="account-item__balance">0</div>
-          <div class="account-item__to-currency">
-            <span class="almost-equal-to">&#8776;</span>
-            <span class="balance">0</span>
-            <span class="currency-unit">USD</span>
+
+          <div class="bill-item__sub">
+            <div class="bill-item__progress"><span style="width: 100%"></span></div>
           </div>
+
         </div>
-        <div class="account-item">
-          <div class="account-item__icon">
-            <img src="https://www.tidebit.one/icons/eth.png" alt="ETH">
-          </div>
-          <div class="account-item__symbol">ETH</div>
-          <div class="account-item__balance">2</div>
-          <div class="account-item__to-currency">
-            <span class="almost-equal-to">&#8776;</span>
-            <span class="balance">52.29</span>
-            <span class="currency-unit">USD</span>
-          </div>
-        </div>
-        <div class="account-item publish">
-          <div class="account-item__icon">
-            <img src="https://www.tidebit.one/icons/eth.png" alt="TTH">
-          </div>
-          <div class="account-item__symbol">TTH</div>
-          <div class="account-item__balance">0</div>
-          <div class="account-item__to-currency">
-            <span class="almost-equal-to">&#8776;</span>
-            <span class="balance">0</span>
-            <span class="currency-unit">USD</span>
-          </div>
-        </div>
+
       </div>
     </main>
 
-    <footer class="bottom-navigator">
-      <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="account-list" checked>
-      <label class="bottom-navigator__button" for="account-list">
-        <div class="bottom-navigator__icon"><i class="fas fa-wallet"></i></div>
-      </label>
-      <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="settings">
-      <label class="bottom-navigator__button" for="settings">
-        <div class="bottom-navigator__icon"><i class="fas fa-cog"></i></div>
-      </label>
-    </footer>
 
   </div>
 </body>
+
 </html>
