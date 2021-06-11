@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623376617262
+      // 1623378267491
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -342,6 +342,7 @@ const navigatorItemsData = [
   {
     screen: "overview",
     iconHtml: `<i class="fas fa-wallet"></i>`,
+    checked: true, // default
   },
   {
     screen: 'settings',
@@ -501,7 +502,7 @@ const bottomNavigator = () => {
   _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((itemData) => {
     bottomNavigatorBar.insertAdjacentHTML(
       "beforeend",
-      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default)(itemData.iconHtml)
+      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default)(itemData)
     );
   });
   return bottomNavigatorBar;
@@ -724,17 +725,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const bottomNavigatorItem = (iconHtml) => {
-    const markup = `
-    <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="settings">
-    <label class="bottom-navigator__button" for="settings">
-        <div class="bottom-navigator__icon">${iconHtml}</div>
+const bottomNavigatorItem = (itemData) => {
+  const markup = `
+    <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
+      itemData.screen
+    }" ${itemData.checked ? "checked" : ""}>
+    <label class="bottom-navigator__button" for="${itemData.screen}">
+        <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
     </label>
     `;
-    return markup;
+  return markup;
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigatorItem);
+
 
 /***/ }),
 
@@ -838,7 +842,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("2a3fab35266ee7505d46")
+/******/ 		__webpack_require__.h = () => ("9850d7659d55ab0a50a5")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

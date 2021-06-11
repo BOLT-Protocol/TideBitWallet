@@ -8,7 +8,7 @@ const bottomNavigator = () => {
   itemsData.forEach((itemData) => {
     bottomNavigatorBar.insertAdjacentHTML(
       "beforeend",
-      bottomNavigatorItem(itemData.iconHtml)
+      bottomNavigatorItem(itemData)
     );
   });
   return bottomNavigatorBar;

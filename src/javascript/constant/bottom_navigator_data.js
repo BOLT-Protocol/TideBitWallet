@@ -2,6 +2,7 @@ const navigatorItemsData = [
   {
     screen: "overview",
     iconHtml: `<i class="fas fa-wallet"></i>`,
+    checked: true, // default
   },
   {
     screen: 'settings',

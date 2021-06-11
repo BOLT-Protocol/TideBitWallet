@@ -1,11 +1,13 @@
-const bottomNavigatorItem = (iconHtml) => {
-    const markup = `
-    <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="settings">
-    <label class="bottom-navigator__button" for="settings">
-        <div class="bottom-navigator__icon">${iconHtml}</div>
+const bottomNavigatorItem = (itemData) => {
+  const markup = `
+    <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
+      itemData.screen
+    }" ${itemData.checked ? "checked" : ""}>
+    <label class="bottom-navigator__button" for="${itemData.screen}">
+        <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
     </label>
     `;
-    return markup;
+  return markup;
 };
 
 export default bottomNavigatorItem;
