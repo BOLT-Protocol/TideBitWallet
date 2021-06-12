@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623503047997
+      // 1623505769828
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -1412,7 +1412,6 @@ class AccountItem extends HTMLElement {
     this.addEventListener("click", (_) => {
       if (this.account) {
         this.state.account = this.account;
-        this.state.backward = "accounts";
         this.state.screen = "account";
         (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
       } else {
@@ -1708,7 +1707,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("12069ab6527e74bad08c")
+/******/ 		__webpack_require__.h = () => ("d2b7ff46783e304bf927")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
