@@ -1,0 +1,40 @@
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid $color-grey-light-2;
+  & > * {
+    flex: 1;
+  }
+
+  &__item {
+    display: none;
+  }
+  & label[for="send"],
+  & label[for="send"] * {
+    color: $color-tertiary;
+  }
+
+  & label[for="receive"],
+  & label[for="receive"] * {
+    color: $color-secondary;
+  }
+
+  &__button {
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: row;
+    background-color: $color-white;
+    justify-content: center;
+    align-items: center;
+    font-size: $default-font-size * 0.8;
+  }
+
+  &__icon {
+    margin-right: 1rem;
+    width: 2rem;
+    display: flex;
+    & img {
+      width: 100%;
+    }
+  }
+}

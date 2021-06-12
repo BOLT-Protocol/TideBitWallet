@@ -12,11 +12,35 @@
     align-items: center;
     justify-self: center;
   }
+  &--account{
+    // padding: 2rem 2rem 4rem;
+    padding: 2rem;
 
-  &--appbar {
+  }
+
+  &--default {
     display: flex;
     flex-direction: row;
     font-weight: 400;
+    padding: 2rem;
+  }
+  &--default &__leading{
+    & > i {
+      font-weight: 400;
+    }
+  }
+
+  &--default &__title {
+    width: 100%;
+    text-align: center;
+  }
+
+  &--default &__leading.disabled,
+  &--default &__action.disabled {
+    opacity: 0;
+    & > i {
+      opacity: 0;
+    }
   }
 
   &--overview &__title {
@@ -30,5 +54,45 @@
   &--overview .currency-unit {
     font-size: $default-font-size * 0.85;
     font-weight: 400;
+  }
+
+  &--account &__leading {
+    width: 100%;
+    text-align: left;
+    & > i {
+      font-weight: 400;
+    }
+  }
+  &--account &__icon {
+    width: 6rem;
+    height: 6rem;
+    background-color: $color-white;
+    border-radius: 100%;
+    position: relative;
+    & img {
+      width: 50%;
+      @include absCenter;
+    }
+  }
+
+  &--account &__icon-title {
+    font-size: $default-font-size * 0.8;
+  }
+
+  &--account &__title {
+    font-size: $default-font-size * 1.25;
+    font-weight: 400;
+  }
+
+  &--account .almost-equal-to,
+  &--account .balance,
+  &--account .currency-unit {
+    font-size: $default-font-size * 0.8;
+    font-weight: 400;
+  }
+
+  &--account .balance {
+  }
+  &--account .currency-unit {
   }
 }

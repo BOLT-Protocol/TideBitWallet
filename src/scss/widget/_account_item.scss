@@ -6,7 +6,7 @@
   padding: 1rem;
   color: $color-grey-dark-1;
   font-size: $default-font-size * 0.6;
-  &.publish {
+  &[publish] {
     color: $color-grey-dark-2;
   }
   &__icon {

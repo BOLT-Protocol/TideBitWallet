@@ -1,11 +1,3 @@
-/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -15,7 +7,7 @@
   \************************************/
 /***/ ((module) => {
 
-eval("module.exports = \"../image/icon128.png\";\n\n//# sourceURL=webpack://tidebitwallet/./src/image/icon/icon128.png?");
+module.exports = "../image/icon128.png";
 
 /***/ }),
 
@@ -25,7 +17,7 @@ eval("module.exports = \"../image/icon128.png\";\n\n//# sourceURL=webpack://tide
   \***********************************/
 /***/ ((module) => {
 
-eval("module.exports = \"../image/icon16.png\";\n\n//# sourceURL=webpack://tidebitwallet/./src/image/icon/icon16.png?");
+module.exports = "../image/icon16.png";
 
 /***/ }),
 
@@ -35,7 +27,7 @@ eval("module.exports = \"../image/icon16.png\";\n\n//# sourceURL=webpack://tideb
   \***********************************/
 /***/ ((module) => {
 
-eval("module.exports = \"../image/icon48.png\";\n\n//# sourceURL=webpack://tidebitwallet/./src/image/icon/icon48.png?");
+module.exports = "../image/icon48.png";
 
 /***/ }),
 
@@ -46,7 +38,227 @@ eval("module.exports = \"../image/icon48.png\";\n\n//# sourceURL=webpack://tideb
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-eval("\n\n/* eslint-env browser */\n\n/*\n  eslint-disable\n  no-console,\n  func-names\n*/\nvar normalizeUrl = __webpack_require__(/*! ./normalize-url */ \"./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js\");\n\nvar srcByModuleId = Object.create(null);\nvar noDocument = typeof document === 'undefined';\nvar forEach = Array.prototype.forEach;\n\nfunction debounce(fn, time) {\n  var timeout = 0;\n  return function () {\n    var self = this; // eslint-disable-next-line prefer-rest-params\n\n    var args = arguments;\n\n    var functionCall = function functionCall() {\n      return fn.apply(self, args);\n    };\n\n    clearTimeout(timeout);\n    timeout = setTimeout(functionCall, time);\n  };\n}\n\nfunction noop() {}\n\nfunction getCurrentScriptUrl(moduleId) {\n  var src = srcByModuleId[moduleId];\n\n  if (!src) {\n    if (document.currentScript) {\n      src = document.currentScript.src;\n    } else {\n      var scripts = document.getElementsByTagName('script');\n      var lastScriptTag = scripts[scripts.length - 1];\n\n      if (lastScriptTag) {\n        src = lastScriptTag.src;\n      }\n    }\n\n    srcByModuleId[moduleId] = src;\n  }\n\n  return function (fileMap) {\n    if (!src) {\n      return null;\n    }\n\n    var splitResult = src.split(/([^\\\\/]+)\\.js$/);\n    var filename = splitResult && splitResult[1];\n\n    if (!filename) {\n      return [src.replace('.js', '.css')];\n    }\n\n    if (!fileMap) {\n      return [src.replace('.js', '.css')];\n    }\n\n    return fileMap.split(',').map(function (mapRule) {\n      var reg = new RegExp(\"\".concat(filename, \"\\\\.js$\"), 'g');\n      return normalizeUrl(src.replace(reg, \"\".concat(mapRule.replace(/{fileName}/g, filename), \".css\")));\n    });\n  };\n}\n\nfunction updateCss(el, url) {\n  if (!url) {\n    if (!el.href) {\n      return;\n    } // eslint-disable-next-line\n\n\n    url = el.href.split('?')[0];\n  }\n\n  if (!isUrlRequest(url)) {\n    return;\n  }\n\n  if (el.isLoaded === false) {\n    // We seem to be about to replace a css link that hasn't loaded yet.\n    // We're probably changing the same file more than once.\n    return;\n  }\n\n  if (!url || !(url.indexOf('.css') > -1)) {\n    return;\n  } // eslint-disable-next-line no-param-reassign\n\n\n  el.visited = true;\n  var newEl = el.cloneNode();\n  newEl.isLoaded = false;\n  newEl.addEventListener('load', function () {\n    if (newEl.isLoaded) {\n      return;\n    }\n\n    newEl.isLoaded = true;\n    el.parentNode.removeChild(el);\n  });\n  newEl.addEventListener('error', function () {\n    if (newEl.isLoaded) {\n      return;\n    }\n\n    newEl.isLoaded = true;\n    el.parentNode.removeChild(el);\n  });\n  newEl.href = \"\".concat(url, \"?\").concat(Date.now());\n\n  if (el.nextSibling) {\n    el.parentNode.insertBefore(newEl, el.nextSibling);\n  } else {\n    el.parentNode.appendChild(newEl);\n  }\n}\n\nfunction getReloadUrl(href, src) {\n  var ret; // eslint-disable-next-line no-param-reassign\n\n  href = normalizeUrl(href, {\n    stripWWW: false\n  }); // eslint-disable-next-line array-callback-return\n\n  src.some(function (url) {\n    if (href.indexOf(src) > -1) {\n      ret = url;\n    }\n  });\n  return ret;\n}\n\nfunction reloadStyle(src) {\n  if (!src) {\n    return false;\n  }\n\n  var elements = document.querySelectorAll('link');\n  var loaded = false;\n  forEach.call(elements, function (el) {\n    if (!el.href) {\n      return;\n    }\n\n    var url = getReloadUrl(el.href, src);\n\n    if (!isUrlRequest(url)) {\n      return;\n    }\n\n    if (el.visited === true) {\n      return;\n    }\n\n    if (url) {\n      updateCss(el, url);\n      loaded = true;\n    }\n  });\n  return loaded;\n}\n\nfunction reloadAll() {\n  var elements = document.querySelectorAll('link');\n  forEach.call(elements, function (el) {\n    if (el.visited === true) {\n      return;\n    }\n\n    updateCss(el);\n  });\n}\n\nfunction isUrlRequest(url) {\n  // An URL is not an request if\n  // It is not http or https\n  if (!/^https?:/i.test(url)) {\n    return false;\n  }\n\n  return true;\n}\n\nmodule.exports = function (moduleId, options) {\n  if (noDocument) {\n    console.log('no window.document found, will not HMR CSS');\n    return noop;\n  }\n\n  var getScriptSrc = getCurrentScriptUrl(moduleId);\n\n  function update() {\n    var src = getScriptSrc(options.filename);\n    var reloaded = reloadStyle(src);\n\n    if (options.locals) {\n      console.log('[HMR] Detected local css modules. Reload all css');\n      reloadAll();\n      return;\n    }\n\n    if (reloaded) {\n      console.log('[HMR] css reload %s', src.join(' '));\n    } else {\n      console.log('[HMR] Reload all css');\n      reloadAll();\n    }\n  }\n\n  return debounce(update, 50);\n};\n\n//# sourceURL=webpack://tidebitwallet/./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js?");
+
+
+/* eslint-env browser */
+
+/*
+  eslint-disable
+  no-console,
+  func-names
+*/
+var normalizeUrl = __webpack_require__(/*! ./normalize-url */ "./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js");
+
+var srcByModuleId = Object.create(null);
+var noDocument = typeof document === 'undefined';
+var forEach = Array.prototype.forEach;
+
+function debounce(fn, time) {
+  var timeout = 0;
+  return function () {
+    var self = this; // eslint-disable-next-line prefer-rest-params
+
+    var args = arguments;
+
+    var functionCall = function functionCall() {
+      return fn.apply(self, args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
+}
+
+function noop() {}
+
+function getCurrentScriptUrl(moduleId) {
+  var src = srcByModuleId[moduleId];
+
+  if (!src) {
+    if (document.currentScript) {
+      src = document.currentScript.src;
+    } else {
+      var scripts = document.getElementsByTagName('script');
+      var lastScriptTag = scripts[scripts.length - 1];
+
+      if (lastScriptTag) {
+        src = lastScriptTag.src;
+      }
+    }
+
+    srcByModuleId[moduleId] = src;
+  }
+
+  return function (fileMap) {
+    if (!src) {
+      return null;
+    }
+
+    var splitResult = src.split(/([^\\/]+)\.js$/);
+    var filename = splitResult && splitResult[1];
+
+    if (!filename) {
+      return [src.replace('.js', '.css')];
+    }
+
+    if (!fileMap) {
+      return [src.replace('.js', '.css')];
+    }
+
+    return fileMap.split(',').map(function (mapRule) {
+      var reg = new RegExp("".concat(filename, "\\.js$"), 'g');
+      return normalizeUrl(src.replace(reg, "".concat(mapRule.replace(/{fileName}/g, filename), ".css")));
+    });
+  };
+}
+
+function updateCss(el, url) {
+  if (!url) {
+    if (!el.href) {
+      return;
+    } // eslint-disable-next-line
+
+
+    url = el.href.split('?')[0];
+  }
+
+  if (!isUrlRequest(url)) {
+    return;
+  }
+
+  if (el.isLoaded === false) {
+    // We seem to be about to replace a css link that hasn't loaded yet.
+    // We're probably changing the same file more than once.
+    return;
+  }
+
+  if (!url || !(url.indexOf('.css') > -1)) {
+    return;
+  } // eslint-disable-next-line no-param-reassign
+
+
+  el.visited = true;
+  var newEl = el.cloneNode();
+  newEl.isLoaded = false;
+  newEl.addEventListener('load', function () {
+    if (newEl.isLoaded) {
+      return;
+    }
+
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.addEventListener('error', function () {
+    if (newEl.isLoaded) {
+      return;
+    }
+
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.href = "".concat(url, "?").concat(Date.now());
+
+  if (el.nextSibling) {
+    el.parentNode.insertBefore(newEl, el.nextSibling);
+  } else {
+    el.parentNode.appendChild(newEl);
+  }
+}
+
+function getReloadUrl(href, src) {
+  var ret; // eslint-disable-next-line no-param-reassign
+
+  href = normalizeUrl(href, {
+    stripWWW: false
+  }); // eslint-disable-next-line array-callback-return
+
+  src.some(function (url) {
+    if (href.indexOf(src) > -1) {
+      ret = url;
+    }
+  });
+  return ret;
+}
+
+function reloadStyle(src) {
+  if (!src) {
+    return false;
+  }
+
+  var elements = document.querySelectorAll('link');
+  var loaded = false;
+  forEach.call(elements, function (el) {
+    if (!el.href) {
+      return;
+    }
+
+    var url = getReloadUrl(el.href, src);
+
+    if (!isUrlRequest(url)) {
+      return;
+    }
+
+    if (el.visited === true) {
+      return;
+    }
+
+    if (url) {
+      updateCss(el, url);
+      loaded = true;
+    }
+  });
+  return loaded;
+}
+
+function reloadAll() {
+  var elements = document.querySelectorAll('link');
+  forEach.call(elements, function (el) {
+    if (el.visited === true) {
+      return;
+    }
+
+    updateCss(el);
+  });
+}
+
+function isUrlRequest(url) {
+  // An URL is not an request if
+  // It is not http or https
+  if (!/^https?:/i.test(url)) {
+    return false;
+  }
+
+  return true;
+}
+
+module.exports = function (moduleId, options) {
+  if (noDocument) {
+    console.log('no window.document found, will not HMR CSS');
+    return noop;
+  }
+
+  var getScriptSrc = getCurrentScriptUrl(moduleId);
+
+  function update() {
+    var src = getScriptSrc(options.filename);
+    var reloaded = reloadStyle(src);
+
+    if (options.locals) {
+      console.log('[HMR] Detected local css modules. Reload all css');
+      reloadAll();
+      return;
+    }
+
+    if (reloaded) {
+      console.log('[HMR] css reload %s', src.join(' '));
+    } else {
+      console.log('[HMR] Reload all css');
+      reloadAll();
+    }
+  }
+
+  return debounce(update, 50);
+};
 
 /***/ }),
 
@@ -57,7 +269,41 @@ eval("\n\n/* eslint-env browser */\n\n/*\n  eslint-disable\n  no-console,\n  fun
 /***/ ((module) => {
 
 "use strict";
-eval("\n\n/* eslint-disable */\nfunction normalizeUrl(pathComponents) {\n  return pathComponents.reduce(function (accumulator, item) {\n    switch (item) {\n      case '..':\n        accumulator.pop();\n        break;\n\n      case '.':\n        break;\n\n      default:\n        accumulator.push(item);\n    }\n\n    return accumulator;\n  }, []).join('/');\n}\n\nmodule.exports = function (urlString) {\n  urlString = urlString.trim();\n\n  if (/^data:/i.test(urlString)) {\n    return urlString;\n  }\n\n  var protocol = urlString.indexOf('//') !== -1 ? urlString.split('//')[0] + '//' : '';\n  var components = urlString.replace(new RegExp(protocol, 'i'), '').split('/');\n  var host = components[0].toLowerCase().replace(/\\.$/, '');\n  components[0] = '';\n  var path = normalizeUrl(components);\n  return protocol + host + path;\n};\n\n//# sourceURL=webpack://tidebitwallet/./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js?");
+
+
+/* eslint-disable */
+function normalizeUrl(pathComponents) {
+  return pathComponents.reduce(function (accumulator, item) {
+    switch (item) {
+      case '..':
+        accumulator.pop();
+        break;
+
+      case '.':
+        break;
+
+      default:
+        accumulator.push(item);
+    }
+
+    return accumulator;
+  }, []).join('/');
+}
+
+module.exports = function (urlString) {
+  urlString = urlString.trim();
+
+  if (/^data:/i.test(urlString)) {
+    return urlString;
+  }
+
+  var protocol = urlString.indexOf('//') !== -1 ? urlString.split('//')[0] + '//' : '';
+  var components = urlString.replace(new RegExp(protocol, 'i'), '').split('/');
+  var host = components[0].toLowerCase().replace(/\.$/, '');
+  components[0] = '';
+  var path = normalizeUrl(components);
+  return protocol + host + path;
+};
 
 /***/ }),
 
@@ -68,7 +314,16 @@ eval("\n\n/* eslint-disable */\nfunction normalizeUrl(pathComponents) {\n  retur
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n    if(true) {\n      // 1623318481914\n      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ \"./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js\")(module.id, {\"locals\":false});\n      module.hot.dispose(cssReload);\n      module.hot.accept(undefined, cssReload);\n    }\n  \n\n//# sourceURL=webpack://tidebitwallet/./src/scss/main.scss?");
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+    if(true) {
+      // 1623487329203
+      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
 
 /***/ }),
 
@@ -79,18 +334,52 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst navigatorItemsData = [\n  {\n    screen: \"overview\",\n    iconHtml: `<i class=\"fas fa-wallet\"></i>`,\n  },\n  {\n    screen: 'settings',\n    iconHtml: `<i class=\"fas fa-cog\"></i>`,\n  },\n];\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (navigatorItemsData);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/constant/bottom_navigator_data.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const navigatorItemsData = [
+  {
+    screen: "accounts",
+    iconHtml: `<i class="fas fa-wallet"></i>`,
+    checked: true, // default
+  },
+  {
+    screen: 'settings',
+    iconHtml: `<i class="fas fa-cog"></i>`,
+  },
+];
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (navigatorItemsData);
+
 
 /***/ }),
 
-/***/ "./src/javascript/document/elements.js":
-/*!*********************************************!*\
-  !*** ./src/javascript/document/elements.js ***!
-  \*********************************************/
+/***/ "./src/javascript/constant/tab_bar_data.js":
+/*!*************************************************!*\
+  !*** ./src/javascript/constant/tab_bar_data.js ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"scaffold\": () => (/* binding */ scaffold)\n/* harmony export */ });\n// layout\nconst scaffold = document.querySelector('.scaffold');\n// export const bottomNavigator = document.querySelector('.bottom-navigator');\n// export const header = document.querySelector('.header');\n\n// // common widget\n\n// // user info\n// export const userTotalBalance = document.querySelector('.user-total-balance');\n\n// // waller info\n// export const currencyUnit = document.querySelector('.header .currency-unit');\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/document/elements.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const tabBarItemData = [
+  {
+    iconImg: "../src/image/icon/ic_send_orange_light.png",
+    title: "Send",
+    screen: "transaction",
+  },
+  {
+    iconImg: "../src/image/icon/ic_receive_blue_dark.png",
+    title: "Receive",
+    screen: "address",
+  },
+];
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabBarItemData);
 
 /***/ }),
 
@@ -101,18 +390,89 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./screen/overview */ \"./src/javascript/screen/overview.js\");\n/* harmony import */ var _document_elements__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./document/elements */ \"./src/javascript/document/elements.js\");\n\n\n\nconst getUser = () => {\n  return {\n    totalAsset: 52.29,\n    accounts: [\n      {\n        name: \"Bitcoin\",\n        symbol: \"BTC\",\n        network: \"mainnet\",\n        decimals: 8,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/btc.png\",\n        balance: 0,\n      },\n      {\n        name: \"Bitcoin\",\n        symbol: \"BTC\",\n        network: \"testnet\",\n        decimals: 8,\n        pulish: false,\n        image: \"https://www.tidebit.one/icons/btc.png\",\n        balance: 0,\n      },\n      {\n        name: \"Ethereum\",\n        symbol: \"ETH\",\n        network: \"mainnet\",\n        decimals: 18,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 0,\n      },\n      {\n        name: \"Ethereum\",\n        symbol: \"ETH\",\n        network: \"ropsten\",\n        decimals: 18,\n        pulish: false,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 2,\n      },\n      {\n        name: \"Tidetain\",\n        symbol: \"TTN\",\n        network: \"mainnet\",\n        decimals: 18,\n        pulish: true,\n        image: \"https://www.tidebit.one/icons/eth.png\",\n        balance: 0,\n      },\n    ],\n  };\n};\n\nconst updateWalletSetup = (mode = \"development\", currency = \"usd\") => {\n  return {\n    mode: mode,\n    currency: currency,\n  };\n};\n\n(() => {\n  console.log(\"start\");\n  const user = getUser();\n  const wallet = updateWalletSetup('development', 'USD');\n//   overview(elements.scaffold, user, wallet);\n})();\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/index.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ui */ "./src/javascript/ui.js");
+
+
+
+const start = async()=> {
+  console.log('start');
+  (0,_ui__WEBPACK_IMPORTED_MODULE_0__.default)();
+}
+
+start();
+
+
+
 
 /***/ }),
 
-/***/ "./src/javascript/layout/bottom_navigatior.js":
-/*!****************************************************!*\
-  !*** ./src/javascript/layout/bottom_navigatior.js ***!
-  \****************************************************/
+/***/ "./src/javascript/layout/bottom_navigator.js":
+/*!***************************************************!*\
+  !*** ./src/javascript/layout/bottom_navigator.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _widget_bottom_navigator_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bottom_navigator_bar */ \"./src/javascript/widget/bottom_navigator_bar.js\");\n/* harmony import */ var _widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/bottom_navigation_item */ \"./src/javascript/widget/bottom_navigation_item.js\");\n/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ \"./src/javascript/constant/bottom_navigator_data.js\");\n\n\n\n\n// parentElement = document.querySelector('.scaffold');\nconst bottomNavigator = (parentElement) => {\n  parentElement.insertAdjacentHTML(\"beforeend\", _widget_bottom_navigator_bar__WEBPACK_IMPORTED_MODULE_0__.widget);\n  const bottomNavigatorBarEl = document.querySelector(\n    _widget_bottom_navigator_bar__WEBPACK_IMPORTED_MODULE_0__.className\n  );\n  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_2__.default.forEach((itemData) => {\n    bottomNavigatorBarEl.insertAdjacentHTML(\n      \"beforeend\",\n      (0,_widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_1__.default)(itemData.iconHtml)\n    );\n  });\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/layout/bottom_navigatior.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
+class BottomNavigatorItem extends HTMLElement {
+  constructor() {
+    super();
+    this.markup = (itemData, state) => {
+      const markup = `
+          <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
+            itemData.screen
+          }" ${
+        itemData.checked || itemData.screen === state.screen ? "checked" : ""
+      }>
+          <label class="bottom-navigator__button" for="${itemData.screen}">
+              <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
+          </label>
+          `;
+      return markup;
+    };
+    this.addEventListener("click", (_) => {
+      this.state.screen = this.itemData.screen;
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
+    });
+  }
+
+  set child(data) {
+    this.className = "bottom-navigator";
+    this.itemData = data.itemData;
+    this.state = JSON.parse(JSON.stringify(data.state));
+    this.insertAdjacentHTML(
+      "afterbegin",
+      this.markup(this.itemData, this.state)
+    );
+  }
+}
+
+customElements.define("bottom-navigator-item", BottomNavigatorItem);
+
+const bottomNavigator = (state) => {
+  const bottomNavigatorBar = document.createElement("footer");
+  bottomNavigatorBar.classList = ["bottom-navigator"];
+  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.forEach((itemData) => {
+    const navigatorItem = document.createElement("bottom-navigator-item");
+    navigatorItem.child = {
+      itemData: itemData,
+      state: state,
+    };
+    bottomNavigatorBar.insertAdjacentElement("beforeend", navigatorItem);
+  });
+  return bottomNavigatorBar;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);
+
 
 /***/ }),
 
@@ -123,7 +483,506 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// https://unicode-table.com/cn/2248/\n\nconst header = (parentElement, userBalance, currencyUint) => {\n  const markup = `\n  <header class=\"header header--overview\">\n    <div class=\"header__title\">Total Asset</div>\n    <div class=\"header__title-sub\">\n      <span class=\"almost-equal-to\">&#8776;</span>\n      <span class=\"user-total-balance\">${userBalance}</span>\n      <span class=\"currency-unit\">${currencyUint}</span>\n    </div>\n  </header>;\n  `;\n  parentElement.insertAdjacentHTML(\"afterbegin\", markup);\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/layout/header.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+// https://unicode-table.com/cn/2248/
+
+class BackButton extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", () => {
+      if (this.state.screen) {
+        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
+      }
+    });
+  }
+  connectedCallback() {
+    this.className = "header__leading";
+    this.innerHTML = `<i class="fas fa-arrow-left">`;
+  }
+  set icon(iconHTML) {
+    this.innerHTML = iconHTML;
+  }
+  set onClick(state){
+    this.state = JSON.parse(JSON.stringify(state));
+  }
+ 
+}
+customElements.define("back-button", BackButton);
+
+const getHeaderInfo = (screen) => {
+  switch (screen) {
+    case "transaction":
+      return { screenTitle: "Send Coin" };
+    case "bill":
+      return { screenTitle: "Transaction Detail" };
+    case "address":
+      return { screenTitle: "My Wallet" };
+  }
+};
+
+const overviewHeader = (totalAsset, fiatSymbol) => {
+  const markup = `
+    <div class="header__title">Total Asset</div>
+    <div class="header__title-sub">
+      <span class="almost-equal-to">&#8776;</span>
+      <span class="user-total-balance">${totalAsset}</span>
+      <span class="currency-unit">${fiatSymbol}</span>
+    </div>
+  `;
+  return markup;
+};
+
+const accountHeader = (state) => {
+  const account = state.account;
+  const fiat = state.walletConfig.fiat;
+  const markup = `
+  <div class="header__icon">
+    <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
+  </div>
+  <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
+  <div class="header__title">${account.balance}</div>
+  <div class="header__title-sub">
+    <span class="almost-equal-to">&#8776;</span>
+    <span class="balance">${account.infiat}</span>
+    <span class="currency-unit">${fiat.symbol}</span>
+  </div>
+  `;
+  const backButton = document.createElement("back-button");
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "accounts";
+  backButton.onClick = _state;
+  return [markup, backButton];
+};
+const defaultHeader = (state) => {
+  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(state.screen);
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "account";
+  const markup = `
+      <div class="header__title">${screenTitle}</div>
+      <div class="header__action ${actionHTML ? "" : "disabled"}">${
+    actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
+  }</div>
+  `;
+  const backButton = document.createElement("back-button");
+  if (leadingHTML) backButton.icon = leadingHTML;
+  backButton.onClick = _state;
+  return [markup, backButton];
+};
+
+const header = (state) => {
+  const header = document.createElement("header");
+  let markup, backButton;
+  switch (state.screen) {
+    case "accounts":
+    case "settings":
+      header.classList = ["header header--overview"];
+      markup = overviewHeader(
+        state.user.totalAsset,
+        state.walletConfig.fiat.symbol
+      );
+      break;
+    case "account":
+      header.classList = ["header header--account"];
+      // markup = accountHeader(state.account, state.walletConfig.fiat);
+      [markup, backButton] = accountHeader(state);
+      header.insertAdjacentElement("afterbegin", backButton);
+      break;
+    default:
+      header.classList = ["header header--default"];
+      [markup, backButton] = defaultHeader(state);
+      header.insertAdjacentElement("afterbegin", backButton);
+  }
+  header.insertAdjacentHTML("beforeend", markup);
+  return header;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/scaffold.js":
+/*!*******************************************!*\
+  !*** ./src/javascript/layout/scaffold.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Scaffold)
+/* harmony export */ });
+// https://developers.google.com/web/fundamentals/web-components/customelements
+class Scaffold extends HTMLElement {
+  // Can define constructor arguments if you wish.
+  constructor() {
+    // If you define a constructor, always call super() first!
+    // This is specific to CE and required by the spec.
+    super();
+  }
+
+  connectedCallback() {
+    // create an element with some default HTML:
+    this.innerHTML = `<main></main>`;
+    this.className = "scaffold";
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  set header(element) {
+    this.insertAdjacentElement("afterbegin", element);
+  }
+
+  /**
+   * @param {HTMLElement} element or
+   * @param {HTMLElement} [element]
+   */
+  set body(element) {
+    if (Array.isArray(element)) {
+      element.forEach((element) =>
+        this.childNodes[1].insertAdjacentElement("beforeend", element)
+      );
+    } else {
+      this.childNodes[1].insertAdjacentElement("beforeend", element);
+    }
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  set bottomNavigator(element) {
+    this.insertAdjacentElement("beforeend", element);
+  }
+}
+
+// module.exports.Scaffold;
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/tab_bar_navigator.js":
+/*!****************************************************!*\
+  !*** ./src/javascript/layout/tab_bar_navigator.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
+class TabBarItem extends HTMLElement {
+  constructor() {
+    super();
+    this.markup = (itemData) => `
+        <input type="radio" name="tab-bar" class="tab-bar__item" id=${itemData.title.toLowerCase()} checked>
+        <label class="tab-bar__button" for=${itemData.title.toLowerCase()}>
+          <div class="tab-bar__icon"><img src=${
+            itemData.iconImg
+          } alt="icon"></div>
+          <div class="tab-bar__text">${itemData.title}</i></div>
+        </label>
+        `;
+    this.addEventListener("click", (_) => {
+      this.state.screen = this.itemData.screen;
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
+    });
+  }
+
+  set child(data) {
+    this.itemData = data.itemData;
+    this.state = JSON.parse(JSON.stringify(data.state));
+    this.insertAdjacentHTML("afterbegin", this.markup(this.itemData));
+  }
+}
+
+customElements.define("tab-bar-item", TabBarItem);
+
+const tabNavigator = (state) => {
+  const tabBar = document.createElement("div");
+  tabBar.className = "tab-bar";
+  _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.forEach((itemData) => {
+    const tabBarItem = document.createElement("tab-bar-item");
+    tabBarItem.child = {
+      itemData: itemData,
+      state: state,
+    };
+    tabBar.insertAdjacentElement("beforeend", tabBarItem);
+  });
+  return tabBar;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabNavigator);
+
+/***/ }),
+
+/***/ "./src/javascript/model/bill.js":
+/*!**************************************!*\
+  !*** ./src/javascript/model/bill.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+class Bill {
+  constructor({
+    id,
+    txid,
+    amount,
+    fee,
+    message,
+    timestamp,
+    direction,
+    from,
+    to,
+    confirmations,
+  }) {
+    this.id = id;
+    this.txid = txid;
+    this.amount = amount;
+    this.fee = fee;
+    this.message = message;
+    this.timestamp = timestamp;
+    this._direction = direction;
+    this.from = from;
+    this.to = to;
+    this.confirmations = confirmations;
+  }
+
+  get dateTime() {
+    return _utils_utils__WEBPACK_IMPORTED_MODULE_0__.dateFormatter(this.timestamp);
+  }
+
+  get status() {
+    if (this.confirmations === 0) {
+      return "Pending";
+    } else if (this.confirmations > 0 && this.confirmations <= 6) {
+      return "Confirming";
+    } else if (this.confirmations > 6) {
+      return "Completed";
+    } else {
+      return "Failed";
+    }
+  }
+  get action() {
+    switch (this._direction) {
+      case "receive":
+        return "Receive";
+      case "send":
+        return "Send";
+      default:
+        return "Unknown";
+    }
+  }
+  get direction() {
+    switch (this._direction) {
+      case "receive":
+        return "Receive from";
+      case "send":
+        return "Transfer to";
+      default:
+        return "Unknown";
+    }
+  }
+  get address() {
+    switch (this._direction) {
+      case "receive":
+        return this.from;
+      case "send":
+        return this.to;
+      default:
+        return "Unknown";
+    }
+  }
+  get progress() {
+    if (this.confirmations > 6) return "100%";
+    return ((this.confirmations / 6) * 100).toString() + "%";
+  }
+  formattedAmount(account) {
+    switch (this._direction) {
+      case "receive":
+        return "+" + " " + this.amount + " " + account.symbol;
+      case "send":
+        return "-" + " " + this.amount + " " + account.symbol;
+      default:
+        return "Unknown";
+    }
+  }
+  get directionIcon() {
+    switch (this._direction) {
+      case "receive":
+        return "../src/image/icon/ic_receive_black.png";
+      case "send":
+        return "../src/image/icon/ic_send_black.png";
+      default:
+        return "Unknown";
+    }
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Bill);
+
+
+/***/ }),
+
+/***/ "./src/javascript/screen/account.js":
+/*!******************************************!*\
+  !*** ./src/javascript/screen/account.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
+/* harmony import */ var _widget_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/bill_list */ "./src/javascript/widget/bill_list.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+
+// ++ let assetDetail = ui.getAssetDetail({ assetID });
+
+const getAssetDetail = (assetId) => {
+  if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
+    return [
+      {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+        txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
+        amount: 0.1,
+        fee: 0.000021,
+        message: "",
+        timestamp: Date.now(),
+        direction: "send",
+        from: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+        to: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+        confirmations: 0,
+      },
+      {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+        txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+        amount: 0.1,
+        fee: 0.000021,
+        message: "",
+        timestamp: 1625993323880,
+        direction: "receive",
+        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+        confirmations: 1,
+      },
+      {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+        txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+        amount: 0.1,
+        fee: 0.000021,
+        message: "",
+        timestamp: 1625953323880,
+        direction: "send",
+        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+        confirmations: 4,
+      },
+      {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+        txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+        amount: 1,
+        fee: 0.000021,
+        message: "",
+        timestamp: 1620719000000,
+        direction: "send",
+        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+        confirmations: 2160,
+      },
+      {
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+        txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+        amount: 3,
+        fee: 0.000021,
+        message: "",
+        timestamp: 1620719218543,
+        direction: "receive",
+        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+        confirmations: 214560,
+      },
+    ];
+};
+
+const account = (scaffold, state) => {
+  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  scaffold.body = [(0,_layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default)(state), (0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_3__.default)(state.account, bills)];
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
+
+
+/***/ }),
+
+/***/ "./src/javascript/screen/address.js":
+/*!******************************************!*\
+  !*** ./src/javascript/screen/address.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+
+// let address = ui.getReceiveAddress({ accountID });
+const address = (scaffold, state) => {
+    console.log(JSON.stringify(state));
+    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
+
+/***/ }),
+
+/***/ "./src/javascript/screen/bill.js":
+/*!***************************************!*\
+  !*** ./src/javascript/screen/bill.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+
+
+const bill = (scaffold, state) => {
+    console.log(JSON.stringify(state));
+    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bill);
 
 /***/ }),
 
@@ -134,29 +993,539 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ \"./src/javascript/layout/header.js\");\n/* harmony import */ var _layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigatior */ \"./src/javascript/layout/bottom_navigatior.js\");\n\n\n\n// parentElement = document.querySelector(\".scaffold\");\nconst overview = (parentElement, user, wallet) => {\n  (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(parentElement, user.totalAsset, wallet.currency);\n  (0,_layout_bottom_navigatior__WEBPACK_IMPORTED_MODULE_1__.default)(parentElement);\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/screen/overview.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
+/* harmony import */ var _widget_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/account_list */ "./src/javascript/widget/account_list.js");
+
+
+
+
+const overview = (scaffold, state) => {
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+  scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  switch (state.screen) {
+    case "accounts":
+      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      break;
+    case "settings":
+      const container = document.createElement("div");
+      container.innerHTML = `<div>This is Setting page</div>`;
+      scaffold.body = container;
+      break;
+    default:
+      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      break;
+  }
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
+
 
 /***/ }),
 
-/***/ "./src/javascript/widget/bottom_navigation_item.js":
-/*!*********************************************************!*\
-  !*** ./src/javascript/widget/bottom_navigation_item.js ***!
-  \*********************************************************/
+/***/ "./src/javascript/screen/transaction.js":
+/*!**********************************************!*\
+  !*** ./src/javascript/screen/transaction.js ***!
+  \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst bottomNavigatorItem = (iconHtml) => {\n    const markup = `\n    <input type=\"radio\" name=\"bottom-navigator\" class=\"bottom-navigator__item\" id=\"settings\">\n    <label class=\"bottom-navigator__button\" for=\"settings\">\n        <div class=\"bottom-navigator__icon\">${iconHtml}</div>\n    </label>\n    `;\n    return markup;\n};\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigatorItem);\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/widget/bottom_navigation_item.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+
+// let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
+// let transaction = ui.prepareTransaction({ to, amount, data, speed }); 
+// ui.sendTransaction(transaction);
+const transaction = (scaffold, state) => {
+    console.log(JSON.stringify(state));
+    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
 
 /***/ }),
 
-/***/ "./src/javascript/widget/bottom_navigator_bar.js":
-/*!*******************************************************!*\
-  !*** ./src/javascript/widget/bottom_navigator_bar.js ***!
-  \*******************************************************/
+/***/ "./src/javascript/ui.js":
+/*!******************************!*\
+  !*** ./src/javascript/ui.js ***!
+  \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"className\": () => (/* binding */ className),\n/* harmony export */   \"widget\": () => (/* binding */ widget)\n/* harmony export */ });\nconst bottomNavigatorBar = () => {\n  const markup = `<footer class=\"bottom-navigator\"><>\n    `;\n  return markup;\n};\n\nconst className = \".bottom-navigator\";\nconst widget = bottomNavigatorBar;\n\n\n//# sourceURL=webpack://tidebitwallet/./src/javascript/widget/bottom_navigator_bar.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ launchTideBitUi)
+/* harmony export */ });
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
+// MVC: View
+
+
+
+
+
+
+const state = {};
+
+// ++ let assetList = ui.getAssets();
+const getAssets = () => {
+    return {
+        totalAsset: 52.29,
+        accounts: [{
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+                name: "Bitcoin",
+                symbol: "BTC",
+                network: "mainnet",
+                decimals: 8,
+                publish: true,
+                image: "https://www.tidebit.one/icons/btc.png",
+                balance: 0,
+                inUSD: 0,
+            },
+            {
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+                name: "Bitcoin",
+                symbol: "BTC",
+                network: "testnet",
+                decimals: 8,
+                publish: false,
+                image: "https://www.tidebit.one/icons/btc.png",
+                balance: 0,
+                inUSD: 0,
+            },
+            {
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+                name: "Ethereum",
+                symbol: "ETH",
+                network: "mainnet",
+                decimals: 18,
+                publish: true,
+                image: "https://www.tidebit.one/icons/eth.png",
+                balance: 0,
+                inUSD: 0,
+            },
+            {
+                id: 'e0642b1b64b8b0214e758dd0be63242839e63db7',
+                name: "Ethereum",
+                symbol: "ETH",
+                network: "ropsten",
+                decimals: 18,
+                publish: false,
+                image: "https://www.tidebit.one/icons/eth.png",
+                balance: 2,
+                inUSD: 52.29,
+            },
+            {
+                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+                name: "Tidetain",
+                symbol: "TTN",
+                network: "mainnet",
+                decimals: 18,
+                publish: true,
+                image: "https://www.tidebit.one/icons/eth.png",
+                balance: 0,
+                inUSD: 0,
+            },
+        ],
+    };
+};
+
+const setWallet = (mode, fiat) => {
+    return {
+        mode: mode,
+        fiat: fiat,
+    };
+};
+
+const startApp = () => {
+    state.user = getAssets();
+    state.walletConfig = setWallet("development", {
+        symbol: "USD",
+        inUSD: 1
+    });
+    state.screen = 'accounts';
+    (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+    // --
+    _utils_utils__WEBPACK_IMPORTED_MODULE_1__.dateFormatter(Date.now());
+};
+
+
+function launchTideBitUi(options, callback) {
+    startApp();
+}
+
+/***/ }),
+
+/***/ "./src/javascript/utils/route.js":
+/*!***************************************!*\
+  !*** ./src/javascript/utils/route.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+
+
+
+
+
+
+
+customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
+
+const setup = () => {
+  document.body.replaceChildren();
+  const root = document.createElement("scaffold-widget");
+  document.body.insertAdjacentElement("afterbegin", root);
+  return root;
+};
+
+const route = (state) => {
+  const root = setup();
+  switch (state.screen) {
+    case "accounts":
+    case "settings":
+      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
+      break;
+    case "account":
+      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(root, state);
+      break;
+    case "transaction":
+      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(root, state);
+      break;
+    case "address":
+      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(root, state);
+      break;
+    case "bill":
+      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(root, state);
+      break;
+  }
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (route);
+
+
+/***/ }),
+
+/***/ "./src/javascript/utils/utils.js":
+/*!***************************************!*\
+  !*** ./src/javascript/utils/utils.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "randomHex": () => (/* binding */ randomHex),
+/* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter),
+/* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter)
+/* harmony export */ });
+const randomHex = (n) => {
+  var ID = "";
+  var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  n = parseInt(n);
+  if (!(n > 0)) {
+    n = 8;
+  }
+  while (ID.length < n) {
+    ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
+  }
+  return ID;
+};
+
+const pad = (n) => {
+  return n < 10 ? "0" + n : n;
+};
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const dateFormatter = (timestamp) => {
+  const dateTime = new Date(timestamp);
+  const date = dateTime.getDate();
+  const month = dateTime.getMonth();
+  const year = dateTime.getFullYear();
+  let hours = dateTime.getHours();
+  const minutes = dateTime.getMinutes();
+  let suffix = "AM";
+  if (hours - 12 > 0) {
+    hours -= 12;
+    suffix = "PM";
+  }
+  const mmddyyyykkmm =
+    monthNames[month] +
+    " " +
+    pad(date) +
+    "," +
+    year +
+    " " +
+    hours +
+    ":" +
+    pad(minutes) +
+    " " +
+    suffix;
+  console.log(`mmddyyyykkmm: ${mmddyyyykkmm}`);
+
+  return mmddyyyykkmm;
+};
+
+const addressFormatter = (address, showLength = 6) => {
+  if (address.length <= showLength * 2) return address;
+  const prefix = address.slice(0, showLength);
+  const suffix = address.slice(address.length - showLength, address.length);
+  return prefix + "..." + suffix;
+};
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/account_item.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/widget/account_item.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+class AccountItem extends HTMLElement {
+  constructor() {
+    super(); // always call super() first in the constructor.
+    this.markup = () => `
+    <div class="account-item__icon">
+        <img src=${this.account.image} alt=${this.account.symbol.toUpperCase()}>
+    </div>
+    <div class="account-item__symbol">${this.account.symbol.toUpperCase()}</div>
+    <div class="account-item__balance">${this.account.balance}</div>
+    <div class="account-item__to-currency">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="balance">${this.account.infiat}</span>
+        <span class="currency-unit">${this.fiat.symbol}</span>
+    </div>
+      `;
+    this.addEventListener("click", (_) => {
+      if (this.account) {
+        this.state.account = this.account;
+        this.state.backward = "accounts";
+        this.state.screen = "account";
+        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
+      } else {
+        return;
+      }
+    });
+  }
+  connectedCallback() {
+    this.className = "account-item";
+  }
+  get publish() {
+    return this.hasAttribute("publish");
+  }
+  set publish(val) {
+    if (val) {
+      this.setAttribute("publish", "");
+    } else {
+      this.removeAttribute("publish");
+    }
+  }
+  exchange() {
+    if (this.fiat) {
+      this.account.infiat = this.account.inUSD / this.fiat.inUSD;
+      return;
+    }
+    return;
+  }
+  set child(data) {
+    this.state = JSON.parse(JSON.stringify(data.state));
+    this.account = JSON.parse(JSON.stringify(data.account));
+    this.fiat = this.state.walletConfig.fiat;
+    this.exchange();
+    this.insertAdjacentHTML("afterbegin", this.markup());
+    this.publish = this.account.publish;
+    this.id = this.account.id;
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountItem);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/account_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/widget/account_list.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./account_item */ "./src/javascript/widget/account_item.js");
+
+
+customElements.define("account-item", _account_item__WEBPACK_IMPORTED_MODULE_0__.default);
+
+const accountList = (state) => {
+  const accountList = document.createElement("div");
+  accountList.className = "account-list";
+  state.user.accounts.forEach((account) => {
+    const accountItem = document.createElement("account-item");
+    accountItem.child = {
+      state: state,
+      account: account,
+    };
+    accountList.insertAdjacentElement("beforeend", accountItem);
+  });
+  return accountList;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (accountList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/bill_item.js":
+/*!********************************************!*\
+  !*** ./src/javascript/widget/bill_item.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+class BillItem extends HTMLElement {
+  constructor() {
+    super();
+    this.markup = () => `
+    <div class="bill-item__main">
+        <div class="bill-item__icon">
+            <img src=${
+              this.bill.directionIcon
+            } alt=${this.bill.action.toLowerCase()}>
+        </div>
+        <div class="bill-item__title">
+            <div class="bill-item__action">${this.bill.action}</div>
+            <div class="bill-item__detail">
+                <span class="bill-item__direction">${this.bill.direction}</span>
+                <span class="bill-item__address">${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.addressFormatter)(
+                  this.bill.address
+                )}</span>
+            </div>
+        </div>
+        <div class="bill-item__suffix">
+            <div class="bill-item__amount">${this.bill.formattedAmount(
+              this.account
+            )}</div>
+            <div class="bill-item__time">${this.bill.dateTime}</div>
+        </div>
+    </div>
+    <div class="bill-item__sub">
+        <div class="bill-item__status">${this.bill.status}</div>
+        <div class="bill-item__progress"><span style="width: ${this.bill.progress}"></span></div>
+    </div>
+        `;
+    this.addEventListener("click", () => {
+      // let transactionDetail = ui.getTransactionDetail({ transactionID });
+    });
+  }
+  connectedCallback() {
+    this.classList = ["bill-item"];
+  }
+  static get observedAttributes() {
+    return ["pending", "confirming", "complete"];
+  }
+  set status(val) {
+    if (this.hasAttribute("pending")) this.removeAttribute("pending");
+    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
+    if (this.hasAttribute("complete")) this.removeAttribute("complete");
+    this.setAttribute(val, "");
+  }
+  set action(val) {
+    this.setAttribute(val, "");
+  }
+  set child(data) {
+    this.account = data.account;
+    this.bill = data.bill;
+    this.insertAdjacentHTML("afterbegin", this.markup());
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillItem);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/bill_list.js":
+/*!********************************************!*\
+  !*** ./src/javascript/widget/bill_list.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bill_item */ "./src/javascript/widget/bill_item.js");
+
+
+customElements.define("bill-item", _bill_item__WEBPACK_IMPORTED_MODULE_0__.default);
+
+const billList = (account, bills) => {
+  const billList = document.createElement("div");
+  billList.className = "bill-list";
+  bills.forEach((bill) => {
+    const billItem = document.createElement("bill-item");
+    billItem.child = {
+      account: account,
+      bill: bill,
+    };
+    billList.insertAdjacentElement("beforeend", billItem);
+  });
+  return billList;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (billList);
+
 
 /***/ }),
 
@@ -167,7 +1536,14 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ \"./src/scss/main.scss\");\n/* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ \"./src/javascript/index.js\");\n\n__webpack_require__ (/*! ./image/icon/icon16.png */ \"./src/image/icon/icon16.png\");\n__webpack_require__ (/*! ./image/icon/icon48.png */ \"./src/image/icon/icon48.png\");\n__webpack_require__ (/*! ./image/icon/icon128.png */ \"./src/image/icon/icon128.png\");\n\n\n//# sourceURL=webpack://tidebitwallet/./src/main.js?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ "./src/scss/main.scss");
+/* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ "./src/javascript/index.js");
+
+__webpack_require__ (/*! ./image/icon/icon16.png */ "./src/image/icon/icon16.png");
+__webpack_require__ (/*! ./image/icon/icon48.png */ "./src/image/icon/icon48.png");
+__webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.png");
+
 
 /***/ })
 
@@ -253,7 +1629,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scs
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("c7f04ef461fb38353644")
+/******/ 		__webpack_require__.h = () => ("91e6e4f97f65ea601b3e")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -1329,3 +2705,4 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scs
 /******/ 	
 /******/ })()
 ;
+//# sourceMappingURL=bundle.js.map
