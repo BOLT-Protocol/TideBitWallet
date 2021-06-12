@@ -13,133 +13,57 @@
 
 <body style="width:357px; height:600px;">
   <div class="scaffold">
-    <header class="header header--account">
+    <header class="header header--default">
       <div class="header__leading"><i class="fas fa-arrow-left"></i></div>
-      <div class="header__icon">
-        <img src="https://www.tidebit.one/icons/btc.png" alt="BTC">
-      </div>
-      <div class="header__icon-title">BTC</div>
-      <div class="header__title">2</div>
-      <div class="header__title-sub">
-        <span class="almost-equal-to">&#8776;</span>
-        <span class="balance">52.29</span>
-        <span class="currency-unit">USD</span>
-      </div>
+
+      <div class="header__title">Transaction Detail</div>
+
     </header>
-    <main class="account">
-
-      <div class="tab-bar">
-        <input type="radio" name="tab-bar" class="tab-bar__item" id="send" checked>
-        <label class="tab-bar__button" for="send">
-          <div class="tab-bar__icon"><img src="../../src/image/icon/ic_send_orange_light.png" alt="icon"></div>
-          <div class="tab-bar__text">Send</i></div>
-        </label>
-        <input type="radio" name="tab-bar" class="tab-bar__item" id="receive">
-        <label class="tab-bar__button" for="receive">
-          <div class="tab-bar__icon"><img src="../../src/image/icon/ic_receive_blue_dark.png" alt="icon"></div>
-          <div class="tab-bar__text">Receive</i></div>
-        </label>
+    <main>
+      <div class="bill" send pending>
+        <div class="bill__header">
+          <span class="bill__sign">-</span>
+          <span class="bill__amount">0.1</span>
+          <span class="bill__unit">ETH</span>
+        </div>
+        <div class="bill__cell">
+          <div class="bill__title">Status</div>
+          <div class="bill__content">
+            <span class="bill__status">Completed</span>
+            <span class="bill__status bill__confirmations">(7068 confirmation)</span>
+            <span class="bill__status-icon"></span>
+          </div>
+        </div>
+        <div class="bill__cell">
+          <div class="bill__title">Time</div>
+          <div class="bill__content">
+            (Jun 11, 2021, 16:48PM)
+          </div>
+        </div>
+        <div class="bill__cell">
+          <div class="bill__title">Transfer to</div>
+          <div class="bill__content">
+            0xd885833741f554a0e64ffd1141887d65e0dded01
+          </div>
+        </div>
+        <div class="bill__cell">
+          <div class="bill__title">Fee</div>
+          <div class="bill__content">
+            <span class="bill__fee">0.000021</span>
+            <span class="bill__unit">ETH</span>
+          </div>
+        </div>
+        <div class="bill__cell">
+          <div class="bill__title">Transfer to</div>
+          <div class="bill__content">
+            <span class="bill__asset-icon"><img src="" alt="ETH"></span>
+            <span class="bill__id">0xaf40...4b276</span>
+          </div>
+        </div>
       </div>
 
-      <div class="bill-list">
-        <div class="bill-item pending send">
-          <div class="bill-item__main">
-            <div class="bill-item__icon">
-              <img src="../../src/image/icon/ic_send_black.png" alt="icon">
-            </div>
-            <div class="bill-item__title">
-              <div class="bill-item__action">Send</div>
-              <div class="bill-item__detail">
-                <span class="bill-item__direction">Transfer to</span>
-                <span class="bill-item__address">0xd885...dded01</span>
-              </div>
-            </div>
-            <div class="bill-item__suffix">
-              <div class="bill-item__amount">- 0.1 ETH</div>
-              <div class="bill-item__time">Jun 11,2021, 16:48 PM</div>
-            </div>
-          </div>
 
-          <div class="bill-item__sub">
-            <div class="bill-item__status">Panding...</div>
-            <div class="bill-item__progress"><span style="width: 0%"></span></div>
-          </div>
 
-        </div>
-        <div class="bill-item confirming send">
-          <div class="bill-item__main">
-            <div class="bill-item__icon">
-              <img src="../../src/image/icon/ic_send_black.png" alt="icon">
-            </div>
-            <div class="bill-item__title">
-              <div class="bill-item__action">Send</div>
-              <div class="bill-item__detail">
-                <span class="bill-item__direction">Transfer to</span>
-                <span class="bill-item__address">0xd885...dded01</span>
-              </div>
-            </div>
-            <div class="bill-item__suffix">
-              <div class="bill-item__amount">- 0.1 ETH</div>
-              <div class="bill-item__time">Jun 11,2021, 16:48 PM</div>
-            </div>
-          </div>
-
-          <div class="bill-item__sub">
-            <div class="bill-item__status">Confirming</div>
-            <div class="bill-item__progress"><span style="width: 33.3%"></span></div>
-          </div>
-
-        </div>
-        <div class="bill-item receive">
-          <div class="bill-item__main">
-            <div class="bill-item__icon">
-              <img src="../../src/image/icon/ic_receive_black.png" alt="icon">
-            </div>
-            <div class="bill-item__title">
-              <div class="bill-item__action">Receive</div>
-              <div class="bill-item__detail">
-                <span class="bill-item__direction">Receive from</span>
-                <span class="bill-item__address">0xd885...dded01</span>
-              </div>
-            </div>
-            <div class="bill-item__suffix">
-              <div class="bill-item__amount">+ 1 ETH</div>
-              <div class="bill-item__time">May 01,2021, 09:18 AM</div>
-            </div>
-          </div>
-
-          <div class="bill-item__sub">
-            <div class="bill-item__status">Completed</div>
-            <div class="bill-item__progress"><span style="width: 100%"></span></div>
-          </div>
-
-        </div>
-        <div class="bill-item receive">
-          <div class="bill-item__main">
-            <div class="bill-item__icon">
-              <img src="../../src/image/icon/ic_receive_black.png" alt="icon">
-            </div>
-            <div class="bill-item__title">
-              <div class="bill-item__action">Receive</div>
-              <div class="bill-item__detail">
-                <span class="bill-item__direction">Receive from</span>
-                <span class="bill-item__address">0xd885...dded01</span>
-              </div>
-            </div>
-            <div class="bill-item__suffix">
-              <div class="bill-item__amount">+ 1 ETH</div>
-              <div class="bill-item__time">April 01,2021, 17:08 PM</div>
-            </div>
-          </div>
-
-          <div class="bill-item__sub">
-            <div class="bill-item__status">Completed</div>
-            <div class="bill-item__progress"><span style="width: 100%"></span></div>
-          </div>
-
-        </div>
-
-      </div>
     </main>
 
 

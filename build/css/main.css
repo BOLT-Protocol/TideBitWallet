@@ -28,6 +28,9 @@ html {
 body {
   box-sizing: border-box; }
 
+main {
+  flex: auto; }
+
 footer {
   margin-top: auto; }
 
@@ -253,6 +256,70 @@ body {
     display: flex; }
     .tab-bar__icon img {
       width: 100%; }
+
+.bill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff; }
+  .bill__header {
+    height: 4.2rem;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px dashed #eee;
+    font-size: 2rem;
+    font-weight: 400;
+    padding: 1rem 0; }
+    .bill__header *:not(:last-child) {
+      margin-right: 1rem; }
+  .bill[receive] .bill__header {
+    color: #446CB3; }
+  .bill[send] .bill__header {
+    color: #FF5730; }
+  .bill[failed] .bill__header,
+  .bill[pending] .bill__header,
+  .bill[confirming] .bill__header {
+    color: #9B9B9B !important; }
+  .bill[send] .bill__header {
+    color: #FF5730; }
+  .bill__cell {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem; }
+  .bill__title {
+    color: #9B9B9B; }
+  .bill__content {
+    color: #555; }
+  .bill__title, .bill__content {
+    font-size: 1.2rem; }
+  .bill[completed] .bill__status {
+    color: #7ED321; }
+  .bill[failed] .bill__status {
+    color: #FF1212; }
+  .bill[pending] .bill__status {
+    color: #555; }
+  .bill__status-icon {
+    width: 2rem;
+    height: 2rem;
+    background-position: center;
+    background-size: cover;
+    margin-left: 1rem; }
+  .bill[completed] .bill__status-icon {
+    background-image: url(../image/ic_completed_green.png); }
+  .bill[failed] .bill__status-icon {
+    background-image: url(../image/ic_failed_red.png); }
+  .bill[pending] .bill__status-icon {
+    background-image: url(../image/ic_pending_grey.png); }
+  .bill__header + .bill__cell .bill__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center; }
+  .bill__id {
+    text-decoration: underline;
+    color: #4ECDC4; }
 
 
 /*# sourceMappingURL=main.css.map*/

@@ -1,0 +1,86 @@
+.bill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: $color-white;
+  &__header {
+    height: 4.2rem;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px dashed $color-grey-light-2;
+    font-size: $default-font-size * 1.25;
+    font-weight: 400;
+    padding: 1rem 0;
+    & *:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+  &[receive] &__header {
+    color: $color-secondary;
+  }
+  &[send] &__header {
+    color: $color-tertiary;
+  }
+
+  &[failed] &__header,
+  &[pending] &__header,
+  &[confirming] &__header {
+    color: $color-grey-dark-1 !important;
+  }
+  &[send] &__header {
+    color: $color-tertiary;
+  }
+  &__cell {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem;
+  }
+  &__title {
+    color: $color-grey-dark-1;
+  }
+  &__content {
+    color: $color-grey-dark-2;
+  }
+  &__title,
+  &__content {
+    font-size: $default-font-size * 0.75;
+  }
+  &[completed] &__status {
+    color: $color-success;
+  }
+  &[failed] &__status {
+    color: $color-error;
+  }
+  &[pending] &__status {
+    color: $color-grey-dark-2;
+  }
+  &__status-icon {
+    width: 2rem;
+    height: 2rem;
+    background-position: center;
+    background-size: cover;
+    margin-left: 1rem;
+  }
+  &[completed] &__status-icon {
+    background-image: url(../image/icon/ic_completed_green.png);
+  }
+  &[failed] &__status-icon {
+    background-image: url(../image/icon/ic_failed_red.png);
+  }
+  &[pending] &__status-icon {
+    // background-color: antiquewhite;
+    background-image: url(../image/icon/ic_pending_grey.png);
+  }
+  &__header + &__cell &__content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+  }
+  &__id {
+    text-decoration: underline;
+    color: $color-primary;
+  }
+}

@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623491244594
+      // 1623497678864
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -978,7 +978,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const bill = (scaffold, state) => {
-    console.log(JSON.stringify(state));
     scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 }
 
@@ -1291,8 +1290,6 @@ const dateFormatter = (timestamp) => {
     pad(minutes) +
     " " +
     suffix;
-  console.log(`mmddyyyykkmm: ${mmddyyyykkmm}`);
-
   return mmddyyyykkmm;
 };
 
@@ -1637,7 +1634,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("dd8f1cddaeb73966cf3a")
+/******/ 		__webpack_require__.h = () => ("275eac7fb01b5c31b6f4")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
