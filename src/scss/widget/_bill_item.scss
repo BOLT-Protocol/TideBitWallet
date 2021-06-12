@@ -15,6 +15,10 @@
   }
   &__title {
     width: 100%;
+    font-size: $default-font-size * 0.75;
+  }
+  &__amount {
+    font-size: $default-font-size * 0.75;
   }
   &__suffix {
     width: 100%;
@@ -24,17 +28,17 @@
   & &__direction,
   & &__address {
     color: $color-grey-dark-1;
-    font-size: $default-font-size * 0.5;
+    font-size: $default-font-size * 0.6;
   }
-  .send &__amount {
+  [send] &__amount {
     color: $color-tertiary;
   }
-  .receive &__amount {
+  [receive] &__amount {
     color: $color-secondary;
   }
-  &.pending &__status,
-  &.pending.send &__amount,
-  &.pending.receive &__amount {
+  &[pending] &__status,
+  &[pending][send] &__amount,
+  &[pending][receive] &__amount {
     color: $color-grey-dark-1;
   }
   &__sub {
@@ -44,8 +48,8 @@
   &__sub * {
     opacity: 0;
   }
-  &.pending,
-  &.confirming {
+  &[pending],
+  &[confirming] {
     .bill-item__sub,
     .bill-item__sub * {
       opacity: 1;
@@ -66,7 +70,7 @@
   }
   &__status {
     text-align: right;
-    font-size: $default-font-size * 0.5;
+    font-size: $default-font-size * 0.6;
     color: $color-primary;
   }
   

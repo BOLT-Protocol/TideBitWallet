@@ -57,3 +57,10 @@ export const dateFormatter = (timestamp) => {
 
   return mmddyyyykkmm;
 };
+
+export const addressFormatter = (address, showLength = 6) => {
+  if (address.length <= showLength * 2) return address;
+  const prefix = address.slice(0, showLength);
+  const suffix = address.slice(address.length - showLength, address.length);
+  return prefix + "..." + suffix;
+};

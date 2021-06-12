@@ -7,7 +7,8 @@ import * as utils from "./utils/utils";
 
 const state = {};
 
-const getUser = () => {
+// ++ let assetList = ui.getAssets();
+const getAssets = () => {
     return {
         totalAsset: 52.29,
         accounts: [{
@@ -44,7 +45,7 @@ const getUser = () => {
                 inUSD: 0,
             },
             {
-                id: utils.randomHex(32),
+                id: 'e0642b1b64b8b0214e758dd0be63242839e63db7',
                 name: "Ethereum",
                 symbol: "ETH",
                 network: "ropsten",
@@ -77,7 +78,7 @@ const setWallet = (mode, fiat) => {
 };
 
 const startApp = () => {
-    state.user = getUser();
+    state.user = getAssets();
     state.walletConfig = setWallet("development", {
         symbol: "USD",
         inUSD: 1

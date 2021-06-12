@@ -148,8 +148,10 @@ body {
   gap: 5px; }
 
 .bill-list {
+  height: 100%;
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  overflow: scroll; }
 
 .account-item {
   display: flex;
@@ -179,7 +181,10 @@ body {
     .bill-item__icon img {
       width: 100%; }
   .bill-item__title {
-    width: 100%; }
+    width: 100%;
+    font-size: 1.2rem; }
+  .bill-item__amount {
+    font-size: 1.2rem; }
   .bill-item__suffix {
     width: 100%;
     text-align: right; }
@@ -187,23 +192,23 @@ body {
   .bill-item .bill-item__direction,
   .bill-item .bill-item__address {
     color: #9B9B9B;
-    font-size: 0.8rem; }
-  .send .bill-item__amount {
+    font-size: 0.96rem; }
+  [send] .bill-item__amount {
     color: #FF5730; }
-  .receive .bill-item__amount {
+  [receive] .bill-item__amount {
     color: #446CB3; }
-  .bill-item.pending .bill-item__status,
-  .bill-item.pending.send .bill-item__amount,
-  .bill-item.pending.receive .bill-item__amount {
+  .bill-item[pending] .bill-item__status,
+  .bill-item[pending][send] .bill-item__amount,
+  .bill-item[pending][receive] .bill-item__amount {
     color: #9B9B9B; }
   .bill-item__sub {
     margin-top: 4px; }
   .bill-item__sub,
   .bill-item__sub * {
     opacity: 0; }
-  .bill-item.pending .bill-item__sub,
-  .bill-item.pending .bill-item__sub *, .bill-item.confirming .bill-item__sub,
-  .bill-item.confirming .bill-item__sub * {
+  .bill-item[pending] .bill-item__sub,
+  .bill-item[pending] .bill-item__sub *, .bill-item[confirming] .bill-item__sub,
+  .bill-item[confirming] .bill-item__sub * {
     opacity: 1; }
   .bill-item__progress {
     width: 100%;
@@ -217,7 +222,7 @@ body {
       background-color: #4ECDC4; }
   .bill-item__status {
     text-align: right;
-    font-size: 0.8rem;
+    font-size: 0.96rem;
     color: #4ECDC4; }
 
 .tab-bar {

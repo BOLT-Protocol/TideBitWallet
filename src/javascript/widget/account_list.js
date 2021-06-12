@@ -11,7 +11,6 @@ const accountList = (state) => {
       state: state,
       account: account,
     };
-    
     accountList.insertAdjacentElement("beforeend", accountItem);
   });
   return accountList;

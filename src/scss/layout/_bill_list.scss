@@ -1,4 +1,6 @@
-.bill-list{
-    display: flex;
-    flex-direction: column;
+.bill-list {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
 }

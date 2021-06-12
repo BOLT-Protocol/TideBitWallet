@@ -27,10 +27,10 @@ export default class Scaffold extends HTMLElement {
   set body(element) {
     if (Array.isArray(element)) {
       element.forEach((element) =>
-        this.childNodes[1].insertAdjacentElement("afterbegin", element)
+        this.childNodes[1].insertAdjacentElement("beforeend", element)
       );
     } else {
-      this.childNodes[1].insertAdjacentElement("afterbegin", element);
+      this.childNodes[1].insertAdjacentElement("beforeend", element);
     }
   }
 

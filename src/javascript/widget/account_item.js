@@ -2,19 +2,19 @@ import route from "../utils/route";
 class AccountItem extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.markup = (account, fiat) => `
+    this.markup = () => `
     <div class="account-item__icon">
-        <img src=${account.image} alt=${account.symbol.toUpperCase()}>
+        <img src=${this.account.image} alt=${this.account.symbol.toUpperCase()}>
     </div>
-    <div class="account-item__symbol">${account.symbol.toUpperCase()}</div>
-    <div class="account-item__balance">${account.balance}</div>
+    <div class="account-item__symbol">${this.account.symbol.toUpperCase()}</div>
+    <div class="account-item__balance">${this.account.balance}</div>
     <div class="account-item__to-currency">
         <span class="almost-equal-to">&#8776;</span>
-        <span class="balance">${account.infiat}</span>
-        <span class="currency-unit">${fiat.symbol}</span>
+        <span class="balance">${this.account.infiat}</span>
+        <span class="currency-unit">${this.fiat.symbol}</span>
     </div>
       `;
-    this.addEventListener("click", (event) => {
+    this.addEventListener("click", (_) => {
       if (this.account) {
         this.state.account = this.account;
         this.state.backward = "accounts";
@@ -50,7 +50,7 @@ class AccountItem extends HTMLElement {
     this.account = JSON.parse(JSON.stringify(data.account));
     this.fiat = this.state.walletConfig.fiat;
     this.exchange();
-    this.insertAdjacentHTML("afterbegin", this.markup(this.account, this.fiat));
+    this.insertAdjacentHTML("afterbegin", this.markup());
     this.publish = this.account.publish;
     this.id = this.account.id;
   }
