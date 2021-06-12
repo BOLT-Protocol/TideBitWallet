@@ -21,10 +21,17 @@ export default class Scaffold extends HTMLElement {
   }
 
   /**
-   * @param {HTMLElement} element
+   * @param {HTMLElement} element or
+   * @param {HTMLElement} [element]
    */
   set body(element) {
-    this.childNodes[1].insertAdjacentElement("afterbegin", element);
+    if (Array.isArray(element)) {
+      element.forEach((element) =>
+        this.childNodes[1].insertAdjacentElement("afterbegin", element)
+      );
+    } else {
+      this.childNodes[1].insertAdjacentElement("afterbegin", element);
+    }
   }
 
   /**

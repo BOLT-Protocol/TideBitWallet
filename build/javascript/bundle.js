@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623426613968
+      // 1623468049832
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -355,6 +355,34 @@ const navigatorItemsData = [
 
 /***/ }),
 
+/***/ "./src/javascript/constant/tab_bar_data.js":
+/*!*************************************************!*\
+  !*** ./src/javascript/constant/tab_bar_data.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const tabBarItemData = [
+  {
+    iconImg: "../src/image/icon/ic_send_orange_light.png",
+    title: "Send",
+    screen: "transaction",
+  },
+  {
+    iconImg: "../src/image/icon/ic_receive_blue_dark.png",
+    title: "Receive",
+    screen: "address",
+  },
+];
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabBarItemData);
+
+/***/ }),
+
 /***/ "./src/javascript/index.js":
 /*!*********************************!*\
   !*** ./src/javascript/index.js ***!
@@ -379,42 +407,6 @@ start();
 
 /***/ }),
 
-/***/ "./src/javascript/layout/account_list.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/layout/account_list.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _widget_account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/account_item */ "./src/javascript/widget/account_item.js");
-
-
-customElements.define("account-item", _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default);
-
-const accountsContainer = (state) => {
-  const accountList = document.createElement("div");
-  accountList.className = "account-list";
-  state.user.accounts.forEach((account) => {
-    const accountItem = document.createElement("account-item");
-    accountItem.child = {
-      state: state,
-      account: account,
-    };
-    
-    accountList.insertAdjacentElement("beforeend", accountItem);
-  });
-  return accountList;
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (accountsContainer);
-
-
-/***/ }),
-
 /***/ "./src/javascript/layout/bottom_navigator.js":
 /*!***************************************************!*\
   !*** ./src/javascript/layout/bottom_navigator.js ***!
@@ -426,19 +418,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bottom_navigation_item */ "./src/javascript/widget/bottom_navigation_item.js");
-/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
+/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 
 
+class BottomNavigatorItem extends HTMLElement {
+  constructor() {
+    super();
+    this.markup = (itemData, state) => {
+      const markup = `
+          <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
+            itemData.screen
+          }" ${
+        itemData.checked || itemData.screen === state.screen ? "checked" : ""
+      }>
+          <label class="bottom-navigator__button" for="${itemData.screen}">
+              <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
+          </label>
+          `;
+      return markup;
+    };
+    this.addEventListener("click", (_) => {
+      this.state.screen = this.itemData.screen;
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
+    });
+  }
 
-customElements.define("bottom-navigator-item", _widget_bottom_navigation_item__WEBPACK_IMPORTED_MODULE_0__.default);
+  set child(data) {
+    this.className = "bottom-navigator";
+    this.itemData = data.itemData;
+    this.state = JSON.parse(JSON.stringify(data.state));
+    this.insertAdjacentHTML(
+      "afterbegin",
+      this.markup(this.itemData, this.state)
+    );
+  }
+}
 
-const bottomNavigator = (state, callback) => {
+customElements.define("bottom-navigator-item", BottomNavigatorItem);
+
+const bottomNavigator = (state) => {
   const bottomNavigatorBar = document.createElement("footer");
   bottomNavigatorBar.classList = ["bottom-navigator"];
-  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((itemData) => {
+  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.forEach((itemData) => {
     const navigatorItem = document.createElement("bottom-navigator-item");
-    navigatorItem.callback = callback;
     navigatorItem.child = {
       itemData: itemData,
       state: state,
@@ -484,7 +507,7 @@ class BackButton extends HTMLElement {
     this.innerHTML = iconHTML;
   }
   set onClick(state){
-    this.state = state;
+    this.state = JSON.parse(JSON.stringify(state));
   }
  
 }
@@ -616,10 +639,17 @@ class Scaffold extends HTMLElement {
   }
 
   /**
-   * @param {HTMLElement} element
+   * @param {HTMLElement} element or
+   * @param {HTMLElement} [element]
    */
   set body(element) {
-    this.childNodes[1].insertAdjacentElement("afterbegin", element);
+    if (Array.isArray(element)) {
+      element.forEach((element) =>
+        this.childNodes[1].insertAdjacentElement("afterbegin", element)
+      );
+    } else {
+      this.childNodes[1].insertAdjacentElement("afterbegin", element);
+    }
   }
 
   /**
@@ -635,6 +665,66 @@ class Scaffold extends HTMLElement {
 
 /***/ }),
 
+/***/ "./src/javascript/layout/tab_bar_navigator.js":
+/*!****************************************************!*\
+  !*** ./src/javascript/layout/tab_bar_navigator.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
+class TabBarItem extends HTMLElement {
+  constructor() {
+    super();
+    this.markup = (itemData) => `
+        <input type="radio" name="tab-bar" class="tab-bar__item" id=${itemData.title.toLowerCase()} checked>
+        <label class="tab-bar__button" for=${itemData.title.toLowerCase()}>
+          <div class="tab-bar__icon"><img src=${
+            itemData.iconImg
+          } alt="icon"></div>
+          <div class="tab-bar__text">${itemData.title}</i></div>
+        </label>
+        `;
+    this.addEventListener("click", (_) => {
+      this.state.screen = this.itemData.screen;
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
+    });
+  }
+
+  set child(data) {
+    this.itemData = data.itemData;
+    this.state = JSON.parse(JSON.stringify(data.state));
+    this.insertAdjacentHTML("afterbegin", this.markup(this.itemData));
+  }
+}
+
+customElements.define("tab-bar-item", TabBarItem);
+
+const tabNavigator = (state) => {
+  const tabBar = document.createElement("div");
+  tabBar.className = "tab-bar";
+  _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.forEach((itemData) => {
+    const tabBarItem = document.createElement("tab-bar-item");
+    tabBarItem.child = {
+      itemData: itemData,
+      state: state,
+    };
+    tabBar.insertAdjacentElement("beforeend", tabBarItem);
+  });
+  return tabBar;
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabNavigator);
+
+/***/ }),
+
 /***/ "./src/javascript/screen/account.js":
 /*!******************************************!*\
   !*** ./src/javascript/screen/account.js ***!
@@ -647,14 +737,64 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
+
 
 
 const account = (scaffold, state) => {
+  console.log(JSON.stringify(state));
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+  scaffold.body = [(0,_layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state)];
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
+
+
+/***/ }),
+
+/***/ "./src/javascript/screen/address.js":
+/*!******************************************!*\
+  !*** ./src/javascript/screen/address.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+
+
+const address = (scaffold, state) => {
     console.log(JSON.stringify(state));
     scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
+
+/***/ }),
+
+/***/ "./src/javascript/screen/bill.js":
+/*!***************************************!*\
+  !*** ./src/javascript/screen/bill.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+
+
+const bill = (scaffold, state) => {
+    console.log(JSON.stringify(state));
+    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bill);
 
 /***/ }),
 
@@ -671,7 +811,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 /* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
-/* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
+/* harmony import */ var _widget_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/account_list */ "./src/javascript/widget/account_list.js");
 
 
 
@@ -681,8 +821,7 @@ const overview = (scaffold, state) => {
   scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
   switch (state.screen) {
     case "accounts":
-      // scaffold.body = accountsContainer(state.user.accounts, state.walletConfig.fiat);
-      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
     case "settings":
       const container = document.createElement("div");
@@ -690,13 +829,36 @@ const overview = (scaffold, state) => {
       scaffold.body = container;
       break;
     default:
-      scaffold.body = (0,_layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
   }
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
 
+
+/***/ }),
+
+/***/ "./src/javascript/screen/transaction.js":
+/*!**********************************************!*\
+  !*** ./src/javascript/screen/transaction.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+
+
+const transaction = (scaffold, state) => {
+    console.log(JSON.stringify(state));
+    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
 
 /***/ }),
 
@@ -821,14 +983,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
 
 
 
 
-customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default);
+
+
+
+customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
 
 const setup = () => {
   document.body.replaceChildren();
@@ -842,10 +1010,20 @@ const route = (state) => {
   switch (state.screen) {
     case "accounts":
     case "settings":
-      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(root, state);
+      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
       break;
     case "account":
-      (0,_screen_account__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
+      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(root, state);
+      break;
+    case "transaction":
+      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(root, state);
+      break;
+    case "address":
+      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(root, state);
+      break;
+    case "bill":
+      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(root, state);
+      break;
   }
 };
 
@@ -945,6 +1123,18 @@ __webpack_require__.r(__webpack_exports__);
 class AccountItem extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
+    this.markup = (account, fiat) => `
+    <div class="account-item__icon">
+        <img src=${account.image} alt=${account.symbol.toUpperCase()}>
+    </div>
+    <div class="account-item__symbol">${account.symbol.toUpperCase()}</div>
+    <div class="account-item__balance">${account.balance}</div>
+    <div class="account-item__to-currency">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="balance">${account.infiat}</span>
+        <span class="currency-unit">${fiat.symbol}</span>
+    </div>
+      `;
     this.addEventListener("click", (event) => {
       if (this.account) {
         this.state.account = this.account;
@@ -956,11 +1146,12 @@ class AccountItem extends HTMLElement {
       }
     });
   }
-
+  connectedCallback() {
+    this.className = "account-item";
+  }
   get publish() {
     return this.hasAttribute("publish");
   }
-
   set publish(val) {
     if (val) {
       this.setAttribute("publish", "");
@@ -968,7 +1159,6 @@ class AccountItem extends HTMLElement {
       this.removeAttribute("publish");
     }
   }
-
   exchange() {
     if (this.fiat) {
       this.account.infiat = this.account.inUSD / this.fiat.inUSD;
@@ -976,47 +1166,26 @@ class AccountItem extends HTMLElement {
     }
     return;
   }
-
   set child(data) {
     this.state = JSON.parse(JSON.stringify(data.state));
     this.account = JSON.parse(JSON.stringify(data.account));
     this.fiat = this.state.walletConfig.fiat;
     this.exchange();
-    this.insertAdjacentHTML("afterbegin", accountItem(this.account, this.fiat));
+    this.insertAdjacentHTML("afterbegin", this.markup(this.account, this.fiat));
     this.publish = this.account.publish;
     this.id = this.account.id;
   }
-
-  connectedCallback() {
-    this.className = "account-item";
-  }
 }
-
-const accountItem = (account, fiat) => {
-  const markup = `
-  <div class="account-item__icon">
-      <img src=${account.image} alt=${account.symbol.toUpperCase()}>
-  </div>
-  <div class="account-item__symbol">${account.symbol.toUpperCase()}</div>
-  <div class="account-item__balance">${account.balance}</div>
-  <div class="account-item__to-currency">
-      <span class="almost-equal-to">&#8776;</span>
-      <span class="balance">${account.infiat}</span>
-      <span class="currency-unit">${fiat.symbol}</span>
-  </div>
-    `;
-  return markup;
-};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountItem);
 
 
 /***/ }),
 
-/***/ "./src/javascript/widget/bottom_navigation_item.js":
-/*!*********************************************************!*\
-  !*** ./src/javascript/widget/bottom_navigation_item.js ***!
-  \*********************************************************/
+/***/ "./src/javascript/widget/account_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/widget/account_list.js ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1024,43 +1193,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./account_item */ "./src/javascript/widget/account_item.js");
 
-class BottomNavigatorItem extends HTMLElement {
-  constructor() {
-    super();
-    this.addEventListener("click", (event) => {
-      this.state.screen = this.itemData.screen;
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
-    });
-  }
 
-  set child(data) {
-    this.className = "bottom-navigator";
-    this.itemData = data.itemData;
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.insertAdjacentHTML(
-      "afterbegin",
-      bottomNavigatorItem(this.itemData, this.state)
-    );
-  }
-}
+customElements.define("account-item", _account_item__WEBPACK_IMPORTED_MODULE_0__.default);
 
-const bottomNavigatorItem = (itemData, state) => {
-  const markup = `
-      <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
-        itemData.screen
-      }" ${
-    itemData.checked || itemData.screen === state.screen ? "checked" : ""
-  }>
-      <label class="bottom-navigator__button" for="${itemData.screen}">
-          <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
-      </label>
-      `;
-  return markup;
+const accountList = (state) => {
+  const accountList = document.createElement("div");
+  accountList.className = "account-list";
+  state.user.accounts.forEach((account) => {
+    const accountItem = document.createElement("account-item");
+    accountItem.child = {
+      state: state,
+      account: account,
+    };
+    
+    accountList.insertAdjacentElement("beforeend", accountItem);
+  });
+  return accountList;
 };
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigatorItem);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (accountList);
 
 
 /***/ }),
@@ -1165,7 +1318,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("780c0ac3b87f49d83f49")
+/******/ 		__webpack_require__.h = () => ("1722649e0281e2bbfc96")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

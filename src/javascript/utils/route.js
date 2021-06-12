@@ -1,6 +1,9 @@
+import Scaffold from "../layout/scaffold";
 import overview from "../screen/overview";
 import account from "../screen/account";
-import Scaffold from "../layout/scaffold";
+import transaction from "../screen/transaction";
+import address from "../screen/address";
+import bill from "../screen/bill";
 
 customElements.define("scaffold-widget", Scaffold);
 
@@ -20,6 +23,16 @@ const route = (state) => {
       break;
     case "account":
       account(root, state);
+      break;
+    case "transaction":
+      transaction(root, state);
+      break;
+    case "address":
+      address(root, state);
+      break;
+    case "bill":
+      bill(root, state);
+      break;
   }
 };
 

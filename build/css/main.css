@@ -222,6 +222,8 @@ body {
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid #eee; }
+  .tab-bar > * {
+    flex: 1; }
   .tab-bar__item {
     display: none; }
   .tab-bar label[for="send"],
@@ -235,12 +237,13 @@ body {
     display: flex;
     flex-direction: row;
     background-color: #fff;
-    flex: 1;
     justify-content: center;
-    align-items: center; }
+    align-items: center;
+    font-size: 1.28rem; }
   .tab-bar__icon {
     margin-right: 1rem;
-    width: 2rem; }
+    width: 2rem;
+    display: flex; }
     .tab-bar__icon img {
       width: 100%; }
 

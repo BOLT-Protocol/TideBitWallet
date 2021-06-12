@@ -17,7 +17,7 @@ class BackButton extends HTMLElement {
     this.innerHTML = iconHTML;
   }
   set onClick(state){
-    this.state = state;
+    this.state = JSON.parse(JSON.stringify(state));
   }
  
 }

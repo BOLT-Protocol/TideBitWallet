@@ -1,14 +1,13 @@
 import header from "../layout/header";
 import bottomNavigator from "../layout/bottom_navigator";
-import accountsContainer from "../layout/account_list";
+import accountList from "../widget/account_list";
 
 const overview = (scaffold, state) => {
   scaffold.header = header(state);
   scaffold.bottomNavigator = bottomNavigator(state);
   switch (state.screen) {
     case "accounts":
-      // scaffold.body = accountsContainer(state.user.accounts, state.walletConfig.fiat);
-      scaffold.body = accountsContainer(state);
+      scaffold.body = accountList(state);
       break;
     case "settings":
       const container = document.createElement("div");
@@ -16,7 +15,7 @@ const overview = (scaffold, state) => {
       scaffold.body = container;
       break;
     default:
-      scaffold.body = accountsContainer(state);
+      scaffold.body = accountList(state);
       break;
   }
 };

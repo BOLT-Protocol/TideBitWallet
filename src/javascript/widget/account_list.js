@@ -1,8 +1,8 @@
-import AccountItem from "../widget/account_item";
+import AccountItem from "./account_item";
 
 customElements.define("account-item", AccountItem);
 
-const accountsContainer = (state) => {
+const accountList = (state) => {
   const accountList = document.createElement("div");
   accountList.className = "account-list";
   state.user.accounts.forEach((account) => {
@@ -17,4 +17,4 @@ const accountsContainer = (state) => {
   return accountList;
 };
 
-export default accountsContainer;
+export default accountList;
