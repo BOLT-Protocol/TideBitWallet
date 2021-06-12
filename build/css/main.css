@@ -148,7 +148,7 @@ body {
   gap: 5px; }
 
 .bill-list {
-  height: 100%;
+  height: 349px;
   display: flex;
   flex-direction: column;
   overflow: scroll; }
