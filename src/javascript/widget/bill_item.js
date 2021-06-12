@@ -6,11 +6,7 @@ class BillItem extends HTMLElement {
     super();
     this.markup = () => `
     <div class="bill-item__main">
-        <div class="bill-item__icon">
-            <img src=${
-              this.bill.directionIcon
-            } alt=${this.bill.action.toLowerCase()}>
-        </div>
+        <div class="bill-item__icon"></div>
         <div class="bill-item__title">
             <div class="bill-item__action">${this.bill.action}</div>
             <div class="bill-item__detail">
@@ -36,7 +32,7 @@ class BillItem extends HTMLElement {
         `;
     this.addEventListener("click", () => {
       // let transactionDetail = ui.getTransactionDetail({ transactionID });
-      this.state.screen = 'bill';
+      this.state.screen = "bill";
       this.state.bill = this.bill;
       route(this.state);
     });

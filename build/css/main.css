@@ -180,9 +180,14 @@ body {
     flex-direction: row; }
   .bill-item__icon {
     margin-right: 1rem;
-    width: 5rem; }
-    .bill-item__icon img {
-      width: 100%; }
+    min-width: 2rem;
+    height: 2rem;
+    background-position: center;
+    background-size: cover; }
+  .bill-item[send] .bill-item__icon {
+    background-image: url(../image/ic_send_black.png); }
+  .bill-item[receive] .bill-item__icon {
+    background-image: url(../image/ic_receive_black.png); }
   .bill-item__title {
     width: 100%;
     font-size: 1.2rem; }
@@ -196,9 +201,9 @@ body {
   .bill-item .bill-item__address {
     color: #9B9B9B;
     font-size: 0.96rem; }
-  [send] .bill-item__amount {
+  .bill-item[send] .bill-item__amount {
     color: #FF5730; }
-  [receive] .bill-item__amount {
+  .bill-item[receive] .bill-item__amount {
     color: #446CB3; }
   .bill-item[pending] .bill-item__status,
   .bill-item[pending][send] .bill-item__amount,
@@ -236,12 +241,10 @@ body {
     flex: 1; }
   .tab-bar__item {
     display: none; }
-  .tab-bar label[for="send"],
-  .tab-bar label[for="send"] * {
-    color: #FF5730; }
-  .tab-bar label[for="receive"],
-  .tab-bar label[for="receive"] * {
+  .tab-bar [receive] .tab-bar__button {
     color: #446CB3; }
+  .tab-bar [send] .tab-bar__button {
+    color: #FF5730; }
   .tab-bar__button {
     padding: 1rem 0;
     display: flex;
@@ -253,9 +256,13 @@ body {
   .tab-bar__icon {
     margin-right: 1rem;
     width: 2rem;
-    display: flex; }
-    .tab-bar__icon img {
-      width: 100%; }
+    height: 2rem;
+    background-position: center;
+    background-size: cover; }
+  .tab-bar [receive] .tab-bar__icon {
+    background-image: url(../image/ic_receive_blue_dark.png); }
+  .tab-bar [send] .tab-bar__icon {
+    background-image: url(../image/ic_send_orange_light.png); }
 
 .bill {
   display: flex;

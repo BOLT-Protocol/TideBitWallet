@@ -6,9 +6,7 @@ class TabBarItem extends HTMLElement {
     this.markup = (itemData) => `
         <input type="radio" name="tab-bar" class="tab-bar__item" id=${itemData.title.toLowerCase()} checked>
         <label class="tab-bar__button" for=${itemData.title.toLowerCase()}>
-          <div class="tab-bar__icon"><img src=${
-            itemData.iconImg
-          } alt="icon"></div>
+          <div class="tab-bar__icon"></div>
           <div class="tab-bar__text">${itemData.title}</i></div>
         </label>
         `;
@@ -17,11 +15,15 @@ class TabBarItem extends HTMLElement {
       route(this.state);
     });
   }
+  set type(val) {
+    this.setAttribute(val, "");
+  }
 
   set child(data) {
     this.itemData = data.itemData;
     this.state = JSON.parse(JSON.stringify(data.state));
     this.insertAdjacentHTML("afterbegin", this.markup(this.itemData));
+    this.type = this.itemData.title.toLowerCase();
   }
 }
 

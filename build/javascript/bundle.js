@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623497678864
+      // 1623498744912
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -686,9 +686,7 @@ class TabBarItem extends HTMLElement {
     this.markup = (itemData) => `
         <input type="radio" name="tab-bar" class="tab-bar__item" id=${itemData.title.toLowerCase()} checked>
         <label class="tab-bar__button" for=${itemData.title.toLowerCase()}>
-          <div class="tab-bar__icon"><img src=${
-            itemData.iconImg
-          } alt="icon"></div>
+          <div class="tab-bar__icon"></div>
           <div class="tab-bar__text">${itemData.title}</i></div>
         </label>
         `;
@@ -697,11 +695,15 @@ class TabBarItem extends HTMLElement {
       (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
     });
   }
+  set type(val) {
+    this.setAttribute(val, "");
+  }
 
   set child(data) {
     this.itemData = data.itemData;
     this.state = JSON.parse(JSON.stringify(data.state));
     this.insertAdjacentHTML("afterbegin", this.markup(this.itemData));
+    this.type = this.itemData.title.toLowerCase();
   }
 }
 
@@ -722,6 +724,7 @@ const tabNavigator = (state) => {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabNavigator);
+
 
 /***/ }),
 
@@ -1434,11 +1437,7 @@ class BillItem extends HTMLElement {
     super();
     this.markup = () => `
     <div class="bill-item__main">
-        <div class="bill-item__icon">
-            <img src=${
-              this.bill.directionIcon
-            } alt=${this.bill.action.toLowerCase()}>
-        </div>
+        <div class="bill-item__icon"></div>
         <div class="bill-item__title">
             <div class="bill-item__action">${this.bill.action}</div>
             <div class="bill-item__detail">
@@ -1464,7 +1463,7 @@ class BillItem extends HTMLElement {
         `;
     this.addEventListener("click", () => {
       // let transactionDetail = ui.getTransactionDetail({ transactionID });
-      this.state.screen = 'bill';
+      this.state.screen = "bill";
       this.state.bill = this.bill;
       (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
     });
@@ -1634,7 +1633,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("275eac7fb01b5c31b6f4")
+/******/ 		__webpack_require__.h = () => ("49800d7404ba63ec3a91")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
