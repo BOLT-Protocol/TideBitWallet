@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623487329203
+      // 1623491244594
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -932,7 +932,7 @@ const getAssetDetail = (assetId) => {
 const account = (scaffold, state) => {
   const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
-  scaffold.body = [(0,_layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default)(state), (0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_3__.default)(state.account, bills)];
+  scaffold.body = [(0,_layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default)(state), (0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_3__.default)(state, bills)];
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
@@ -1427,7 +1427,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
 
 
 class BillItem extends HTMLElement {
@@ -1444,7 +1446,7 @@ class BillItem extends HTMLElement {
             <div class="bill-item__action">${this.bill.action}</div>
             <div class="bill-item__detail">
                 <span class="bill-item__direction">${this.bill.direction}</span>
-                <span class="bill-item__address">${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.addressFormatter)(
+                <span class="bill-item__address">${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(
                   this.bill.address
                 )}</span>
             </div>
@@ -1458,11 +1460,16 @@ class BillItem extends HTMLElement {
     </div>
     <div class="bill-item__sub">
         <div class="bill-item__status">${this.bill.status}</div>
-        <div class="bill-item__progress"><span style="width: ${this.bill.progress}"></span></div>
+        <div class="bill-item__progress"><span style="width: ${
+          this.bill.progress
+        }"></span></div>
     </div>
         `;
     this.addEventListener("click", () => {
       // let transactionDetail = ui.getTransactionDetail({ transactionID });
+      this.state.screen = 'bill';
+      this.state.bill = this.bill;
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
     });
   }
   connectedCallback() {
@@ -1481,8 +1488,9 @@ class BillItem extends HTMLElement {
     this.setAttribute(val, "");
   }
   set child(data) {
-    this.account = data.account;
+    this.state = JSON.parse(JSON.stringify(data.state));
     this.bill = data.bill;
+    this.account = this.state.account;
     this.insertAdjacentHTML("afterbegin", this.markup());
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
@@ -1510,14 +1518,14 @@ __webpack_require__.r(__webpack_exports__);
 
 customElements.define("bill-item", _bill_item__WEBPACK_IMPORTED_MODULE_0__.default);
 
-const billList = (account, bills) => {
+const billList = (state, bills) => {
   const billList = document.createElement("div");
   billList.className = "bill-list";
   bills.forEach((bill) => {
     const billItem = document.createElement("bill-item");
     billItem.child = {
-      account: account,
-      bill: bill,
+      state,
+      bill,
     };
     billList.insertAdjacentElement("beforeend", billItem);
   });
@@ -1629,7 +1637,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("91e6e4f97f65ea601b3e")
+/******/ 		__webpack_require__.h = () => ("dd8f1cddaeb73966cf3a")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

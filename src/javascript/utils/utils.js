@@ -53,8 +53,6 @@ export const dateFormatter = (timestamp) => {
     pad(minutes) +
     " " +
     suffix;
-  console.log(`mmddyyyykkmm: ${mmddyyyykkmm}`);
-
   return mmddyyyykkmm;
 };
 

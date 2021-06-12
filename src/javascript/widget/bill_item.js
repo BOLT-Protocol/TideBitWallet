@@ -1,3 +1,4 @@
+import route from "../utils/route";
 import { addressFormatter } from "../utils/utils";
 
 class BillItem extends HTMLElement {
@@ -28,11 +29,16 @@ class BillItem extends HTMLElement {
     </div>
     <div class="bill-item__sub">
         <div class="bill-item__status">${this.bill.status}</div>
-        <div class="bill-item__progress"><span style="width: ${this.bill.progress}"></span></div>
+        <div class="bill-item__progress"><span style="width: ${
+          this.bill.progress
+        }"></span></div>
     </div>
         `;
     this.addEventListener("click", () => {
       // let transactionDetail = ui.getTransactionDetail({ transactionID });
+      this.state.screen = 'bill';
+      this.state.bill = this.bill;
+      route(this.state);
     });
   }
   connectedCallback() {
@@ -51,8 +57,9 @@ class BillItem extends HTMLElement {
     this.setAttribute(val, "");
   }
   set child(data) {
-    this.account = data.account;
+    this.state = JSON.parse(JSON.stringify(data.state));
     this.bill = data.bill;
+    this.account = this.state.account;
     this.insertAdjacentHTML("afterbegin", this.markup());
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();

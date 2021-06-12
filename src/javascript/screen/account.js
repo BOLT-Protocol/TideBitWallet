@@ -74,7 +74,7 @@ const getAssetDetail = (assetId) => {
 const account = (scaffold, state) => {
   const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
   scaffold.header = header(state);
-  scaffold.body = [tabNavigator(state), billList(state.account, bills)];
+  scaffold.body = [tabNavigator(state), billList(state, bills)];
 };
 
 export default account;
