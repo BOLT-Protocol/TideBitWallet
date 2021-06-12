@@ -15,7 +15,7 @@ class TabBarItem extends HTMLElement {
       route(this.state);
     });
   }
-  set type(val) {
+  set action(val) {
     this.setAttribute(val, "");
   }
 
@@ -23,7 +23,7 @@ class TabBarItem extends HTMLElement {
     this.itemData = data.itemData;
     this.state = JSON.parse(JSON.stringify(data.state));
     this.insertAdjacentHTML("afterbegin", this.markup(this.itemData));
-    this.type = this.itemData.title.toLowerCase();
+    this.action = this.itemData.title.toLowerCase();
   }
 }
 

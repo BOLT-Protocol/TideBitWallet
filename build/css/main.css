@@ -302,6 +302,8 @@ body {
     color: #555; }
   .bill__title, .bill__content {
     font-size: 1.2rem; }
+  .bill__status {
+    margin-right: 1rem; }
   .bill[completed] .bill__status {
     color: #7ED321; }
   .bill[failed] .bill__status {
@@ -312,21 +314,26 @@ body {
     width: 2rem;
     height: 2rem;
     background-position: center;
-    background-size: cover;
-    margin-left: 1rem; }
+    background-size: cover; }
   .bill[completed] .bill__status-icon {
     background-image: url(../image/ic_completed_green.png); }
   .bill[failed] .bill__status-icon {
     background-image: url(../image/ic_failed_red.png); }
   .bill[pending] .bill__status-icon {
     background-image: url(../image/ic_pending_grey.png); }
-  .bill__header + .bill__cell .bill__content {
+  .bill__header ~ .bill__cell .bill__content {
     display: flex;
     flex-direction: row;
     align-items: center; }
-  .bill__id {
+  .bill__id, .bill__id:visited, .bill__id:active {
     text-decoration: underline;
     color: #4ECDC4; }
+  .bill__id:hover {
+    cursor: pointer; }
+  .bill__asset-icon {
+    width: 2rem; }
+    .bill__asset-icon > img {
+      width: 100%; }
 
 
 /*# sourceMappingURL=main.css.map*/

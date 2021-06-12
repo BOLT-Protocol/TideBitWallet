@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623498744912
+      // 1623503047997
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -368,12 +368,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 const tabBarItemData = [
   {
-    iconImg: "../src/image/icon/ic_send_orange_light.png",
     title: "Send",
     screen: "transaction",
   },
   {
-    iconImg: "../src/image/icon/ic_receive_blue_dark.png",
     title: "Receive",
     screen: "address",
   },
@@ -695,7 +693,7 @@ class TabBarItem extends HTMLElement {
       (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
     });
   }
-  set type(val) {
+  set action(val) {
     this.setAttribute(val, "");
   }
 
@@ -703,7 +701,7 @@ class TabBarItem extends HTMLElement {
     this.itemData = data.itemData;
     this.state = JSON.parse(JSON.stringify(data.state));
     this.insertAdjacentHTML("afterbegin", this.markup(this.itemData));
-    this.type = this.itemData.title.toLowerCase();
+    this.action = this.itemData.title.toLowerCase();
   }
 }
 
@@ -816,22 +814,22 @@ class Bill {
     if (this.confirmations > 6) return "100%";
     return ((this.confirmations / 6) * 100).toString() + "%";
   }
-  formattedAmount(account) {
+  get sign() {
     switch (this._direction) {
       case "receive":
-        return "+" + " " + this.amount + " " + account.symbol;
+        return "+";
       case "send":
-        return "-" + " " + this.amount + " " + account.symbol;
+        return "-";
       default:
         return "Unknown";
     }
   }
-  get directionIcon() {
+  formattedAmount(account) {
     switch (this._direction) {
       case "receive":
-        return "../src/image/icon/ic_receive_black.png";
+        return this.sign + " " + this.amount + " " + account.symbol;
       case "send":
-        return "../src/image/icon/ic_send_black.png";
+        return this.sign + " " + this.amount + " " + account.symbol;
       default:
         return "Unknown";
     }
@@ -978,13 +976,90 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
-const bill = (scaffold, state) => {
-    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+
+class Bill extends HTMLElement {
+  constructor() {
+    super();
+    this.markup = () => `
+        <div class="bill__header">
+            <span class="bill__sign">${this.bill.sign}</span>
+            <span class="bill__amount">${this.bill.amount}</span>
+            <span class="bill__unit">${this.account.symbol}</span>
+        </div>
+        <div class="bill__cell">
+            <div class="bill__title">Status</div>
+            <div class="bill__content">
+                <span class="bill__status">${this.bill.status}</span>
+                <span class="bill__status bill__confirmations">(${this.bill.confirmations} confirmation)</span>
+                <span class="bill__status-icon"></span>
+            </div>
+        </div>
+        <div class="bill__cell">
+            <div class="bill__title">Time</div>
+            <div class="bill__content">
+                (${this.bill.dateTime})
+            </div>
+        </div>
+        <div class="bill__cell">
+            <div class="bill__title">${this.bill.direction}</div>
+            <div class="bill__content">
+            ${this.bill.address}
+            </div>
+        </div>
+        <div class="bill__cell">
+            <div class="bill__title">Fee</div>
+            <div class="bill__content">
+                <span class="bill__fee">${this.bill.fee}</span>
+                <span class="bill__unit">${this.account.symbol}</span>
+            </div>
+        </div>
+        <div class="bill__cell">
+            <div class="bill__title">Transaction Id</div>
+            <div class="bill__content">
+                <span class="bill__asset-icon"><img src=${this.account.image} alt="ETH"></span>
+                <span class="bill__id"><a target="_blank" href=https://${this.account.network}.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(this.bill.txid)}</a></span>
+            </div>
+        </div>
+    `;
+  }
+  connectedCallback() {
+    this.className = "bill";
+  }
+  set action(val) {
+    this.setAttribute(val, "");
+  }
+  set status(val) {
+    if (this.hasAttribute("pending")) this.removeAttribute("pending");
+    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
+    if (this.hasAttribute("complete")) this.removeAttribute("complete");
+    this.setAttribute(val, "");
+  }
+  set child(data) {
+    this.bill = data.bill;
+    this.account = data.account;
+    this.insertAdjacentHTML("afterbegin", this.markup());
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+  }
 }
 
+customElements.define("bill-content", Bill);
+
+const bill = (scaffold, state) => {
+  const billContent = document.createElement("bill-content");
+  billContent.child = {
+    bill: state.bill,
+    account: state.account,
+  };
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+  scaffold.body = billContent;
+};
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bill);
+
 
 /***/ }),
 
@@ -1544,10 +1619,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ "./src/scss/main.scss");
 /* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ "./src/javascript/index.js");
 
+
 __webpack_require__ (/*! ./image/icon/icon16.png */ "./src/image/icon/icon16.png");
 __webpack_require__ (/*! ./image/icon/icon48.png */ "./src/image/icon/icon48.png");
 __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.png");
-
 
 /***/ })
 
@@ -1633,7 +1708,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("49800d7404ba63ec3a91")
+/******/ 		__webpack_require__.h = () => ("12069ab6527e74bad08c")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
