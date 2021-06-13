@@ -45,7 +45,7 @@ export const dateFormatter = (timestamp) => {
     monthNames[month] +
     " " +
     pad(date) +
-    "," +
+    ", " +
     year +
     " " +
     hours +

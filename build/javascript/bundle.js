@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623505769828
+      // 1623571576145
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -993,7 +993,9 @@ class Bill extends HTMLElement {
             <div class="bill__title">Status</div>
             <div class="bill__content">
                 <span class="bill__status">${this.bill.status}</span>
-                <span class="bill__status bill__confirmations">(${this.bill.confirmations} confirmation)</span>
+                <span class="bill__status bill__confirmations">(${
+                  this.bill.confirmations
+                } confirmation)</span>
                 <span class="bill__status-icon"></span>
             </div>
         </div>
@@ -1019,8 +1021,14 @@ class Bill extends HTMLElement {
         <div class="bill__cell">
             <div class="bill__title">Transaction Id</div>
             <div class="bill__content">
-                <span class="bill__asset-icon"><img src=${this.account.image} alt="ETH"></span>
-                <span class="bill__id"><a target="_blank" href=https://${this.account.network}.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(this.bill.txid)}</a></span>
+                <span class="bill__asset-icon"><img src=${
+                  this.account.image
+                } alt="ETH"></span>
+                <span class="bill__id"><a target="_blank" href=https://${
+                  this.account.network
+                }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(
+      this.bill.txid
+    )}</a></span>
             </div>
         </div>
     `;
@@ -1032,6 +1040,7 @@ class Bill extends HTMLElement {
     this.setAttribute(val, "");
   }
   set status(val) {
+    if (this.hasAttribute(val))return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");
@@ -1360,7 +1369,7 @@ const dateFormatter = (timestamp) => {
     monthNames[month] +
     " " +
     pad(date) +
-    "," +
+    ", " +
     year +
     " " +
     hours +
@@ -1549,6 +1558,7 @@ class BillItem extends HTMLElement {
     return ["pending", "confirming", "complete"];
   }
   set status(val) {
+    if (this.hasAttribute(val))return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");
@@ -1707,7 +1717,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d2b7ff46783e304bf927")
+/******/ 		__webpack_require__.h = () => ("3d6674f33dcb4e91388a")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

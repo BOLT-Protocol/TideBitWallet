@@ -44,6 +44,7 @@ class BillItem extends HTMLElement {
     return ["pending", "confirming", "complete"];
   }
   set status(val) {
+    if (this.hasAttribute(val))return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");

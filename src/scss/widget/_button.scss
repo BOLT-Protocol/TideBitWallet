@@ -1,0 +1,26 @@
+.button {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 5px 2rem;
+  border-radius: 5px;
+  min-width: 60px; // --
+  border: 1px solid $color-secondary;
+  align-items: center;
+  font-size: $default-font-size ;
+  justify-content: center;
+  & *:not(:last-child) {
+    margin-right: 1rem;
+  }
+
+  &[round] {
+    border-radius: 30px;
+  }
+  &[outline] {
+    color: $color-secondary;
+  }
+  &[filled] {
+    color: $color-white;
+    background-color: $color-secondary;
+  }
+}
