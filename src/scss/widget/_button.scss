@@ -5,10 +5,15 @@
   width: 100%;
   border-radius: 5px;
   min-width: 60px; // --
-  border: 1px solid $color-secondary;
+
   align-items: center;
   font-size: $default-font-size * 0.8;
   justify-content: center;
+  cursor: pointer;
+
+  &:hover{
+    cursor: pointer;
+  }
   & *:not(:last-child) {
     margin-right: 1rem;
   }
@@ -18,9 +23,16 @@
   }
   &[outline] {
     color: $color-secondary;
+    border: 1px solid $color-secondary;
   }
-  &[filled] {
+  &[fill] {
     color: $color-white;
     background-color: $color-secondary;
+    border: 1px solid $color-secondary;
+  }
+  &[fill-primary] {
+    color: $color-white;
+    background-color: $color-primary;
+    border: 1px solid $color-primary;
   }
 }

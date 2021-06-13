@@ -371,19 +371,27 @@ body {
   width: 100%;
   border-radius: 5px;
   min-width: 60px;
-  border: 1px solid #446CB3;
   align-items: center;
   font-size: 1.28rem;
-  justify-content: center; }
+  justify-content: center;
+  cursor: pointer; }
+  .button:hover {
+    cursor: pointer; }
   .button *:not(:last-child) {
     margin-right: 1rem; }
   .button[round] {
     border-radius: 30px; }
   .button[outline] {
-    color: #446CB3; }
-  .button[filled] {
+    color: #446CB3;
+    border: 1px solid #446CB3; }
+  .button[fill] {
     color: #fff;
-    background-color: #446CB3; }
+    background-color: #446CB3;
+    border: 1px solid #446CB3; }
+  .button[fill-primary] {
+    color: #fff;
+    background-color: #4ECDC4;
+    border: 1px solid #4ECDC4; }
 
 
 /*# sourceMappingURL=main.css.map*/

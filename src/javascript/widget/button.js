@@ -12,7 +12,6 @@ class Button extends HTMLElement {
         <div class="button__text"></div>
         <div class="button__icon--suffix button__icon"></div>
         `;
-        console.log(this.children);
   }
   set style(val) {
     if (Array.isArray(val)) {
