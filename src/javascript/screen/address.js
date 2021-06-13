@@ -18,6 +18,12 @@ class Address extends HTMLElement {
         <div class="address__button"></div>
         `;
   }
+  /**
+   * ETH || BTC
+   */
+  set coinbase(val){
+      this.setAttribute(val,'');
+  }
   set address(address) {
     const button = document.createElement("default-button");
     QRCode.toCanvas(
@@ -37,7 +43,6 @@ class Address extends HTMLElement {
         console.log("success!");
       }
     );
-
     this.children[3].textContent = address;
     this.children[4].insertAdjacentElement("afterbegin", button);
     button.style = ["round", "outline"];
@@ -47,6 +52,10 @@ class Address extends HTMLElement {
       navigator.clipboard.writeText(address).then(
         function () {
           console.log("Async: Copying to clipboard was successful!");
+          button.popup = true;
+          setTimeout(()=>{
+            button.popup = false;
+          },300);
         },
         function (err) {
           console.error("Async: Could not copy text: ", err);
@@ -63,6 +72,7 @@ const address = (scaffold, state) => {
   scaffold.header = header(state);
   const addressContent = document.createElement("address-content");
   scaffold.body = addressContent;
+  addressContent.coinbase = state.account.symbol;
   addressContent.address = _address;
 };
 

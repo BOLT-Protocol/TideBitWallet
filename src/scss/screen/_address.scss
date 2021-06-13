@@ -15,6 +15,9 @@
     line-height: 1.2;
     margin: 1rem 0 ;
   }
+  &[ETH] &__subtitle{
+    opacity: 0;
+  }
   &__qrcode{
     flex: auto;
   }

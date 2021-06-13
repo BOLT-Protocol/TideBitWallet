@@ -15,6 +15,19 @@ ORDER: Base + typography > general layout + grid > page layout > components
 
 1em = 16px
 */
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
 *,
 *::after,
 *::before {
@@ -242,6 +255,8 @@ body {
     font-size: 1.12rem;
     line-height: 1.2;
     margin: 1rem 0; }
+  .address[ETH] .address__subtitle {
+    opacity: 0; }
   .address__qrcode {
     flex: auto; }
   .address__text {
@@ -369,12 +384,39 @@ body {
   flex-direction: row;
   padding: 5px 0;
   width: 100%;
-  border-radius: 5px;
   min-width: 60px;
+  border-radius: 5px;
   align-items: center;
   font-size: 1.28rem;
   justify-content: center;
-  cursor: pointer; }
+  cursor: pointer;
+  position: relative;
+  /* Popup arrow */
+  /* Toggle this class - hide and show the popup */ }
+  .button__popup {
+    visibility: hidden;
+    background-color: #9B9B9B;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 92%;
+    left: 67%; }
+  .button__popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 38%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #9B9B9B transparent transparent transparent; }
+  .button[popup] .button__popup {
+    visibility: visible;
+    -webkit-animation: fadeIn .3s;
+    animation: fadeIn .3s; }
   .button:hover {
     cursor: pointer; }
   .button *:not(:last-child) {

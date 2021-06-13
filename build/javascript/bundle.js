@@ -750,7 +750,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623580788864
+      // 1623583328726
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6670,6 +6670,12 @@ class Address extends HTMLElement {
         <div class="address__button"></div>
         `;
   }
+  /**
+   * ETH || BTC
+   */
+  set coinbase(val){
+      this.setAttribute(val,'');
+  }
   set address(address) {
     const button = document.createElement("default-button");
     qrcode__WEBPACK_IMPORTED_MODULE_2__.toCanvas(
@@ -6689,7 +6695,6 @@ class Address extends HTMLElement {
         console.log("success!");
       }
     );
-
     this.children[3].textContent = address;
     this.children[4].insertAdjacentElement("afterbegin", button);
     button.style = ["round", "outline"];
@@ -6699,6 +6704,10 @@ class Address extends HTMLElement {
       navigator.clipboard.writeText(address).then(
         function () {
           console.log("Async: Copying to clipboard was successful!");
+          button.popup = true;
+          setTimeout(()=>{
+            button.popup = false;
+          },300);
         },
         function (err) {
           console.error("Async: Could not copy text: ", err);
@@ -6715,6 +6724,7 @@ const address = (scaffold, state) => {
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
   const addressContent = document.createElement("address-content");
   scaffold.body = addressContent;
+  addressContent.coinbase = state.account.symbol;
   addressContent.address = _address;
 };
 
@@ -7400,6 +7410,7 @@ class Button extends HTMLElement {
         <div class="button__icon--leading button__icon"></div>
         <div class="button__text"></div>
         <div class="button__icon--suffix button__icon"></div>
+        <span class="button__popup">Copy!</span>
         `;
   }
   set style(val) {
@@ -7419,8 +7430,15 @@ class Button extends HTMLElement {
   set suffix(element) {
     this.children[2].insertAdjacentHTML("beforeend", element);
   }
-  set onPressed(action){
-      this.action = action;
+  set onPressed(action) {
+    this.action = action;
+  }
+  set popup(val) {
+    if (val) {
+      this.setAttribute("popup", "");
+    } else {
+      this.removeAttribute("popup");
+    }
   }
 }
 customElements.define("default-button", Button);
@@ -7530,7 +7548,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("6788fa9e85f516177047")
+/******/ 		__webpack_require__.h = () => ("66dd5593c6a22b1bf5df")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

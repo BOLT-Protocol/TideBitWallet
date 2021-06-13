@@ -11,6 +11,7 @@ class Button extends HTMLElement {
         <div class="button__icon--leading button__icon"></div>
         <div class="button__text"></div>
         <div class="button__icon--suffix button__icon"></div>
+        <span class="button__popup">Copy!</span>
         `;
   }
   set style(val) {
@@ -30,8 +31,15 @@ class Button extends HTMLElement {
   set suffix(element) {
     this.children[2].insertAdjacentHTML("beforeend", element);
   }
-  set onPressed(action){
-      this.action = action;
+  set onPressed(action) {
+    this.action = action;
+  }
+  set popup(val) {
+    if (val) {
+      this.setAttribute("popup", "");
+    } else {
+      this.removeAttribute("popup");
+    }
   }
 }
 customElements.define("default-button", Button);

@@ -3,15 +3,45 @@
   flex-direction: row;
   padding: 5px 0;
   width: 100%;
+  min-width: 60px;
   border-radius: 5px;
-  min-width: 60px; // --
-
   align-items: center;
   font-size: $default-font-size * 0.8;
   justify-content: center;
   cursor: pointer;
+  position: relative;
 
-  &:hover{
+  &__popup {
+    visibility: hidden;
+    background-color: $color-grey-dark-1;
+    color: $color-white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 92%;
+    left: 67%;
+  }
+  /* Popup arrow */
+  &__popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 38%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: $color-grey-dark-1 transparent transparent transparent;
+  }
+  /* Toggle this class - hide and show the popup */
+  &[popup] &__popup {
+    visibility: visible;
+    -webkit-animation: fadeIn .3s;
+    animation: fadeIn .3s;
+  }
+
+  &:hover {
     cursor: pointer;
   }
   & *:not(:last-child) {
