@@ -750,7 +750,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623580469654
+      // 1623580788864
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6995,7 +6995,7 @@ const startApp = () => {
         symbol: "USD",
         inUSD: 1
     });
-    state.screen = 'address';
+    state.screen = 'accounts';
     (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
     // --
     _utils_utils__WEBPACK_IMPORTED_MODULE_1__.dateFormatter(Date.now());
@@ -7530,7 +7530,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("f7dfd682deba1dcef952")
+/******/ 		__webpack_require__.h = () => ("6788fa9e85f516177047")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
