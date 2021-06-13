@@ -22,7 +22,9 @@
     "url": "https://github.com/BOLT-Protocol/TideBitWallet/issues"
   },
   "homepage": "https://github.com/BOLT-Protocol/TideBitWallet#readme",
-  "dependencies": {},
+  "dependencies": {
+    "qrcode": "^1.4.4"
+  },
   "devDependencies": {
     "buffer": "^6.0.3",
     "css-loader": "^5.2.6",

@@ -156,6 +156,106 @@ body {
   flex-direction: column;
   overflow: scroll; }
 
+.bill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff; }
+  .bill__header {
+    height: 4.2rem;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px dashed #eee;
+    font-size: 2rem;
+    font-weight: 400;
+    padding: 1rem 0; }
+    .bill__header *:not(:last-child) {
+      margin-right: 1rem; }
+  .bill[receive] .bill__header {
+    color: #446CB3; }
+  .bill[send] .bill__header {
+    color: #FF5730; }
+  .bill[failed] .bill__header,
+  .bill[pending] .bill__header,
+  .bill[confirming] .bill__header {
+    color: #9B9B9B !important; }
+  .bill[send] .bill__header {
+    color: #FF5730; }
+  .bill__cell {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem; }
+  .bill__title {
+    color: #9B9B9B; }
+  .bill__content {
+    color: #555; }
+  .bill__title, .bill__content {
+    font-size: 1.2rem; }
+  .bill__status {
+    margin-right: 1rem; }
+  .bill[completed] .bill__status {
+    color: #7ED321; }
+  .bill[failed] .bill__status {
+    color: #FF1212; }
+  .bill[pending] .bill__status {
+    color: #555; }
+  .bill__status-icon {
+    width: 2rem;
+    height: 2rem;
+    background-position: center;
+    background-size: cover; }
+  .bill[completed] .bill__status-icon {
+    background-image: url(../image/ic_completed_green.png); }
+  .bill[failed] .bill__status-icon {
+    background-image: url(../image/ic_failed_red.png); }
+  .bill[pending] .bill__status-icon {
+    background-image: url(../image/ic_pending_grey.png); }
+  .bill__header ~ .bill__cell .bill__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center; }
+  .bill__id, .bill__id:visited, .bill__id:active {
+    text-decoration: underline;
+    color: #4ECDC4; }
+  .bill__id:hover {
+    cursor: pointer; }
+  .bill__asset-icon {
+    width: 2rem; }
+    .bill__asset-icon > img {
+      width: 100%; }
+
+.address {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #fff;
+  height: 100%; }
+  .address__header {
+    color: #555;
+    font-size: 1.44rem; }
+  .address__subtitle {
+    color: #9B9B9B;
+    font-size: 1.12rem;
+    line-height: 1.2;
+    margin: 1rem 0; }
+  .address__qrcode {
+    flex: auto; }
+  .address__text {
+    color: #555;
+    font-size: 1.2rem;
+    width: 100%;
+    background-color: #eee;
+    padding: 1rem 0;
+    text-align: center;
+    margin: 1rem 0; }
+  .address__button {
+    align-self: stretch;
+    margin: 1rem 2rem; }
+
 .account-item {
   display: flex;
   flex-direction: column;
@@ -264,87 +364,16 @@ body {
   .tab-bar [send] .tab-bar__icon {
     background-image: url(../image/ic_send_orange_light.png); }
 
-.bill {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: #fff; }
-  .bill__header {
-    height: 4.2rem;
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px dashed #eee;
-    font-size: 2rem;
-    font-weight: 400;
-    padding: 1rem 0; }
-    .bill__header *:not(:last-child) {
-      margin-right: 1rem; }
-  .bill[receive] .bill__header {
-    color: #446CB3; }
-  .bill[send] .bill__header {
-    color: #FF5730; }
-  .bill[failed] .bill__header,
-  .bill[pending] .bill__header,
-  .bill[confirming] .bill__header {
-    color: #9B9B9B !important; }
-  .bill[send] .bill__header {
-    color: #FF5730; }
-  .bill__cell {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem 2rem; }
-  .bill__title {
-    color: #9B9B9B; }
-  .bill__content {
-    color: #555; }
-  .bill__title, .bill__content {
-    font-size: 1.2rem; }
-  .bill__status {
-    margin-right: 1rem; }
-  .bill[completed] .bill__status {
-    color: #7ED321; }
-  .bill[failed] .bill__status {
-    color: #FF1212; }
-  .bill[pending] .bill__status {
-    color: #555; }
-  .bill__status-icon {
-    width: 2rem;
-    height: 2rem;
-    background-position: center;
-    background-size: cover; }
-  .bill[completed] .bill__status-icon {
-    background-image: url(../image/ic_completed_green.png); }
-  .bill[failed] .bill__status-icon {
-    background-image: url(../image/ic_failed_red.png); }
-  .bill[pending] .bill__status-icon {
-    background-image: url(../image/ic_pending_grey.png); }
-  .bill__header ~ .bill__cell .bill__content {
-    display: flex;
-    flex-direction: row;
-    align-items: center; }
-  .bill__id, .bill__id:visited, .bill__id:active {
-    text-decoration: underline;
-    color: #4ECDC4; }
-  .bill__id:hover {
-    cursor: pointer; }
-  .bill__asset-icon {
-    width: 2rem; }
-    .bill__asset-icon > img {
-      width: 100%; }
-
 .button {
-  width: 100%;
   display: flex;
   flex-direction: row;
-  padding: 5px 2rem;
+  padding: 5px 0;
+  width: 100%;
   border-radius: 5px;
   min-width: 60px;
   border: 1px solid #446CB3;
   align-items: center;
-  font-size: 1.6rem;
+  font-size: 1.28rem;
   justify-content: center; }
   .button *:not(:last-child) {
     margin-right: 1rem; }

@@ -1,0 +1,34 @@
+.address {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: $color-white;
+  height: 100%;
+  &__header {
+    color: $color-grey-dark-2;
+    font-size: $default-font-size * 0.9;
+  }
+  &__subtitle {
+    color: $color-grey-dark-1;
+    font-size: $default-font-size * 0.7;
+    line-height: 1.2;
+    margin: 1rem 0 ;
+  }
+  &__qrcode{
+    flex: auto;
+  }
+  &__text{
+    color: $color-grey-dark-2;
+    font-size: $default-font-size * 0.75;
+    width: 100%;
+    background-color: $color-grey-light-2;
+    padding: 1rem 0;
+    text-align: center;
+    margin: 1rem 0;
+  }
+  &__button{
+    align-self: stretch;
+    margin: 1rem 2rem;
+  }
+}
