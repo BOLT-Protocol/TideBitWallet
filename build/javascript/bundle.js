@@ -318,7 +318,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623573698304
+      // 1623575995234
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -952,15 +952,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
 
 // let address = ui.getReceiveAddress({ accountID });
+
 const address = (scaffold, state) => {
-    console.log(JSON.stringify(state));
-    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-}
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  const button = document.createElement("default-button");
+  button.style = ["round", "outline"];
+  scaffold.body = button;
+  button.text = "Copy Wallet Address";
+  button.suffix = `<i class="far fa-copy"></i>`;
+  button.onPressed = () => {
+    (0,_utils_route__WEBPACK_IMPORTED_MODULE_2__.default)({screen: "transaction"});
+  };
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
+
 
 /***/ }),
 
@@ -1617,6 +1630,61 @@ const billList = (state, bills) => {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/button.js":
+/*!*****************************************!*\
+  !*** ./src/javascript/widget/button.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class Button extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", (e) => {
+      this.action();
+    });
+  }
+  connectedCallback() {
+    this.className = "button";
+    this.innerHTML = `
+        <div class="button__icon--leading button__icon"></div>
+        <div class="button__text"></div>
+        <div class="button__icon--suffix button__icon"></div>
+        `;
+        console.log(this.children);
+  }
+  set style(val) {
+    if (Array.isArray(val)) {
+      val.forEach((v) => this.setAttribute(v, ""));
+    } else {
+      this.setAttribute(v, "");
+    }
+  }
+  set text(str) {
+    console.log(str);
+    this.children[1].textContent = str;
+  }
+  set leading(element) {
+    this.children[0].innerHTML = element;
+  }
+  set suffix(element) {
+    this.children[2].insertAdjacentHTML("beforeend", element);
+  }
+  set onPressed(action){
+      this.action = action;
+  }
+}
+customElements.define("default-button", Button);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
+
+
+/***/ }),
+
 /***/ "./src/main.js":
 /*!*********************!*\
   !*** ./src/main.js ***!
@@ -1717,7 +1785,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("c3c1d64213cce5a10497")
+/******/ 		__webpack_require__.h = () => ("74a6f9c6874f95324784")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
