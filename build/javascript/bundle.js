@@ -338,36 +338,6 @@ if (true) {
 
 /***/ }),
 
-/***/ "./src/image/icon/icon128.png":
-/*!************************************!*\
-  !*** ./src/image/icon/icon128.png ***!
-  \************************************/
-/***/ ((module) => {
-
-module.exports = "../image/icon128.png";
-
-/***/ }),
-
-/***/ "./src/image/icon/icon16.png":
-/*!***********************************!*\
-  !*** ./src/image/icon/icon16.png ***!
-  \***********************************/
-/***/ ((module) => {
-
-module.exports = "../image/icon16.png";
-
-/***/ }),
-
-/***/ "./src/image/icon/icon48.png":
-/*!***********************************!*\
-  !*** ./src/image/icon/icon48.png ***!
-  \***********************************/
-/***/ ((module) => {
-
-module.exports = "../image/icon48.png";
-
-/***/ }),
-
 /***/ "./node_modules/ieee754/index.js":
 /*!***************************************!*\
   !*** ./node_modules/ieee754/index.js ***!
@@ -750,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623664612099
+      // 1623672064556
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7681,6 +7651,14 @@ class InputElement extends HTMLElement {
   get value() {
     return this.children[0].children[1].children[0].value;
   }
+  disconnectedCallback() {
+    // target.removeEventListener('');
+    this.removeEventListener("click");
+    this.children[0].children[1].children[0].removeEventListener("focus");
+    this.children[0].children[1].children[0].removeEventListener("focusout");
+    this.children[0].children[1].children[0].removeEventListener("input");
+    this.children[0].children[1].children[1].removeEventListener("click");
+  }
 }
 
 customElements.define("input-controller", InputElement);
@@ -7717,9 +7695,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ "./src/javascript/index.js");
 
 
-__webpack_require__ (/*! ./image/icon/icon16.png */ "./src/image/icon/icon16.png");
-__webpack_require__ (/*! ./image/icon/icon48.png */ "./src/image/icon/icon48.png");
-__webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.png");
 
 /***/ })
 
@@ -7805,7 +7780,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("5eb8218ced98bae23142")
+/******/ 		__webpack_require__.h = () => ("6368f6698e8741b4d627")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
