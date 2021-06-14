@@ -23,7 +23,7 @@ const transaction = (scaffold, state) => {
       return value.startsWith("0x");
     },
     action: {
-      icon: `<i class="fas fa-qrcode"></i>`,
+      icon: "qrcode",
       onPressed: () => {
         console.log("action on pressed!");
       },

@@ -3,12 +3,20 @@ import { randomHex } from "../utils/utils";
 class InputElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", (e) => {
-      console.log("onclick", e);
-    });
   }
   static get observedAttributes() {
     return ["focus", "has-value", "error"];
+  }
+  handleInput(e) {
+    if (this.value !== "") {
+      this.hasValue = true;
+    } else {
+      this.hasValue = false;
+    }
+    const checked = this.value === "" || this.validator(this.value);
+    if (checked !== undefined) {
+      this.error = !checked;
+    }
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -23,27 +31,18 @@ class InputElement extends HTMLElement {
     </div>
     <div class="input__error-message"></div>
     `;
-    this.children[0].children[1].children[0].addEventListener("focus", (e) => {
-      this.focus = true;
-    });
+    this.children[0].children[1].children[0].addEventListener(
+      "focus",
+      (e) => (this.focus = true)
+    );
     this.children[0].children[1].children[0].addEventListener(
       "focusout",
-      (e) => {
-        this.focus = false;
-      }
+      (e) => (this.focus = false)
     );
     // this.children[0].children[1].children[0].addEventListener("change", (e) => {
-    this.children[0].children[1].children[0].addEventListener("input", (e) => {
-      if (this.value !== "") {
-        this.hasValue = true;
-      } else {
-        this.hasValue = false;
-      }
-      const checked = this.value === "" || this.validator(this.value);
-      if (checked !== undefined) {
-        this.error = !checked;
-      }
-    });
+    this.children[0].children[1].children[0].addEventListener("input", (e) =>
+      handleInput(e)
+    );
   }
   get hasValue() {
     return this.hasAttribute("has-value");
@@ -81,11 +80,11 @@ class InputElement extends HTMLElement {
   set action(obj) {
     this.children[0].children[1].children[1].insertAdjacentHTML(
       "afterbegin",
-      obj.icon
+      `<i class="far fa-${obj.icon}"></i>`
     );
-    this.children[0].children[1].children[1].addEventListener("click", (e) => {
-      obj.onPressed();
-    });
+    this.children[0].children[1].children[1].addEventListener("click", (e) =>
+      obj.onPressed()
+    );
   }
   set validation(val) {
     this.validator = val;
@@ -98,11 +97,20 @@ class InputElement extends HTMLElement {
   }
   disconnectedCallback() {
     // target.removeEventListener('');
-    this.removeEventListener("click");
-    this.children[0].children[1].children[0].removeEventListener("focus");
-    this.children[0].children[1].children[0].removeEventListener("focusout");
-    this.children[0].children[1].children[0].removeEventListener("input");
-    this.children[0].children[1].children[1].removeEventListener("click");
+    this.children[0].children[1].children[0].removeEventListener(
+      "focus",
+      (e) => (this.focus = true)
+    );
+    this.children[0].children[1].children[0].removeEventListener(
+      "focusout",
+      (e) => (this.focus = false)
+    );
+    this.children[0].children[1].children[0].removeEventListener("input", (e) =>
+      handleInput(e)
+    );
+    this.children[0].children[1].children[1].removeEventListener("click", (e) =>
+      obj.onPressed()
+    );
   }
 }
 

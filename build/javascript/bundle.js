@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623672064556
+      // 1623675009500
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6620,9 +6620,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 /* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+
 
 
 
@@ -6646,11 +6648,10 @@ class Address extends HTMLElement {
   /**
    * ETH || BTC
    */
-  set coinbase(val){
-      this.setAttribute(val,'');
+  set coinbase(val) {
+    this.setAttribute(val, "");
   }
   set address(address) {
-    const button = document.createElement("default-button");
     qrcode__WEBPACK_IMPORTED_MODULE_2__.toCanvas(
       this.children[2].children[0],
       address,
@@ -6669,24 +6670,16 @@ class Address extends HTMLElement {
       }
     );
     this.children[3].textContent = address;
-    this.children[4].insertAdjacentElement("afterbegin", button);
-    button.style = ["round", "outline"];
-    button.text = "Copy Wallet Address";
-    button.suffix = `<i class="far fa-copy"></i>`;
-    button.onPressed = () => {
-      navigator.clipboard.writeText(address).then(
-        function () {
-          console.log("Async: Copying to clipboard was successful!");
-          button.popup = true;
-          setTimeout(()=>{
-            button.popup = false;
-          },300);
-        },
-        function (err) {
-          console.error("Async: Could not copy text: ", err);
-        }
-      );
-    };
+    new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default(this.children[4], "Copy Wallet Address", () => {}, {
+      style: ["round", "outline"],
+      suffix: "copy",
+      popup: async () => {
+        console.log("popup");
+        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.to)(navigator.clipboard.writeText(address));
+        return err ? "Error!" : "Copy";
+      },
+    });
   }
 }
 
@@ -6893,7 +6886,7 @@ const transaction = (scaffold, state) => {
       return value.startsWith("0x");
     },
     action: {
-      icon: `<i class="fas fa-qrcode"></i>`,
+      icon: "qrcode",
       onPressed: () => {
         console.log("action on pressed!");
       },
@@ -7157,6 +7150,7 @@ const route = (state) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "randomHex": () => (/* binding */ randomHex),
+/* harmony export */   "to": () => (/* binding */ to),
 /* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter),
 /* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter)
 /* harmony export */ });
@@ -7175,6 +7169,14 @@ const randomHex = (n) => {
 
 const pad = (n) => {
   return n < 10 ? "0" + n : n;
+};
+
+const to = (promise) => {
+  return promise
+    .then((data) => {
+      return [null, data];
+    })
+    .catch((err) => [err, null]);
 };
 
 const monthNames = [
@@ -7469,17 +7471,17 @@ __webpack_require__.r(__webpack_exports__);
 class ButtonElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", (e) => {
+    this.hasPopup = false;
+    this.addEventListener("click", async (e) => {
       this.action();
-      if (this.popup.textContent) {
-        if (!this.popup) {
-          this.setAttribute("popup", "");
-          setTimeout(() => {
-            this.removeAttribute("popup");
-          }, 300);
-        } else {
+      if (this.hasPopup) {
+        if (this.popup) this.removeAttribute("popup");
+        const result = await this.hint();
+        this.children[3].textContent = result;
+        this.setAttribute("popup", "");
+        setTimeout(() => {
           this.removeAttribute("popup");
-        }
+        }, 400);
       }
     });
   }
@@ -7503,20 +7505,22 @@ class ButtonElement extends HTMLElement {
     console.log(str);
     this.children[1].textContent = str;
   }
-  set leading(element) {
-    this.children[0].innerHTML = element;
+  /**
+   * @param {any} icon: To reference font awesome icon, you only need to know it's name
+   */
+  set leading(icon) {
+    this.children[0].innerHTML = `<i class="far fa-${icon}"></i>`;
   }
-  set suffix(element) {
-    this.children[2].insertAdjacentHTML("beforeend", element);
+  set suffix(icon) {
+    this.children[2].innerHTML = `<i class="far fa-${icon}"></i>`;
+    // this.children[2].insertAdjacentHTML("beforeend", `<i class="far fa-${icon}"></i>`);
   }
   set onPressed(action) {
     this.action = action;
   }
-  get popup() {
-    this.hasAttribute("popup");
-  }
-  set popup(val) {
-    this.children[3].textContent = val;
+  set popup(hint) {
+    this.hasPopup = true;
+    this.hint = hint; // async
   }
 }
 customElements.define("default-button", ButtonElement);
@@ -7526,13 +7530,16 @@ class Button {
     parentElement,
     title,
     onPressed,
-    { suffix, leading, popup, style }
+    { style, leading, suffix, popup }
   ) {
     this.element = document.createElement("default-button");
     parentElement.insertAdjacentElement("beforeend", this.element);
     this.element.text = title;
     this.element.onPressed = onPressed;
-    this.element.style = style;
+    if (style) this.element.style = style;
+    if (popup) this.element.popup = popup;
+    if (leading) this.element.leading = leading;
+    if (suffix) this.element.suffix = suffix;
   }
 }
 
@@ -7558,12 +7565,20 @@ __webpack_require__.r(__webpack_exports__);
 class InputElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", (e) => {
-      console.log("onclick", e);
-    });
   }
   static get observedAttributes() {
     return ["focus", "has-value", "error"];
+  }
+  handleInput(e) {
+    if (this.value !== "") {
+      this.hasValue = true;
+    } else {
+      this.hasValue = false;
+    }
+    const checked = this.value === "" || this.validator(this.value);
+    if (checked !== undefined) {
+      this.error = !checked;
+    }
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -7578,27 +7593,18 @@ class InputElement extends HTMLElement {
     </div>
     <div class="input__error-message"></div>
     `;
-    this.children[0].children[1].children[0].addEventListener("focus", (e) => {
-      this.focus = true;
-    });
+    this.children[0].children[1].children[0].addEventListener(
+      "focus",
+      (e) => (this.focus = true)
+    );
     this.children[0].children[1].children[0].addEventListener(
       "focusout",
-      (e) => {
-        this.focus = false;
-      }
+      (e) => (this.focus = false)
     );
     // this.children[0].children[1].children[0].addEventListener("change", (e) => {
-    this.children[0].children[1].children[0].addEventListener("input", (e) => {
-      if (this.value !== "") {
-        this.hasValue = true;
-      } else {
-        this.hasValue = false;
-      }
-      const checked = this.value === "" || this.validator(this.value);
-      if (checked !== undefined) {
-        this.error = !checked;
-      }
-    });
+    this.children[0].children[1].children[0].addEventListener("input", (e) =>
+      handleInput(e)
+    );
   }
   get hasValue() {
     return this.hasAttribute("has-value");
@@ -7636,11 +7642,11 @@ class InputElement extends HTMLElement {
   set action(obj) {
     this.children[0].children[1].children[1].insertAdjacentHTML(
       "afterbegin",
-      obj.icon
+      `<i class="far fa-${obj.icon}"></i>`
     );
-    this.children[0].children[1].children[1].addEventListener("click", (e) => {
-      obj.onPressed();
-    });
+    this.children[0].children[1].children[1].addEventListener("click", (e) =>
+      obj.onPressed()
+    );
   }
   set validation(val) {
     this.validator = val;
@@ -7653,11 +7659,20 @@ class InputElement extends HTMLElement {
   }
   disconnectedCallback() {
     // target.removeEventListener('');
-    this.removeEventListener("click");
-    this.children[0].children[1].children[0].removeEventListener("focus");
-    this.children[0].children[1].children[0].removeEventListener("focusout");
-    this.children[0].children[1].children[0].removeEventListener("input");
-    this.children[0].children[1].children[1].removeEventListener("click");
+    this.children[0].children[1].children[0].removeEventListener(
+      "focus",
+      (e) => (this.focus = true)
+    );
+    this.children[0].children[1].children[0].removeEventListener(
+      "focusout",
+      (e) => (this.focus = false)
+    );
+    this.children[0].children[1].children[0].removeEventListener("input", (e) =>
+      handleInput(e)
+    );
+    this.children[0].children[1].children[1].removeEventListener("click", (e) =>
+      obj.onPressed()
+    );
   }
 }
 
@@ -7780,7 +7795,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("6368f6698e8741b4d627")
+/******/ 		__webpack_require__.h = () => ("d02b0f1f407969b810d7")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

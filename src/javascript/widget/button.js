@@ -1,17 +1,17 @@
 class ButtonElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", (e) => {
+    this.hasPopup = false;
+    this.addEventListener("click", async (e) => {
       this.action();
-      if (this.popup.textContent) {
-        if (!this.popup) {
-          this.setAttribute("popup", "");
-          setTimeout(() => {
-            this.removeAttribute("popup");
-          }, 300);
-        } else {
+      if (this.hasPopup) {
+        if (this.popup) this.removeAttribute("popup");
+        const result = await this.hint();
+        this.children[3].textContent = result;
+        this.setAttribute("popup", "");
+        setTimeout(() => {
           this.removeAttribute("popup");
-        }
+        }, 400);
       }
     });
   }
@@ -35,20 +35,22 @@ class ButtonElement extends HTMLElement {
     console.log(str);
     this.children[1].textContent = str;
   }
-  set leading(element) {
-    this.children[0].innerHTML = element;
+  /**
+   * @param {any} icon: To reference font awesome icon, you only need to know it's name
+   */
+  set leading(icon) {
+    this.children[0].innerHTML = `<i class="far fa-${icon}"></i>`;
   }
-  set suffix(element) {
-    this.children[2].insertAdjacentHTML("beforeend", element);
+  set suffix(icon) {
+    this.children[2].innerHTML = `<i class="far fa-${icon}"></i>`;
+    // this.children[2].insertAdjacentHTML("beforeend", `<i class="far fa-${icon}"></i>`);
   }
   set onPressed(action) {
     this.action = action;
   }
-  get popup() {
-    this.hasAttribute("popup");
-  }
-  set popup(val) {
-    this.children[3].textContent = val;
+  set popup(hint) {
+    this.hasPopup = true;
+    this.hint = hint; // async
   }
 }
 customElements.define("default-button", ButtonElement);
@@ -58,13 +60,16 @@ class Button {
     parentElement,
     title,
     onPressed,
-    { suffix, leading, popup, style }
+    { style, leading, suffix, popup }
   ) {
     this.element = document.createElement("default-button");
     parentElement.insertAdjacentElement("beforeend", this.element);
     this.element.text = title;
     this.element.onPressed = onPressed;
-    this.element.style = style;
+    if (style) this.element.style = style;
+    if (popup) this.element.popup = popup;
+    if (leading) this.element.leading = leading;
+    if (suffix) this.element.suffix = suffix;
   }
 }
 

@@ -15,6 +15,14 @@ const pad = (n) => {
   return n < 10 ? "0" + n : n;
 };
 
+export const to = (promise) => {
+  return promise
+    .then((data) => {
+      return [null, data];
+    })
+    .catch((err) => [err, null]);
+};
+
 const monthNames = [
   "Jan",
   "Feb",

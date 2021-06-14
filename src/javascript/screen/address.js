@@ -1,6 +1,7 @@
-import "../widget/button";
+import { to } from "../utils/utils";
 import header from "../layout/header";
 import QRCode from "qrcode";
+import Button from "../widget/button";
 
 class Address extends HTMLElement {
   constructor() {
@@ -21,11 +22,10 @@ class Address extends HTMLElement {
   /**
    * ETH || BTC
    */
-  set coinbase(val){
-      this.setAttribute(val,'');
+  set coinbase(val) {
+    this.setAttribute(val, "");
   }
   set address(address) {
-    const button = document.createElement("default-button");
     QRCode.toCanvas(
       this.children[2].children[0],
       address,
@@ -44,24 +44,16 @@ class Address extends HTMLElement {
       }
     );
     this.children[3].textContent = address;
-    this.children[4].insertAdjacentElement("afterbegin", button);
-    button.style = ["round", "outline"];
-    button.text = "Copy Wallet Address";
-    button.suffix = `<i class="far fa-copy"></i>`;
-    button.onPressed = () => {
-      navigator.clipboard.writeText(address).then(
-        function () {
-          console.log("Async: Copying to clipboard was successful!");
-          button.popup = true;
-          setTimeout(()=>{
-            button.popup = false;
-          },300);
-        },
-        function (err) {
-          console.error("Async: Could not copy text: ", err);
-        }
-      );
-    };
+    new Button(this.children[4], "Copy Wallet Address", () => {}, {
+      style: ["round", "outline"],
+      suffix: "copy",
+      popup: async () => {
+        console.log("popup");
+        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+        const [err, _] = await to(navigator.clipboard.writeText(address));
+        return err ? "Error!" : "Copy";
+      },
+    });
   }
 }
 
