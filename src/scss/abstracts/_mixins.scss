@@ -13,17 +13,10 @@
     transform: translate(-50%, -50%);
 }
 
-@mixin disappear{
-    height: 0;
-    width: 0;
-    visibility: hidden;
-}
-@mixin appear{
-    height: 100%;
-    width: 100%;
-    visibility: visible;
-}
-
+@mixin label-active($fontsize) {
+    font-size: $fontsize;
+    transform: translateY(-18px);
+  }
 
 
 // MEDIA QUERY MANAGER

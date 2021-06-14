@@ -443,5 +443,87 @@ body {
     background-color: #4ECDC4;
     border: 1px solid #4ECDC4; }
 
+.input__controller {
+  display: flex;
+  flex-direction: column; }
+
+.input__field {
+  position: relative;
+  border-radius: 5px;
+  width: 100%;
+  border: 1px solid #9B9B9B;
+  justify-content: center;
+  background-color: #fff; }
+
+.input__label {
+  color: #446CB3;
+  font-size: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  position: absolute;
+  top: 0rem;
+  left: 1rem;
+  width: fit-content;
+  transition: all 0.3s; }
+  .input__label p {
+    background-color: #fff; }
+
+.input__content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem; }
+
+.input__action {
+  min-width: 2rem;
+  margin-right: 1rem;
+  color: #9B9B9B; }
+
+.input__input {
+  outline: none;
+  padding: 1rem;
+  display: block;
+  width: 100%;
+  background: transparent;
+  color: #446CB3;
+  border: 0; }
+
+.input__input:focus {
+  outline: none; }
+
+.input__error-message {
+  font-size: 1.28rem;
+  color: #FF1212;
+  margin-left: 1rem;
+  opacity: 0; }
+
+.input__controller[error] .input__error-message {
+  opacity: 1; }
+
+.input__controller[focus] .input__field {
+  border: 1px solid #4ECDC4; }
+
+.input__controller[has-value] .input__label,
+.input__controller[focus] .input__label {
+  font-size: 1.2rem;
+  transform: translateY(-18px); }
+
+.input__controller[focus] .input__action > * {
+  color: #4ECDC4;
+  min-width: 2rem; }
+
+input,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  background-color: #fff !important;
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  color: #446CB3 !important;
+  -webkit-text-fill-color: #446CB3 !important; }
+
 
 /*# sourceMappingURL=main.css.map*/

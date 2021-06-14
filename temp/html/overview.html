@@ -18,14 +18,19 @@
       <div class="header__title">My Wallet</div>
     </header>
     <main>
-      <div class="address" ETH>
-        <div class="address__header">Receiving address</div>
-        <div class="address__subtitle">We automatically generate a new address for you after every transaction you
-          receive
-          to protect your privacy, so that would be not easy to track your entire payment history.</div>
-        <div class="address__qrcode"></div>
-        <div class="address__text"></div>
-        <div class="address__button"></div>
+      <div class="transaction" ETH>
+
+        <div class="input__controller" focus>
+          <div class="input__field">
+            <label class="input__label"><p>Send to</p></label>
+            <div class="input__content">
+              <input type="text" class="input__input">
+              <div class="input__action"><i class="fas fa-qrcode"></i></div>
+            </div>
+          </div>
+          <div class="input__error-message">invalid address</div>
+        </div>
+
       </div>
     </main>
   </div>

@@ -34,6 +34,10 @@ export default class Scaffold extends HTMLElement {
     }
   }
 
+  get body() {
+    return this.children[1];
+  }
+
   /**
    * @param {HTMLElement} element
    */

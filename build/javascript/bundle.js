@@ -750,7 +750,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623583819840
+      // 1623656005143
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6345,6 +6345,10 @@ class Scaffold extends HTMLElement {
     }
   }
 
+  get body() {
+    return this.children[1];
+  }
+
   /**
    * @param {HTMLElement} element
    */
@@ -6894,16 +6898,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+
+
 
 // let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
-// let transaction = ui.prepareTransaction({ to, amount, data, speed }); 
+// let transaction = ui.prepareTransaction({ to, amount, data, speed });
 // ui.sendTransaction(transaction);
 const transaction = (scaffold, state) => {
-    console.log(JSON.stringify(state));
-    scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-}
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+  const input = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(scaffold.body, {
+    inputType: "text",
+    label: "Send to",
+    errorMessage: "Invalid Address",
+    validation: (value) => {
+      return  value.startsWith("0x");
+    },
+    action: {
+      icon: `<i class="fas fa-qrcode"></i>`,
+      onPressed: () => {
+        console.log("action on pressed!");
+      },
+    },
+  });
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
+
 
 /***/ }),
 
@@ -7005,7 +7026,7 @@ const startApp = () => {
         symbol: "USD",
         inUSD: 1
     });
-    state.screen = 'accounts';
+    state.screen = 'transaction';
     (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
     // --
     _utils_utils__WEBPACK_IMPORTED_MODULE_1__.dateFormatter(Date.now());
@@ -7448,6 +7469,140 @@ customElements.define("default-button", Button);
 
 /***/ }),
 
+/***/ "./src/javascript/widget/input.js":
+/*!****************************************!*\
+  !*** ./src/javascript/widget/input.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+class InputElement extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", (e) => {
+      console.log("onclick", e);
+    });
+  }
+  static get observedAttributes() {
+    return ["focus", "has-value", "error"];
+  }
+  connectedCallback() {
+    this.className = "input__controller";
+    this.id = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(6);
+    this.innerHTML = `
+    <div class="input__field">
+        <label class="input__label" for=${this.id}><p></p></label>
+        <div class="input__content">
+            <input type="text" class="input__input" id=${this.id}>
+            <div class="input__action"></i></div>
+        </div>
+    </div>
+    <div class="input__error-message"></div>
+    `;
+    this.children[0].children[1].children[0].addEventListener("focus", (e) => {
+      this.focus = true;
+    });
+    this.children[0].children[1].children[0].addEventListener(
+      "focusout",
+      (e) => {
+        this.focus = false;
+      }
+    );
+    // this.children[0].children[1].children[0].addEventListener("change", (e) => {
+    this.children[0].children[1].children[0].addEventListener("input", (e) => {
+      if (this.value !== "") {
+        this.hasValue = true;
+      } else {
+        this.hasValue = false;
+      }
+      const checked = this.value === "" || this.validator(this.value);
+      if (checked !== undefined) {
+        this.error = !checked;
+      }
+    });
+  }
+  get hasValue() {
+    return this.hasAttribute("has-value");
+  }
+  set focus(val) {
+    if (val) {
+      Array.from(document.querySelectorAll("input__controller")).forEach(
+        (controller) => (controller.focus = false)
+      );
+      this.setAttribute("focus", "");
+    } else {
+      this.removeAttribute("focus");
+    }
+  }
+  set hasValue(val) {
+    if (val) {
+      this.setAttribute("has-value", "");
+    } else {
+      this.removeAttribute("has-value");
+    }
+  }
+  set error(val) {
+    if (val) {
+      this.setAttribute("error", "");
+    } else {
+      this.removeAttribute("error");
+    }
+  }
+  set inputType(val) {
+    this.children[0].children[1].children[0].type = val;
+  }
+  set label(val) {
+    this.children[0].children[0].children[0].textContent = val;
+  }
+  set action(obj) {
+    this.children[0].children[1].children[1].insertAdjacentHTML(
+      "afterbegin",
+      obj.icon
+    );
+    this.children[0].children[1].children[1].addEventListener("click", (e) => {
+      obj.onPressed();
+    });
+  }
+  set validation(val) {
+    this.validator = val;
+  }
+  set errorMessage(val) {
+    this.children[1].textContent = val;
+  }
+  get value() {
+    return this.children[0].children[1].children[0].value;
+  }
+}
+
+customElements.define("input-controller", InputElement);
+
+class Input {
+  constructor(
+    parentElement,
+    { inputType = "text", label, errorMessage = "", validation, action }
+  ) {
+    this.element = document.createElement("input-controller");
+    parentElement.insertAdjacentElement("beforeend", this.element);
+    this.element.inputType = inputType;
+    this.element.label = label;
+    this.element.errorMessage = errorMessage;
+    this.element.validation = validation;
+    if (action !== undefined) this.element.action = action;
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Input);
+
+
+/***/ }),
+
 /***/ "./src/main.js":
 /*!*********************!*\
   !*** ./src/main.js ***!
@@ -7548,7 +7703,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d5c0c764fb206a481130")
+/******/ 		__webpack_require__.h = () => ("7076cb09ce60edd2cd5a")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
