@@ -1,8 +1,18 @@
-class Button extends HTMLElement {
+class ButtonElement extends HTMLElement {
   constructor() {
     super();
     this.addEventListener("click", (e) => {
       this.action();
+      if (this.popup.textContent) {
+        if (!this.popup) {
+          this.setAttribute("popup", "");
+          setTimeout(() => {
+            this.removeAttribute("popup");
+          }, 300);
+        } else {
+          this.removeAttribute("popup");
+        }
+      }
     });
   }
   connectedCallback() {
@@ -11,7 +21,7 @@ class Button extends HTMLElement {
         <div class="button__icon--leading button__icon"></div>
         <div class="button__text"></div>
         <div class="button__icon--suffix button__icon"></div>
-        <span class="button__popup">Copy!</span>
+        <span class="button__popup"></span>
         `;
   }
   set style(val) {
@@ -34,14 +44,28 @@ class Button extends HTMLElement {
   set onPressed(action) {
     this.action = action;
   }
+  get popup() {
+    this.hasAttribute("popup");
+  }
   set popup(val) {
-    if (val) {
-      this.setAttribute("popup", "");
-    } else {
-      this.removeAttribute("popup");
-    }
+    this.children[3].textContent = val;
   }
 }
-customElements.define("default-button", Button);
+customElements.define("default-button", ButtonElement);
+
+class Button {
+  constructor(
+    parentElement,
+    title,
+    onPressed,
+    { suffix, leading, popup, style }
+  ) {
+    this.element = document.createElement("default-button");
+    parentElement.insertAdjacentElement("beforeend", this.element);
+    this.element.text = title;
+    this.element.onPressed = onPressed;
+    this.element.style = style;
+  }
+}
 
 export default Button;

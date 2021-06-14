@@ -750,7 +750,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623662296440
+      // 1623664612099
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6964,7 +6964,7 @@ const transaction = (scaffold, state) => {
   /**
    * insert Tab
    */
-
+  // ++
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');
@@ -7496,11 +7496,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-class Button extends HTMLElement {
+class ButtonElement extends HTMLElement {
   constructor() {
     super();
     this.addEventListener("click", (e) => {
       this.action();
+      if (this.popup.textContent) {
+        if (!this.popup) {
+          this.setAttribute("popup", "");
+          setTimeout(() => {
+            this.removeAttribute("popup");
+          }, 300);
+        } else {
+          this.removeAttribute("popup");
+        }
+      }
     });
   }
   connectedCallback() {
@@ -7509,7 +7519,7 @@ class Button extends HTMLElement {
         <div class="button__icon--leading button__icon"></div>
         <div class="button__text"></div>
         <div class="button__icon--suffix button__icon"></div>
-        <span class="button__popup">Copy!</span>
+        <span class="button__popup"></span>
         `;
   }
   set style(val) {
@@ -7532,15 +7542,29 @@ class Button extends HTMLElement {
   set onPressed(action) {
     this.action = action;
   }
+  get popup() {
+    this.hasAttribute("popup");
+  }
   set popup(val) {
-    if (val) {
-      this.setAttribute("popup", "");
-    } else {
-      this.removeAttribute("popup");
-    }
+    this.children[3].textContent = val;
   }
 }
-customElements.define("default-button", Button);
+customElements.define("default-button", ButtonElement);
+
+class Button {
+  constructor(
+    parentElement,
+    title,
+    onPressed,
+    { suffix, leading, popup, style }
+  ) {
+    this.element = document.createElement("default-button");
+    parentElement.insertAdjacentElement("beforeend", this.element);
+    this.element.text = title;
+    this.element.onPressed = onPressed;
+    this.element.style = style;
+  }
+}
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
 
@@ -7781,7 +7805,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b13821a2fadf48c9744e")
+/******/ 		__webpack_require__.h = () => ("5eb8218ced98bae23142")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

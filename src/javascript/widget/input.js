@@ -96,6 +96,14 @@ class InputElement extends HTMLElement {
   get value() {
     return this.children[0].children[1].children[0].value;
   }
+  disconnectedCallback() {
+    // target.removeEventListener('');
+    this.removeEventListener("click");
+    this.children[0].children[1].children[0].removeEventListener("focus");
+    this.children[0].children[1].children[0].removeEventListener("focusout");
+    this.children[0].children[1].children[0].removeEventListener("input");
+    this.children[0].children[1].children[1].removeEventListener("click");
+  }
 }
 
 customElements.define("input-controller", InputElement);

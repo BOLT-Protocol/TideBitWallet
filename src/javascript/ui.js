@@ -83,7 +83,7 @@ const startApp = () => {
         symbol: "USD",
         inUSD: 1
     });
-    state.screen = 'transaction';
+    state.screen = 'accounts';
     route(state);
     // --
     utils.dateFormatter(Date.now());

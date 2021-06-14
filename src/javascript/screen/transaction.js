@@ -64,7 +64,7 @@ const transaction = (scaffold, state) => {
   /**
    * insert Tab
    */
-
+  // ++
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');
