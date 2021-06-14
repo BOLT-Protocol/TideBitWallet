@@ -750,7 +750,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623656005143
+      // 1623656724791
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6907,18 +6907,29 @@ __webpack_require__.r(__webpack_exports__);
 // ui.sendTransaction(transaction);
 const transaction = (scaffold, state) => {
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-  const input = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(scaffold.body, {
+  const form = document.createElement("div");
+  form.className = "form";
+  scaffold.body = form;
+  const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(form, {
     inputType: "text",
     label: "Send to",
     errorMessage: "Invalid Address",
     validation: (value) => {
-      return  value.startsWith("0x");
+      return value.startsWith("0x");
     },
     action: {
       icon: `<i class="fas fa-qrcode"></i>`,
       onPressed: () => {
         console.log("action on pressed!");
       },
+    },
+  });
+  const amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(form, {
+    inputType: "number",
+    label: "Amount",
+    errorMessage: "Invalid Amount",
+    validation: (value) => {
+      return parseFloat(value) > 0;
     },
   });
 };
@@ -7703,7 +7714,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("7076cb09ce60edd2cd5a")
+/******/ 		__webpack_require__.h = () => ("413cea2bfc38cac194e8")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
