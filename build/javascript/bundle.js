@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623679470691
+      // 1623683146410
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6346,9 +6346,36 @@ __webpack_require__.r(__webpack_exports__);
 class TabBarElement extends HTMLElement {
   constructor() {
     super();
+    this.addEventListener("click", this.onFocus);
+  }
+  onFocus(e) {
+    Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
+      el.removeAttribute("focus")
+    );
+    console.log(e.target);
+    if (e.target.className === "button") e.target.setAttribute("focus", "");
+    else e.target.parentElement.setAttribute("focus", "");
   }
   connectedCallback() {
     this.className = "tab-bar";
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", this.onFocus);
+  }
+  get focus() {
+    return Array.from(document.querySelectorAll("tab-bar > *")).findIndex(
+      (el) => el.hasAttribute("focus")
+    );
+  }
+  set focus(val) {
+    if (val) {
+      document
+        .querySelectorAll("tab-bar > *")
+        [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
+          "focus",
+          ""
+        );
+    }
   }
 }
 customElements.define("tab-bar", TabBarElement);
@@ -6851,7 +6878,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+
+
 
 
 
@@ -6869,7 +6900,7 @@ const transaction = (scaffold, state) => {
   console.log(_form);
 
   form.setAttribute(state?.account?.symbol || "ETH", ""); // -- test
-  const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(form, {
+  const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default(form, {
     inputType: "text",
     label: "Send to",
     errorMessage: "Invalid Address",
@@ -6883,7 +6914,7 @@ const transaction = (scaffold, state) => {
       },
     },
   });
-  const amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(form, {
+  const amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default(form, {
     inputType: "number",
     label: "Amount",
     errorMessage: "Invalid Amount",
@@ -6918,7 +6949,14 @@ const transaction = (scaffold, state) => {
   /**
    * insert Tab
    */
-  // ++
+  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default({ focus: 2 });
+  form.insertAdjacentElement("beforeend", tabBar.element);
+  ["Slow", "Standard", "Fast"].forEach(
+    (str) =>
+      new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(tabBar.element, str, () => {}, { style: ["round", "grey"] })
+  );
+  tabBar.element.focus = true;
+
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');
@@ -7843,7 +7881,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("78ba194bb8abaa450960")
+/******/ 		__webpack_require__.h = () => ("3357132664be5169101f")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

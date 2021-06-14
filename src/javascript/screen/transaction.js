@@ -1,4 +1,6 @@
 import header from "../layout/header";
+import TabBar from "../layout/tar-bar";
+import Button from "../widget/button";
 import Input from "../widget/input";
 
 /**
@@ -64,7 +66,14 @@ const transaction = (scaffold, state) => {
   /**
    * insert Tab
    */
-  // ++
+  const tabBar = new TabBar({ focus: 2 });
+  form.insertAdjacentElement("beforeend", tabBar.element);
+  ["Slow", "Standard", "Fast"].forEach(
+    (str) =>
+      new Button(tabBar.element, str, () => {}, { style: ["round", "grey"] })
+  );
+  tabBar.element.focus = true;
+
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');

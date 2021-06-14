@@ -27,4 +27,7 @@
     flex-direction: row;
     justify-content: space-between;
   }
+  & tab-bar.tab-bar {
+    margin: 2rem 0;
+  }
 }

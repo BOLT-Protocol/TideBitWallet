@@ -1,7 +1,11 @@
 .tab-bar {
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid $color-grey-light-2;
+  
+  & > .button:not(:last-child) {
+    margin-right: 1rem;
+  }
+
   & > * {
     flex: 1;
   }
@@ -19,6 +23,7 @@
     justify-content: center;
     align-items: center;
     font-size: $default-font-size * 0.8;
+    border-bottom: 1px solid $color-grey-light-2;
   }
   &__icon {
     margin-right: 1rem;

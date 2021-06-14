@@ -200,6 +200,8 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-between; }
+  .form tab-bar.tab-bar {
+    margin: 2rem 0; }
 
 .bill {
   display: flex;
@@ -382,8 +384,9 @@ body {
 
 .tab-bar {
   display: flex;
-  flex-direction: row;
-  border-bottom: 1px solid #eee; }
+  flex-direction: row; }
+  .tab-bar > .button:not(:last-child) {
+    margin-right: 1rem; }
   .tab-bar > * {
     flex: 1; }
   .tab-bar__button[receive] {
@@ -397,7 +400,8 @@ body {
     background-color: #fff;
     justify-content: center;
     align-items: center;
-    font-size: 1.28rem; }
+    font-size: 1.28rem;
+    border-bottom: 1px solid #eee; }
   .tab-bar__icon {
     margin-right: 1rem;
     width: 2rem;
@@ -423,6 +427,8 @@ body {
   position: relative;
   /* Popup arrow */
   /* Toggle this class - hide and show the popup */ }
+  .button__text {
+    margin: 0; }
   .button__popup {
     visibility: hidden;
     background-color: #9B9B9B;
@@ -445,12 +451,14 @@ body {
     border-color: #9B9B9B transparent transparent transparent; }
   .button[popup] .button__popup {
     visibility: visible;
-    -webkit-animation: fadeIn .3s;
-    animation: fadeIn .3s; }
+    -webkit-animation: fadeIn 0.3s;
+    animation: fadeIn 0.3s; }
   .button:hover {
     cursor: pointer; }
-  .button *:not(:last-child) {
-    margin-right: 1rem; }
+  .button__icon--suffix {
+    padding-left: 1rem; }
+  .button__icon--leading {
+    padding-right: 1rem; }
   .button[round] {
     border-radius: 30px; }
   .button[outline] {
@@ -460,6 +468,14 @@ body {
     color: #fff;
     background-color: #446CB3;
     border: 1px solid #446CB3; }
+  .button[focus] {
+    color: #fff !important;
+    background-color: #4ECDC4 !important;
+    border: 1px solid #4ECDC4 !important; }
+  .button[grey] {
+    color: #9B9B9B;
+    background-color: #ECECEC;
+    border: 1px solid #ECECEC; }
   .button[fill-primary] {
     color: #fff;
     background-color: #4ECDC4;
