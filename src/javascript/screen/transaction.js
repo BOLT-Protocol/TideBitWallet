@@ -2,10 +2,10 @@ import header from "../layout/header";
 import Input from "../widget/input";
 
 /**
-* let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
-* let transaction = ui.prepareTransaction({ to, amount, data, speed });
-* ui.sendTransaction(transaction);
-*/
+ * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
+ * let transaction = ui.prepareTransaction({ to, amount, data, speed });
+ * ui.sendTransaction(transaction);
+ */
 const transaction = (scaffold, state) => {
   scaffold.header = header(state);
   const form = document.createElement("div");
@@ -14,7 +14,7 @@ const transaction = (scaffold, state) => {
   const _form = scaffold.body.children[0];
   console.log(_form);
 
-  form.setAttribute(state?.account?.symbol || "ETH", ''); // -- test
+  form.setAttribute(state?.account?.symbol || "ETH", ""); // -- test
   const addressInput = new Input(form, {
     inputType: "text",
     label: "Send to",
@@ -41,7 +41,9 @@ const transaction = (scaffold, state) => {
     "beforeend",
     `<p class="form__secondary-text form__align-end">
         <span>Balance:</span>
-        <span>${state?.account?.balance || 2} ${state?.account?.symbol || 'ETH'}</span>
+        <span>${
+          state?.account?.balance !== undefined ? state.account.balance : 2
+        } ${state?.account?.symbol || "ETH"}</span>
     </p>` // -- test
   );
   form.insertAdjacentHTML(
@@ -71,7 +73,7 @@ const transaction = (scaffold, state) => {
    *    estimateTimeEl.textContent = "would take longer than you can expected";
    * })
    */
-   form.insertAdjacentHTML(
+  form.insertAdjacentHTML(
     "beforeend",
     `<div class="form__column">
         <span class="form__tertiary-text">Estimated:</span>
@@ -80,7 +82,7 @@ const transaction = (scaffold, state) => {
   );
   /**
    * feeObj = {
-   *    gasPrice: { 
+   *    gasPrice: {
    *        fast: '',
    *        standard: '',
    *        slow: '',

@@ -5,18 +5,12 @@
   & > * {
     flex: 1;
   }
-
-  &__item {
-    display: none;
-  }
-  
   & [receive] &__button {
     color: $color-secondary;
   }
-  & [send]  &__button {
+  & [send] &__button {
     color: $color-tertiary;
   }
-
   &__button {
     padding: 1rem 0;
     display: flex;
@@ -26,7 +20,6 @@
     align-items: center;
     font-size: $default-font-size * 0.8;
   }
-
   &__icon {
     margin-right: 1rem;
     width: 2rem;
@@ -37,7 +30,7 @@
   & [receive] &__icon {
     background-image: url(../image/icon/ic_receive_blue_dark.png);
   }
-  & [send]  &__icon {
+  & [send] &__icon {
     background-image: url(../image/icon/ic_send_orange_light.png);
   }
 }

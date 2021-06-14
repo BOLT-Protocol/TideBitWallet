@@ -4,7 +4,6 @@ class TabBarItem extends HTMLElement {
   constructor() {
     super();
     this.markup = (itemData) => `
-        <input type="radio" name="tab-bar" class="tab-bar__item" id=${itemData.title.toLowerCase()} checked>
         <label class="tab-bar__button" for=${itemData.title.toLowerCase()}>
           <div class="tab-bar__icon"></div>
           <div class="tab-bar__text">${itemData.title}</i></div>

@@ -750,7 +750,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623660576281
+      // 1623662296440
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6381,7 +6381,6 @@ class TabBarItem extends HTMLElement {
   constructor() {
     super();
     this.markup = (itemData) => `
-        <input type="radio" name="tab-bar" class="tab-bar__item" id=${itemData.title.toLowerCase()} checked>
         <label class="tab-bar__button" for=${itemData.title.toLowerCase()}>
           <div class="tab-bar__icon"></div>
           <div class="tab-bar__text">${itemData.title}</i></div>
@@ -6903,10 +6902,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
-* let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
-* let transaction = ui.prepareTransaction({ to, amount, data, speed });
-* ui.sendTransaction(transaction);
-*/
+ * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
+ * let transaction = ui.prepareTransaction({ to, amount, data, speed });
+ * ui.sendTransaction(transaction);
+ */
 const transaction = (scaffold, state) => {
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
   const form = document.createElement("div");
@@ -6915,7 +6914,7 @@ const transaction = (scaffold, state) => {
   const _form = scaffold.body.children[0];
   console.log(_form);
 
-  form.setAttribute(state?.account?.symbol || "ETH", ''); // -- test
+  form.setAttribute(state?.account?.symbol || "ETH", ""); // -- test
   const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(form, {
     inputType: "text",
     label: "Send to",
@@ -6942,7 +6941,9 @@ const transaction = (scaffold, state) => {
     "beforeend",
     `<p class="form__secondary-text form__align-end">
         <span>Balance:</span>
-        <span>${state?.account?.balance || 2} ${state?.account?.symbol || 'ETH'}</span>
+        <span>${
+          state?.account?.balance !== undefined ? state.account.balance : 2
+        } ${state?.account?.symbol || "ETH"}</span>
     </p>` // -- test
   );
   form.insertAdjacentHTML(
@@ -6972,7 +6973,7 @@ const transaction = (scaffold, state) => {
    *    estimateTimeEl.textContent = "would take longer than you can expected";
    * })
    */
-   form.insertAdjacentHTML(
+  form.insertAdjacentHTML(
     "beforeend",
     `<div class="form__column">
         <span class="form__tertiary-text">Estimated:</span>
@@ -6981,7 +6982,7 @@ const transaction = (scaffold, state) => {
   );
   /**
    * feeObj = {
-   *    gasPrice: { 
+   *    gasPrice: {
    *        fast: '',
    *        standard: '',
    *        slow: '',
@@ -7103,7 +7104,7 @@ const startApp = () => {
         symbol: "USD",
         inUSD: 1
     });
-    state.screen = 'transaction';
+    state.screen = 'accounts';
     (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
     // --
     _utils_utils__WEBPACK_IMPORTED_MODULE_1__.dateFormatter(Date.now());
@@ -7780,7 +7781,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("a48150477533c3e5c7e5")
+/******/ 		__webpack_require__.h = () => ("b13821a2fadf48c9744e")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
