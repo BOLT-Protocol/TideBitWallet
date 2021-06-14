@@ -750,7 +750,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623656724791
+      // 1623660576281
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6902,14 +6902,20 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
-// let transaction = ui.prepareTransaction({ to, amount, data, speed });
-// ui.sendTransaction(transaction);
+/**
+* let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
+* let transaction = ui.prepareTransaction({ to, amount, data, speed });
+* ui.sendTransaction(transaction);
+*/
 const transaction = (scaffold, state) => {
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
   const form = document.createElement("div");
   form.className = "form";
   scaffold.body = form;
+  const _form = scaffold.body.children[0];
+  console.log(_form);
+
+  form.setAttribute(state?.account?.symbol || "ETH", ''); // -- test
   const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default(form, {
     inputType: "text",
     label: "Send to",
@@ -6932,6 +6938,66 @@ const transaction = (scaffold, state) => {
       return parseFloat(value) > 0;
     },
   });
+  form.insertAdjacentHTML(
+    "beforeend",
+    `<p class="form__secondary-text form__align-end">
+        <span>Balance:</span>
+        <span>${state?.account?.balance || 2} ${state?.account?.symbol || 'ETH'}</span>
+    </p>` // -- test
+  );
+  form.insertAdjacentHTML(
+    "beforeend",
+    `<p class="form__primary-text form__align-start">Transaction Fee</p>`
+  );
+  form.insertAdjacentHTML(
+    "beforeend",
+    `<p class="form__secondary-text form__align-start">
+        <span>Processing time</span>
+        <span class="estimate-time">10 ~ 30 minute</span>
+    </p>`
+  );
+  form.insertAdjacentHTML(
+    "beforeend",
+    `<p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>`
+  );
+  /**
+   * insert Tab
+   */
+
+  /**
+   * getEstimateTime().then((timeString) => {
+   *    const estimateTimeEl = document.querySelector('.estimate-time');
+   *    estimateTimeEl.textContent = timeString;
+   * }).catch((error) => {
+   *    estimateTimeEl.textContent = "would take longer than you can expected";
+   * })
+   */
+   form.insertAdjacentHTML(
+    "beforeend",
+    `<div class="form__column">
+        <span class="form__tertiary-text">Estimated:</span>
+        <span class="form__secondary-text estimate-fee">loading...</span>
+    </div>`
+  );
+  /**
+   * feeObj = {
+   *    gasPrice: { 
+   *        fast: '',
+   *        standard: '',
+   *        slow: '',
+   *    },
+   *    gasLimit: 21000
+   * }
+   */
+  /**
+   * getTransactionFee().then((feeObj) => {
+   *    const estimateFeeEl = document.querySelector('.estimate-fee');
+   *    ++ get Setected tab index
+   *    estimateFeeEl.textContent = `${parseFloat(feeObj.gasPrice[1]) * gasLimit}`;
+   * }).catch((error) => {
+   *    estimateTimeEl.textContent = "would surprise you!";
+   * })
+   */
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
@@ -7714,7 +7780,7 @@ __webpack_require__ (/*! ./image/icon/icon128.png */ "./src/image/icon/icon128.p
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("413cea2bfc38cac194e8")
+/******/ 		__webpack_require__.h = () => ("a48150477533c3e5c7e5")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

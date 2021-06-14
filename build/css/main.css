@@ -178,7 +178,28 @@ body {
   overflow: scroll; }
 
 .form {
-  margin: 2rem 1rem; }
+  padding: 2rem 1rem;
+  height: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column; }
+  .form__align-end {
+    text-align: end; }
+  .form__align-start {
+    text-align: start; }
+  .form__primary-text {
+    color: #446CB3;
+    font-size: 1.28rem; }
+  .form__secondary-text {
+    color: #555;
+    font-size: 1.12rem; }
+  .form__tertiary-text {
+    color: #9B9B9B;
+    font-size: 1.12rem; }
+  .form__column {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; }
 
 .bill {
   display: flex;
@@ -455,7 +476,7 @@ body {
   position: relative;
   border-radius: 3px;
   width: 100%;
-  border: 1px solid #9B9B9B;
+  border: 1px solid #ECECEC;
   justify-content: center;
   background-color: #fff; }
 
@@ -503,7 +524,8 @@ body {
   font-size: 1.28rem;
   color: #FF1212;
   margin-left: 1rem;
-  opacity: 0; }
+  opacity: 0;
+  font-weight: 300; }
 
 .input__controller[error] .input__error-message {
   opacity: 1; }
