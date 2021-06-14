@@ -3,18 +3,21 @@ class ButtonElement extends HTMLElement {
     super();
     this.hasPopup = false;
     this.addEventListener("click", async (e) => {
-      this.action();
-      if (this.hasPopup) {
-        if (this.popup) this.removeAttribute("popup");
-        const result = await this.hint();
-        this.children[3].textContent = result;
-        this.setAttribute("popup", "");
-        setTimeout(() => {
-          this.removeAttribute("popup");
-        }, 400);
-      }
+      this.onPressed();
+      this.handlePopup();
     });
   }
+  handlePopup = async () => {
+    if (this.hasPopup) {
+      if (this.popup) this.removeAttribute("popup");
+      const result = await this.hint();
+      this.children[3].textContent = result;
+      this.setAttribute("popup", "");
+      setTimeout(() => {
+        this.removeAttribute("popup");
+      }, 400);
+    }
+  };
   connectedCallback() {
     this.className = "button";
     this.innerHTML = `
@@ -23,6 +26,12 @@ class ButtonElement extends HTMLElement {
         <div class="button__icon--suffix button__icon"></div>
         <span class="button__popup"></span>
         `;
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", async (e) => {
+      this.action();
+      this.handlePopup();
+    });
   }
   set style(val) {
     if (Array.isArray(val)) {
@@ -44,9 +53,6 @@ class ButtonElement extends HTMLElement {
   set suffix(icon) {
     this.children[2].innerHTML = `<i class="far fa-${icon}"></i>`;
     // this.children[2].insertAdjacentHTML("beforeend", `<i class="far fa-${icon}"></i>`);
-  }
-  set onPressed(action) {
-    this.action = action;
   }
   set popup(hint) {
     this.hasPopup = true;

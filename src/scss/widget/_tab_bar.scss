@@ -5,10 +5,10 @@
   & > * {
     flex: 1;
   }
-  & [receive] &__button {
+  &__button[receive] {
     color: $color-secondary;
   }
-  & [send] &__button {
+  &__button[send] {
     color: $color-tertiary;
   }
   &__button {

@@ -386,9 +386,9 @@ body {
   border-bottom: 1px solid #eee; }
   .tab-bar > * {
     flex: 1; }
-  .tab-bar [receive] .tab-bar__button {
+  .tab-bar__button[receive] {
     color: #446CB3; }
-  .tab-bar [send] .tab-bar__button {
+  .tab-bar__button[send] {
     color: #FF5730; }
   .tab-bar__button {
     padding: 1rem 0;

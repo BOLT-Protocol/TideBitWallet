@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623675009500
+      // 1623679470691
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6332,10 +6332,10 @@ class Scaffold extends HTMLElement {
 
 /***/ }),
 
-/***/ "./src/javascript/layout/tab_bar_navigator.js":
-/*!****************************************************!*\
-  !*** ./src/javascript/layout/tab_bar_navigator.js ***!
-  \****************************************************/
+/***/ "./src/javascript/layout/tar-bar.js":
+/*!******************************************!*\
+  !*** ./src/javascript/layout/tar-bar.js ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6343,53 +6343,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
-
-
-class TabBarItem extends HTMLElement {
+class TabBarElement extends HTMLElement {
   constructor() {
     super();
-    this.markup = (itemData) => `
-        <label class="tab-bar__button" for=${itemData.title.toLowerCase()}>
-          <div class="tab-bar__icon"></div>
-          <div class="tab-bar__text">${itemData.title}</i></div>
-        </label>
-        `;
-    this.addEventListener("click", (_) => {
-      this.state.screen = this.itemData.screen;
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
-    });
   }
-  set action(val) {
-    this.setAttribute(val, "");
-  }
-
-  set child(data) {
-    this.itemData = data.itemData;
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.insertAdjacentHTML("afterbegin", this.markup(this.itemData));
-    this.action = this.itemData.title.toLowerCase();
+  connectedCallback() {
+    this.className = "tab-bar";
   }
 }
+customElements.define("tab-bar", TabBarElement);
 
-customElements.define("tab-bar-item", TabBarItem);
-
-const tabNavigator = (state) => {
-  const tabBar = document.createElement("div");
-  tabBar.className = "tab-bar";
-  _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.forEach((itemData) => {
-    const tabBarItem = document.createElement("tab-bar-item");
-    tabBarItem.child = {
-      itemData: itemData,
-      state: state,
-    };
-    tabBar.insertAdjacentElement("beforeend", tabBarItem);
-  });
-  return tabBar;
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabNavigator);
+class TabBar {
+  constructor() {
+    this.element = document.createElement("tab-bar");
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBar);
 
 
 /***/ }),
@@ -6521,10 +6490,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
-/* harmony import */ var _widget_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/bill_list */ "./src/javascript/widget/bill_list.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
+/* harmony import */ var _widget_bill_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/bill_list */ "./src/javascript/widget/bill_list.js");
+/* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+
+
+
+
 
 
 
@@ -6534,74 +6514,85 @@ __webpack_require__.r(__webpack_exports__);
 
 const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
-    return [
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
-        txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
-        amount: 0.1,
-        fee: 0.000021,
-        message: "",
-        timestamp: Date.now(),
-        direction: "send",
-        from: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-        to: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-        confirmations: 0,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
-        txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
-        amount: 0.1,
-        fee: 0.000021,
-        message: "",
-        timestamp: 1625993323880,
-        direction: "receive",
-        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-        confirmations: 1,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
-        txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
-        amount: 0.1,
-        fee: 0.000021,
-        message: "",
-        timestamp: 1625953323880,
-        direction: "send",
-        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-        confirmations: 4,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
-        txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
-        amount: 1,
-        fee: 0.000021,
-        message: "",
-        timestamp: 1620719000000,
-        direction: "send",
-        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-        confirmations: 2160,
-      },
-      {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
-        txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
-        amount: 3,
-        fee: 0.000021,
-        message: "",
-        timestamp: 1620719218543,
-        direction: "receive",
-        from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-        to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-        confirmations: 214560,
-      },
-    ];
+  return [
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: Date.now(),
+      direction: "send",
+      from: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      to: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      confirmations: 0,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1625993323880,
+      direction: "receive",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 1,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1625953323880,
+      direction: "send",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 4,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+      amount: 1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1620719000000,
+      direction: "send",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 2160,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+      amount: 3,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1620719218543,
+      direction: "receive",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 214560,
+    },
+  ];
 };
 
 const account = (scaffold, state) => {
   const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
-  scaffold.body = [(0,_layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default)(state), (0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_3__.default)(state, bills)];
+  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default();
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+  scaffold.body = [tabBar.element, (0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default)(state, bills)];
+  _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((item) => {
+    state.screen = item.screen;
+    new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__.default(
+      state,
+      tabBar.element,
+      item.title,
+      item.title.toLowerCase(),
+      (val) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_6__.default)(val)
+    );
+  });
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
@@ -7473,18 +7464,21 @@ class ButtonElement extends HTMLElement {
     super();
     this.hasPopup = false;
     this.addEventListener("click", async (e) => {
-      this.action();
-      if (this.hasPopup) {
-        if (this.popup) this.removeAttribute("popup");
-        const result = await this.hint();
-        this.children[3].textContent = result;
-        this.setAttribute("popup", "");
-        setTimeout(() => {
-          this.removeAttribute("popup");
-        }, 400);
-      }
+      this.onPressed();
+      this.handlePopup();
     });
   }
+  handlePopup = async () => {
+    if (this.hasPopup) {
+      if (this.popup) this.removeAttribute("popup");
+      const result = await this.hint();
+      this.children[3].textContent = result;
+      this.setAttribute("popup", "");
+      setTimeout(() => {
+        this.removeAttribute("popup");
+      }, 400);
+    }
+  };
   connectedCallback() {
     this.className = "button";
     this.innerHTML = `
@@ -7493,6 +7487,12 @@ class ButtonElement extends HTMLElement {
         <div class="button__icon--suffix button__icon"></div>
         <span class="button__popup"></span>
         `;
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", async (e) => {
+      this.action();
+      this.handlePopup();
+    });
   }
   set style(val) {
     if (Array.isArray(val)) {
@@ -7514,9 +7514,6 @@ class ButtonElement extends HTMLElement {
   set suffix(icon) {
     this.children[2].innerHTML = `<i class="far fa-${icon}"></i>`;
     // this.children[2].insertAdjacentHTML("beforeend", `<i class="far fa-${icon}"></i>`);
-  }
-  set onPressed(action) {
-    this.action = action;
   }
   set popup(hint) {
     this.hasPopup = true;
@@ -7698,6 +7695,57 @@ class Input {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/tab_bar_item.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/widget/tab_bar_item.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class TabBarItemElement extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", () => this.onPressed(this.state));
+  }
+  connectedCallback() {
+    this.className = "tab-bar__button";
+    this.innerHTML = `
+        <div class="tab-bar__icon"></div>
+        <div class="tab-bar__text"></div>
+    `;
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", this.onPressed);
+  }
+  set action(val) {
+    this.setAttribute(val, "");
+  }
+  set text(title) {
+    this.children[1].textContent = title;
+  }
+}
+customElements.define("tab-bar-item", TabBarItemElement);
+
+class TabBarItem {
+  constructor(state, parentElement, title, type, onPressed) {
+    this.element = document.createElement("tab-bar-item");
+    parentElement.insertAdjacentElement("beforeend", this.element);
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.text = title;
+    this.element.action = type;
+    this.element.onPressed = onPressed;
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBarItem);
+
+
+/***/ }),
+
 /***/ "./src/main.js":
 /*!*********************!*\
   !*** ./src/main.js ***!
@@ -7795,7 +7843,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d02b0f1f407969b810d7")
+/******/ 		__webpack_require__.h = () => ("78ba194bb8abaa450960")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
