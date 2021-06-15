@@ -586,11 +586,19 @@ input:-webkit-autofill:active {
     display: flex;
     flex-direction: column;
     justify-content: flex-end; }
+  .form[disabled-toggle] .form__toggle-controller {
+    display: none; }
+  .form .account-balance {
+    margin-bottom: 2rem; }
+  .form[on] .estimate-time {
+    display: none; }
   .form__toggle-controller {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-bottom: 1rem; }
+  .form[on] .form__toggle-content {
+    margin-top: 1rem; }
   .form__toggle-button label {
     position: relative;
     display: block;
@@ -625,7 +633,7 @@ input:-webkit-autofill:active {
   .form__toggle-button input:checked + label::before {
     box-shadow: 0 0.08rem 0.15rem -0.1rem rgba(0, 0, 0, 0.5) inset, 0 0.05rem 0.08rem -0.01rem rgba(255, 255, 255, 0.7), 3rem 0 0 0 #51cec5 inset; }
   .form__toggle-button input:checked + label::after {
-    left: 2.5rem;
+    left: 2rem;
     background: #4ECDC4; }
   .form__button {
     margin: 1rem 2rem; }

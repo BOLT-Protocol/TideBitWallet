@@ -5,9 +5,6 @@ class FormElement extends HTMLElement {
   constructor() {
     super();
   }
-  disconnectedCallback() {
-    this.children[8].removeEventListener("click", this.handleToggle);
-  }
   connectedCallback() {
     this.className = "form";
     this.addressInput = new Input({
@@ -55,7 +52,10 @@ class FormElement extends HTMLElement {
       <span class="account-balance"></span>
     </p>
     <p class="form__primary-text form__align-start">Transaction Fee</p>
-    <div class="estimate-time"></div>
+    <p class="form__secondary-text form__align-start estimate-time">
+        <span>Processing time</span>
+        <span></span>
+    </p>
     <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
     <div class="form__toggle-content"></div>
     <p class="form__column">
@@ -73,28 +73,39 @@ class FormElement extends HTMLElement {
     </div>
     <div class="form__button"></div>
     `;
-    this.toggle = false;
     this.addressInput.render(this.children[0]);
     this.amountInput.render(this.children[0]);
     this.tabBar.render(this.children[5]);
+    this.estimateTime = "10 ~ 30 minutes";
     this.availableAmount = this.state.account;
     this.action.render(this.children[8]);
+    if (this.state.account.symbol === "ETH") {
+      // -- test
+      this.toggle = true;
+      this.toggleButton = document.querySelector(
+        ".form input[type='checkbox']"
+      );
+      this.toggleButton.addEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    } else {
+      this.toggle = false;
+    }
   }
   /**
    *
    * @param {Boolean} val
    *
    */
-  handleToggle() {
-    this.toggle = !this.toggle;
-    this.children[5].replaceChildren();
-    if (this.toggle) {
-      this.gasPriceInput.render(this.children[5]);
-      this.gasInput.render(this.children[5]);
-      this.children[8].setAttribute("on", "");
+  handleToggle(toggleContent) {
+    toggleContent.replaceChildren();
+    if (this.toggleButton.checked) {
+      this.gasPriceInput.render(toggleContent);
+      this.gasInput.render(toggleContent);
+      this.setAttribute("on", "");
     } else {
-      this.tabBar.render(this.children[5]);
-      this.children[8].removeAttribute("on");
+      this.tabBar.render(toggleContent);
+      this.removeAttribute("on");
     }
   }
   set availableAmount(account) {
@@ -105,19 +116,13 @@ class FormElement extends HTMLElement {
     this.children[6].children[1].textContent = fee + " " + account.symbol;
   }
   set estimateTime(time) {
-    const markup = `
-    <p class="form__secondary-text form__align-start">
-        <span>Processing time</span>
-        <span>${time}</span>
-    </p>
-    `;
-    this.children[3].insertAdjacentHTML("afterbegin", markup);
+    this.children[3].children[1].textContent = time;
   }
   /**
    * @param {Array<Object>} HTMLElement
    */
-  set toggleContent(content) {
-    this.content = content;
+  get toggleContent() {
+    return this.children[5];
   }
   set onSubmit(element) {
     element.render(this.lastElementChild);
@@ -127,11 +132,9 @@ class FormElement extends HTMLElement {
    */
   set toggle(val) {
     if (val) {
-      this.children[7].removeAttribute("disabled");
-      this.children[7].addEventListener("click", this.handleToggle);
+      this.removeAttribute("disabled-toggle");
     } else {
-      this.children[7].setAttribute("disabled", "");
-      this.children[7].removeEventListener("click", this.handleToggle);
+      this.setAttribute("disabled-toggle", "");
     }
   }
 }
