@@ -51,18 +51,26 @@ class FormElement extends HTMLElement {
     this.innerHTML = `
     <div class="form__input"></div>
     <p class="form__secondary-text form__align-end">
-        <span>Balance:</span>
-        <span class="account-balance"></span>
+      <span>Balance:</span>
+      <span class="account-balance"></span>
     </p>
     <p class="form__primary-text form__align-start">Transaction Fee</p>
     <div class="estimate-time"></div>
     <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
     <div class="form__toggle-content"></div>
     <p class="form__column">
-        <span class="form__tertiary-text">Estimated:</span>
-        <span class="form__secondary-text estimate-fee">loading...</span>
+      <span class="form__tertiary-text">Estimated:</span>
+      <span class="form__secondary-text estimate-fee">loading...</span>
     </p>
-    <div class="form__toggle-button"></div>
+    <div class="form__toggle">
+      <div class="form__toggle-controller">
+        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
+        <div class="form__toggle-button">
+          <input type="checkbox" name="toggle-button" id="toggle-button">
+          <label for="toggle-button"></label>
+        </div>
+      </div>
+    </div>
     <div class="form__button"></div>
     `;
     this.toggle = false;

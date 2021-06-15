@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623742161892
+      // 1623745971468
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6139,168 +6139,6 @@ const bottomNavigator = (state) => {
 
 /***/ }),
 
-/***/ "./src/javascript/layout/form.js":
-/*!***************************************!*\
-  !*** ./src/javascript/layout/form.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
-
-
-
-class FormElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  disconnectedCallback() {
-    this.children[8].removeEventListener("click", this.handleToggle);
-  }
-  connectedCallback() {
-    this.className = "form";
-    this.addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "text",
-      label: "Send to",
-      errorMessage: "Invalid Address",
-      validation: (value) => {
-        return value.startsWith("0x");
-      },
-      action: {
-        icon: "qrcode",
-        onPressed: () => {
-          console.log("action on pressed!");
-        },
-      },
-    });
-    this.amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Amount",
-      errorMessage: "Invalid Amount",
-      validation: (value) => {
-        return parseFloat(value) > 0;
-      },
-      pattern: `\d*.?\d*`,
-    });
-    this.gasPriceInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
-      pattern: `\d*.?\d*`,
-    });
-    this.gasInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Custom Gas (unit)",
-      pattern: `\d*`,
-    });
-    this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
-    );
-    this.tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
-    this.action = new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
-    this.innerHTML = `
-    <div class="form__input"></div>
-    <p class="form__secondary-text form__align-end">
-        <span>Balance:</span>
-        <span class="account-balance"></span>
-    </p>
-    <p class="form__primary-text form__align-start">Transaction Fee</p>
-    <div class="estimate-time"></div>
-    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
-    <div class="form__toggle-content"></div>
-    <p class="form__column">
-        <span class="form__tertiary-text">Estimated:</span>
-        <span class="form__secondary-text estimate-fee">loading...</span>
-    </p>
-    <div class="form__toggle-button"></div>
-    <div class="form__button"></div>
-    `;
-    this.toggle = false;
-    this.addressInput.render(this.children[0]);
-    this.amountInput.render(this.children[0]);
-    this.tabBar.render(this.children[5]);
-    this.availableAmount = this.state.account;
-    this.action.render(this.children[8]);
-  }
-  /**
-   *
-   * @param {Boolean} val
-   *
-   */
-  handleToggle() {
-    this.toggle = !this.toggle;
-    this.children[5].replaceChildren();
-    if (this.toggle) {
-      this.gasPriceInput.render(this.children[5]);
-      this.gasInput.render(this.children[5]);
-      this.children[8].setAttribute("on", "");
-    } else {
-      this.tabBar.render(this.children[5]);
-      this.children[8].removeAttribute("on");
-    }
-  }
-  set availableAmount(account) {
-    this.children[1].children[1].textContent =
-      account.balance + " " + account.symbol;
-  }
-  set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + account.symbol;
-  }
-  set estimateTime(time) {
-    const markup = `
-    <p class="form__secondary-text form__align-start">
-        <span>Processing time</span>
-        <span>${time}</span>
-    </p>
-    `;
-    this.children[3].insertAdjacentHTML("afterbegin", markup);
-  }
-  /**
-   * @param {Array<Object>} HTMLElement
-   */
-  set toggleContent(content) {
-    this.content = content;
-  }
-  set onSubmit(element) {
-    element.render(this.lastElementChild);
-  }
-  /**
-   * @param {Boolean} val
-   */
-  set toggle(val) {
-    if (val) {
-      this.children[7].removeAttribute("disabled");
-      this.children[7].addEventListener("click", this.handleToggle);
-    } else {
-      this.children[7].setAttribute("disabled", "");
-      this.children[7].removeEventListener("click", this.handleToggle);
-    }
-  }
-}
-
-customElements.define("transaction-form", FormElement);
-
-class Form {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
-  }
-  render(parentElement) {
-    this.element = document.createElement("transaction-form");
-    this.element.state = this.state;
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
-
-
-/***/ }),
-
 /***/ "./src/javascript/layout/header.js":
 /*!*****************************************!*\
   !*** ./src/javascript/layout/header.js ***!
@@ -7052,7 +6890,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
+/* harmony import */ var _widget_form__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/form */ "./src/javascript/widget/form.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 
 
@@ -7066,7 +6904,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const transaction = (scaffold, state) => {
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
-  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  const form = new _widget_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
   form.render( scaffold.body);
   /**
    * getEstimateTime().then((timeString) => {
@@ -7691,6 +7529,176 @@ class Button {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/form.js":
+/*!***************************************!*\
+  !*** ./src/javascript/widget/form.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
+/* harmony import */ var _input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./input */ "./src/javascript/widget/input.js");
+/* harmony import */ var _button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./button */ "./src/javascript/widget/button.js");
+
+
+
+class FormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  disconnectedCallback() {
+    this.children[8].removeEventListener("click", this.handleToggle);
+  }
+  connectedCallback() {
+    this.className = "form";
+    this.addressInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "text",
+      label: "Send to",
+      errorMessage: "Invalid Address",
+      validation: (value) => {
+        return value.startsWith("0x");
+      },
+      action: {
+        icon: "qrcode",
+        onPressed: () => {
+          console.log("action on pressed!");
+        },
+      },
+    });
+    this.amountInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Amount",
+      errorMessage: "Invalid Amount",
+      validation: (value) => {
+        return parseFloat(value) > 0;
+      },
+      pattern: `\d*.?\d*`,
+    });
+    this.gasPriceInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
+      pattern: `\d*.?\d*`,
+    });
+    this.gasInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Custom Gas (unit)",
+      pattern: `\d*`,
+    });
+    this.buttons = ["Slow", "Standard", "Fast"].map(
+      (str) => new _button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
+    );
+    this.tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
+    this.action = new _button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
+    this.innerHTML = `
+    <div class="form__input"></div>
+    <p class="form__secondary-text form__align-end">
+      <span>Balance:</span>
+      <span class="account-balance"></span>
+    </p>
+    <p class="form__primary-text form__align-start">Transaction Fee</p>
+    <div class="estimate-time"></div>
+    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
+    <div class="form__toggle-content"></div>
+    <p class="form__column">
+      <span class="form__tertiary-text">Estimated:</span>
+      <span class="form__secondary-text estimate-fee">loading...</span>
+    </p>
+    <div class="form__toggle">
+      <div class="form__toggle-controller">
+        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
+        <div class="form__toggle-button">
+          <input type="checkbox" name="toggle-button" id="toggle-button">
+          <label for="toggle-button"></label>
+        </div>
+      </div>
+    </div>
+    <div class="form__button"></div>
+    `;
+    this.toggle = false;
+    this.addressInput.render(this.children[0]);
+    this.amountInput.render(this.children[0]);
+    this.tabBar.render(this.children[5]);
+    this.availableAmount = this.state.account;
+    this.action.render(this.children[8]);
+  }
+  /**
+   *
+   * @param {Boolean} val
+   *
+   */
+  handleToggle() {
+    this.toggle = !this.toggle;
+    this.children[5].replaceChildren();
+    if (this.toggle) {
+      this.gasPriceInput.render(this.children[5]);
+      this.gasInput.render(this.children[5]);
+      this.children[8].setAttribute("on", "");
+    } else {
+      this.tabBar.render(this.children[5]);
+      this.children[8].removeAttribute("on");
+    }
+  }
+  set availableAmount(account) {
+    this.children[1].children[1].textContent =
+      account.balance + " " + account.symbol;
+  }
+  set estimateFee(fee) {
+    this.children[6].children[1].textContent = fee + " " + account.symbol;
+  }
+  set estimateTime(time) {
+    const markup = `
+    <p class="form__secondary-text form__align-start">
+        <span>Processing time</span>
+        <span>${time}</span>
+    </p>
+    `;
+    this.children[3].insertAdjacentHTML("afterbegin", markup);
+  }
+  /**
+   * @param {Array<Object>} HTMLElement
+   */
+  set toggleContent(content) {
+    this.content = content;
+  }
+  set onSubmit(element) {
+    element.render(this.lastElementChild);
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set toggle(val) {
+    if (val) {
+      this.children[7].removeAttribute("disabled");
+      this.children[7].addEventListener("click", this.handleToggle);
+    } else {
+      this.children[7].setAttribute("disabled", "");
+      this.children[7].removeEventListener("click", this.handleToggle);
+    }
+  }
+}
+
+customElements.define("transaction-form", FormElement);
+
+class Form {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+  }
+  render(parentElement) {
+    this.element = document.createElement("transaction-form");
+    this.element.state = this.state;
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
+
+
+/***/ }),
+
 /***/ "./src/javascript/widget/input.js":
 /*!****************************************!*\
   !*** ./src/javascript/widget/input.js ***!
@@ -8023,7 +8031,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("dc27160cd3afdc64c723")
+/******/ 		__webpack_require__.h = () => ("46e5f07a63eb95c2e62b")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
