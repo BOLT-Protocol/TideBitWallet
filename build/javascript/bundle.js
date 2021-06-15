@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623720703565
+      // 1623727539529
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6381,8 +6381,19 @@ class TabBarElement extends HTMLElement {
 customElements.define("tab-bar", TabBarElement);
 
 class TabBar {
-  constructor() {
+  constructor(children, defaultFocus) {
+    this.children = children;
+    this.focus = defaultFocus;
+  }
+  render(parentElement) {
     this.element = document.createElement("tab-bar");
+    parentElement.insertAdjacentElement("beforeend", this.element);
+    if (Array.isArray(this.children)) {
+      this.children.forEach((child) => child.render(this.element));
+    }
+    if (this.focus) {
+      this.element.focus = this.focus;
+    }
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBar);
@@ -6607,19 +6618,17 @@ const getAssetDetail = (assetId) => {
 
 const account = (scaffold, state) => {
   const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default();
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_2__.default)(state);
-  scaffold.body = [tabBar.element, (0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default)(state, bills)];
-  _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.forEach((item) => {
-    state.screen = item.screen;
-    new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__.default(
-      state,
-      tabBar.element,
-      item.title,
-      item.title.toLowerCase(),
-      (val) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_6__.default)(val)
+  const tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.map((item) => {
+    const _state = JSON.parse(JSON.stringify(state));
+    _state.screen = item.screen;
+    return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__.default(_state, item.title, item.title.toLowerCase(), (val) =>
+      (0,_utils_route__WEBPACK_IMPORTED_MODULE_6__.default)(val)
     );
   });
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default(tabBarItems);
+  tabBar.render(scaffold.body);
+  scaffold.body = [(0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default)(state, bills)];
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
@@ -6688,7 +6697,7 @@ class Address extends HTMLElement {
       }
     );
     this.children[3].textContent = address;
-    new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default(this.children[4], "Copy Wallet Address", () => {}, {
+    const button = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("Copy Wallet Address", () => {}, {
       style: ["round", "outline"],
       suffix: "copy",
       popup: async () => {
@@ -6698,6 +6707,7 @@ class Address extends HTMLElement {
         return err ? "Error!" : "Copy";
       },
     });
+    button.render(this.children[4]);
   }
 }
 
@@ -6900,7 +6910,7 @@ const transaction = (scaffold, state) => {
   console.log(_form);
 
   form.setAttribute(state?.account?.symbol || "ETH", ""); // -- test
-  const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default(form, {
+  const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default({
     inputType: "text",
     label: "Send to",
     errorMessage: "Invalid Address",
@@ -6914,7 +6924,8 @@ const transaction = (scaffold, state) => {
       },
     },
   });
-  const amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default(form, {
+  addressInput.render(form);
+  const amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default({
     inputType: "number",
     label: "Amount",
     errorMessage: "Invalid Amount",
@@ -6922,6 +6933,8 @@ const transaction = (scaffold, state) => {
       return parseFloat(value) > 0;
     },
   });
+  amountInput.render(form);
+
   form.insertAdjacentHTML(
     "beforeend",
     `<p class="form__secondary-text form__align-end">
@@ -6949,13 +6962,11 @@ const transaction = (scaffold, state) => {
   /**
    * insert Tab
    */
-  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default({ focus: 2 });
-  form.insertAdjacentElement("beforeend", tabBar.element);
-  ["Slow", "Standard", "Fast"].forEach(
-    (str) =>
-      new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(tabBar.element, str, () => {}, { style: ["round", "grey"] })
+  const buttons = ["Slow", "Standard", "Fast"].map(
+    (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
   );
-  tabBar.element.focus = true;
+  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(buttons, { defaultFocus: 1 });
+  tabBar.render(form);
 
   /**
    * getEstimateTime().then((timeString) => {
@@ -7561,20 +7572,23 @@ class ButtonElement extends HTMLElement {
 customElements.define("default-button", ButtonElement);
 
 class Button {
-  constructor(
-    parentElement,
-    title,
-    onPressed,
-    { style, leading, suffix, popup }
-  ) {
+  constructor(title, onPressed, { style, leading, suffix, popup }) {
+    this.title = title;
+    this.onPressed = onPressed;
+    this.style = style;
+    this.popup = popup;
+    this.leading = leading;
+    this.suffix = suffix;
+  }
+  render(parentElement) {
     this.element = document.createElement("default-button");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.text = title;
-    this.element.onPressed = onPressed;
-    if (style) this.element.style = style;
-    if (popup) this.element.popup = popup;
-    if (leading) this.element.leading = leading;
-    if (suffix) this.element.suffix = suffix;
+    this.element.text = this.title;
+    this.element.onPressed = this.onPressed;
+    if (this.style) this.element.style = this.style;
+    if (this.popup) this.element.popup = this.popup;
+    if (this.leading) this.element.leading = this.leading;
+    if (this.suffix) this.element.suffix = this.suffix;
   }
 }
 
@@ -7638,7 +7652,7 @@ class InputElement extends HTMLElement {
     );
     // this.children[0].children[1].children[0].addEventListener("change", (e) => {
     this.children[0].children[1].children[0].addEventListener("input", (e) =>
-      handleInput(e)
+      this.handleInput(e)
     );
   }
   get hasValue() {
@@ -7714,17 +7728,30 @@ class InputElement extends HTMLElement {
 customElements.define("input-controller", InputElement);
 
 class Input {
-  constructor(
-    parentElement,
-    { inputType = "text", label, errorMessage = "", validation, action }
-  ) {
+  constructor({
+    inputType = "text",
+    label,
+    errorMessage = "",
+    validation,
+    action,
+  }) {
+    this.inputType = inputType;
+    this.label = label;
+    this.errorMessage = errorMessage;
+    this.validation = validation;
+    if (action !== undefined) this.action = action;
+  }
+  render(parentElement) {
     this.element = document.createElement("input-controller");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.inputType = inputType;
-    this.element.label = label;
-    this.element.errorMessage = errorMessage;
-    this.element.validation = validation;
-    if (action !== undefined) this.element.action = action;
+    this.element.inputType = this.inputType;
+    this.element.label = this.label;
+    this.element.errorMessage = this.errorMessage;
+    this.element.validation = this.validation;
+    if (this.action !== undefined) this.element.action = this.action;
+  }
+  get value() {
+    return this.element.value;
   }
 }
 
@@ -7769,13 +7796,19 @@ class TabBarItemElement extends HTMLElement {
 customElements.define("tab-bar-item", TabBarItemElement);
 
 class TabBarItem {
-  constructor(state, parentElement, title, type, onPressed) {
+  constructor(state, title, type, onPressed) {
+    this.state = state;
+    this.text = title;
+    this.action = type;
+    this.onPressed = onPressed;
+  }
+  render(parentElement) {
     this.element = document.createElement("tab-bar-item");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.text = title;
-    this.element.action = type;
-    this.element.onPressed = onPressed;
+    this.element.state = this.state;
+    this.element.text = this.text;
+    this.element.action = this.action;
+    this.element.onPressed = this.onPressed;
   }
 }
 
@@ -7881,7 +7914,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("46091e9d965f9d521116")
+/******/ 		__webpack_require__.h = () => ("4b59aab2b9e04fa78a3c")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

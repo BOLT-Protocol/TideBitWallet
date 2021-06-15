@@ -17,7 +17,7 @@ const transaction = (scaffold, state) => {
   console.log(_form);
 
   form.setAttribute(state?.account?.symbol || "ETH", ""); // -- test
-  const addressInput = new Input(form, {
+  const addressInput = new Input({
     inputType: "text",
     label: "Send to",
     errorMessage: "Invalid Address",
@@ -31,7 +31,8 @@ const transaction = (scaffold, state) => {
       },
     },
   });
-  const amountInput = new Input(form, {
+  addressInput.render(form);
+  const amountInput = new Input({
     inputType: "number",
     label: "Amount",
     errorMessage: "Invalid Amount",
@@ -39,6 +40,8 @@ const transaction = (scaffold, state) => {
       return parseFloat(value) > 0;
     },
   });
+  amountInput.render(form);
+
   form.insertAdjacentHTML(
     "beforeend",
     `<p class="form__secondary-text form__align-end">
@@ -66,13 +69,11 @@ const transaction = (scaffold, state) => {
   /**
    * insert Tab
    */
-  const tabBar = new TabBar({ focus: 2 });
-  form.insertAdjacentElement("beforeend", tabBar.element);
-  ["Slow", "Standard", "Fast"].forEach(
-    (str) =>
-      new Button(tabBar.element, str, () => {}, { style: ["round", "grey"] })
+  const buttons = ["Slow", "Standard", "Fast"].map(
+    (str) => new Button(str, () => {}, { style: ["round", "grey"] })
   );
-  tabBar.element.focus = true;
+  const tabBar = new TabBar(buttons, { defaultFocus: 1 });
+  tabBar.render(form);
 
   /**
    * getEstimateTime().then((timeString) => {

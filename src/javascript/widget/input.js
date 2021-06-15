@@ -41,7 +41,7 @@ class InputElement extends HTMLElement {
     );
     // this.children[0].children[1].children[0].addEventListener("change", (e) => {
     this.children[0].children[1].children[0].addEventListener("input", (e) =>
-      handleInput(e)
+      this.handleInput(e)
     );
   }
   get hasValue() {
@@ -117,17 +117,30 @@ class InputElement extends HTMLElement {
 customElements.define("input-controller", InputElement);
 
 class Input {
-  constructor(
-    parentElement,
-    { inputType = "text", label, errorMessage = "", validation, action }
-  ) {
+  constructor({
+    inputType = "text",
+    label,
+    errorMessage = "",
+    validation,
+    action,
+  }) {
+    this.inputType = inputType;
+    this.label = label;
+    this.errorMessage = errorMessage;
+    this.validation = validation;
+    if (action !== undefined) this.action = action;
+  }
+  render(parentElement) {
     this.element = document.createElement("input-controller");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.inputType = inputType;
-    this.element.label = label;
-    this.element.errorMessage = errorMessage;
-    this.element.validation = validation;
-    if (action !== undefined) this.element.action = action;
+    this.element.inputType = this.inputType;
+    this.element.label = this.label;
+    this.element.errorMessage = this.errorMessage;
+    this.element.validation = this.validation;
+    if (this.action !== undefined) this.element.action = this.action;
+  }
+  get value() {
+    return this.element.value;
   }
 }
 

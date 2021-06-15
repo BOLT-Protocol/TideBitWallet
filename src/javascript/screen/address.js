@@ -44,7 +44,7 @@ class Address extends HTMLElement {
       }
     );
     this.children[3].textContent = address;
-    new Button(this.children[4], "Copy Wallet Address", () => {}, {
+    const button = new Button("Copy Wallet Address", () => {}, {
       style: ["round", "outline"],
       suffix: "copy",
       popup: async () => {
@@ -54,6 +54,7 @@ class Address extends HTMLElement {
         return err ? "Error!" : "Copy";
       },
     });
+    button.render(this.children[4]);
   }
 }
 

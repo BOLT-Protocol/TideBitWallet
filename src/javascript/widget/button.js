@@ -62,20 +62,23 @@ class ButtonElement extends HTMLElement {
 customElements.define("default-button", ButtonElement);
 
 class Button {
-  constructor(
-    parentElement,
-    title,
-    onPressed,
-    { style, leading, suffix, popup }
-  ) {
+  constructor(title, onPressed, { style, leading, suffix, popup }) {
+    this.title = title;
+    this.onPressed = onPressed;
+    this.style = style;
+    this.popup = popup;
+    this.leading = leading;
+    this.suffix = suffix;
+  }
+  render(parentElement) {
     this.element = document.createElement("default-button");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.text = title;
-    this.element.onPressed = onPressed;
-    if (style) this.element.style = style;
-    if (popup) this.element.popup = popup;
-    if (leading) this.element.leading = leading;
-    if (suffix) this.element.suffix = suffix;
+    this.element.text = this.title;
+    this.element.onPressed = this.onPressed;
+    if (this.style) this.element.style = this.style;
+    if (this.popup) this.element.popup = this.popup;
+    if (this.leading) this.element.leading = this.leading;
+    if (this.suffix) this.element.suffix = this.suffix;
   }
 }
 

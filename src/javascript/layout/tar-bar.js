@@ -36,8 +36,19 @@ class TabBarElement extends HTMLElement {
 customElements.define("tab-bar", TabBarElement);
 
 class TabBar {
-  constructor() {
+  constructor(children, defaultFocus) {
+    this.children = children;
+    this.focus = defaultFocus;
+  }
+  render(parentElement) {
     this.element = document.createElement("tab-bar");
+    parentElement.insertAdjacentElement("beforeend", this.element);
+    if (Array.isArray(this.children)) {
+      this.children.forEach((child) => child.render(this.element));
+    }
+    if (this.focus) {
+      this.element.focus = this.focus;
+    }
   }
 }
 export default TabBar;

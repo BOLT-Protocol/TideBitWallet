@@ -81,19 +81,17 @@ const getAssetDetail = (assetId) => {
 
 const account = (scaffold, state) => {
   const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
-  const tabBar = new TabBar();
-  scaffold.header = header(state);
-  scaffold.body = [tabBar.element, billList(state, bills)];
-  items.forEach((item) => {
-    state.screen = item.screen;
-    new TabBarItem(
-      state,
-      tabBar.element,
-      item.title,
-      item.title.toLowerCase(),
-      (val) => route(val)
+  const tabBarItems = items.map((item) => {
+    const _state = JSON.parse(JSON.stringify(state));
+    _state.screen = item.screen;
+    return new TabBarItem(_state, item.title, item.title.toLowerCase(), (val) =>
+      route(val)
     );
   });
+  scaffold.header = header(state);
+  const tabBar = new TabBar(tabBarItems);
+  tabBar.render(scaffold.body);
+  scaffold.body = [billList(state, bills)];
 };
 
 export default account;

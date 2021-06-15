@@ -23,13 +23,19 @@ class TabBarItemElement extends HTMLElement {
 customElements.define("tab-bar-item", TabBarItemElement);
 
 class TabBarItem {
-  constructor(state, parentElement, title, type, onPressed) {
+  constructor(state, title, type, onPressed) {
+    this.state = state;
+    this.text = title;
+    this.action = type;
+    this.onPressed = onPressed;
+  }
+  render(parentElement) {
     this.element = document.createElement("tab-bar-item");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.text = title;
-    this.element.action = type;
-    this.element.onPressed = onPressed;
+    this.element.state = this.state;
+    this.element.text = this.text;
+    this.element.action = this.action;
+    this.element.onPressed = this.onPressed;
   }
 }
 
