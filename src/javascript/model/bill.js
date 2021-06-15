@@ -74,22 +74,22 @@ class Bill {
     if (this.confirmations > 6) return "100%";
     return ((this.confirmations / 6) * 100).toString() + "%";
   }
-  formattedAmount(account) {
+  get sign() {
     switch (this._direction) {
       case "receive":
-        return "+" + " " + this.amount + " " + account.symbol;
+        return "+";
       case "send":
-        return "-" + " " + this.amount + " " + account.symbol;
+        return "-";
       default:
         return "Unknown";
     }
   }
-  get directionIcon() {
+  formattedAmount(account) {
     switch (this._direction) {
       case "receive":
-        return "../src/image/icon/ic_receive_black.png";
+        return this.sign + " " + this.amount + " " + account.symbol;
       case "send":
-        return "../src/image/icon/ic_send_black.png";
+        return this.sign + " " + this.amount + " " + account.symbol;
       default:
         return "Unknown";
     }

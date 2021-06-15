@@ -20,6 +20,10 @@ body {
   box-sizing: border-box;
 }
 
+main {
+  flex: auto;
+}
+
 footer {
   margin-top: auto;
 }
@@ -38,4 +42,3 @@ a:visited {
   color: $color-primary;
   text-decoration: none;
 }
-

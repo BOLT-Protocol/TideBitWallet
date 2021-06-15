@@ -17,7 +17,6 @@ class AccountItem extends HTMLElement {
     this.addEventListener("click", (_) => {
       if (this.account) {
         this.state.account = this.account;
-        this.state.backward = "accounts";
         this.state.screen = "account";
         route(this.state);
       } else {

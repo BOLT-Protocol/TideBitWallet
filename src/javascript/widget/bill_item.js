@@ -1,3 +1,4 @@
+import route from "../utils/route";
 import { addressFormatter } from "../utils/utils";
 
 class BillItem extends HTMLElement {
@@ -5,11 +6,7 @@ class BillItem extends HTMLElement {
     super();
     this.markup = () => `
     <div class="bill-item__main">
-        <div class="bill-item__icon">
-            <img src=${
-              this.bill.directionIcon
-            } alt=${this.bill.action.toLowerCase()}>
-        </div>
+        <div class="bill-item__icon"></div>
         <div class="bill-item__title">
             <div class="bill-item__action">${this.bill.action}</div>
             <div class="bill-item__detail">
@@ -28,11 +25,16 @@ class BillItem extends HTMLElement {
     </div>
     <div class="bill-item__sub">
         <div class="bill-item__status">${this.bill.status}</div>
-        <div class="bill-item__progress"><span style="width: ${this.bill.progress}"></span></div>
+        <div class="bill-item__progress"><span style="width: ${
+          this.bill.progress
+        }"></span></div>
     </div>
         `;
     this.addEventListener("click", () => {
       // let transactionDetail = ui.getTransactionDetail({ transactionID });
+      this.state.screen = "bill";
+      this.state.bill = this.bill;
+      route(this.state);
     });
   }
   connectedCallback() {
@@ -42,6 +44,7 @@ class BillItem extends HTMLElement {
     return ["pending", "confirming", "complete"];
   }
   set status(val) {
+    if (this.hasAttribute(val))return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");
@@ -51,8 +54,9 @@ class BillItem extends HTMLElement {
     this.setAttribute(val, "");
   }
   set child(data) {
-    this.account = data.account;
+    this.state = JSON.parse(JSON.stringify(data.state));
     this.bill = data.bill;
+    this.account = this.state.account;
     this.insertAdjacentHTML("afterbegin", this.markup());
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();

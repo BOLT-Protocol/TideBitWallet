@@ -8,10 +8,16 @@
   }
   &__icon {
     margin-right: 1rem;
-    width: 5rem;
-    & img {
-      width: 100%;
-    }
+    min-width: 2rem;
+    height: 2rem;
+    background-position: center;
+    background-size: cover;
+  }
+  &[send] &__icon {
+    background-image: url(../image/icon/ic_send_black.png);
+  }
+  &[receive] &__icon {
+    background-image: url(../image/icon/ic_receive_black.png);
   }
   &__title {
     width: 100%;
@@ -30,10 +36,10 @@
     color: $color-grey-dark-1;
     font-size: $default-font-size * 0.6;
   }
-  [send] &__amount {
+  &[send] &__amount {
     color: $color-tertiary;
   }
-  [receive] &__amount {
+  &[receive] &__amount {
     color: $color-secondary;
   }
   &[pending] &__status,
@@ -73,5 +79,4 @@
     font-size: $default-font-size * 0.6;
     color: $color-primary;
   }
-  
 }
