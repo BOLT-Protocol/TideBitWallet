@@ -8,6 +8,7 @@
 
   & > * {
     flex: 1;
+    cursor: pointer;
   }
   &__button[receive] {
     color: $color-secondary;

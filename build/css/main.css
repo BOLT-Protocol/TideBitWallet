@@ -87,6 +87,8 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between; }
+  .bottom-navigator > * {
+    cursor: pointer; }
   .bottom-navigator__item {
     display: none; }
   .bottom-navigator__button {
@@ -170,12 +172,24 @@ body {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
   gap: 5px; }
+  .account-list > * {
+    cursor: pointer; }
+  .account-list > *:hover {
+    background-color: #fafbfb;
+    transition: all 0.2s; }
 
 .bill-list {
   height: 349px;
   display: flex;
   flex-direction: column;
   overflow: scroll; }
+  .bill-list > * {
+    background-color: #F7F8F9;
+    cursor: pointer; }
+  .bill-list > *:hover {
+    background-color: #eee; }
+    .bill-list > *:hover .bill-item__progress {
+      background-color: lightgray; }
 
 .form {
   padding: 2rem 1rem;
@@ -388,7 +402,8 @@ body {
   .tab-bar > .button:not(:last-child) {
     margin-right: 1rem; }
   .tab-bar > * {
-    flex: 1; }
+    flex: 1;
+    cursor: pointer; }
   .tab-bar__button[receive] {
     color: #446CB3; }
   .tab-bar__button[send] {
