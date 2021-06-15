@@ -13,16 +13,19 @@ class InputElement extends HTMLElement {
     } else {
       this.hasValue = false;
     }
-    const checked = this.value === "" || this.validator(this.value);
+    let checked;
+    if (this.validator !== undefined) {
+      checked = this.value === "" || this.validator(this.value);
+    }
     if (checked !== undefined) {
       this.error = !checked;
     }
     // ++
     // https://stackoverflow.com/questions/8808590/number-input-type-that-takes-only-integers
-    // if(this.type === 'number'){
-    //   this.value = this.value.replace(/[^0-9.]/g, '')
-    //   this.value = this.value.replace(/(\..*)\./g, '$1');
-    // }
+    if (e.target.pattern === "d*") {
+      //   this.value = this.value.replace(/[^0-9.]/g, '');
+      //   this.value = this.value.replace(/(\..*)\./g, '$1');
+    }
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -135,7 +138,7 @@ class Input {
     errorMessage = "",
     validation,
     action,
-    pattern
+    pattern,
   }) {
     this.inputType = inputType;
     this.label = label;

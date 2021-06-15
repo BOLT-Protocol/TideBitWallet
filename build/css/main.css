@@ -494,7 +494,8 @@ body {
   top: 0rem;
   left: 1rem;
   width: fit-content;
-  transition: all 0.3s; }
+  transition: all 0.3s;
+  pointer-events: none; }
   .input__label p {
     background-color: #fff; }
 

@@ -5,6 +5,13 @@ class FormElement extends HTMLElement {
   constructor() {
     super();
   }
+  disconnectedCallback() {
+    if (this.toggle) {
+      this.toggleButton.removeEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    }
+  }
   connectedCallback() {
     this.className = "form";
     this.addressInput = new Input({

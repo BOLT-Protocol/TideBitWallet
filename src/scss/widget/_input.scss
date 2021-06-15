@@ -26,6 +26,7 @@
     left: 1rem;
     width: fit-content;
     transition: all 0.3s;
+    pointer-events: none;
     & p {
       background-color: $color-white;
       //   display: table-cell;

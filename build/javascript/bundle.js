@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623748833300
+      // 1623755370390
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7550,6 +7550,13 @@ class FormElement extends HTMLElement {
   constructor() {
     super();
   }
+  disconnectedCallback() {
+    if (this.toggle) {
+      this.toggleButton.removeEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    }
+  }
   connectedCallback() {
     this.className = "form";
     this.addressInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
@@ -7729,16 +7736,19 @@ class InputElement extends HTMLElement {
     } else {
       this.hasValue = false;
     }
-    const checked = this.value === "" || this.validator(this.value);
+    let checked;
+    if (this.validator !== undefined) {
+      checked = this.value === "" || this.validator(this.value);
+    }
     if (checked !== undefined) {
       this.error = !checked;
     }
     // ++
     // https://stackoverflow.com/questions/8808590/number-input-type-that-takes-only-integers
-    // if(this.type === 'number'){
-    //   this.value = this.value.replace(/[^0-9.]/g, '')
-    //   this.value = this.value.replace(/(\..*)\./g, '$1');
-    // }
+    if (e.target.pattern === "d*") {
+      //   this.value = this.value.replace(/[^0-9.]/g, '');
+      //   this.value = this.value.replace(/(\..*)\./g, '$1');
+    }
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -7851,7 +7861,7 @@ class Input {
     errorMessage = "",
     validation,
     action,
-    pattern
+    pattern,
   }) {
     this.inputType = inputType;
     this.label = label;
@@ -8034,7 +8044,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("460358fd71cdf999a3d9")
+/******/ 		__webpack_require__.h = () => ("52ca578b5162b80e861f")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
