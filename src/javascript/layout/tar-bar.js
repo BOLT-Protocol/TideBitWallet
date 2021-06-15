@@ -50,5 +50,8 @@ class TabBar {
       this.element.focus = this.focus;
     }
   }
+  get selected(){
+    return this.element.focus;
+  }
 }
 export default TabBar;

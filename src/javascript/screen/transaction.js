@@ -1,80 +1,17 @@
+import Form from "../widget/form";
 import header from "../layout/header";
-import TabBar from "../layout/tar-bar";
-import Button from "../widget/button";
-import Input from "../widget/input";
+
 
 /**
  * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
  * let transaction = ui.prepareTransaction({ to, amount, data, speed });
  * ui.sendTransaction(transaction);
  */
+
 const transaction = (scaffold, state) => {
   scaffold.header = header(state);
-  const form = document.createElement("div");
-  form.className = "form";
-  scaffold.body = form;
-  const _form = scaffold.body.children[0];
-  console.log(_form);
-
-  form.setAttribute(state?.account?.symbol || "ETH", ""); // -- test
-  const addressInput = new Input({
-    inputType: "text",
-    label: "Send to",
-    errorMessage: "Invalid Address",
-    validation: (value) => {
-      return value.startsWith("0x");
-    },
-    action: {
-      icon: "qrcode",
-      onPressed: () => {
-        console.log("action on pressed!");
-      },
-    },
-  });
-  addressInput.render(form);
-  const amountInput = new Input({
-    inputType: "number",
-    label: "Amount",
-    errorMessage: "Invalid Amount",
-    validation: (value) => {
-      return parseFloat(value) > 0;
-    },
-  });
-  amountInput.render(form);
-
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__secondary-text form__align-end">
-        <span>Balance:</span>
-        <span>${
-          state?.account?.balance !== undefined ? state.account.balance : 2
-        } ${state?.account?.symbol || "ETH"}</span>
-    </p>` // -- test
-  );
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__primary-text form__align-start">Transaction Fee</p>`
-  );
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__secondary-text form__align-start">
-        <span>Processing time</span>
-        <span class="estimate-time">10 ~ 30 minute</span>
-    </p>`
-  );
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>`
-  );
-  /**
-   * insert Tab
-   */
-  const buttons = ["Slow", "Standard", "Fast"].map(
-    (str) => new Button(str, () => {}, { style: ["round", "grey"] })
-  );
-  const tabBar = new TabBar(buttons, { defaultFocus: 1 });
-  tabBar.render(form);
-
+  const form = new Form(state);
+  form.render( scaffold.body);
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');
@@ -83,13 +20,7 @@ const transaction = (scaffold, state) => {
    *    estimateTimeEl.textContent = "would take longer than you can expected";
    * })
    */
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<div class="form__column">
-        <span class="form__tertiary-text">Estimated:</span>
-        <span class="form__secondary-text estimate-fee">loading...</span>
-    </div>`
-  );
+
   /**
    * feeObj = {
    *    gasPrice: {

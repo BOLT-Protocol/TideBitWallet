@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623727539529
+      // 1623742161892
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6139,6 +6139,168 @@ const bottomNavigator = (state) => {
 
 /***/ }),
 
+/***/ "./src/javascript/layout/form.js":
+/*!***************************************!*\
+  !*** ./src/javascript/layout/form.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+
+
+
+class FormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  disconnectedCallback() {
+    this.children[8].removeEventListener("click", this.handleToggle);
+  }
+  connectedCallback() {
+    this.className = "form";
+    this.addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "text",
+      label: "Send to",
+      errorMessage: "Invalid Address",
+      validation: (value) => {
+        return value.startsWith("0x");
+      },
+      action: {
+        icon: "qrcode",
+        onPressed: () => {
+          console.log("action on pressed!");
+        },
+      },
+    });
+    this.amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Amount",
+      errorMessage: "Invalid Amount",
+      validation: (value) => {
+        return parseFloat(value) > 0;
+      },
+      pattern: `\d*.?\d*`,
+    });
+    this.gasPriceInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
+      pattern: `\d*.?\d*`,
+    });
+    this.gasInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Custom Gas (unit)",
+      pattern: `\d*`,
+    });
+    this.buttons = ["Slow", "Standard", "Fast"].map(
+      (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
+    );
+    this.tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
+    this.action = new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
+    this.innerHTML = `
+    <div class="form__input"></div>
+    <p class="form__secondary-text form__align-end">
+        <span>Balance:</span>
+        <span class="account-balance"></span>
+    </p>
+    <p class="form__primary-text form__align-start">Transaction Fee</p>
+    <div class="estimate-time"></div>
+    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
+    <div class="form__toggle-content"></div>
+    <p class="form__column">
+        <span class="form__tertiary-text">Estimated:</span>
+        <span class="form__secondary-text estimate-fee">loading...</span>
+    </p>
+    <div class="form__toggle-button"></div>
+    <div class="form__button"></div>
+    `;
+    this.toggle = false;
+    this.addressInput.render(this.children[0]);
+    this.amountInput.render(this.children[0]);
+    this.tabBar.render(this.children[5]);
+    this.availableAmount = this.state.account;
+    this.action.render(this.children[8]);
+  }
+  /**
+   *
+   * @param {Boolean} val
+   *
+   */
+  handleToggle() {
+    this.toggle = !this.toggle;
+    this.children[5].replaceChildren();
+    if (this.toggle) {
+      this.gasPriceInput.render(this.children[5]);
+      this.gasInput.render(this.children[5]);
+      this.children[8].setAttribute("on", "");
+    } else {
+      this.tabBar.render(this.children[5]);
+      this.children[8].removeAttribute("on");
+    }
+  }
+  set availableAmount(account) {
+    this.children[1].children[1].textContent =
+      account.balance + " " + account.symbol;
+  }
+  set estimateFee(fee) {
+    this.children[6].children[1].textContent = fee + " " + account.symbol;
+  }
+  set estimateTime(time) {
+    const markup = `
+    <p class="form__secondary-text form__align-start">
+        <span>Processing time</span>
+        <span>${time}</span>
+    </p>
+    `;
+    this.children[3].insertAdjacentHTML("afterbegin", markup);
+  }
+  /**
+   * @param {Array<Object>} HTMLElement
+   */
+  set toggleContent(content) {
+    this.content = content;
+  }
+  set onSubmit(element) {
+    element.render(this.lastElementChild);
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set toggle(val) {
+    if (val) {
+      this.children[7].removeAttribute("disabled");
+      this.children[7].addEventListener("click", this.handleToggle);
+    } else {
+      this.children[7].setAttribute("disabled", "");
+      this.children[7].removeEventListener("click", this.handleToggle);
+    }
+  }
+}
+
+customElements.define("transaction-form", FormElement);
+
+class Form {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+  }
+  render(parentElement) {
+    this.element = document.createElement("transaction-form");
+    this.element.state = this.state;
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
+
+
+/***/ }),
+
 /***/ "./src/javascript/layout/header.js":
 /*!*****************************************!*\
   !*** ./src/javascript/layout/header.js ***!
@@ -6394,6 +6556,9 @@ class TabBar {
     if (this.focus) {
       this.element.focus = this.focus;
     }
+  }
+  get selected(){
+    return this.element.focus;
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBar);
@@ -6887,11 +7052,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
-
+/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 
 
 
@@ -6901,73 +7063,11 @@ __webpack_require__.r(__webpack_exports__);
  * let transaction = ui.prepareTransaction({ to, amount, data, speed });
  * ui.sendTransaction(transaction);
  */
+
 const transaction = (scaffold, state) => {
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-  const form = document.createElement("div");
-  form.className = "form";
-  scaffold.body = form;
-  const _form = scaffold.body.children[0];
-  console.log(_form);
-
-  form.setAttribute(state?.account?.symbol || "ETH", ""); // -- test
-  const addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default({
-    inputType: "text",
-    label: "Send to",
-    errorMessage: "Invalid Address",
-    validation: (value) => {
-      return value.startsWith("0x");
-    },
-    action: {
-      icon: "qrcode",
-      onPressed: () => {
-        console.log("action on pressed!");
-      },
-    },
-  });
-  addressInput.render(form);
-  const amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_3__.default({
-    inputType: "number",
-    label: "Amount",
-    errorMessage: "Invalid Amount",
-    validation: (value) => {
-      return parseFloat(value) > 0;
-    },
-  });
-  amountInput.render(form);
-
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__secondary-text form__align-end">
-        <span>Balance:</span>
-        <span>${
-          state?.account?.balance !== undefined ? state.account.balance : 2
-        } ${state?.account?.symbol || "ETH"}</span>
-    </p>` // -- test
-  );
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__primary-text form__align-start">Transaction Fee</p>`
-  );
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__secondary-text form__align-start">
-        <span>Processing time</span>
-        <span class="estimate-time">10 ~ 30 minute</span>
-    </p>`
-  );
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>`
-  );
-  /**
-   * insert Tab
-   */
-  const buttons = ["Slow", "Standard", "Fast"].map(
-    (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
-  );
-  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(buttons, { defaultFocus: 1 });
-  tabBar.render(form);
-
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  form.render( scaffold.body);
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');
@@ -6976,13 +7076,7 @@ const transaction = (scaffold, state) => {
    *    estimateTimeEl.textContent = "would take longer than you can expected";
    * })
    */
-  form.insertAdjacentHTML(
-    "beforeend",
-    `<div class="form__column">
-        <span class="form__tertiary-text">Estimated:</span>
-        <span class="form__secondary-text estimate-fee">loading...</span>
-    </div>`
-  );
+
   /**
    * feeObj = {
    *    gasPrice: {
@@ -7628,6 +7722,12 @@ class InputElement extends HTMLElement {
     if (checked !== undefined) {
       this.error = !checked;
     }
+    // ++
+    // https://stackoverflow.com/questions/8808590/number-input-type-that-takes-only-integers
+    // if(this.type === 'number'){
+    //   this.value = this.value.replace(/[^0-9.]/g, '')
+    //   this.value = this.value.replace(/(\..*)\./g, '$1');
+    // }
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -7654,6 +7754,7 @@ class InputElement extends HTMLElement {
     this.children[0].children[1].children[0].addEventListener("input", (e) =>
       this.handleInput(e)
     );
+    this.children[0].children[1].children[1].style.display = "none";
   }
   get hasValue() {
     return this.hasAttribute("has-value");
@@ -7685,10 +7786,14 @@ class InputElement extends HTMLElement {
   set inputType(val) {
     this.children[0].children[1].children[0].type = val;
   }
+  set pattern(val) {
+    this.children[0].children[1].children[0].pattern = val;
+  }
   set label(val) {
     this.children[0].children[0].children[0].textContent = val;
   }
   set action(obj) {
+    this.children[0].children[1].children[1].style.display = "inline-block";
     this.children[0].children[1].children[1].insertAdjacentHTML(
       "afterbegin",
       `<i class="far fa-${obj.icon}"></i>`
@@ -7701,6 +7806,7 @@ class InputElement extends HTMLElement {
     this.validator = val;
   }
   set errorMessage(val) {
+    if (val === undefined) this.children[1].style.display = "none";
     this.children[1].textContent = val;
   }
   get value() {
@@ -7734,12 +7840,14 @@ class Input {
     errorMessage = "",
     validation,
     action,
+    pattern
   }) {
     this.inputType = inputType;
     this.label = label;
     this.errorMessage = errorMessage;
     this.validation = validation;
     if (action !== undefined) this.action = action;
+    this.pattern = pattern;
   }
   render(parentElement) {
     this.element = document.createElement("input-controller");
@@ -7749,6 +7857,7 @@ class Input {
     this.element.errorMessage = this.errorMessage;
     this.element.validation = this.validation;
     if (this.action !== undefined) this.element.action = this.action;
+    if (this.pattern !== undefined) this.element.pattern = this.pattern;
   }
   get value() {
     return this.element.value;
@@ -7914,7 +8023,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("4b59aab2b9e04fa78a3c")
+/******/ 		__webpack_require__.h = () => ("dc27160cd3afdc64c723")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -17,6 +17,12 @@ class InputElement extends HTMLElement {
     if (checked !== undefined) {
       this.error = !checked;
     }
+    // ++
+    // https://stackoverflow.com/questions/8808590/number-input-type-that-takes-only-integers
+    // if(this.type === 'number'){
+    //   this.value = this.value.replace(/[^0-9.]/g, '')
+    //   this.value = this.value.replace(/(\..*)\./g, '$1');
+    // }
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -43,6 +49,7 @@ class InputElement extends HTMLElement {
     this.children[0].children[1].children[0].addEventListener("input", (e) =>
       this.handleInput(e)
     );
+    this.children[0].children[1].children[1].style.display = "none";
   }
   get hasValue() {
     return this.hasAttribute("has-value");
@@ -74,10 +81,14 @@ class InputElement extends HTMLElement {
   set inputType(val) {
     this.children[0].children[1].children[0].type = val;
   }
+  set pattern(val) {
+    this.children[0].children[1].children[0].pattern = val;
+  }
   set label(val) {
     this.children[0].children[0].children[0].textContent = val;
   }
   set action(obj) {
+    this.children[0].children[1].children[1].style.display = "inline-block";
     this.children[0].children[1].children[1].insertAdjacentHTML(
       "afterbegin",
       `<i class="far fa-${obj.icon}"></i>`
@@ -90,6 +101,7 @@ class InputElement extends HTMLElement {
     this.validator = val;
   }
   set errorMessage(val) {
+    if (val === undefined) this.children[1].style.display = "none";
     this.children[1].textContent = val;
   }
   get value() {
@@ -123,12 +135,14 @@ class Input {
     errorMessage = "",
     validation,
     action,
+    pattern
   }) {
     this.inputType = inputType;
     this.label = label;
     this.errorMessage = errorMessage;
     this.validation = validation;
     if (action !== undefined) this.action = action;
+    this.pattern = pattern;
   }
   render(parentElement) {
     this.element = document.createElement("input-controller");
@@ -138,6 +152,7 @@ class Input {
     this.element.errorMessage = this.errorMessage;
     this.element.validation = this.validation;
     if (this.action !== undefined) this.element.action = this.action;
+    if (this.pattern !== undefined) this.element.pattern = this.pattern;
   }
   get value() {
     return this.element.value;
