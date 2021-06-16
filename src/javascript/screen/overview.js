@@ -1,7 +1,7 @@
 import scaffold from "../layout/scaffold";
 import Header from "../layout/header";
-import AccountList from "../widget/account_list";
-import SettingList from "../widget/setting_list";
+import AccountList from "../layout/account_list";
+import SettingList from "../layout/setting_list";
 import bottomNavigator from "../layout/bottom_navigator";
 
 const overview = (scaffold, state) => {

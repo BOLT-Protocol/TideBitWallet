@@ -1,5 +1,5 @@
 import Header from "../layout/header";
-import BillContent from "../widget/bill_content";
+import BillContent from "../layout/bill_content";
 
 const bill = (scaffold, state) => {
   const header = new Header(state);

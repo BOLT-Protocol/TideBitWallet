@@ -1,6 +1,6 @@
 import items from "../constant/tab_bar_data";
-import TabBar from "../layout/tar-bar";
-import TabBarItem from "./tab_bar_item";
+import TabBar from "../widget/tar-bar";
+import TabBarItem from "../widget/tab_bar_item";
 import route from "../utils/route";
 
 class TarBarNavigator {

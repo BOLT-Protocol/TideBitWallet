@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623829765430
+      // 1623831158984
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6070,6 +6070,297 @@ start();
 
 /***/ }),
 
+/***/ "./src/javascript/layout/account_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/layout/account_list.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/account_item */ "./src/javascript/widget/account_item.js");
+
+
+class AccountListElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "account-list";
+    this.accounts.forEach((account) => account.render(this));
+  }
+}
+
+customElements.define("account-list", AccountListElement);
+
+class AccountList {
+  constructor(state) {
+    this.element = document.createElement("account-list");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.accounts = state.user.accounts.map((account) => {
+      const state = JSON.parse(JSON.stringify(this.element.state));
+      state.account = account;
+      state.screen = "account";
+      return new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+    });
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/address_content.js":
+/*!**************************************************!*\
+  !*** ./src/javascript/layout/address_content.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+class AddressContentElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "address";
+    this.innerHTML = `
+          <div class="address__header">Receiving address</div>
+          <div class="address__subtitle">We automatically generate a new address for you after every transaction you
+            receive
+            to protect your privacy, so that would be not easy to track your entire payment history.</div>
+          <div class="address__qrcode"><canvas></canvas></div>
+          <div class="address__text"></div>
+          <div class="address__button"></div>
+          `;
+    this.renderAddress();
+    this.setCoinbase();
+  }
+  /**
+   * ETH || BTC
+   */
+  setCoinbase() {
+    this.setAttribute(this.state.account.symbol, "");
+  }
+  renderAddress = () => {
+    qrcode__WEBPACK_IMPORTED_MODULE_0__.toCanvas(
+      this.children[2].children[0],
+      this.address,
+      {
+        version: "auto",
+        errorCorrectionLevel: "high",
+        color: {
+          light: "#fff",
+          dark: "#000",
+        },
+        toSJISFunc: qrcode__WEBPACK_IMPORTED_MODULE_0__.toSJIS,
+      },
+      (error) => {
+        if (error) console.error(error);
+        console.log("success!");
+      }
+    );
+    this.children[3].textContent = this.address;
+    const button = new _widget_button__WEBPACK_IMPORTED_MODULE_1__.default("Copy Wallet Address", () => {}, {
+      style: ["round", "outline"],
+      suffix: "copy",
+      popup: async () => {
+        console.log("popup");
+        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.to)(navigator.clipboard.writeText(address));
+        return err ? "Error!" : "Copy";
+      },
+    });
+    button.render(this.children[4]);
+  };
+}
+
+customElements.define("address-content", AddressContentElement);
+
+class AddressContent {
+  constructor(state, address) {
+    this.element = document.createElement("address-content");
+    this.element.state = state;
+    this.element.address = address;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AddressContent);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/bill_content.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/layout/bill_content.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+class BillElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "bill";
+    this.innerHTML = `
+    <div class="bill__header">
+        <span class="bill__sign">${this.bill.sign}</span>
+        <span class="bill__amount">${this.bill.amount}</span>
+        <span class="bill__unit">${this.account.symbol}</span>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Status</div>
+        <div class="bill__content">
+            <span class="bill__status">${this.bill.status}</span>
+            <span class="bill__status bill__confirmations">(${
+              this.bill.confirmations
+            } confirmation)</span>
+            <span class="bill__status-icon"></span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Time</div>
+        <div class="bill__content">
+            (${this.bill.dateTime})
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">${this.bill.direction}</div>
+        <div class="bill__content">
+        ${this.bill.address}
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Fee</div>
+        <div class="bill__content">
+            <span class="bill__fee">${this.bill.fee}</span>
+            <span class="bill__unit">${this.account.symbol}</span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Transaction Id</div>
+        <div class="bill__content">
+            <span class="bill__asset-icon"><img src=${
+              this.account.image
+            } alt="ETH"></span>
+            <span class="bill__id"><a target="_blank" href=https://${
+              this.account.network
+            }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.addressFormatter)(
+      this.bill.txid
+    )}</a></span>
+        </div>
+    </div>
+    `;
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+  }
+  set action(val) {
+    this.setAttribute(val, "");
+  }
+  set status(val) {
+    if (this.hasAttribute(val)) return;
+    if (this.hasAttribute("pending")) this.removeAttribute("pending");
+    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
+    if (this.hasAttribute("complete")) this.removeAttribute("complete");
+    this.setAttribute(val, "");
+  }
+}
+
+customElements.define("bill-content", BillElement);
+
+class BillContent {
+  constructor(state) {
+    this.element = document.createElement("bill-content");
+    this.element.state = state;
+    this.element.account = state.account;
+    this.element.bill = state.bill;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillContent);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/bill_list.js":
+/*!********************************************!*\
+  !*** ./src/javascript/layout/bill_list.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bill_item */ "./src/javascript/widget/bill_item.js");
+
+
+class BillListElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "bill-list";
+    this.billItems.forEach((billItem) => billItem.render(this));
+  }
+}
+
+customElements.define("bill-list", BillListElement);
+
+class BillList {
+  constructor(state, bills) {
+    this.element = document.createElement("bill-list");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.bills = bills;
+    this.element.billItems = bills.map((bill) => {
+      const state = JSON.parse(JSON.stringify(this.element.state));
+      state.bill = bill;
+      state.screen = "bill";
+      return new _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+    });
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillList);
+
+
+/***/ }),
+
 /***/ "./src/javascript/layout/bottom_navigator.js":
 /*!***************************************************!*\
   !*** ./src/javascript/layout/bottom_navigator.js ***!
@@ -6135,6 +6426,187 @@ const bottomNavigator = (state) => {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/form.js":
+/*!***************************************!*\
+  !*** ./src/javascript/layout/form.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+
+
+
+
+class FormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  disconnectedCallback() {
+    if (this.toggle) {
+      this.toggleButton.removeEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    }
+  }
+  connectedCallback() {
+    this.className = "form";
+    this.addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "text",
+      label: "Send to",
+      errorMessage: "Invalid Address",
+      validation: (value) => {
+        return value.startsWith("0x");
+      },
+      action: {
+        icon: "qrcode",
+        onPressed: () => {
+          console.log("action on pressed!");
+        },
+      },
+    });
+    this.amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Amount",
+      errorMessage: "Invalid Amount",
+      validation: (value) => {
+        return parseFloat(value) > 0;
+      },
+      pattern: `\d*.?\d*`,
+    });
+    this.gasPriceInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
+      pattern: `\d*.?\d*`,
+    });
+    this.gasInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Custom Gas (unit)",
+      pattern: `\d*`,
+    });
+    this.buttons = ["Slow", "Standard", "Fast"].map(
+      (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
+    );
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
+    this.action = new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
+    this.innerHTML = `
+    <div class="form__input"></div>
+    <p class="form__secondary-text form__align-end">
+      <span>Balance:</span>
+      <span class="account-balance"></span>
+    </p>
+    <p class="form__primary-text form__align-start">Transaction Fee</p>
+    <p class="form__secondary-text form__align-start estimate-time">
+        <span>Processing time</span>
+        <span></span>
+    </p>
+    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
+    <div class="form__toggle-content"></div>
+    <p class="form__column">
+      <span class="form__tertiary-text">Estimated:</span>
+      <span class="form__secondary-text estimate-fee">loading...</span>
+    </p>
+    <div class="form__toggle">
+      <div class="form__toggle-controller">
+        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
+        <div class="form__toggle-button">
+          <input type="checkbox" name="toggle-button" id="toggle-button">
+          <label for="toggle-button"></label>
+        </div>
+      </div>
+    </div>
+    <div class="form__button"></div>
+    `;
+    this.addressInput.render(this.children[0]);
+    this.amountInput.render(this.children[0]);
+    this.tabBar.render(this.children[5]);
+    this.estimateTime = "10 ~ 30 minutes";
+    this.availableAmount = this.state.account;
+    this.action.render(this.children[8]);
+    if (this.state.account.symbol === "ETH") {
+      // -- test
+      this.toggle = true;
+      this.toggleButton = document.querySelector(
+        ".form input[type='checkbox']"
+      );
+      this.toggleButton.addEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    } else {
+      this.toggle = false;
+    }
+  }
+  /**
+   *
+   * @param {Boolean} val
+   *
+   */
+  handleToggle(toggleContent) {
+    toggleContent.replaceChildren();
+    if (this.toggleButton.checked) {
+      this.gasPriceInput.render(toggleContent);
+      this.gasInput.render(toggleContent);
+      this.setAttribute("on", "");
+    } else {
+      this.tabBar.render(toggleContent);
+      this.removeAttribute("on");
+    }
+  }
+  set availableAmount(account) {
+    this.children[1].children[1].textContent =
+      account.balance + " " + account.symbol;
+  }
+  set estimateFee(fee) {
+    this.children[6].children[1].textContent = fee + " " + account.symbol;
+  }
+  set estimateTime(time) {
+    this.children[3].children[1].textContent = time;
+  }
+  /**
+   * @param {Array<Object>} HTMLElement
+   */
+  get toggleContent() {
+    return this.children[5];
+  }
+  set onSubmit(element) {
+    element.render(this.lastElementChild);
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set toggle(val) {
+    if (val) {
+      this.removeAttribute("disabled-toggle");
+    } else {
+      this.setAttribute("disabled-toggle", "");
+    }
+  }
+}
+
+customElements.define("transaction-form", FormElement);
+
+class Form {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+  }
+  render(parentElement) {
+    this.element = document.createElement("transaction-form");
+    this.element.state = this.state;
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
 
 
 /***/ }),
@@ -6355,10 +6827,10 @@ class Scaffold extends HTMLElement {
 
 /***/ }),
 
-/***/ "./src/javascript/layout/tar-bar.js":
-/*!******************************************!*\
-  !*** ./src/javascript/layout/tar-bar.js ***!
-  \******************************************/
+/***/ "./src/javascript/layout/setting_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/layout/setting_list.js ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6366,64 +6838,123 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-class TabBarElement extends HTMLElement {
+/* harmony import */ var _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/setting_column */ "./src/javascript/widget/setting_column.js");
+
+
+const getSettings = (state) => [
+  {
+    title: "Security center",
+    items: [
+      {
+        name: "Reset Wallet",
+        onPressed: () => {
+          console.log("Reset Wallet Request");
+        },
+      },
+    ],
+  },
+  {
+    title: "General settings",
+    items: [
+      {
+        name: "Fiat currency unit",
+        label: state.walletConfig.fiat.symbol,
+        onPressed: () => {
+          console.log("Popup options of fiat currency");
+        },
+      },
+    ],
+  },
+  {
+    title: "About",
+    items: [
+      {
+        name: "Suggestions and feedback",
+        onPressed: () => {
+          console.log("Getting Complain");
+        },
+      },
+      {
+        name: "Terms of Service and Security policy",
+        onPressed: () => {
+          console.log("Ah!");
+        },
+      },
+    ],
+  },
+];
+class SettingListElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", this.onFocus);
-  }
-  onFocus(e) {
-    Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
-      el.removeAttribute("focus")
-    );
-    console.log(e.target);
-    if (e.target.className === "button") e.target.setAttribute("focus", "");
-    else e.target.parentElement.setAttribute("focus", "");
   }
   connectedCallback() {
-    this.className = "tab-bar";
+    this.className = "setting";
+    this.innerHTML = `
+    <div class="setting__list"></div>
+    <div class="setting__text">${this.state.walletConfig.version}</div>
+    `;
+    this.settings.forEach((setting) => setting.render(this.children[0]));
   }
-  disconnectedCallback() {
-    this.removeEventListener("click", this.onFocus);
-  }
-  get focus() {
-    return Array.from(document.querySelectorAll("tab-bar > *")).findIndex(
-      (el) => el.hasAttribute("focus")
+}
+
+customElements.define("setting-list", SettingListElement);
+class SettingList {
+  constructor(state) {
+    this.element = document.createElement("setting-list");
+    const settings = getSettings(state);
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.settings = settings.map(
+      (setting) => new _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
     );
   }
-  set focus(val) {
-    if (val) {
-      document
-        .querySelectorAll("tab-bar > *")
-        [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
-          "focus",
-          ""
-        );
-    }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
-customElements.define("tab-bar", TabBarElement);
 
-class TabBar {
-  constructor(children, defaultFocus) {
-    this.children = children;
-    this.focus = defaultFocus;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/tab_bar_navigator.js":
+/*!****************************************************!*\
+  !*** ./src/javascript/layout/tab_bar_navigator.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
+
+
+
+class TarBarNavigator {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+    this.tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.map((item) => {
+      const state = JSON.parse(JSON.stringify(this.state));
+      state.screen = item.screen;
+      return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), () =>
+        (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
+      );
+    });
   }
   render(parentElement, position) {
-    this.element = document.createElement("tab-bar");
-    parentElement.insertAdjacentElement(position || "beforeend", this.element);
-    if (Array.isArray(this.children)) {
-      this.children.forEach((child) => child.render(this.element));
-    }
-    if (this.focus) {
-      this.element.focus = this.focus;
-    }
-  }
-  get selected() {
-    return this.element.focus;
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.tabBarItems, undefined);
+    this.tabBar.render(parentElement, position);
   }
 }
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBar);
 
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TarBarNavigator);
 
 /***/ }),
 
@@ -6553,10 +7084,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _widget_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tab_bar_navigator */ "./src/javascript/widget/tab_bar_navigator.js");
-/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
-/* harmony import */ var _widget_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/bill_list */ "./src/javascript/widget/bill_list.js");
+/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
+/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
@@ -6633,10 +7164,10 @@ const getAssetDetail = (assetId) => {
 
 const account = (scaffold, state, callback) => {
   // ++ let assetDetail = ui.getAssetDetail({ assetID });
-  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_2__.default(obj));
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  const tarBarNavigator = new _widget_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const billList = new _widget_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(state, bills);
+  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  const billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(state, bills);
   header.render(scaffold.header);
   tarBarNavigator.render(scaffold.body, "afterbegin");
   billList.render(scaffold.body);
@@ -6659,7 +7190,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _widget_address_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/address_content */ "./src/javascript/widget/address_content.js");
+/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
 
 
 
@@ -6669,7 +7200,7 @@ const address = (scaffold, state, callback) => {
   // ++ ui.getReceiveAddress({ accountID });
   const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  const addressContent = new _widget_address_content__WEBPACK_IMPORTED_MODULE_1__.default(state, address);
+  const addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_1__.default(state, address);
   header.render(scaffold.header);
   addressContent.render(scaffold.body);
 };
@@ -6691,13 +7222,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _widget_bill_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/bill_content */ "./src/javascript/widget/bill_content.js");
+/* harmony import */ var _layout_bill_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bill_content */ "./src/javascript/layout/bill_content.js");
 
 
 
 const bill = (scaffold, state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  const billContent = new _widget_bill_content__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_1__.default(state);
   header.render(scaffold.header);
   billContent.render(scaffold.body);
 };
@@ -6720,8 +7251,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _widget_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/account_list */ "./src/javascript/widget/account_list.js");
-/* harmony import */ var _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/setting_list */ "./src/javascript/widget/setting_list.js");
+/* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
+/* harmony import */ var _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/setting_list */ "./src/javascript/layout/setting_list.js");
 /* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
 
 
@@ -6732,8 +7263,8 @@ __webpack_require__.r(__webpack_exports__);
 const overview = (scaffold, state) => {
   scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default)(state);
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const accountList = new _widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
-  const settingList = new _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
+  const accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  const settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
 
   switch (state.screen) {
     case "accounts":
@@ -6767,7 +7298,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_form__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/form */ "./src/javascript/widget/form.js");
+/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 
 
@@ -6781,7 +7312,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const transaction = (scaffold, state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const form = new _widget_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
   header.render(scaffold.header);
   form.render( scaffold.body);
   /**
@@ -7171,249 +7702,6 @@ class AccountItem {
 
 /***/ }),
 
-/***/ "./src/javascript/widget/account_list.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/widget/account_list.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./account_item */ "./src/javascript/widget/account_item.js");
-
-
-class AccountListElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "account-list";
-    this.accounts.forEach((account) => account.render(this));
-  }
-}
-
-customElements.define("account-list", AccountListElement);
-
-class AccountList {
-  constructor(state) {
-    this.element = document.createElement("account-list");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.accounts = state.user.accounts.map((account) => {
-      const state = JSON.parse(JSON.stringify(this.element.state));
-      state.account = account;
-      state.screen = "account";
-      return new _account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
-    });
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountList);
-
-
-/***/ }),
-
-/***/ "./src/javascript/widget/address_content.js":
-/*!**************************************************!*\
-  !*** ./src/javascript/widget/address_content.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
-/* harmony import */ var _button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./button */ "./src/javascript/widget/button.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
-
-
-
-
-class AddressContentElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "address";
-    this.innerHTML = `
-          <div class="address__header">Receiving address</div>
-          <div class="address__subtitle">We automatically generate a new address for you after every transaction you
-            receive
-            to protect your privacy, so that would be not easy to track your entire payment history.</div>
-          <div class="address__qrcode"><canvas></canvas></div>
-          <div class="address__text"></div>
-          <div class="address__button"></div>
-          `;
-    this.renderAddress();
-    this.setCoinbase();
-  }
-  /**
-   * ETH || BTC
-   */
-  setCoinbase() {
-    this.setAttribute(this.state.account.symbol, "");
-  }
-  renderAddress = () => {
-    qrcode__WEBPACK_IMPORTED_MODULE_0__.toCanvas(
-      this.children[2].children[0],
-      this.address,
-      {
-        version: "auto",
-        errorCorrectionLevel: "high",
-        color: {
-          light: "#fff",
-          dark: "#000",
-        },
-        toSJISFunc: qrcode__WEBPACK_IMPORTED_MODULE_0__.toSJIS,
-      },
-      (error) => {
-        if (error) console.error(error);
-        console.log("success!");
-      }
-    );
-    this.children[3].textContent = this.address;
-    const button = new _button__WEBPACK_IMPORTED_MODULE_1__.default("Copy Wallet Address", () => {}, {
-      style: ["round", "outline"],
-      suffix: "copy",
-      popup: async () => {
-        console.log("popup");
-        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.to)(navigator.clipboard.writeText(address));
-        return err ? "Error!" : "Copy";
-      },
-    });
-    button.render(this.children[4]);
-  };
-}
-
-customElements.define("address-content", AddressContentElement);
-
-class AddressContent {
-  constructor(state, address) {
-    this.element = document.createElement("address-content");
-    this.element.state = state;
-    this.element.address = address;
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AddressContent);
-
-
-/***/ }),
-
-/***/ "./src/javascript/widget/bill_content.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/widget/bill_content.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
-
-
-class BillElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "bill";
-    this.innerHTML = `
-    <div class="bill__header">
-        <span class="bill__sign">${this.bill.sign}</span>
-        <span class="bill__amount">${this.bill.amount}</span>
-        <span class="bill__unit">${this.account.symbol}</span>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Status</div>
-        <div class="bill__content">
-            <span class="bill__status">${this.bill.status}</span>
-            <span class="bill__status bill__confirmations">(${
-              this.bill.confirmations
-            } confirmation)</span>
-            <span class="bill__status-icon"></span>
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Time</div>
-        <div class="bill__content">
-            (${this.bill.dateTime})
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">${this.bill.direction}</div>
-        <div class="bill__content">
-        ${this.bill.address}
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Fee</div>
-        <div class="bill__content">
-            <span class="bill__fee">${this.bill.fee}</span>
-            <span class="bill__unit">${this.account.symbol}</span>
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Transaction Id</div>
-        <div class="bill__content">
-            <span class="bill__asset-icon"><img src=${
-              this.account.image
-            } alt="ETH"></span>
-            <span class="bill__id"><a target="_blank" href=https://${
-              this.account.network
-            }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.addressFormatter)(
-      this.bill.txid
-    )}</a></span>
-        </div>
-    </div>
-    `;
-    this.status = this.bill.status.toLowerCase();
-    this.action = this.bill.action.toLowerCase();
-  }
-  set action(val) {
-    this.setAttribute(val, "");
-  }
-  set status(val) {
-    if (this.hasAttribute(val)) return;
-    if (this.hasAttribute("pending")) this.removeAttribute("pending");
-    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
-    if (this.hasAttribute("complete")) this.removeAttribute("complete");
-    this.setAttribute(val, "");
-  }
-}
-
-customElements.define("bill-content", BillElement);
-
-class BillContent {
-  constructor(state) {
-    this.element = document.createElement("bill-content");
-    this.element.state = state;
-    this.element.account = state.account;
-    this.element.bill = state.bill;
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillContent);
-
-
-/***/ }),
-
 /***/ "./src/javascript/widget/bill_item.js":
 /*!********************************************!*\
   !*** ./src/javascript/widget/bill_item.js ***!
@@ -7496,54 +7784,6 @@ class BillItem {
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillItem);
-
-
-/***/ }),
-
-/***/ "./src/javascript/widget/bill_list.js":
-/*!********************************************!*\
-  !*** ./src/javascript/widget/bill_list.js ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bill_item */ "./src/javascript/widget/bill_item.js");
-
-
-class BillListElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "bill-list";
-    this.billItems.forEach((billItem) => billItem.render(this));
-  }
-}
-
-customElements.define("bill-list", BillListElement);
-
-class BillList {
-  constructor(state, bills) {
-    this.element = document.createElement("bill-list");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.bills = bills;
-    this.element.billItems = bills.map((bill) => {
-      const state = JSON.parse(JSON.stringify(this.element.state));
-      state.bill = bill;
-      state.screen = "bill";
-      return new _bill_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
-    });
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillList);
 
 
 /***/ }),
@@ -7644,186 +7884,6 @@ class Button {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
-
-
-/***/ }),
-
-/***/ "./src/javascript/widget/form.js":
-/*!***************************************!*\
-  !*** ./src/javascript/widget/form.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
-/* harmony import */ var _input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./input */ "./src/javascript/widget/input.js");
-/* harmony import */ var _button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./button */ "./src/javascript/widget/button.js");
-
-
-
-class FormElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  disconnectedCallback() {
-    if (this.toggle) {
-      this.toggleButton.removeEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    }
-  }
-  connectedCallback() {
-    this.className = "form";
-    this.addressInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "text",
-      label: "Send to",
-      errorMessage: "Invalid Address",
-      validation: (value) => {
-        return value.startsWith("0x");
-      },
-      action: {
-        icon: "qrcode",
-        onPressed: () => {
-          console.log("action on pressed!");
-        },
-      },
-    });
-    this.amountInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Amount",
-      errorMessage: "Invalid Amount",
-      validation: (value) => {
-        return parseFloat(value) > 0;
-      },
-      pattern: `\d*.?\d*`,
-    });
-    this.gasPriceInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
-      pattern: `\d*.?\d*`,
-    });
-    this.gasInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Custom Gas (unit)",
-      pattern: `\d*`,
-    });
-    this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new _button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
-    );
-    this.tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
-    this.action = new _button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
-    this.innerHTML = `
-    <div class="form__input"></div>
-    <p class="form__secondary-text form__align-end">
-      <span>Balance:</span>
-      <span class="account-balance"></span>
-    </p>
-    <p class="form__primary-text form__align-start">Transaction Fee</p>
-    <p class="form__secondary-text form__align-start estimate-time">
-        <span>Processing time</span>
-        <span></span>
-    </p>
-    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
-    <div class="form__toggle-content"></div>
-    <p class="form__column">
-      <span class="form__tertiary-text">Estimated:</span>
-      <span class="form__secondary-text estimate-fee">loading...</span>
-    </p>
-    <div class="form__toggle">
-      <div class="form__toggle-controller">
-        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
-        <div class="form__toggle-button">
-          <input type="checkbox" name="toggle-button" id="toggle-button">
-          <label for="toggle-button"></label>
-        </div>
-      </div>
-    </div>
-    <div class="form__button"></div>
-    `;
-    this.addressInput.render(this.children[0]);
-    this.amountInput.render(this.children[0]);
-    this.tabBar.render(this.children[5]);
-    this.estimateTime = "10 ~ 30 minutes";
-    this.availableAmount = this.state.account;
-    this.action.render(this.children[8]);
-    if (this.state.account.symbol === "ETH") {
-      // -- test
-      this.toggle = true;
-      this.toggleButton = document.querySelector(
-        ".form input[type='checkbox']"
-      );
-      this.toggleButton.addEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    } else {
-      this.toggle = false;
-    }
-  }
-  /**
-   *
-   * @param {Boolean} val
-   *
-   */
-  handleToggle(toggleContent) {
-    toggleContent.replaceChildren();
-    if (this.toggleButton.checked) {
-      this.gasPriceInput.render(toggleContent);
-      this.gasInput.render(toggleContent);
-      this.setAttribute("on", "");
-    } else {
-      this.tabBar.render(toggleContent);
-      this.removeAttribute("on");
-    }
-  }
-  set availableAmount(account) {
-    this.children[1].children[1].textContent =
-      account.balance + " " + account.symbol;
-  }
-  set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + account.symbol;
-  }
-  set estimateTime(time) {
-    this.children[3].children[1].textContent = time;
-  }
-  /**
-   * @param {Array<Object>} HTMLElement
-   */
-  get toggleContent() {
-    return this.children[5];
-  }
-  set onSubmit(element) {
-    element.render(this.lastElementChild);
-  }
-  /**
-   * @param {Boolean} val
-   */
-  set toggle(val) {
-    if (val) {
-      this.removeAttribute("disabled-toggle");
-    } else {
-      this.setAttribute("disabled-toggle", "");
-    }
-  }
-}
-
-customElements.define("transaction-form", FormElement);
-
-class Form {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
-  }
-  render(parentElement) {
-    this.element = document.createElement("transaction-form");
-    this.element.state = this.state;
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
 
 
 /***/ }),
@@ -8081,96 +8141,6 @@ class SettingColumn {
 
 /***/ }),
 
-/***/ "./src/javascript/widget/setting_list.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/widget/setting_list.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./setting_column */ "./src/javascript/widget/setting_column.js");
-
-
-const getSettings = (state) => [
-  {
-    title: "Security center",
-    items: [
-      {
-        name: "Reset Wallet",
-        onPressed: () => {
-          console.log("Reset Wallet Request");
-        },
-      },
-    ],
-  },
-  {
-    title: "General settings",
-    items: [
-      {
-        name: "Fiat currency unit",
-        label: state.walletConfig.fiat.symbol,
-        onPressed: () => {
-          console.log("Popup options of fiat currency");
-        },
-      },
-    ],
-  },
-  {
-    title: "About",
-    items: [
-      {
-        name: "Suggestions and feedback",
-        onPressed: () => {
-          console.log("Getting Complain");
-        },
-      },
-      {
-        name: "Terms of Service and Security policy",
-        onPressed: () => {
-          console.log("Ah!");
-        },
-      },
-    ],
-  },
-];
-class SettingListElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "setting";
-    this.innerHTML = `
-    <div class="setting__list"></div>
-    <div class="setting__text">${this.state.walletConfig.version}</div>
-    `;
-    this.settings.forEach((setting) => setting.render(this.children[0]));
-  }
-}
-
-customElements.define("setting-list", SettingListElement);
-class SettingList {
-  constructor(state) {
-    this.element = document.createElement("setting-list");
-    const settings = getSettings(state);
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.settings = settings.map(
-      (setting) => new _setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
-    );
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingList);
-
-
-/***/ }),
-
 /***/ "./src/javascript/widget/tab_bar_item.js":
 /*!***********************************************!*\
   !*** ./src/javascript/widget/tab_bar_item.js ***!
@@ -8228,10 +8198,10 @@ class TabBarItem {
 
 /***/ }),
 
-/***/ "./src/javascript/widget/tab_bar_navigator.js":
-/*!****************************************************!*\
-  !*** ./src/javascript/widget/tab_bar_navigator.js ***!
-  \****************************************************/
+/***/ "./src/javascript/widget/tar-bar.js":
+/*!******************************************!*\
+  !*** ./src/javascript/widget/tar-bar.js ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8239,33 +8209,64 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
-/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
-/* harmony import */ var _tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
-
-
-
-
-
-class TarBarNavigator {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
-    this.tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.map((item) => {
-      const state = JSON.parse(JSON.stringify(this.state));
-      state.screen = item.screen;
-      return new _tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), () =>
-        (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
-      );
-    });
+class TabBarElement extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", this.onFocus);
   }
-  render(parentElement, position) {
-    this.tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.tabBarItems, undefined);
-    this.tabBar.render(parentElement, position);
+  onFocus(e) {
+    Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
+      el.removeAttribute("focus")
+    );
+    console.log(e.target);
+    if (e.target.className === "button") e.target.setAttribute("focus", "");
+    else e.target.parentElement.setAttribute("focus", "");
+  }
+  connectedCallback() {
+    this.className = "tab-bar";
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", this.onFocus);
+  }
+  get focus() {
+    return Array.from(document.querySelectorAll("tab-bar > *")).findIndex(
+      (el) => el.hasAttribute("focus")
+    );
+  }
+  set focus(val) {
+    if (val) {
+      document
+        .querySelectorAll("tab-bar > *")
+        [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
+          "focus",
+          ""
+        );
+    }
   }
 }
+customElements.define("tab-bar", TabBarElement);
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TarBarNavigator);
+class TabBar {
+  constructor(children, defaultFocus) {
+    this.children = children;
+    this.focus = defaultFocus;
+  }
+  render(parentElement, position) {
+    this.element = document.createElement("tab-bar");
+    parentElement.insertAdjacentElement(position || "beforeend", this.element);
+    if (Array.isArray(this.children)) {
+      this.children.forEach((child) => child.render(this.element));
+    }
+    if (this.focus) {
+      this.element.focus = this.focus;
+    }
+  }
+  get selected() {
+    return this.element.focus;
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBar);
+
 
 /***/ }),
 
@@ -8366,7 +8367,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("67c788ad8bebaa221d72")
+/******/ 		__webpack_require__.h = () => ("0c24455e4af0e14ca0bd")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

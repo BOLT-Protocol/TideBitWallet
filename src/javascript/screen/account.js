@@ -1,7 +1,7 @@
-import Header from "../layout/header";
-import TarBarNavigator from "../widget/tab_bar_navigator";
 import Bill from "../model/bill";
-import BillList from "../widget/bill_list";
+import Header from "../layout/header";
+import TarBarNavigator from "../layout/tab_bar_navigator";
+import BillList from "../layout/bill_list";
 
 // -- test
 import { randomHex } from "../utils/utils";

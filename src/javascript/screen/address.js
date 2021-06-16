@@ -1,5 +1,5 @@
 import Header from "../layout/header";
-import AddressContent from "../widget/address_content";
+import AddressContent from "../layout/address_content";
 
 
 

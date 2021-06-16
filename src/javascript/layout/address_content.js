@@ -1,5 +1,5 @@
 import QRCode from "qrcode";
-import Button from "./button";
+import Button from "../widget/button";
 import { to } from "../utils/utils";
 
 class AddressContentElement extends HTMLElement {

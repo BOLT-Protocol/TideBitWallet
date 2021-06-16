@@ -1,4 +1,4 @@
-import AccountItem from "./account_item";
+import AccountItem from "../widget/account_item";
 
 class AccountListElement extends HTMLElement {
   constructor() {

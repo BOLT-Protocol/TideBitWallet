@@ -1,4 +1,4 @@
-import BillItem from "./bill_item";
+import BillItem from "../widget/bill_item";
 
 class BillListElement extends HTMLElement {
   constructor() {

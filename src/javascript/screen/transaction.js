@@ -1,4 +1,4 @@
-import Form from "../widget/form";
+import Form from "../layout/form";
 import Header from "../layout/header";
 
 
