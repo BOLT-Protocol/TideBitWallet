@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623826576218
+      // 1623828028651
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6574,8 +6574,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// ++ let assetDetail = ui.getAssetDetail({ assetID });
-
 const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
   return [
@@ -6642,7 +6640,9 @@ const getAssetDetail = (assetId) => {
   ];
 };
 
-const account = (scaffold, state) => {
+const account = (scaffold, state, callback) => {
+  // ++ let assetDetail = ui.getAssetDetail({ assetID });
+  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(state);
   const tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.map((item) => {
     const _state = JSON.parse(JSON.stringify(state));
@@ -6652,7 +6652,6 @@ const account = (scaffold, state) => {
     );
   });
   const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default(tabBarItems);
-  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
   const billList = new _widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(state, bills);
   header.render(scaffold.header);
   tabBar.render(scaffold.body);
@@ -6699,17 +6698,19 @@ class Address extends HTMLElement {
         <div class="address__text"></div>
         <div class="address__button"></div>
         `;
+    this.renderAddress();
+    this.setCoinbase();
   }
   /**
    * ETH || BTC
    */
-  set coinbase(val) {
-    this.setAttribute(val, "");
+  setCoinbase() {
+    this.setAttribute(this.state.account.symbol, "");
   }
-  set address(address) {
+  renderAddress = () => {
     qrcode__WEBPACK_IMPORTED_MODULE_2__.toCanvas(
       this.children[2].children[0],
-      address,
+      this.address,
       {
         version: "auto",
         errorCorrectionLevel: "high",
@@ -6724,7 +6725,7 @@ class Address extends HTMLElement {
         console.log("success!");
       }
     );
-    this.children[3].textContent = address;
+    this.children[3].textContent = this.address;
     const button = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("Copy Wallet Address", () => {}, {
       style: ["round", "outline"],
       suffix: "copy",
@@ -6736,19 +6737,29 @@ class Address extends HTMLElement {
       },
     });
     button.render(this.children[4]);
-  }
+  };
 }
 
 customElements.define("address-content", Address);
 
-const address = (scaffold, state) => {
-  let _address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; //ui.getReceiveAddress({ accountID });
+class AddressContent {
+  constructor(state, address) {
+    this.element = document.createElement("address-content");
+    this.element.state = state;
+    this.element.address = address;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+const address = (scaffold, state, callback) => {
+  // ++ ui.getReceiveAddress({ accountID });
+  const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const addressContent = new AddressContent(state, address);
   header.render(scaffold.header);
-  const addressContent = document.createElement("address-content");
-  scaffold.body = addressContent;
-  addressContent.coinbase = state.account.symbol;
-  addressContent.address = _address;
+  addressContent.render(scaffold.body);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
@@ -8290,7 +8301,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("3f44790a24f56a7dd78a")
+/******/ 		__webpack_require__.h = () => ("6942b596d48d6a22e5dc")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -18,17 +18,19 @@ class Address extends HTMLElement {
         <div class="address__text"></div>
         <div class="address__button"></div>
         `;
+    this.renderAddress();
+    this.setCoinbase();
   }
   /**
    * ETH || BTC
    */
-  set coinbase(val) {
-    this.setAttribute(val, "");
+  setCoinbase() {
+    this.setAttribute(this.state.account.symbol, "");
   }
-  set address(address) {
+  renderAddress = () => {
     QRCode.toCanvas(
       this.children[2].children[0],
-      address,
+      this.address,
       {
         version: "auto",
         errorCorrectionLevel: "high",
@@ -43,7 +45,7 @@ class Address extends HTMLElement {
         console.log("success!");
       }
     );
-    this.children[3].textContent = address;
+    this.children[3].textContent = this.address;
     const button = new Button("Copy Wallet Address", () => {}, {
       style: ["round", "outline"],
       suffix: "copy",
@@ -55,19 +57,29 @@ class Address extends HTMLElement {
       },
     });
     button.render(this.children[4]);
-  }
+  };
 }
 
 customElements.define("address-content", Address);
 
-const address = (scaffold, state) => {
-  let _address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; //ui.getReceiveAddress({ accountID });
+class AddressContent {
+  constructor(state, address) {
+    this.element = document.createElement("address-content");
+    this.element.state = state;
+    this.element.address = address;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+const address = (scaffold, state, callback) => {
+  // ++ ui.getReceiveAddress({ accountID });
+  const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
   const header = new Header(state);
+  const addressContent = new AddressContent(state, address);
   header.render(scaffold.header);
-  const addressContent = document.createElement("address-content");
-  scaffold.body = addressContent;
-  addressContent.coinbase = state.account.symbol;
-  addressContent.address = _address;
+  addressContent.render(scaffold.body);
 };
 
 export default address;
