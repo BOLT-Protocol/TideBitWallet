@@ -15,7 +15,7 @@ class TarBarNavigator {
     });
   }
   render(parentElement, position) {
-    this.tabBar = new TabBar(this.tabBarItems, undefined);
+    this.tabBar = new TabBar(this.tabBarItems);
     this.tabBar.render(parentElement, position);
   }
 }

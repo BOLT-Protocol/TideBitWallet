@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623831158984
+      // 1623834378746
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6006,12 +6006,11 @@ __webpack_require__.r(__webpack_exports__);
 const navigatorItemsData = [
   {
     screen: "accounts",
-    iconHtml: `<i class="fas fa-wallet"></i>`,
-    checked: true, // default
+    icon: "wallet",
   },
   {
     screen: 'settings',
-    iconHtml: `<i class="fas fa-cog"></i>`,
+    icon: "cog",
   },
 ];
 
@@ -6387,7 +6386,7 @@ class BottomNavigatorItem extends HTMLElement {
         itemData.checked || itemData.screen === state.screen ? "checked" : ""
       }>
           <label class="bottom-navigator__button" for="${itemData.screen}">
-              <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
+              <div class="bottom-navigator__icon"><i class="fas fa-${itemData.icon}"></i></div>
           </label>
           `;
       return markup;
@@ -6782,6 +6781,7 @@ class Scaffold extends HTMLElement {
     this.innerHTML = `
     <header></header>
     <main></main>
+    <footer></footer>
     `;
     this.className = "scaffold";
   }
@@ -6812,6 +6812,9 @@ class Scaffold extends HTMLElement {
   }
   get body() {
     return this.children[1];
+  }
+  get footer() {
+    return this.children[2];
   }
 
   /**
@@ -6949,7 +6952,7 @@ class TarBarNavigator {
     });
   }
   render(parentElement, position) {
-    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.tabBarItems, undefined);
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.tabBarItems);
     this.tabBar.render(parentElement, position);
   }
 }
@@ -8162,34 +8165,26 @@ class TabBarItemElement extends HTMLElement {
         <div class="tab-bar__icon"></div>
         <div class="tab-bar__text"></div>
     `;
+    this.setAttribute(this.action, "");
+    this.children[1].textContent = this.text;
     this.addEventListener("click", () => this.onPressed(this.state));
   }
   disconnectedCallback() {
     this.removeEventListener("click", this.onPressed);
-  }
-  set action(val) {
-    this.setAttribute(val, "");
-  }
-  set text(title) {
-    this.children[1].textContent = title;
   }
 }
 customElements.define("tab-bar-item", TabBarItemElement);
 
 class TabBarItem {
   constructor(state, title, type, onPressed) {
-    this.state = state;
-    this.text = title;
-    this.action = type;
-    this.onPressed = onPressed;
+    this.element = document.createElement("tab-bar-item");
+    this.element.state = state;
+    this.element.text = title;
+    this.element.action = type;
+    this.element.onPressed = onPressed;
   }
   render(parentElement) {
-    this.element = document.createElement("tab-bar-item");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.state = this.state;
-    this.element.text = this.text;
-    this.element.action = this.action;
-    this.element.onPressed = this.onPressed;
   }
 }
 
@@ -8367,7 +8362,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("0c24455e4af0e14ca0bd")
+/******/ 		__webpack_require__.h = () => ("e375f8c742f50fd93af8")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

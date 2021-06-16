@@ -12,6 +12,7 @@ export default class Scaffold extends HTMLElement {
     this.innerHTML = `
     <header></header>
     <main></main>
+    <footer></footer>
     `;
     this.className = "scaffold";
   }
@@ -42,6 +43,9 @@ export default class Scaffold extends HTMLElement {
   }
   get body() {
     return this.children[1];
+  }
+  get footer() {
+    return this.children[2];
   }
 
   /**

@@ -11,7 +11,7 @@ class BottomNavigatorItem extends HTMLElement {
         itemData.checked || itemData.screen === state.screen ? "checked" : ""
       }>
           <label class="bottom-navigator__button" for="${itemData.screen}">
-              <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
+              <div class="bottom-navigator__icon"><i class="fas fa-${itemData.icon}"></i></div>
           </label>
           `;
       return markup;
