@@ -5,7 +5,7 @@ import items from "../constant/tab_bar_data";
 import header from "../layout/header";
 import TabBar from "../layout/tar-bar";
 
-import billList from "../widget/bill_list";
+import BillList from "../widget/bill_list";
 import TabBarItem from "../widget/tab_bar_item";
 
 import route from "../utils/route";
@@ -80,18 +80,19 @@ const getAssetDetail = (assetId) => {
 };
 
 const account = (scaffold, state) => {
-  const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
+  scaffold.header = header(state);
   const tabBarItems = items.map((item) => {
     const _state = JSON.parse(JSON.stringify(state));
     _state.screen = item.screen;
     return new TabBarItem(_state, item.title, item.title.toLowerCase(), (val) =>
-      route(val)
+    route(val)
     );
   });
-  scaffold.header = header(state);
   const tabBar = new TabBar(tabBarItems);
+  const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
+  const billList = new BillList(state, bills);
   tabBar.render(scaffold.body);
-  scaffold.body = [billList(state, bills)];
+  billList.render(scaffold.body);
 };
 
 export default account;

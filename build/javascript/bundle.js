@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623815336637
+      // 1623818711063
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6620,18 +6620,19 @@ const getAssetDetail = (assetId) => {
 };
 
 const account = (scaffold, state) => {
-  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
+  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_2__.default)(state);
   const tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.map((item) => {
     const _state = JSON.parse(JSON.stringify(state));
     _state.screen = item.screen;
     return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__.default(_state, item.title, item.title.toLowerCase(), (val) =>
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_6__.default)(val)
+    (0,_utils_route__WEBPACK_IMPORTED_MODULE_6__.default)(val)
     );
   });
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_2__.default)(state);
   const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default(tabBarItems);
+  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
+  const billList = new _widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(state, bills);
   tabBar.render(scaffold.body);
-  scaffold.body = [(0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default)(state, bills)];
+  billList.render(scaffold.body);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
@@ -7256,7 +7257,6 @@ class AccountItemElement extends HTMLElement {
     this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   disconnectedCallback() {
-    console.log("accounts disconnected");
     this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   get publish() {
@@ -7359,10 +7359,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class BillItem extends HTMLElement {
+class BillItemElement extends HTMLElement {
   constructor() {
     super();
-    this.markup = () => `
+  }
+  connectedCallback() {
+    this.classList = ["bill-item"];
+    this.innerHTML = `
     <div class="bill-item__main">
         <div class="bill-item__icon"></div>
         <div class="bill-item__title">
@@ -7387,22 +7390,19 @@ class BillItem extends HTMLElement {
           this.bill.progress
         }"></span></div>
     </div>
-        `;
-    this.addEventListener("click", () => {
-      // let transactionDetail = ui.getTransactionDetail({ transactionID });
-      this.state.screen = "bill";
-      this.state.bill = this.bill;
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
-    });
+    `;
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
-  connectedCallback() {
-    this.classList = ["bill-item"];
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   static get observedAttributes() {
     return ["pending", "confirming", "complete"];
   }
   set status(val) {
-    if (this.hasAttribute(val))return;
+    if (this.hasAttribute(val)) return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");
@@ -7411,16 +7411,19 @@ class BillItem extends HTMLElement {
   set action(val) {
     this.setAttribute(val, "");
   }
-  set child(data) {
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.bill = data.bill;
-    this.account = this.state.account;
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.status = this.bill.status.toLowerCase();
-    this.action = this.bill.action.toLowerCase();
-  }
 }
 
+customElements.define("bill-item", BillItem);
+class BillItem {
+  constructor(state, bill) {
+    this.element = document.createElement("bill-item");
+    this.element.state = state;
+    this.element.bill = bill;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillItem);
 
 
@@ -7440,23 +7443,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bill_item */ "./src/javascript/widget/bill_item.js");
 
 
-customElements.define("bill-item", _bill_item__WEBPACK_IMPORTED_MODULE_0__.default);
+class BillListElement extends HTMLElement{
+  constructor(){
+    super();
+  }
+  connectedCallback() {
+    this.className = "bill-list";
+    this.bills.forEach((bill) => bill.render(this));
+  }
+}
 
-const billList = (state, bills) => {
-  const billList = document.createElement("div");
-  billList.className = "bill-list";
-  bills.forEach((bill) => {
-    const billItem = document.createElement("bill-item");
-    billItem.child = {
-      state,
-      bill,
-    };
-    billList.insertAdjacentElement("beforeend", billItem);
-  });
-  return billList;
-};
+customElements.define("bill-list", BillListElement);
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (billList);
+class BillList{
+  constructor(state,bills){
+    this.element = document.createElement("bill-list");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.bills = bills.map(bill => ({...bill}));
+    this.element.billItems = this.bills.map((bill=> {
+      const state = JSON.parse(JSON.stringify(this.element.state));
+      state.screen = "bill";
+      return new _bill_item__WEBPACK_IMPORTED_MODULE_0__.default(state, bill);
+    }));
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillList);
 
 
 /***/ }),
@@ -8238,7 +8253,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("55e5124f277350cc0ea9")
+/******/ 		__webpack_require__.h = () => ("31df67b18c2819b83f52")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

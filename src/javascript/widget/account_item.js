@@ -40,7 +40,6 @@ class AccountItemElement extends HTMLElement {
     this.addEventListener("click", (e) => route(this.state));
   }
   disconnectedCallback() {
-    console.log("accounts disconnected");
     this.removeEventListener("click", (e) => route(this.state));
   }
   get publish() {

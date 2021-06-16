@@ -1,19 +1,31 @@
 import BillItem from "./bill_item";
 
-customElements.define("bill-item", BillItem);
+class BillListElement extends HTMLElement{
+  constructor(){
+    super();
+  }
+  connectedCallback() {
+    this.className = "bill-list";
+    this.bills.forEach((bill) => bill.render(this));
+  }
+}
 
-const billList = (state, bills) => {
-  const billList = document.createElement("div");
-  billList.className = "bill-list";
-  bills.forEach((bill) => {
-    const billItem = document.createElement("bill-item");
-    billItem.child = {
-      state,
-      bill,
-    };
-    billList.insertAdjacentElement("beforeend", billItem);
-  });
-  return billList;
-};
+customElements.define("bill-list", BillListElement);
 
-export default billList;
+class BillList{
+  constructor(state,bills){
+    this.element = document.createElement("bill-list");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.bills = bills.map(bill => ({...bill}));
+    this.element.billItems = this.bills.map((bill=> {
+      const state = JSON.parse(JSON.stringify(this.element.state));
+      state.screen = "bill";
+      return new BillItem(state, bill);
+    }));
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+export default BillList;
