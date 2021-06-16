@@ -9,7 +9,7 @@ class TarBarNavigator {
     this.tabBarItems = items.map((item) => {
       const state = JSON.parse(JSON.stringify(this.state));
       state.screen = item.screen;
-      return new TabBarItem(state, item.title, item.title.toLowerCase(), () =>
+      return new TabBarItem(state, item.title, item.title.toLowerCase(), (state) =>
         route(state)
       );
     });

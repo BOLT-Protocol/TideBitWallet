@@ -23,7 +23,7 @@ class TabBarElement extends HTMLElement {
     );
   }
   set focus(val) {
-    if (val) {
+    if (val !== undefined) {
       document
         .querySelectorAll("tab-bar > *")
         [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
@@ -46,9 +46,7 @@ class TabBar {
     if (Array.isArray(this.children)) {
       this.children.forEach((child) => child.render(this.element));
     }
-    if (this.focus) {
-      this.element.focus = this.focus;
-    }
+    this.element.focus = this.focus;
   }
   get selected() {
     return this.element.focus;

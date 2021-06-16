@@ -13,7 +13,7 @@ class TabBarItemElement extends HTMLElement {
     this.addEventListener("click", () => this.onPressed(this.state));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", this.onPressed);
+    this.removeEventListener("click", () => this.onPressed(this.state));
   }
 }
 customElements.define("tab-bar-item", TabBarItemElement);

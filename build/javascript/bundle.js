@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623834378746
+      // 1623836419214
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6372,59 +6372,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/bottom_navigator_item */ "./src/javascript/widget/bottom_navigator_item.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 
 
-class BottomNavigatorItem extends HTMLElement {
-  constructor() {
-    super();
-    this.markup = (itemData, state) => {
-      const markup = `
-          <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
-            itemData.screen
-          }" ${
-        itemData.checked || itemData.screen === state.screen ? "checked" : ""
-      }>
-          <label class="bottom-navigator__button" for="${itemData.screen}">
-              <div class="bottom-navigator__icon"><i class="fas fa-${itemData.icon}"></i></div>
-          </label>
-          `;
-      return markup;
-    };
-    this.addEventListener("click", (_) => {
-      this.state.screen = this.itemData.screen;
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
-    });
-  }
 
-  set child(data) {
-    this.className = "bottom-navigator";
-    this.itemData = data.itemData;
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.insertAdjacentHTML(
-      "afterbegin",
-      this.markup(this.itemData, this.state)
+
+
+class BottomNavigator {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+    this.bottomNavigatorItems = _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.map(
+      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
     );
+  }
+  render(parentElement, index) {
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.bottomNavigatorItems, index);
+    this.tabBar.render(parentElement);
   }
 }
 
-customElements.define("bottom-navigator-item", BottomNavigatorItem);
-
-const bottomNavigator = (state) => {
-  const bottomNavigatorBar = document.createElement("footer");
-  bottomNavigatorBar.classList = ["bottom-navigator"];
-  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.forEach((itemData) => {
-    const navigatorItem = document.createElement("bottom-navigator-item");
-    navigatorItem.child = {
-      itemData: itemData,
-      state: state,
-    };
-    bottomNavigatorBar.insertAdjacentElement("beforeend", navigatorItem);
-  });
-  return bottomNavigatorBar;
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigator);
 
 
 /***/ }),
@@ -6946,7 +6915,7 @@ class TarBarNavigator {
     this.tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.map((item) => {
       const state = JSON.parse(JSON.stringify(this.state));
       state.screen = item.screen;
-      return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), () =>
+      return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), (state) =>
         (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
       );
     });
@@ -7264,22 +7233,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const overview = (scaffold, state) => {
-  scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default)(state);
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const bottomNavigator = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(state);
   const accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
   const settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
+  header.render(scaffold.header);
 
   switch (state.screen) {
     case "accounts":
-      header.render(scaffold.header);
       accountList.render(scaffold.body);
+      bottomNavigator.render(scaffold.footer, 0);
       break;
     case "settings":
-      header.render(scaffold.header);
       settingList.render(scaffold.body);
+      bottomNavigator.render(scaffold.footer, 1);
       break;
     default:
-      header.render(scaffold.header);
       accountList.render(scaffold.body);
       break;
   }
@@ -7791,6 +7760,52 @@ class BillItem {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/bottom_navigator_item.js":
+/*!********************************************************!*\
+  !*** ./src/javascript/widget/bottom_navigator_item.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class BottomNavigatorItemElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "bottom-navigator__button";
+    this.innerHTML = `
+        <div class="bottom-navigator__icon"><i class="fas fa-${this.icon}"></i></div>
+    `;
+    this.addEventListener("click", () => this.onPressed(this.state));
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", () => this.onPressed(this.state));
+  }
+}
+
+customElements.define("bottom-navigator-item", BottomNavigatorItemElement);
+
+class BottomNavigatorItem {
+  constructor(state, item, onPressed) {
+    this.element = document.createElement("bottom-navigator-item");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.onPressed = onPressed;
+    this.element.icon = item.icon;
+    this.element.state.screen = item.screen;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigatorItem);
+
+
+/***/ }),
+
 /***/ "./src/javascript/widget/button.js":
 /*!*****************************************!*\
   !*** ./src/javascript/widget/button.js ***!
@@ -8170,7 +8185,7 @@ class TabBarItemElement extends HTMLElement {
     this.addEventListener("click", () => this.onPressed(this.state));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", this.onPressed);
+    this.removeEventListener("click", () => this.onPressed(this.state));
   }
 }
 customElements.define("tab-bar-item", TabBarItemElement);
@@ -8229,7 +8244,7 @@ class TabBarElement extends HTMLElement {
     );
   }
   set focus(val) {
-    if (val) {
+    if (val !== undefined) {
       document
         .querySelectorAll("tab-bar > *")
         [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
@@ -8252,9 +8267,7 @@ class TabBar {
     if (Array.isArray(this.children)) {
       this.children.forEach((child) => child.render(this.element));
     }
-    if (this.focus) {
-      this.element.focus = this.focus;
-    }
+    this.element.focus = this.focus;
   }
   get selected() {
     return this.element.focus;
@@ -8362,7 +8375,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("e375f8c742f50fd93af8")
+/******/ 		__webpack_require__.h = () => ("d0a2ce349e195714ba45")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

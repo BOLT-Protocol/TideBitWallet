@@ -1,20 +1,28 @@
 .bottom-navigator {
+  width: 100%;
+  background-color: $color-white;
   display: flex;
   flex-direction: row;
-  &__button {
-    flex: auto;
-    background-color: $color-white;
-    padding: 2rem 0;
+  justify-content: space-between;
+  & > * {
     cursor: pointer;
-    text-align: center;
   }
-
-  &__icon > i {
-    color: $color-grey-dark-2;
+  &__item {
+    display: none;
+  }
+  &__button {
+    padding: 2rem 0;
+    width: 100%;
+  }
+  &__icon {
+    text-align: center;
     font-size: $default-font-size;
   }
+  &__icon > i {
+    color: $color-grey-dark-2;
+  }
 
-  &[focus] > &__icon > i {
+  &__item:checked + * &__icon > i {
     color: $color-primary;
   }
 }

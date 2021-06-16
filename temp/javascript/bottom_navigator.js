@@ -1,18 +1,17 @@
-import items from "../constant/bottom_navigator_data";
-import TabBar from "../widget/tar-bar";
+import itemsData from "../constant/bottom_navigator_data";
 import BottomNavigatorItem from "../widget/bottom_navigator_item";
+import route from "../utils/route";
 
-class BottomNavigator {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
-    this.bottomNavigatorItems = items.map(
-      (item) => new BottomNavigatorItem(state, item)
+const bottomNavigator = (state) => {
+  const bottomNavigatorBar = document.createElement("footer");
+  bottomNavigatorBar.classList = ["bottom-navigator"];
+  itemsData.forEach((itemData) => {
+    const navigatorItem = new BottomNavigatorItem(state, itemData, (state) =>
+      route(state)
     );
-  }
-  render(parentElement) {
-    this.tabBar = new TabBar(this.bottomNavigatorItems, 0);
-    this.tabBar.render(parentElement);
-  }
-}
+    navigatorItem.render(bottomNavigatorBar);
+  });
+  return bottomNavigatorBar;
+};
 
-export default BottomNavigator;
+export default bottomNavigator;

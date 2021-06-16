@@ -2,25 +2,25 @@ import scaffold from "../layout/scaffold";
 import Header from "../layout/header";
 import AccountList from "../layout/account_list";
 import SettingList from "../layout/setting_list";
-import bottomNavigator from "../layout/bottom_navigator";
+import BottomNavigator from "../layout/bottom_navigator";
 
 const overview = (scaffold, state) => {
-  scaffold.bottomNavigator = bottomNavigator(state);
   const header = new Header(state);
+  const bottomNavigator = new BottomNavigator(state);
   const accountList = new AccountList(state);
   const settingList = new SettingList(state);
+  header.render(scaffold.header);
 
   switch (state.screen) {
     case "accounts":
-      header.render(scaffold.header);
       accountList.render(scaffold.body);
+      bottomNavigator.render(scaffold.footer, 0);
       break;
     case "settings":
-      header.render(scaffold.header);
       settingList.render(scaffold.body);
+      bottomNavigator.render(scaffold.footer, 1);
       break;
     default:
-      header.render(scaffold.header);
       accountList.render(scaffold.body);
       break;
   }

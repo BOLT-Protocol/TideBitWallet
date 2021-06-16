@@ -82,24 +82,18 @@ body {
   background-color: #F7F8F9; }
 
 .bottom-navigator {
-  width: 100%;
-  background-color: #fff;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between; }
-  .bottom-navigator > * {
-    cursor: pointer; }
-  .bottom-navigator__item {
-    display: none; }
+  flex-direction: row; }
   .bottom-navigator__button {
+    flex: auto;
+    background-color: #fff;
     padding: 2rem 0;
-    width: 100%; }
-  .bottom-navigator__icon {
-    text-align: center;
-    font-size: 1.6rem; }
+    cursor: pointer;
+    text-align: center; }
   .bottom-navigator__icon > i {
-    color: #555; }
-  .bottom-navigator__item:checked + * .bottom-navigator__icon > i {
+    color: #555;
+    font-size: 1.6rem; }
+  .bottom-navigator__button[focus] > .bottom-navigator__icon > i {
     color: #4ECDC4; }
 
 .header {
