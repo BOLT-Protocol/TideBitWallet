@@ -1,6 +1,7 @@
 import header from "../layout/header";
 import bottomNavigator from "../layout/bottom_navigator";
 import accountList from "../widget/account_list";
+import SettingList from "../widget/setting_list";
 
 const overview = (scaffold, state) => {
   scaffold.header = header(state);
@@ -10,9 +11,8 @@ const overview = (scaffold, state) => {
       scaffold.body = accountList(state);
       break;
     case "settings":
-      const container = document.createElement("div");
-      container.innerHTML = `<div>This is Setting page</div>`;
-      scaffold.body = container;
+      const settingList = new SettingList(state);
+      settingList.render(scaffold.body);
       break;
     default:
       scaffold.body = accountList(state);

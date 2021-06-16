@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623755370390
+      // 1623804792973
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6852,6 +6852,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 /* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
 /* harmony import */ var _widget_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/account_list */ "./src/javascript/widget/account_list.js");
+/* harmony import */ var _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/setting_list */ "./src/javascript/widget/setting_list.js");
+
 
 
 
@@ -6864,9 +6866,8 @@ const overview = (scaffold, state) => {
       scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
     case "settings":
-      const container = document.createElement("div");
-      container.innerHTML = `<div>This is Setting page</div>`;
-      scaffold.body = container;
+      const settingList = new _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
+      settingList.render(scaffold.body);
       break;
     default:
       scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
@@ -6959,96 +6960,94 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
 const state = {};
 
 // ++ let assetList = ui.getAssets();
 const getAssets = () => {
-    return {
-        totalAsset: 52.29,
-        accounts: [{
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Bitcoin",
-                symbol: "BTC",
-                network: "mainnet",
-                decimals: 8,
-                publish: true,
-                image: "https://www.tidebit.one/icons/btc.png",
-                balance: 0,
-                inUSD: 0,
-            },
-            {
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Bitcoin",
-                symbol: "BTC",
-                network: "testnet",
-                decimals: 8,
-                publish: false,
-                image: "https://www.tidebit.one/icons/btc.png",
-                balance: 0,
-                inUSD: 0,
-            },
-            {
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Ethereum",
-                symbol: "ETH",
-                network: "mainnet",
-                decimals: 18,
-                publish: true,
-                image: "https://www.tidebit.one/icons/eth.png",
-                balance: 0,
-                inUSD: 0,
-            },
-            {
-                id: 'e0642b1b64b8b0214e758dd0be63242839e63db7',
-                name: "Ethereum",
-                symbol: "ETH",
-                network: "ropsten",
-                decimals: 18,
-                publish: false,
-                image: "https://www.tidebit.one/icons/eth.png",
-                balance: 2,
-                inUSD: 52.29,
-            },
-            {
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Tidetain",
-                symbol: "TTN",
-                network: "mainnet",
-                decimals: 18,
-                publish: true,
-                image: "https://www.tidebit.one/icons/eth.png",
-                balance: 0,
-                inUSD: 0,
-            },
-        ],
-    };
+  return {
+    totalAsset: 52.29,
+    accounts: [
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Bitcoin",
+        symbol: "BTC",
+        network: "mainnet",
+        decimals: 8,
+        publish: true,
+        image: "https://www.tidebit.one/icons/btc.png",
+        balance: 0,
+        inUSD: 0,
+      },
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Bitcoin",
+        symbol: "BTC",
+        network: "testnet",
+        decimals: 8,
+        publish: false,
+        image: "https://www.tidebit.one/icons/btc.png",
+        balance: 0,
+        inUSD: 0,
+      },
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Ethereum",
+        symbol: "ETH",
+        network: "mainnet",
+        decimals: 18,
+        publish: true,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 0,
+        inUSD: 0,
+      },
+      {
+        id: "e0642b1b64b8b0214e758dd0be63242839e63db7",
+        name: "Ethereum",
+        symbol: "ETH",
+        network: "ropsten",
+        decimals: 18,
+        publish: false,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 2,
+        inUSD: 52.29,
+      },
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Tidetain",
+        symbol: "TTN",
+        network: "mainnet",
+        decimals: 18,
+        publish: true,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 0,
+        inUSD: 0,
+      },
+    ],
+  };
 };
 
-const setWallet = (mode, fiat) => {
-    return {
-        mode: mode,
-        fiat: fiat,
-    };
+const setWallet = (mode, version, fiat) => {
+  return {
+    mode,
+    version,
+    fiat,
+  };
 };
 
 const startApp = () => {
-    state.user = getAssets();
-    state.walletConfig = setWallet("development", {
-        symbol: "USD",
-        inUSD: 1
-    });
-    state.screen = 'accounts';
-    (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-    // --
-    _utils_utils__WEBPACK_IMPORTED_MODULE_1__.dateFormatter(Date.now());
+  state.user = getAssets();
+  state.walletConfig = setWallet("development", "v 0.1.0 (1)", {
+    symbol: "USD",
+    inUSD: 1,
+  });
+  state.screen = "accounts";
+  (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 };
 
-
 function launchTideBitUi(options, callback) {
-    startApp();
+  startApp();
 }
+
 
 /***/ }),
 
@@ -7890,6 +7889,168 @@ class Input {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/setting_column.js":
+/*!*************************************************!*\
+  !*** ./src/javascript/widget/setting_column.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class SettingColumnElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "setting__column";
+    this.addTitle(this.title);
+    if (Array.isArray(this.items)) {
+      this.items.forEach((item, index) => {
+        this.addItem(item);
+        this.children[index + 1].addEventListener("click", item.onPressed);
+      });
+    } else {
+      this.addItem(this.items);
+      this.children[index + 1].addEventListener("click", items.onPressed);
+    }
+  }
+  disconnectedCallback() {
+    if (Array.isArray(this.items)) {
+      this.items.forEach((item, index) => {
+        this.children[index + 1].removeEventListener("click", item.onPressed);
+      });
+    } else {
+      addItem(this.items);
+      this.children[index + 1].removeEventListener("click", items.onPressed);
+    }
+  }
+  addTitle(title) {
+    const markup = `<div class="setting__title">${title}</div>`;
+    this.insertAdjacentHTML("afterbegin", markup);
+  }
+  addItem(item) {
+    const markup = `
+    <div class="setting__item">
+        <div class="setting__item-name">${item.name}</div>
+        <div class="setting__item-suffix">${item.label || ""}</div>
+        <div class="setting__item-icon"><i class="fas fa-chevron-right"></i></div>
+    </div>
+    `;
+    this.insertAdjacentHTML("beforeend", markup);
+  }
+}
+
+customElements.define("setting-column", SettingColumnElement);
+
+class SettingColumn {
+  constructor(setting) {
+    this.element = document.createElement("setting-column");
+    this.element.title = setting.title;
+    this.element.items = setting.items.map((item) => ({ ...item }));
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingColumn);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/setting_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/widget/setting_list.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./setting_column */ "./src/javascript/widget/setting_column.js");
+
+
+const getSettings = (state) => [
+  {
+    title: "Security center",
+    items: [
+      {
+        name: "Reset Wallet",
+        onPressed: () => {
+          console.log("Reset Wallet Request");
+        },
+      },
+    ],
+  },
+  {
+    title: "General settings",
+    items: [
+      {
+        name: "Fiat currency unit",
+        label: state.walletConfig.fiat.symbol,
+        onPressed: () => {
+          console.log("Popup options of fiat currency");
+        },
+      },
+    ],
+  },
+  {
+    title: "About",
+    items: [
+      {
+        name: "Suggestions and feedback",
+        onPressed: () => {
+          console.log("Getting Complain");
+        },
+      },
+      {
+        name: "Terms of Service and Security policy",
+        onPressed: () => {
+          console.log("Ah!");
+        },
+      },
+    ],
+  },
+];
+class SettingListElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "setting";
+    this.innerHTML = `
+    <div class="setting__list"></div>
+    <div class="setting__text">${this.state.walletConfig.version}</div>
+    `;
+    this.settings.forEach((setting) => setting.render(this.children[0]));
+  }
+}
+
+customElements.define("setting-list", SettingListElement);
+class SettingList {
+  constructor(state) {
+    this.element = document.createElement("setting-list");
+    const settings = getSettings(state);
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.settings = settings.map(
+      (setting) => new _setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
+    );
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingList);
+
+
+/***/ }),
+
 /***/ "./src/javascript/widget/tab_bar_item.js":
 /*!***********************************************!*\
   !*** ./src/javascript/widget/tab_bar_item.js ***!
@@ -8044,7 +8205,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("52ca578b5162b80e861f")
+/******/ 		__webpack_require__.h = () => ("9d0b9a0017fdcfd61165")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

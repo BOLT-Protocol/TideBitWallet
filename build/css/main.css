@@ -639,5 +639,43 @@ input:-webkit-autofill:active {
   .form__button {
     margin: 1rem 2rem; }
 
+.setting__column {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem; }
+
+.setting__title {
+  padding: 5px 1rem;
+  border-bottom: 1px solid #eee;
+  color: #9B9B9B;
+  font-size: 1.12rem; }
+
+.setting__item {
+  padding: 5px 1rem;
+  color: #555;
+  font-size: 1.28rem;
+  display: flex;
+  flex-direction: row; }
+
+.setting__text {
+  padding: 5px 1rem;
+  color: #9B9B9B;
+  font-size: 1.28rem;
+  font-weight: 300; }
+
+.setting__item-name {
+  flex: auto; }
+
+.setting__item-suffix {
+  color: #4ECDC4; }
+
+.setting__item-icon {
+  color: #9B9B9B;
+  min-width: 1rem;
+  margin-left: 1rem; }
+  .setting__item-icon > i {
+    font-weight: 300; }
+
 
 /*# sourceMappingURL=main.css.map*/
