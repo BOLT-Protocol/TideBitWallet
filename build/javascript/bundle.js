@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623825982023
+      // 1623826576218
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6772,92 +6772,95 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class Bill extends HTMLElement {
+class BillElement extends HTMLElement {
   constructor() {
     super();
-    this.markup = () => `
-        <div class="bill__header">
-            <span class="bill__sign">${this.bill.sign}</span>
-            <span class="bill__amount">${this.bill.amount}</span>
-            <span class="bill__unit">${this.account.symbol}</span>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Status</div>
-            <div class="bill__content">
-                <span class="bill__status">${this.bill.status}</span>
-                <span class="bill__status bill__confirmations">(${
-                  this.bill.confirmations
-                } confirmation)</span>
-                <span class="bill__status-icon"></span>
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Time</div>
-            <div class="bill__content">
-                (${this.bill.dateTime})
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">${this.bill.direction}</div>
-            <div class="bill__content">
-            ${this.bill.address}
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Fee</div>
-            <div class="bill__content">
-                <span class="bill__fee">${this.bill.fee}</span>
-                <span class="bill__unit">${this.account.symbol}</span>
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Transaction Id</div>
-            <div class="bill__content">
-                <span class="bill__asset-icon"><img src=${
-                  this.account.image
-                } alt="ETH"></span>
-                <span class="bill__id"><a target="_blank" href=https://${
-                  this.account.network
-                }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(
-      this.bill.txid
-    )}</a></span>
-            </div>
-        </div>
-    `;
   }
   connectedCallback() {
     this.className = "bill";
+    this.innerHTML = `
+    <div class="bill__header">
+        <span class="bill__sign">${this.bill.sign}</span>
+        <span class="bill__amount">${this.bill.amount}</span>
+        <span class="bill__unit">${this.account.symbol}</span>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Status</div>
+        <div class="bill__content">
+            <span class="bill__status">${this.bill.status}</span>
+            <span class="bill__status bill__confirmations">(${
+              this.bill.confirmations
+            } confirmation)</span>
+            <span class="bill__status-icon"></span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Time</div>
+        <div class="bill__content">
+            (${this.bill.dateTime})
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">${this.bill.direction}</div>
+        <div class="bill__content">
+        ${this.bill.address}
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Fee</div>
+        <div class="bill__content">
+            <span class="bill__fee">${this.bill.fee}</span>
+            <span class="bill__unit">${this.account.symbol}</span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Transaction Id</div>
+        <div class="bill__content">
+            <span class="bill__asset-icon"><img src=${
+              this.account.image
+            } alt="ETH"></span>
+            <span class="bill__id"><a target="_blank" href=https://${
+              this.account.network
+            }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(
+      this.bill.txid
+    )}</a></span>
+        </div>
+    </div>
+    `;
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
   }
   set action(val) {
     this.setAttribute(val, "");
   }
   set status(val) {
-    if (this.hasAttribute(val))return;
+    if (this.hasAttribute(val)) return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");
     this.setAttribute(val, "");
   }
-  set child(data) {
-    this.bill = data.bill;
-    this.account = data.account;
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.status = this.bill.status.toLowerCase();
-    this.action = this.bill.action.toLowerCase();
+}
+
+customElements.define("bill-content", BillElement);
+
+class BillContent {
+  constructor(state) {
+    this.element = document.createElement("bill-content");
+    this.element.state = state;
+    this.element.account = state.account;
+    this.element.bill = state.bill;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
 
-customElements.define("bill-content", Bill);
-
 const bill = (scaffold, state) => {
-  const billContent = document.createElement("bill-content");
-  billContent.child = {
-    bill: state.bill,
-    account: state.account,
-  };
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  const billContent = new BillContent(state);
   header.render(scaffold.header);
-  scaffold.body = billContent;
+  billContent.render(scaffold.body);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bill);
@@ -8287,7 +8290,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("1a6a77c98a21a7368ed7")
+/******/ 		__webpack_require__.h = () => ("3f44790a24f56a7dd78a")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
