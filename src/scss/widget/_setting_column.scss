@@ -18,6 +18,12 @@
     display: flex;
     flex-direction: row;
   }
+  &__text {
+    padding: 5px 1rem;
+    color: $color-grey-dark-1;
+    font-size: $default-font-size * 0.8;
+    font-weight: 300;
+  }
   &__item-name {
     flex: auto;
   }

@@ -48,7 +48,11 @@ class SettingListElement extends HTMLElement {
   }
   connectedCallback() {
     this.className = "setting";
-    this.settings.forEach((setting) => setting.render(this));
+    this.innerHTML = `
+    <div class="setting__list"></div>
+    <div class="setting__text">${this.state.walletConfig.version}</div>
+    `;
+    this.settings.forEach((setting) => setting.render(this.children[0]));
   }
 }
 
@@ -57,7 +61,7 @@ class SettingList {
   constructor(state) {
     this.element = document.createElement("setting-list");
     const settings = getSettings(state);
-    this.element.state = JSON.parse;
+    this.element.state = JSON.parse(JSON.stringify(state));
     this.element.settings = settings.map(
       (setting) => new SettingColumn(setting)
     );

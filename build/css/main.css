@@ -658,6 +658,12 @@ input:-webkit-autofill:active {
   display: flex;
   flex-direction: row; }
 
+.setting__text {
+  padding: 5px 1rem;
+  color: #9B9B9B;
+  font-size: 1.28rem;
+  font-weight: 300; }
+
 .setting__item-name {
   flex: auto; }
 

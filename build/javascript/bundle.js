@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623804128451
+      // 1623804792973
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6960,96 +6960,94 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
 const state = {};
 
 // ++ let assetList = ui.getAssets();
 const getAssets = () => {
-    return {
-        totalAsset: 52.29,
-        accounts: [{
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Bitcoin",
-                symbol: "BTC",
-                network: "mainnet",
-                decimals: 8,
-                publish: true,
-                image: "https://www.tidebit.one/icons/btc.png",
-                balance: 0,
-                inUSD: 0,
-            },
-            {
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Bitcoin",
-                symbol: "BTC",
-                network: "testnet",
-                decimals: 8,
-                publish: false,
-                image: "https://www.tidebit.one/icons/btc.png",
-                balance: 0,
-                inUSD: 0,
-            },
-            {
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Ethereum",
-                symbol: "ETH",
-                network: "mainnet",
-                decimals: 18,
-                publish: true,
-                image: "https://www.tidebit.one/icons/eth.png",
-                balance: 0,
-                inUSD: 0,
-            },
-            {
-                id: 'e0642b1b64b8b0214e758dd0be63242839e63db7',
-                name: "Ethereum",
-                symbol: "ETH",
-                network: "ropsten",
-                decimals: 18,
-                publish: false,
-                image: "https://www.tidebit.one/icons/eth.png",
-                balance: 2,
-                inUSD: 52.29,
-            },
-            {
-                id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
-                name: "Tidetain",
-                symbol: "TTN",
-                network: "mainnet",
-                decimals: 18,
-                publish: true,
-                image: "https://www.tidebit.one/icons/eth.png",
-                balance: 0,
-                inUSD: 0,
-            },
-        ],
-    };
+  return {
+    totalAsset: 52.29,
+    accounts: [
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Bitcoin",
+        symbol: "BTC",
+        network: "mainnet",
+        decimals: 8,
+        publish: true,
+        image: "https://www.tidebit.one/icons/btc.png",
+        balance: 0,
+        inUSD: 0,
+      },
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Bitcoin",
+        symbol: "BTC",
+        network: "testnet",
+        decimals: 8,
+        publish: false,
+        image: "https://www.tidebit.one/icons/btc.png",
+        balance: 0,
+        inUSD: 0,
+      },
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Ethereum",
+        symbol: "ETH",
+        network: "mainnet",
+        decimals: 18,
+        publish: true,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 0,
+        inUSD: 0,
+      },
+      {
+        id: "e0642b1b64b8b0214e758dd0be63242839e63db7",
+        name: "Ethereum",
+        symbol: "ETH",
+        network: "ropsten",
+        decimals: 18,
+        publish: false,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 2,
+        inUSD: 52.29,
+      },
+      {
+        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        name: "Tidetain",
+        symbol: "TTN",
+        network: "mainnet",
+        decimals: 18,
+        publish: true,
+        image: "https://www.tidebit.one/icons/eth.png",
+        balance: 0,
+        inUSD: 0,
+      },
+    ],
+  };
 };
 
-const setWallet = (mode, fiat) => {
-    return {
-        mode: mode,
-        fiat: fiat,
-    };
+const setWallet = (mode, version, fiat) => {
+  return {
+    mode,
+    version,
+    fiat,
+  };
 };
 
 const startApp = () => {
-    state.user = getAssets();
-    state.walletConfig = setWallet("development", {
-        symbol: "USD",
-        inUSD: 1
-    });
-    state.screen = 'accounts';
-    (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-    // --
-    _utils_utils__WEBPACK_IMPORTED_MODULE_1__.dateFormatter(Date.now());
+  state.user = getAssets();
+  state.walletConfig = setWallet("development", "v 0.1.0 (1)", {
+    symbol: "USD",
+    inUSD: 1,
+  });
+  state.screen = "accounts";
+  (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 };
 
-
 function launchTideBitUi(options, callback) {
-    startApp();
+  startApp();
 }
+
 
 /***/ }),
 
@@ -8025,7 +8023,11 @@ class SettingListElement extends HTMLElement {
   }
   connectedCallback() {
     this.className = "setting";
-    this.settings.forEach((setting) => setting.render(this));
+    this.innerHTML = `
+    <div class="setting__list"></div>
+    <div class="setting__text">${this.state.walletConfig.version}</div>
+    `;
+    this.settings.forEach((setting) => setting.render(this.children[0]));
   }
 }
 
@@ -8034,7 +8036,7 @@ class SettingList {
   constructor(state) {
     this.element = document.createElement("setting-list");
     const settings = getSettings(state);
-    this.element.state = JSON.parse;
+    this.element.state = JSON.parse(JSON.stringify(state));
     this.element.settings = settings.map(
       (setting) => new _setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
     );
@@ -8203,7 +8205,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("85c8e3701ce6f114d636")
+/******/ 		__webpack_require__.h = () => ("9d0b9a0017fdcfd61165")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
