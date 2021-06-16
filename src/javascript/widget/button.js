@@ -1,8 +1,23 @@
 class ButtonElement extends HTMLElement {
   constructor() {
     super();
+  }
+  connectedCallback() {
+    this.className = "button";
+    this.innerHTML = `
+        <div class="button__icon--leading button__icon"></div>
+        <div class="button__text"></div>
+        <div class="button__icon--suffix button__icon"></div>
+        <span class="button__popup"></span>
+        `;
     this.hasPopup = false;
     this.addEventListener("click", async (e) => {
+      this.onPressed();
+      this.handlePopup();
+    });
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
     });
@@ -18,21 +33,6 @@ class ButtonElement extends HTMLElement {
       }, 400);
     }
   };
-  connectedCallback() {
-    this.className = "button";
-    this.innerHTML = `
-        <div class="button__icon--leading button__icon"></div>
-        <div class="button__text"></div>
-        <div class="button__icon--suffix button__icon"></div>
-        <span class="button__popup"></span>
-        `;
-  }
-  disconnectedCallback() {
-    this.removeEventListener("click", async (e) => {
-      this.action();
-      this.handlePopup();
-    });
-  }
   set style(val) {
     if (Array.isArray(val)) {
       val.forEach((v) => this.setAttribute(v, ""));

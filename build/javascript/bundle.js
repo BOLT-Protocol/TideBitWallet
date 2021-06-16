@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623804792973
+      // 1623815336637
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6861,16 +6861,17 @@ __webpack_require__.r(__webpack_exports__);
 const overview = (scaffold, state) => {
   scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
   scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  const accountList = new _widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  const settingList = new _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
   switch (state.screen) {
     case "accounts":
-      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      accountList.render(scaffold.body);
       break;
     case "settings":
-      const settingList = new _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
       settingList.render(scaffold.body);
       break;
     default:
-      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      accountList.render(scaffold.body);
       break;
   }
 };
@@ -7214,21 +7215,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 
-class AccountItem extends HTMLElement {
+class AccountItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.markup = () => `
-    <div class="account-item__icon">
-        <img src=${this.account.image} alt=${this.account.symbol.toUpperCase()}>
-    </div>
-    <div class="account-item__symbol">${this.account.symbol.toUpperCase()}</div>
-    <div class="account-item__balance">${this.account.balance}</div>
-    <div class="account-item__to-currency">
-        <span class="almost-equal-to">&#8776;</span>
-        <span class="balance">${this.account.infiat}</span>
-        <span class="currency-unit">${this.fiat.symbol}</span>
-    </div>
-      `;
     this.addEventListener("click", (_) => {
       if (this.account) {
         this.state.account = this.account;
@@ -7241,6 +7230,34 @@ class AccountItem extends HTMLElement {
   }
   connectedCallback() {
     this.className = "account-item";
+    this.innerHTML = `
+    <div class="account-item__icon"></div>
+    <div class="account-item__symbol"></div>
+    <div class="account-item__balance"></div>
+    <div class="account-item__to-currency">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="balance"></span>
+        <span class="currency-unit"></span>
+    </div>
+    `;
+    this.exchange();
+    this.publish = this.state.account.publish;
+    this.children[0].insertAdjacentHTML(
+      "afterbegin",
+      `<img src=${
+        this.state.account.image
+      } alt=${this.state.account.symbol.toUpperCase()}>`
+    );
+    this.children[1].textContent = this.state.account.symbol.toUpperCase();
+    this.children[2].textContent = this.state.account.balance;
+    this.children[3].children[1].textContent = this.state.account.infiat;
+    this.children[3].children[2].textContent =
+      this.state.walletConfig.fiat.symbol;
+    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+  }
+  disconnectedCallback() {
+    console.log("accounts disconnected");
+    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   get publish() {
     return this.hasAttribute("publish");
@@ -7253,20 +7270,24 @@ class AccountItem extends HTMLElement {
     }
   }
   exchange() {
-    if (this.fiat) {
-      this.account.infiat = this.account.inUSD / this.fiat.inUSD;
+    if (this.state.walletConfig.fiat) {
+      this.state.account.infiat =
+        this.state.account.inUSD / this.state.walletConfig.fiat.inUSD;
       return;
     }
     return;
   }
-  set child(data) {
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.account = JSON.parse(JSON.stringify(data.account));
-    this.fiat = this.state.walletConfig.fiat;
-    this.exchange();
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.publish = this.account.publish;
-    this.id = this.account.id;
+}
+
+customElements.define("account-item", AccountItemElement);
+class AccountItem {
+  constructor(state) {
+    this.id = state.account.id;
+    this.element = document.createElement("account-item");
+    this.element.state = state;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
 
@@ -7289,23 +7310,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./account_item */ "./src/javascript/widget/account_item.js");
 
 
-customElements.define("account-item", _account_item__WEBPACK_IMPORTED_MODULE_0__.default);
+class AccountListElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "account-list";
+    this.accounts.forEach((account) => account.render(this));
+  }
+}
 
-const accountList = (state) => {
-  const accountList = document.createElement("div");
-  accountList.className = "account-list";
-  state.user.accounts.forEach((account) => {
-    const accountItem = document.createElement("account-item");
-    accountItem.child = {
-      state: state,
-      account: account,
-    };
-    accountList.insertAdjacentElement("beforeend", accountItem);
-  });
-  return accountList;
-};
+customElements.define("account-list", AccountListElement);
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (accountList);
+class AccountList {
+  constructor(state) {
+    this.element = document.createElement("account-list");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.accounts = state.user.accounts.map((account) => {
+      const state = JSON.parse(JSON.stringify(this.element.state));
+      state.account = account;
+      state.screen = "account";
+      return new _account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+    });
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountList);
 
 
 /***/ }),
@@ -7442,8 +7475,23 @@ __webpack_require__.r(__webpack_exports__);
 class ButtonElement extends HTMLElement {
   constructor() {
     super();
+  }
+  connectedCallback() {
+    this.className = "button";
+    this.innerHTML = `
+        <div class="button__icon--leading button__icon"></div>
+        <div class="button__text"></div>
+        <div class="button__icon--suffix button__icon"></div>
+        <span class="button__popup"></span>
+        `;
     this.hasPopup = false;
     this.addEventListener("click", async (e) => {
+      this.onPressed();
+      this.handlePopup();
+    });
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
     });
@@ -7459,21 +7507,6 @@ class ButtonElement extends HTMLElement {
       }, 400);
     }
   };
-  connectedCallback() {
-    this.className = "button";
-    this.innerHTML = `
-        <div class="button__icon--leading button__icon"></div>
-        <div class="button__text"></div>
-        <div class="button__icon--suffix button__icon"></div>
-        <span class="button__popup"></span>
-        `;
-  }
-  disconnectedCallback() {
-    this.removeEventListener("click", async (e) => {
-      this.action();
-      this.handlePopup();
-    });
-  }
   set style(val) {
     if (Array.isArray(val)) {
       val.forEach((v) => this.setAttribute(v, ""));
@@ -8065,7 +8098,6 @@ __webpack_require__.r(__webpack_exports__);
 class TabBarItemElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", () => this.onPressed(this.state));
   }
   connectedCallback() {
     this.className = "tab-bar__button";
@@ -8073,6 +8105,7 @@ class TabBarItemElement extends HTMLElement {
         <div class="tab-bar__icon"></div>
         <div class="tab-bar__text"></div>
     `;
+    this.addEventListener("click", () => this.onPressed(this.state));
   }
   disconnectedCallback() {
     this.removeEventListener("click", this.onPressed);
@@ -8205,7 +8238,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("9d0b9a0017fdcfd61165")
+/******/ 		__webpack_require__.h = () => ("55e5124f277350cc0ea9")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -1,7 +1,6 @@
 class TabBarItemElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", () => this.onPressed(this.state));
   }
   connectedCallback() {
     this.className = "tab-bar__button";
@@ -9,6 +8,7 @@ class TabBarItemElement extends HTMLElement {
         <div class="tab-bar__icon"></div>
         <div class="tab-bar__text"></div>
     `;
+    this.addEventListener("click", () => this.onPressed(this.state));
   }
   disconnectedCallback() {
     this.removeEventListener("click", this.onPressed);
