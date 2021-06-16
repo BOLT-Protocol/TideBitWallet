@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623828028651
+      // 1623829765430
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6408,9 +6408,9 @@ class TabBar {
     this.children = children;
     this.focus = defaultFocus;
   }
-  render(parentElement) {
+  render(parentElement, position) {
     this.element = document.createElement("tab-bar");
-    parentElement.insertAdjacentElement("beforeend", this.element);
+    parentElement.insertAdjacentElement(position || "beforeend", this.element);
     if (Array.isArray(this.children)) {
       this.children.forEach((child) => child.render(this.element));
     }
@@ -6418,7 +6418,7 @@ class TabBar {
       this.element.focus = this.focus;
     }
   }
-  get selected(){
+  get selected() {
     return this.element.focus;
   }
 }
@@ -6553,32 +6553,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
-/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
-/* harmony import */ var _widget_bill_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/bill_list */ "./src/javascript/widget/bill_list.js");
-/* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _widget_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tab_bar_navigator */ "./src/javascript/widget/tab_bar_navigator.js");
+/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
+/* harmony import */ var _widget_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/bill_list */ "./src/javascript/widget/bill_list.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
 
 
 
-
-
-
-
-
-
-
+// -- test
 
 const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
   return [
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
       txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
       amount: 0.1,
       fee: 0.000021,
@@ -6590,7 +6581,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 0,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
       txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
       amount: 0.1,
       fee: 0.000021,
@@ -6602,7 +6593,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 1,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
       txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
       amount: 0.1,
       fee: 0.000021,
@@ -6614,7 +6605,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 4,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
       txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
       amount: 1,
       fee: 0.000021,
@@ -6626,7 +6617,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 2160,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
       txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
       amount: 3,
       fee: 0.000021,
@@ -6642,19 +6633,12 @@ const getAssetDetail = (assetId) => {
 
 const account = (scaffold, state, callback) => {
   // ++ let assetDetail = ui.getAssetDetail({ assetID });
-  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(state);
-  const tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.map((item) => {
-    const _state = JSON.parse(JSON.stringify(state));
-    _state.screen = item.screen;
-    return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__.default(_state, item.title, item.title.toLowerCase(), (val) =>
-    (0,_utils_route__WEBPACK_IMPORTED_MODULE_6__.default)(val)
-    );
-  });
-  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default(tabBarItems);
-  const billList = new _widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(state, bills);
+  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_2__.default(obj));
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  const tarBarNavigator = new _widget_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const billList = new _widget_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(state, bills);
   header.render(scaffold.header);
-  tabBar.render(scaffold.body);
+  tarBarNavigator.render(scaffold.body, "afterbegin");
   billList.render(scaffold.body);
 };
 
@@ -6674,90 +6658,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _widget_address_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/address_content */ "./src/javascript/widget/address_content.js");
 
 
 
 
-
-class Address extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "address";
-    this.innerHTML = `
-        <div class="address__header">Receiving address</div>
-        <div class="address__subtitle">We automatically generate a new address for you after every transaction you
-          receive
-          to protect your privacy, so that would be not easy to track your entire payment history.</div>
-        <div class="address__qrcode"><canvas></canvas></div>
-        <div class="address__text"></div>
-        <div class="address__button"></div>
-        `;
-    this.renderAddress();
-    this.setCoinbase();
-  }
-  /**
-   * ETH || BTC
-   */
-  setCoinbase() {
-    this.setAttribute(this.state.account.symbol, "");
-  }
-  renderAddress = () => {
-    qrcode__WEBPACK_IMPORTED_MODULE_2__.toCanvas(
-      this.children[2].children[0],
-      this.address,
-      {
-        version: "auto",
-        errorCorrectionLevel: "high",
-        color: {
-          light: "#fff",
-          dark: "#000",
-        },
-        toSJISFunc: qrcode__WEBPACK_IMPORTED_MODULE_2__.toSJIS,
-      },
-      (error) => {
-        if (error) console.error(error);
-        console.log("success!");
-      }
-    );
-    this.children[3].textContent = this.address;
-    const button = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("Copy Wallet Address", () => {}, {
-      style: ["round", "outline"],
-      suffix: "copy",
-      popup: async () => {
-        console.log("popup");
-        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.to)(navigator.clipboard.writeText(address));
-        return err ? "Error!" : "Copy";
-      },
-    });
-    button.render(this.children[4]);
-  };
-}
-
-customElements.define("address-content", Address);
-
-class AddressContent {
-  constructor(state, address) {
-    this.element = document.createElement("address-content");
-    this.element.state = state;
-    this.element.address = address;
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
 
 const address = (scaffold, state, callback) => {
   // ++ ui.getReceiveAddress({ accountID });
   const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const addressContent = new AddressContent(state, address);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  const addressContent = new _widget_address_content__WEBPACK_IMPORTED_MODULE_1__.default(state, address);
   header.render(scaffold.header);
   addressContent.render(scaffold.body);
 };
@@ -6779,97 +6691,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _widget_bill_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/bill_content */ "./src/javascript/widget/bill_content.js");
 
 
-
-class BillElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "bill";
-    this.innerHTML = `
-    <div class="bill__header">
-        <span class="bill__sign">${this.bill.sign}</span>
-        <span class="bill__amount">${this.bill.amount}</span>
-        <span class="bill__unit">${this.account.symbol}</span>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Status</div>
-        <div class="bill__content">
-            <span class="bill__status">${this.bill.status}</span>
-            <span class="bill__status bill__confirmations">(${
-              this.bill.confirmations
-            } confirmation)</span>
-            <span class="bill__status-icon"></span>
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Time</div>
-        <div class="bill__content">
-            (${this.bill.dateTime})
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">${this.bill.direction}</div>
-        <div class="bill__content">
-        ${this.bill.address}
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Fee</div>
-        <div class="bill__content">
-            <span class="bill__fee">${this.bill.fee}</span>
-            <span class="bill__unit">${this.account.symbol}</span>
-        </div>
-    </div>
-    <div class="bill__cell">
-        <div class="bill__title">Transaction Id</div>
-        <div class="bill__content">
-            <span class="bill__asset-icon"><img src=${
-              this.account.image
-            } alt="ETH"></span>
-            <span class="bill__id"><a target="_blank" href=https://${
-              this.account.network
-            }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(
-      this.bill.txid
-    )}</a></span>
-        </div>
-    </div>
-    `;
-    this.status = this.bill.status.toLowerCase();
-    this.action = this.bill.action.toLowerCase();
-  }
-  set action(val) {
-    this.setAttribute(val, "");
-  }
-  set status(val) {
-    if (this.hasAttribute(val)) return;
-    if (this.hasAttribute("pending")) this.removeAttribute("pending");
-    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
-    if (this.hasAttribute("complete")) this.removeAttribute("complete");
-    this.setAttribute(val, "");
-  }
-}
-
-customElements.define("bill-content", BillElement);
-
-class BillContent {
-  constructor(state) {
-    this.element = document.createElement("bill-content");
-    this.element.state = state;
-    this.element.account = state.account;
-    this.element.bill = state.bill;
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
 
 const bill = (scaffold, state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  const billContent = new BillContent(state);
+  const billContent = new _widget_bill_content__WEBPACK_IMPORTED_MODULE_1__.default(state);
   header.render(scaffold.header);
   billContent.render(scaffold.body);
 };
@@ -7386,6 +7214,202 @@ class AccountList {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/address_content.js":
+/*!**************************************************!*\
+  !*** ./src/javascript/widget/address_content.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
+/* harmony import */ var _button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+class AddressContentElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "address";
+    this.innerHTML = `
+          <div class="address__header">Receiving address</div>
+          <div class="address__subtitle">We automatically generate a new address for you after every transaction you
+            receive
+            to protect your privacy, so that would be not easy to track your entire payment history.</div>
+          <div class="address__qrcode"><canvas></canvas></div>
+          <div class="address__text"></div>
+          <div class="address__button"></div>
+          `;
+    this.renderAddress();
+    this.setCoinbase();
+  }
+  /**
+   * ETH || BTC
+   */
+  setCoinbase() {
+    this.setAttribute(this.state.account.symbol, "");
+  }
+  renderAddress = () => {
+    qrcode__WEBPACK_IMPORTED_MODULE_0__.toCanvas(
+      this.children[2].children[0],
+      this.address,
+      {
+        version: "auto",
+        errorCorrectionLevel: "high",
+        color: {
+          light: "#fff",
+          dark: "#000",
+        },
+        toSJISFunc: qrcode__WEBPACK_IMPORTED_MODULE_0__.toSJIS,
+      },
+      (error) => {
+        if (error) console.error(error);
+        console.log("success!");
+      }
+    );
+    this.children[3].textContent = this.address;
+    const button = new _button__WEBPACK_IMPORTED_MODULE_1__.default("Copy Wallet Address", () => {}, {
+      style: ["round", "outline"],
+      suffix: "copy",
+      popup: async () => {
+        console.log("popup");
+        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.to)(navigator.clipboard.writeText(address));
+        return err ? "Error!" : "Copy";
+      },
+    });
+    button.render(this.children[4]);
+  };
+}
+
+customElements.define("address-content", AddressContentElement);
+
+class AddressContent {
+  constructor(state, address) {
+    this.element = document.createElement("address-content");
+    this.element.state = state;
+    this.element.address = address;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AddressContent);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/bill_content.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/widget/bill_content.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+class BillElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "bill";
+    this.innerHTML = `
+    <div class="bill__header">
+        <span class="bill__sign">${this.bill.sign}</span>
+        <span class="bill__amount">${this.bill.amount}</span>
+        <span class="bill__unit">${this.account.symbol}</span>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Status</div>
+        <div class="bill__content">
+            <span class="bill__status">${this.bill.status}</span>
+            <span class="bill__status bill__confirmations">(${
+              this.bill.confirmations
+            } confirmation)</span>
+            <span class="bill__status-icon"></span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Time</div>
+        <div class="bill__content">
+            (${this.bill.dateTime})
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">${this.bill.direction}</div>
+        <div class="bill__content">
+        ${this.bill.address}
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Fee</div>
+        <div class="bill__content">
+            <span class="bill__fee">${this.bill.fee}</span>
+            <span class="bill__unit">${this.account.symbol}</span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Transaction Id</div>
+        <div class="bill__content">
+            <span class="bill__asset-icon"><img src=${
+              this.account.image
+            } alt="ETH"></span>
+            <span class="bill__id"><a target="_blank" href=https://${
+              this.account.network
+            }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.addressFormatter)(
+      this.bill.txid
+    )}</a></span>
+        </div>
+    </div>
+    `;
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+  }
+  set action(val) {
+    this.setAttribute(val, "");
+  }
+  set status(val) {
+    if (this.hasAttribute(val)) return;
+    if (this.hasAttribute("pending")) this.removeAttribute("pending");
+    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
+    if (this.hasAttribute("complete")) this.removeAttribute("complete");
+    this.setAttribute(val, "");
+  }
+}
+
+customElements.define("bill-content", BillElement);
+
+class BillContent {
+  constructor(state) {
+    this.element = document.createElement("bill-content");
+    this.element.state = state;
+    this.element.account = state.account;
+    this.element.bill = state.bill;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillContent);
 
 
 /***/ }),
@@ -8204,6 +8228,47 @@ class TabBarItem {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/tab_bar_navigator.js":
+/*!****************************************************!*\
+  !*** ./src/javascript/widget/tab_bar_navigator.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
+/* harmony import */ var _tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
+
+
+
+class TarBarNavigator {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+    this.tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.map((item) => {
+      const state = JSON.parse(JSON.stringify(this.state));
+      state.screen = item.screen;
+      return new _tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), () =>
+        (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
+      );
+    });
+  }
+  render(parentElement, position) {
+    this.tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.tabBarItems, undefined);
+    this.tabBar.render(parentElement, position);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TarBarNavigator);
+
+/***/ }),
+
 /***/ "./src/main.js":
 /*!*********************!*\
   !*** ./src/main.js ***!
@@ -8301,7 +8366,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("6942b596d48d6a22e5dc")
+/******/ 		__webpack_require__.h = () => ("67c788ad8bebaa221d72")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

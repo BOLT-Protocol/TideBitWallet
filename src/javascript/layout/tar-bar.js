@@ -40,9 +40,9 @@ class TabBar {
     this.children = children;
     this.focus = defaultFocus;
   }
-  render(parentElement) {
+  render(parentElement, position) {
     this.element = document.createElement("tab-bar");
-    parentElement.insertAdjacentElement("beforeend", this.element);
+    parentElement.insertAdjacentElement(position || "beforeend", this.element);
     if (Array.isArray(this.children)) {
       this.children.forEach((child) => child.render(this.element));
     }
@@ -50,7 +50,7 @@ class TabBar {
       this.element.focus = this.focus;
     }
   }
-  get selected(){
+  get selected() {
     return this.element.focus;
   }
 }

@@ -1,16 +1,10 @@
-import Bill from "../model/bill";
-
-import items from "../constant/tab_bar_data";
-
 import Header from "../layout/header";
-import TabBar from "../layout/tar-bar";
-
+import TarBarNavigator from "../widget/tab_bar_navigator";
+import Bill from "../model/bill";
 import BillList from "../widget/bill_list";
-import TabBarItem from "../widget/tab_bar_item";
 
-import route from "../utils/route";
+// -- test
 import { randomHex } from "../utils/utils";
-
 const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
   return [
@@ -81,17 +75,10 @@ const account = (scaffold, state, callback) => {
   // ++ let assetDetail = ui.getAssetDetail({ assetID });
   const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
   const header = new Header(state);
-  const tabBarItems = items.map((item) => {
-    const _state = JSON.parse(JSON.stringify(state));
-    _state.screen = item.screen;
-    return new TabBarItem(_state, item.title, item.title.toLowerCase(), (val) =>
-    route(val)
-    );
-  });
-  const tabBar = new TabBar(tabBarItems);
+  const tarBarNavigator = new TarBarNavigator(state);
   const billList = new BillList(state, bills);
   header.render(scaffold.header);
-  tabBar.render(scaffold.body);
+  tarBarNavigator.render(scaffold.body, "afterbegin");
   billList.render(scaffold.body);
 };
 
