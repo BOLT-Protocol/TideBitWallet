@@ -2,7 +2,7 @@ import Bill from "../model/bill";
 
 import items from "../constant/tab_bar_data";
 
-import header from "../layout/header";
+import Header from "../layout/header";
 import TabBar from "../layout/tar-bar";
 
 import BillList from "../widget/bill_list";
@@ -80,7 +80,7 @@ const getAssetDetail = (assetId) => {
 };
 
 const account = (scaffold, state) => {
-  scaffold.header = header(state);
+  const header = new Header(state);
   const tabBarItems = items.map((item) => {
     const _state = JSON.parse(JSON.stringify(state));
     _state.screen = item.screen;
@@ -91,6 +91,7 @@ const account = (scaffold, state) => {
   const tabBar = new TabBar(tabBarItems);
   const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
   const billList = new BillList(state, bills);
+  header.render(scaffold.header);
   tabBar.render(scaffold.body);
   billList.render(scaffold.body);
 };

@@ -1,5 +1,5 @@
 import Form from "../widget/form";
-import header from "../layout/header";
+import Header from "../layout/header";
 
 
 /**
@@ -9,8 +9,9 @@ import header from "../layout/header";
  */
 
 const transaction = (scaffold, state) => {
-  scaffold.header = header(state);
+  const header = new Header(state);
   const form = new Form(state);
+  header.render(scaffold.header);
   form.render( scaffold.body);
   /**
    * getEstimateTime().then((timeString) => {

@@ -1,4 +1,4 @@
-import header from "../layout/header";
+import Header from "../layout/header";
 import { addressFormatter } from "../utils/utils";
 
 class Bill extends HTMLElement {
@@ -84,7 +84,8 @@ const bill = (scaffold, state) => {
     bill: state.bill,
     account: state.account,
   };
-  scaffold.header = header(state);
+  const header = new Header(state);
+  header.render(scaffold.header);
   scaffold.body = billContent;
 };
 

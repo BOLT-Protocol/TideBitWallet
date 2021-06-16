@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623818711063
+      // 1623825982023
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6153,28 +6153,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 // https://unicode-table.com/cn/2248/
 
-class BackButton extends HTMLElement {
-  constructor() {
-    super();
-    this.addEventListener("click", () => {
-      if (this.state.screen) {
-        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
-      }
-    });
-  }
-  connectedCallback() {
-    this.className = "header__leading";
-    this.innerHTML = `<i class="fas fa-arrow-left">`;
-  }
-  set icon(iconHTML) {
-    this.innerHTML = iconHTML;
-  }
-  set onClick(state){
-    this.state = JSON.parse(JSON.stringify(state));
-  }
- 
-}
-customElements.define("back-button", BackButton);
 
 const getHeaderInfo = (screen) => {
   switch (screen) {
@@ -6187,83 +6165,122 @@ const getHeaderInfo = (screen) => {
   }
 };
 
-const overviewHeader = (totalAsset, fiatSymbol) => {
-  const markup = `
-    <div class="header__title">Total Asset</div>
+class BackButtonElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "header__leading";
+    if (this.icon) {
+      this.innerHTML = `<i class="fas fa-${icon}">`;
+    } else {
+      this.innerHTML = `<i class="fas fa-arrow-left">`;
+    }
+    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+  }
+}
+
+customElements.define("back-button", BackButtonElement);
+
+class BackButton {
+  constructor(state, screen, icon) {
+    this.element = document.createElement("back-button");
+    this.element.icon = icon;
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.state.screen = screen;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+class HeaderElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    switch (this.state.screen) {
+      case "accounts":
+      case "settings":
+        this.classList = ["header header--overview"];
+        this.innerHTML = this.overviewHeader(
+          this.state.user.totalAsset,
+          this.state.walletConfig.fiat.symbol
+        );
+        break;
+      case "account":
+        this.classList = ["header header--account"];
+        this.innerHTML = this.accountHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "accounts");
+        this.headerLeading.render(this);
+        break;
+      default:
+        this.classList = ["header header--default"];
+        this.innerHTML = this.defaultHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "account");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
+  overviewHeader = (totalAsset, fiatSymbol) => {
+    const markup = `
+      <div class="header__title">Total Asset</div>
+      <div class="header__title-sub">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="user-total-balance">${totalAsset}</span>
+        <span class="currency-unit">${fiatSymbol}</span>
+      </div>
+    `;
+    return markup;
+  };
+  accountHeader = (state) => {
+    const account = state.account;
+    const fiat = state.walletConfig.fiat;
+    const markup = `
+    <div class="header__icon">
+      <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
+    </div>
+    <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
+    <div class="header__title">${account.balance}</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
-      <span class="user-total-balance">${totalAsset}</span>
-      <span class="currency-unit">${fiatSymbol}</span>
+      <span class="balance">${account.infiat}</span>
+      <span class="currency-unit">${fiat.symbol}</span>
     </div>
-  `;
-  return markup;
-};
+    `;
 
-const accountHeader = (state) => {
-  const account = state.account;
-  const fiat = state.walletConfig.fiat;
-  const markup = `
-  <div class="header__icon">
-    <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
-  </div>
-  <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
-  <div class="header__title">${account.balance}</div>
-  <div class="header__title-sub">
-    <span class="almost-equal-to">&#8776;</span>
-    <span class="balance">${account.infiat}</span>
-    <span class="currency-unit">${fiat.symbol}</span>
-  </div>
-  `;
-  const backButton = document.createElement("back-button");
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "accounts";
-  backButton.onClick = _state;
-  return [markup, backButton];
-};
-const defaultHeader = (state) => {
-  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(state.screen);
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "account";
-  const markup = `
-      <div class="header__title">${screenTitle}</div>
-      <div class="header__action ${actionHTML ? "" : "disabled"}">${
-    actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
-  }</div>
-  `;
-  const backButton = document.createElement("back-button");
-  if (leadingHTML) backButton.icon = leadingHTML;
-  backButton.onClick = _state;
-  return [markup, backButton];
-};
+    return markup;
+  };
+  defaultHeader = (state) => {
+    const { screenTitle, actionHTML } = getHeaderInfo(state.screen);
+    const _state = JSON.parse(JSON.stringify(state));
+    _state.screen = "account";
+    const markup = `
+        <div class="header__title">${screenTitle}</div>
+        <div class="header__action ${actionHTML ? "" : "disabled"}">${
+      actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
+    }</div>
+    `;
+    return markup;
+  };
+}
 
-const header = (state) => {
-  const header = document.createElement("header");
-  let markup, backButton;
-  switch (state.screen) {
-    case "accounts":
-    case "settings":
-      header.classList = ["header header--overview"];
-      markup = overviewHeader(
-        state.user.totalAsset,
-        state.walletConfig.fiat.symbol
-      );
-      break;
-    case "account":
-      header.classList = ["header header--account"];
-      // markup = accountHeader(state.account, state.walletConfig.fiat);
-      [markup, backButton] = accountHeader(state);
-      header.insertAdjacentElement("afterbegin", backButton);
-      break;
-    default:
-      header.classList = ["header header--default"];
-      [markup, backButton] = defaultHeader(state);
-      header.insertAdjacentElement("afterbegin", backButton);
+customElements.define("header-widget", HeaderElement);
+
+class Header {
+  constructor(state) {
+    this.element = document.createElement("header-widget");
+    this.element.state = JSON.parse(JSON.stringify(state));
   }
-  header.insertAdjacentHTML("beforeend", markup);
-  return header;
-};
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Header);
 
 
 /***/ }),
@@ -6290,7 +6307,10 @@ class Scaffold extends HTMLElement {
 
   connectedCallback() {
     // create an element with some default HTML:
-    this.innerHTML = `<main></main>`;
+    this.innerHTML = `
+    <header></header>
+    <main></main>
+    `;
     this.className = "scaffold";
   }
 
@@ -6315,6 +6335,9 @@ class Scaffold extends HTMLElement {
     }
   }
 
+  get header() {
+    return this.children[0];
+  }
   get body() {
     return this.children[1];
   }
@@ -6620,7 +6643,7 @@ const getAssetDetail = (assetId) => {
 };
 
 const account = (scaffold, state) => {
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(state);
   const tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.map((item) => {
     const _state = JSON.parse(JSON.stringify(state));
     _state.screen = item.screen;
@@ -6631,6 +6654,7 @@ const account = (scaffold, state) => {
   const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default(tabBarItems);
   const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
   const billList = new _widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(state, bills);
+  header.render(scaffold.header);
   tabBar.render(scaffold.body);
   billList.render(scaffold.body);
 };
@@ -6719,7 +6743,8 @@ customElements.define("address-content", Address);
 
 const address = (scaffold, state) => {
   let _address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; //ui.getReceiveAddress({ accountID });
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  header.render(scaffold.header);
   const addressContent = document.createElement("address-content");
   scaffold.body = addressContent;
   addressContent.coinbase = state.account.symbol;
@@ -6830,7 +6855,8 @@ const bill = (scaffold, state) => {
     bill: state.bill,
     account: state.account,
   };
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  header.render(scaffold.header);
   scaffold.body = billContent;
 };
 
@@ -6850,28 +6876,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 /* harmony import */ var _widget_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/account_list */ "./src/javascript/widget/account_list.js");
 /* harmony import */ var _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/setting_list */ "./src/javascript/widget/setting_list.js");
+/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
+
 
 
 
 
 
 const overview = (scaffold, state) => {
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-  scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default)(state);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
   const accountList = new _widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
   const settingList = new _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
+
   switch (state.screen) {
     case "accounts":
+      header.render(scaffold.header);
       accountList.render(scaffold.body);
       break;
     case "settings":
+      header.render(scaffold.header);
       settingList.render(scaffold.body);
       break;
     default:
+      header.render(scaffold.header);
       accountList.render(scaffold.body);
       break;
   }
@@ -6906,8 +6938,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 const transaction = (scaffold, state) => {
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
   const form = new _widget_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
+  header.render(scaffold.header);
   form.render( scaffold.body);
   /**
    * getEstimateTime().then((timeString) => {
@@ -7379,7 +7412,7 @@ class BillItemElement extends HTMLElement {
         </div>
         <div class="bill-item__suffix">
             <div class="bill-item__amount">${this.bill.formattedAmount(
-              this.account
+              this.state.account
             )}</div>
             <div class="bill-item__time">${this.bill.dateTime}</div>
         </div>
@@ -7413,12 +7446,12 @@ class BillItemElement extends HTMLElement {
   }
 }
 
-customElements.define("bill-item", BillItem);
+customElements.define("bill-item", BillItemElement);
 class BillItem {
-  constructor(state, bill) {
+  constructor(state) {
     this.element = document.createElement("bill-item");
     this.element.state = state;
-    this.element.bill = bill;
+    this.element.bill = state.bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -7443,28 +7476,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bill_item */ "./src/javascript/widget/bill_item.js");
 
 
-class BillListElement extends HTMLElement{
-  constructor(){
+class BillListElement extends HTMLElement {
+  constructor() {
     super();
   }
   connectedCallback() {
     this.className = "bill-list";
-    this.bills.forEach((bill) => bill.render(this));
+    this.billItems.forEach((billItem) => billItem.render(this));
   }
 }
 
 customElements.define("bill-list", BillListElement);
 
-class BillList{
-  constructor(state,bills){
+class BillList {
+  constructor(state, bills) {
     this.element = document.createElement("bill-list");
     this.element.state = JSON.parse(JSON.stringify(state));
-    this.bills = bills.map(bill => ({...bill}));
-    this.element.billItems = this.bills.map((bill=> {
+    this.element.bills = bills;
+    this.element.billItems = bills.map((bill) => {
       const state = JSON.parse(JSON.stringify(this.element.state));
+      state.bill = bill;
       state.screen = "bill";
-      return new _bill_item__WEBPACK_IMPORTED_MODULE_0__.default(state, bill);
-    }));
+      return new _bill_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+    });
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -8253,7 +8287,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("31df67b18c2819b83f52")
+/******/ 		__webpack_require__.h = () => ("1a6a77c98a21a7368ed7")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

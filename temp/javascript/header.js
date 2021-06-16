@@ -18,26 +18,26 @@ class BackButtonElement extends HTMLElement {
   }
   connectedCallback() {
     this.className = "header__leading";
-    if (this.icon) {
-      this.innerHTML = `<i class="fas fa-${icon}">`;
-    } else {
-      this.innerHTML = `<i class="fas fa-arrow-left">`;
-    }
+    this.innerHTML = `<i class="fas fa-arrow-left">`;
     this.addEventListener("click", (e) => route(this.state));
   }
   disconnectedCallback() {
     this.removeEventListener("click", (e) => route(this.state));
+  }
+  set icon(iconHTML) {
+    this.innerHTML = iconHTML;
+  }
+  set onClick(state) {
+    this.state = JSON.parse(JSON.stringify(state));
   }
 }
 
 customElements.define("back-button", BackButtonElement);
 
 class BackButton {
-  constructor(state, screen, icon) {
+  constructor(state) {
     this.element = document.createElement("back-button");
-    this.element.icon = icon;
     this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.state.screen = screen;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -60,15 +60,13 @@ class HeaderElement extends HTMLElement {
         break;
       case "account":
         this.classList = ["header header--account"];
-        this.innerHTML = this.accountHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "accounts");
-        this.headerLeading.render(this);
+        this.innerHTML = accountHeader(this.state);
+        this.insertAdjacentElement("afterbegin", new BackButton(this.state));
         break;
       default:
         this.classList = ["header header--default"];
-        this.innerHTML = this.defaultHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "account");
-        this.headerLeading.render(this);
+        this.innerHTML = defaultHeader(state);
+        this.insertAdjacentElement("afterbegin", new BackButton(this.state));
         break;
     }
   }
@@ -98,11 +96,16 @@ class HeaderElement extends HTMLElement {
       <span class="currency-unit">${fiat.symbol}</span>
     </div>
     `;
-
-    return markup;
+    const backButton = document.createElement("back-button");
+    const _state = JSON.parse(JSON.stringify(state));
+    _state.screen = "accounts";
+    backButton.onClick = _state;
+    return [markup, backButton];
   };
   defaultHeader = (state) => {
-    const { screenTitle, actionHTML } = getHeaderInfo(state.screen);
+    const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(
+      state.screen
+    );
     const _state = JSON.parse(JSON.stringify(state));
     _state.screen = "account";
     const markup = `
@@ -111,7 +114,10 @@ class HeaderElement extends HTMLElement {
       actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
     }</div>
     `;
-    return markup;
+    const backButton = document.createElement("back-button");
+    if (leadingHTML) backButton.icon = leadingHTML;
+    backButton.onClick = _state;
+    return [markup, backButton];
   };
 }
 

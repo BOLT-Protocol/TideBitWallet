@@ -9,7 +9,10 @@ export default class Scaffold extends HTMLElement {
 
   connectedCallback() {
     // create an element with some default HTML:
-    this.innerHTML = `<main></main>`;
+    this.innerHTML = `
+    <header></header>
+    <main></main>
+    `;
     this.className = "scaffold";
   }
 
@@ -34,6 +37,9 @@ export default class Scaffold extends HTMLElement {
     }
   }
 
+  get header() {
+    return this.children[0];
+  }
   get body() {
     return this.children[1];
   }

@@ -1,5 +1,5 @@
 import { to } from "../utils/utils";
-import header from "../layout/header";
+import Header from "../layout/header";
 import QRCode from "qrcode";
 import Button from "../widget/button";
 
@@ -62,7 +62,8 @@ customElements.define("address-content", Address);
 
 const address = (scaffold, state) => {
   let _address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; //ui.getReceiveAddress({ accountID });
-  scaffold.header = header(state);
+  const header = new Header(state);
+  header.render(scaffold.header);
   const addressContent = document.createElement("address-content");
   scaffold.body = addressContent;
   addressContent.coinbase = state.account.symbol;

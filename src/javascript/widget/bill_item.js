@@ -21,7 +21,7 @@ class BillItemElement extends HTMLElement {
         </div>
         <div class="bill-item__suffix">
             <div class="bill-item__amount">${this.bill.formattedAmount(
-              this.account
+              this.state.account
             )}</div>
             <div class="bill-item__time">${this.bill.dateTime}</div>
         </div>
@@ -55,12 +55,12 @@ class BillItemElement extends HTMLElement {
   }
 }
 
-customElements.define("bill-item", BillItem);
+customElements.define("bill-item", BillItemElement);
 class BillItem {
-  constructor(state, bill) {
+  constructor(state) {
     this.element = document.createElement("bill-item");
     this.element.state = state;
-    this.element.bill = bill;
+    this.element.bill = state.bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
