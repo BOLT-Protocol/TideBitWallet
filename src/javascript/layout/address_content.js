@@ -41,7 +41,6 @@ class AddressContentElement extends HTMLElement {
       },
       (error) => {
         if (error) console.error(error);
-        console.log("success!");
       }
     );
     this.children[3].textContent = this.address;
@@ -49,7 +48,6 @@ class AddressContentElement extends HTMLElement {
       style: ["round", "outline"],
       suffix: "copy",
       popup: async () => {
-        console.log("popup");
         // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
         const [err, _] = await to(navigator.clipboard.writeText(this.address));
         return err ? "Error!" : "Copy";

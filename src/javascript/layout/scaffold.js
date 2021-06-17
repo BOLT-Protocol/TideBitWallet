@@ -7,7 +7,6 @@ class ScaffoldElement extends HTMLElement {
     super();
   }
   connectedCallback() {
-    console.log("connectedCallback");
     this.className = "scaffold";
     // create an element with some default HTML:
     this.innerHTML = `

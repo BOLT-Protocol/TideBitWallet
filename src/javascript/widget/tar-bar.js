@@ -7,7 +7,6 @@ class TabBarElement extends HTMLElement {
     Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
       el.removeAttribute("focus")
     );
-    console.log(e.target);
     if (e.target.className === "button") e.target.setAttribute("focus", "");
     else e.target.parentElement.setAttribute("focus", "");
   }

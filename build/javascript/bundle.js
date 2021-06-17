@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623892607857
+      // 1623892730347
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6749,7 +6749,6 @@ class ScaffoldElement extends HTMLElement {
     super();
   }
   connectedCallback() {
-    console.log("connectedCallback");
     this.className = "scaffold";
     // create an element with some default HTML:
     this.innerHTML = `
@@ -8378,7 +8377,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b4892f777637e32d95cb")
+/******/ 		__webpack_require__.h = () => ("b56bafe62ff5ad47de77")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
