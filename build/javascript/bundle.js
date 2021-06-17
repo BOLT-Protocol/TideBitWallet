@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623892730347
+      // 1623892846231
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6173,7 +6173,6 @@ class AddressContentElement extends HTMLElement {
       },
       (error) => {
         if (error) console.error(error);
-        console.log("success!");
       }
     );
     this.children[3].textContent = this.address;
@@ -6181,7 +6180,6 @@ class AddressContentElement extends HTMLElement {
       style: ["round", "outline"],
       suffix: "copy",
       popup: async () => {
-        console.log("popup");
         // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
         const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.to)(navigator.clipboard.writeText(this.address));
         return err ? "Error!" : "Copy";
@@ -8230,7 +8228,6 @@ class TabBarElement extends HTMLElement {
     Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
       el.removeAttribute("focus")
     );
-    console.log(e.target);
     if (e.target.className === "button") e.target.setAttribute("focus", "");
     else e.target.parentElement.setAttribute("focus", "");
   }
@@ -8377,7 +8374,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b56bafe62ff5ad47de77")
+/******/ 		__webpack_require__.h = () => ("27e9bd13717e247ab403")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
