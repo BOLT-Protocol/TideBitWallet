@@ -185,6 +185,89 @@ body {
     .bill-list > *:hover .bill-item__progress {
       background-color: lightgray; }
 
+.form {
+  padding: 2rem 1rem;
+  height: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column; }
+  .form__align-end {
+    text-align: end; }
+  .form__align-start {
+    text-align: start; }
+  .form__primary-text {
+    color: #446CB3;
+    font-size: 1.28rem; }
+  .form__secondary-text {
+    color: #555;
+    font-size: 1.12rem; }
+  .form__tertiary-text {
+    color: #9B9B9B;
+    font-size: 1.12rem; }
+  .form__column {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; }
+  .form tab-bar.tab-bar {
+    margin: 2rem 0; }
+  .form__toggle {
+    flex: auto;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; }
+  .form[disabled-toggle] .form__toggle-controller {
+    display: none; }
+  .form .account-balance {
+    margin-bottom: 2rem; }
+  .form[on] .estimate-time {
+    display: none; }
+  .form__toggle-controller {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 1rem; }
+  .form[on] .form__toggle-content {
+    margin-top: 1rem; }
+  .form__toggle-button label {
+    position: relative;
+    display: block;
+    width: 5.5rem;
+    height: 3rem;
+    cursor: pointer;
+    border-radius: 1.5rem;
+    transition: 350ms; }
+  .form__toggle-button label::after {
+    position: absolute;
+    content: "";
+    width: 2rem;
+    height: 2rem;
+    top: 0.5rem;
+    left: 0.5rem;
+    border-radius: 50%;
+    transition: 250ms ease-in-out;
+    background: #fff;
+    box-shadow: rgba(155, 155, 155, 0.25) 1px 1px 4px 2px, rgba(85, 85, 85, 0.3) 1px 1px 3px -1px; }
+  .form__toggle-button label::before {
+    position: absolute;
+    content: "";
+    width: 3rem;
+    height: 1rem;
+    top: 1rem;
+    left: 1rem;
+    border-radius: 0.5rem;
+    transition: 250ms ease-in-out;
+    background: linear-gradient(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.1)), #d0d0d0; }
+  .form__toggle-button input {
+    display: none; }
+  .form__toggle-button input:checked + label::before {
+    box-shadow: 0 0.08rem 0.15rem -0.1rem rgba(0, 0, 0, 0.5) inset, 0 0.05rem 0.08rem -0.01rem rgba(255, 255, 255, 0.7), 3rem 0 0 0 #51cec5 inset; }
+  .form__toggle-button input:checked + label::after {
+    left: 2rem;
+    background: #4ECDC4; }
+  .form__button {
+    margin: 1rem 2rem; }
+
 .bill {
   display: flex;
   flex-direction: column;
@@ -549,89 +632,6 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
   color: #446CB3 !important;
   -webkit-text-fill-color: #446CB3 !important; }
-
-.form {
-  padding: 2rem 1rem;
-  height: 100%;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column; }
-  .form__align-end {
-    text-align: end; }
-  .form__align-start {
-    text-align: start; }
-  .form__primary-text {
-    color: #446CB3;
-    font-size: 1.28rem; }
-  .form__secondary-text {
-    color: #555;
-    font-size: 1.12rem; }
-  .form__tertiary-text {
-    color: #9B9B9B;
-    font-size: 1.12rem; }
-  .form__column {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between; }
-  .form tab-bar.tab-bar {
-    margin: 2rem 0; }
-  .form__toggle {
-    flex: auto;
-    align-self: flex-end;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; }
-  .form[disabled-toggle] .form__toggle-controller {
-    display: none; }
-  .form .account-balance {
-    margin-bottom: 2rem; }
-  .form[on] .estimate-time {
-    display: none; }
-  .form__toggle-controller {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 1rem; }
-  .form[on] .form__toggle-content {
-    margin-top: 1rem; }
-  .form__toggle-button label {
-    position: relative;
-    display: block;
-    width: 5.5rem;
-    height: 3rem;
-    cursor: pointer;
-    border-radius: 1.5rem;
-    transition: 350ms; }
-  .form__toggle-button label::after {
-    position: absolute;
-    content: "";
-    width: 2rem;
-    height: 2rem;
-    top: 0.5rem;
-    left: 0.5rem;
-    border-radius: 50%;
-    transition: 250ms ease-in-out;
-    background: #fff;
-    box-shadow: rgba(155, 155, 155, 0.25) 1px 1px 4px 2px, rgba(85, 85, 85, 0.3) 1px 1px 3px -1px; }
-  .form__toggle-button label::before {
-    position: absolute;
-    content: "";
-    width: 3rem;
-    height: 1rem;
-    top: 1rem;
-    left: 1rem;
-    border-radius: 0.5rem;
-    transition: 250ms ease-in-out;
-    background: linear-gradient(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.1)), #d0d0d0; }
-  .form__toggle-button input {
-    display: none; }
-  .form__toggle-button input:checked + label::before {
-    box-shadow: 0 0.08rem 0.15rem -0.1rem rgba(0, 0, 0, 0.5) inset, 0 0.05rem 0.08rem -0.01rem rgba(255, 255, 255, 0.7), 3rem 0 0 0 #51cec5 inset; }
-  .form__toggle-button input:checked + label::after {
-    left: 2rem;
-    background: #4ECDC4; }
-  .form__button {
-    margin: 1rem 2rem; }
 
 .setting__column {
   background-color: #fff;

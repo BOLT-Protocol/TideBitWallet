@@ -51,7 +51,7 @@ class AddressContentElement extends HTMLElement {
       popup: async () => {
         console.log("popup");
         // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-        const [err, _] = await to(navigator.clipboard.writeText(address));
+        const [err, _] = await to(navigator.clipboard.writeText(this.address));
         return err ? "Error!" : "Copy";
       },
     });

@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623836419214
+      // 1623892607857
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6183,7 +6183,7 @@ class AddressContentElement extends HTMLElement {
       popup: async () => {
         console.log("popup");
         // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.to)(navigator.clipboard.writeText(address));
+        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.to)(navigator.clipboard.writeText(this.address));
         return err ? "Error!" : "Copy";
       },
     });
@@ -6381,14 +6381,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class BottomNavigator {
-  constructor(state) {
+  constructor(state, focusIndex) {
+    this.focusIndex = focusIndex;
     this.state = JSON.parse(JSON.stringify(state));
     this.bottomNavigatorItems = _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.map(
       (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
     );
   }
-  render(parentElement, index) {
-    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.bottomNavigatorItems, index);
+  set focus(focusIndex){
+    this.focusIndex = focusIndex;
+  }
+  render(parentElement) {
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.bottomNavigatorItems, this.focusIndex);
     this.tabBar.render(parentElement);
   }
 }
@@ -6734,67 +6738,79 @@ class Header {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Scaffold)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // https://developers.google.com/web/fundamentals/web-components/customelements
-class Scaffold extends HTMLElement {
+class ScaffoldElement extends HTMLElement {
   // Can define constructor arguments if you wish.
   constructor() {
     // If you define a constructor, always call super() first!
     // This is specific to CE and required by the spec.
     super();
   }
-
   connectedCallback() {
+    console.log("connectedCallback");
+    this.className = "scaffold";
     // create an element with some default HTML:
     this.innerHTML = `
     <header></header>
     <main></main>
     <footer></footer>
     `;
-    this.className = "scaffold";
-  }
-
-  /**
-   * @param {HTMLElement} element
-   */
-  set header(element) {
-    this.insertAdjacentElement("afterbegin", element);
-  }
-
-  /**
-   * @param {HTMLElement} element or
-   * @param {HTMLElement} [element]
-   */
-  set body(element) {
-    if (Array.isArray(element)) {
-      element.forEach((element) =>
-        this.childNodes[1].insertAdjacentElement("beforeend", element)
-      );
-    } else {
-      this.childNodes[1].insertAdjacentElement("beforeend", element);
+    if (this.header) this.header.render(this.children[0]);
+    if (this.body) {
+      if (Array.isArray(this.body)) {
+        this.body.forEach((element) => element.render(this.children[1]));
+      } else {
+        this.body.render(this.children[1]);
+      }
     }
+    if (this.footer) this.footer.render(this.children[2]);
   }
-
-  get header() {
-    return this.children[0];
+  updateHeader(newHeader) {
+    this.header = newHeader;
+    this.children[0].replaceChild();
+    this.header.render(this.children[0]);
   }
-  get body() {
-    return this.children[1];
+  updateBody(newBody) {
+    this.body = newBody;
+    this.children[1].replaceChild();
+    this.body.render(this.children[1]);
   }
-  get footer() {
-    return this.children[2];
-  }
-
-  /**
-   * @param {HTMLElement} element
-   */
-  set bottomNavigator(element) {
-    this.insertAdjacentElement("beforeend", element);
+  updateFooter(newFooter) {
+    this.footer = newFooter;
+    this.children[2].replaceChild();
+    this.footer.render(this.children[2]);
   }
 }
 
-// module.exports.Scaffold;
+customElements.define("scaffold-widget", ScaffoldElement);
+
+class Scaffold {
+  constructor(header, body, footer) {
+    this.element = document.createElement("scaffold-widget");
+    this.element.header = header;
+    this.element.body = body;
+    this.element.footer = footer;
+    document.body.replaceChildren();
+    document.body.insertAdjacentElement("afterbegin", this.element);
+  }
+  // render(parentElement) {
+  //   parentElement.replaceChildren();
+  //   parentElement.insertAdjacentElement("afterbegin", this.element);
+  // }
+  // updateHeader(newHeader) {
+  //   this.element.updateHeader(newHeader);
+  // }
+  // updateBody(newBody) {
+  //   this.element.updateBody(newBody);
+  // }
+  // updateFooter(newFooter) {
+  //   this.element.updateFooter(newFooter);
+  // }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Scaffold);
 
 
 /***/ }),
@@ -7057,10 +7073,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
-/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
+/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
 
 
 
@@ -7072,7 +7090,7 @@ const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
   return [
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
       amount: 0.1,
       fee: 0.000021,
@@ -7084,7 +7102,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 0,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
       amount: 0.1,
       fee: 0.000021,
@@ -7096,7 +7114,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 1,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
       amount: 0.1,
       fee: 0.000021,
@@ -7108,7 +7126,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 4,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
       amount: 1,
       fee: 0.000021,
@@ -7120,7 +7138,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 2160,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
       amount: 3,
       fee: 0.000021,
@@ -7134,15 +7152,13 @@ const getAssetDetail = (assetId) => {
   ];
 };
 
-const account = (scaffold, state, callback) => {
+const account = (state, callback) => {
   // ++ let assetDetail = ui.getAssetDetail({ assetID });
   const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default(state);
-  const billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(state, bills);
-  header.render(scaffold.header);
-  tarBarNavigator.render(scaffold.body, "afterbegin");
-  billList.render(scaffold.body);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  const tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__.default(state);
+  const billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(state, bills);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(header, [tarBarNavigator, billList]);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
@@ -7161,20 +7177,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
 
 
 
 
 
-const address = (scaffold, state, callback) => {
+
+const address = (state, callback) => {
   // ++ ui.getReceiveAddress({ accountID });
   const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  const addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_1__.default(state, address);
-  header.render(scaffold.header);
-  addressContent.render(scaffold.body);
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_2__.default(state, address);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, addressContent);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
@@ -7193,16 +7210,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_bill_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bill_content */ "./src/javascript/layout/bill_content.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bill_content */ "./src/javascript/layout/bill_content.js");
 
 
 
-const bill = (scaffold, state) => {
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  const billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  header.render(scaffold.header);
-  billContent.render(scaffold.body);
+
+const bill = (state) => {
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, billContent);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bill);
@@ -7232,24 +7250,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const overview = (scaffold, state) => {
+const overview = (state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
   const bottomNavigator = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(state);
-  const accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
-  const settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
-  header.render(scaffold.header);
-
   switch (state.screen) {
     case "accounts":
-      accountList.render(scaffold.body);
-      bottomNavigator.render(scaffold.footer, 0);
+      bottomNavigator.focus = 0;
+      const accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
+      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, accountList, bottomNavigator);
       break;
     case "settings":
-      settingList.render(scaffold.body);
-      bottomNavigator.render(scaffold.footer, 1);
+      bottomNavigator.focus = 1;
+      const settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
+      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, settingList, bottomNavigator);
       break;
     default:
-      accountList.render(scaffold.body);
       break;
   }
 };
@@ -7270,8 +7285,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
 
 
 
@@ -7282,11 +7298,10 @@ __webpack_require__.r(__webpack_exports__);
  * ui.sendTransaction(transaction);
  */
 
-const transaction = (scaffold, state) => {
+const transaction = (state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  header.render(scaffold.header);
-  form.render( scaffold.body);
+  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, form);
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');
@@ -7442,46 +7457,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
 
 
 
 
 
-
-
-customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
-
-const setup = () => {
-  document.body.replaceChildren();
-  const root = document.createElement("scaffold-widget");
-  document.body.insertAdjacentElement("afterbegin", root);
-  return root;
-};
 
 const route = (state) => {
-  const root = setup();
   switch (state.screen) {
     case "accounts":
     case "settings":
-      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
+      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(state);
       break;
     case "account":
-      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(root, state);
+      (0,_screen_account__WEBPACK_IMPORTED_MODULE_1__.default)(state);
       break;
     case "transaction":
-      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(root, state);
+      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
     case "address":
-      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(root, state);
+      (0,_screen_address__WEBPACK_IMPORTED_MODULE_3__.default)(state);
       break;
     case "bill":
-      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(root, state);
+      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_4__.default)(state);
       break;
   }
 };
@@ -8375,7 +8378,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d0a2ce349e195714ba45")
+/******/ 		__webpack_require__.h = () => ("b4892f777637e32d95cb")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -1,4 +1,5 @@
 import Bill from "../model/bill";
+import Scaffold from "../layout/scaffold";
 import Header from "../layout/header";
 import TarBarNavigator from "../layout/tab_bar_navigator";
 import BillList from "../layout/bill_list";
@@ -71,15 +72,13 @@ const getAssetDetail = (assetId) => {
   ];
 };
 
-const account = (scaffold, state, callback) => {
+const account = (state, callback) => {
   // ++ let assetDetail = ui.getAssetDetail({ assetID });
   const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
   const header = new Header(state);
   const tarBarNavigator = new TarBarNavigator(state);
   const billList = new BillList(state, bills);
-  header.render(scaffold.header);
-  tarBarNavigator.render(scaffold.body, "afterbegin");
-  billList.render(scaffold.body);
+  new Scaffold(header, [tarBarNavigator, billList]);
 };
 
 export default account;
