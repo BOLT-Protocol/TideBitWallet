@@ -1,6 +1,7 @@
-import TabBar from "../layout/tar-bar";
-import Input from "./input";
-import Button from "./button";
+import TabBar from "../widget/tar-bar";
+import Input from "../widget/input";
+import Button from "../widget/button";
+
 class FormElement extends HTMLElement {
   constructor() {
     super();

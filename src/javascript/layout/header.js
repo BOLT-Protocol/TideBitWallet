@@ -1,27 +1,5 @@
 // https://unicode-table.com/cn/2248/
 import route from "../utils/route";
-class BackButton extends HTMLElement {
-  constructor() {
-    super();
-    this.addEventListener("click", () => {
-      if (this.state.screen) {
-        route(this.state);
-      }
-    });
-  }
-  connectedCallback() {
-    this.className = "header__leading";
-    this.innerHTML = `<i class="fas fa-arrow-left">`;
-  }
-  set icon(iconHTML) {
-    this.innerHTML = iconHTML;
-  }
-  set onClick(state){
-    this.state = JSON.parse(JSON.stringify(state));
-  }
- 
-}
-customElements.define("back-button", BackButton);
 
 const getHeaderInfo = (screen) => {
   switch (screen) {
@@ -34,80 +12,119 @@ const getHeaderInfo = (screen) => {
   }
 };
 
-const overviewHeader = (totalAsset, fiatSymbol) => {
-  const markup = `
-    <div class="header__title">Total Asset</div>
+class BackButtonElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "header__leading";
+    if (this.icon) {
+      this.innerHTML = `<i class="fas fa-${icon}">`;
+    } else {
+      this.innerHTML = `<i class="fas fa-arrow-left">`;
+    }
+    this.addEventListener("click", (e) => route(this.state));
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => route(this.state));
+  }
+}
+
+customElements.define("back-button", BackButtonElement);
+
+class BackButton {
+  constructor(state, screen, icon) {
+    this.element = document.createElement("back-button");
+    this.element.icon = icon;
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.state.screen = screen;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+class HeaderElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    switch (this.state.screen) {
+      case "accounts":
+      case "settings":
+        this.classList = ["header header--overview"];
+        this.innerHTML = this.overviewHeader(
+          this.state.user.totalAsset,
+          this.state.walletConfig.fiat.symbol
+        );
+        break;
+      case "account":
+        this.classList = ["header header--account"];
+        this.innerHTML = this.accountHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "accounts");
+        this.headerLeading.render(this);
+        break;
+      default:
+        this.classList = ["header header--default"];
+        this.innerHTML = this.defaultHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "account");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
+  overviewHeader = (totalAsset, fiatSymbol) => {
+    const markup = `
+      <div class="header__title">Total Asset</div>
+      <div class="header__title-sub">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="user-total-balance">${totalAsset}</span>
+        <span class="currency-unit">${fiatSymbol}</span>
+      </div>
+    `;
+    return markup;
+  };
+  accountHeader = (state) => {
+    const account = state.account;
+    const fiat = state.walletConfig.fiat;
+    const markup = `
+    <div class="header__icon">
+      <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
+    </div>
+    <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
+    <div class="header__title">${account.balance}</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
-      <span class="user-total-balance">${totalAsset}</span>
-      <span class="currency-unit">${fiatSymbol}</span>
+      <span class="balance">${account.infiat}</span>
+      <span class="currency-unit">${fiat.symbol}</span>
     </div>
-  `;
-  return markup;
-};
+    `;
 
-const accountHeader = (state) => {
-  const account = state.account;
-  const fiat = state.walletConfig.fiat;
-  const markup = `
-  <div class="header__icon">
-    <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
-  </div>
-  <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
-  <div class="header__title">${account.balance}</div>
-  <div class="header__title-sub">
-    <span class="almost-equal-to">&#8776;</span>
-    <span class="balance">${account.infiat}</span>
-    <span class="currency-unit">${fiat.symbol}</span>
-  </div>
-  `;
-  const backButton = document.createElement("back-button");
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "accounts";
-  backButton.onClick = _state;
-  return [markup, backButton];
-};
-const defaultHeader = (state) => {
-  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(state.screen);
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "account";
-  const markup = `
-      <div class="header__title">${screenTitle}</div>
-      <div class="header__action ${actionHTML ? "" : "disabled"}">${
-    actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
-  }</div>
-  `;
-  const backButton = document.createElement("back-button");
-  if (leadingHTML) backButton.icon = leadingHTML;
-  backButton.onClick = _state;
-  return [markup, backButton];
-};
+    return markup;
+  };
+  defaultHeader = (state) => {
+    const { screenTitle, actionHTML } = getHeaderInfo(state.screen);
+    const _state = JSON.parse(JSON.stringify(state));
+    _state.screen = "account";
+    const markup = `
+        <div class="header__title">${screenTitle}</div>
+        <div class="header__action ${actionHTML ? "" : "disabled"}">${
+      actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
+    }</div>
+    `;
+    return markup;
+  };
+}
 
-const header = (state) => {
-  const header = document.createElement("header");
-  let markup, backButton;
-  switch (state.screen) {
-    case "accounts":
-    case "settings":
-      header.classList = ["header header--overview"];
-      markup = overviewHeader(
-        state.user.totalAsset,
-        state.walletConfig.fiat.symbol
-      );
-      break;
-    case "account":
-      header.classList = ["header header--account"];
-      // markup = accountHeader(state.account, state.walletConfig.fiat);
-      [markup, backButton] = accountHeader(state);
-      header.insertAdjacentElement("afterbegin", backButton);
-      break;
-    default:
-      header.classList = ["header header--default"];
-      [markup, backButton] = defaultHeader(state);
-      header.insertAdjacentElement("afterbegin", backButton);
+customElements.define("header-widget", HeaderElement);
+
+class Header {
+  constructor(state) {
+    this.element = document.createElement("header-widget");
+    this.element.state = JSON.parse(JSON.stringify(state));
   }
-  header.insertAdjacentHTML("beforeend", markup);
-  return header;
-};
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
 
-export default header;
+export default Header;

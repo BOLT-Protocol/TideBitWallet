@@ -1,19 +1,7 @@
 import route from "../utils/route";
-class AccountItem extends HTMLElement {
+class AccountItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.markup = () => `
-    <div class="account-item__icon">
-        <img src=${this.account.image} alt=${this.account.symbol.toUpperCase()}>
-    </div>
-    <div class="account-item__symbol">${this.account.symbol.toUpperCase()}</div>
-    <div class="account-item__balance">${this.account.balance}</div>
-    <div class="account-item__to-currency">
-        <span class="almost-equal-to">&#8776;</span>
-        <span class="balance">${this.account.infiat}</span>
-        <span class="currency-unit">${this.fiat.symbol}</span>
-    </div>
-      `;
     this.addEventListener("click", (_) => {
       if (this.account) {
         this.state.account = this.account;
@@ -26,6 +14,33 @@ class AccountItem extends HTMLElement {
   }
   connectedCallback() {
     this.className = "account-item";
+    this.innerHTML = `
+    <div class="account-item__icon"></div>
+    <div class="account-item__symbol"></div>
+    <div class="account-item__balance"></div>
+    <div class="account-item__to-currency">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="balance"></span>
+        <span class="currency-unit"></span>
+    </div>
+    `;
+    this.exchange();
+    this.publish = this.state.account.publish;
+    this.children[0].insertAdjacentHTML(
+      "afterbegin",
+      `<img src=${
+        this.state.account.image
+      } alt=${this.state.account.symbol.toUpperCase()}>`
+    );
+    this.children[1].textContent = this.state.account.symbol.toUpperCase();
+    this.children[2].textContent = this.state.account.balance;
+    this.children[3].children[1].textContent = this.state.account.infiat;
+    this.children[3].children[2].textContent =
+      this.state.walletConfig.fiat.symbol;
+    this.addEventListener("click", (e) => route(this.state));
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => route(this.state));
   }
   get publish() {
     return this.hasAttribute("publish");
@@ -38,20 +53,24 @@ class AccountItem extends HTMLElement {
     }
   }
   exchange() {
-    if (this.fiat) {
-      this.account.infiat = this.account.inUSD / this.fiat.inUSD;
+    if (this.state.walletConfig.fiat) {
+      this.state.account.infiat =
+        this.state.account.inUSD / this.state.walletConfig.fiat.inUSD;
       return;
     }
     return;
   }
-  set child(data) {
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.account = JSON.parse(JSON.stringify(data.account));
-    this.fiat = this.state.walletConfig.fiat;
-    this.exchange();
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.publish = this.account.publish;
-    this.id = this.account.id;
+}
+
+customElements.define("account-item", AccountItemElement);
+class AccountItem {
+  constructor(state) {
+    this.id = state.account.id;
+    this.element = document.createElement("account-item");
+    this.element.state = state;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
 

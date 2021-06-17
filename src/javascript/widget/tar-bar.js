@@ -7,7 +7,6 @@ class TabBarElement extends HTMLElement {
     Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
       el.removeAttribute("focus")
     );
-    console.log(e.target);
     if (e.target.className === "button") e.target.setAttribute("focus", "");
     else e.target.parentElement.setAttribute("focus", "");
   }
@@ -23,7 +22,7 @@ class TabBarElement extends HTMLElement {
     );
   }
   set focus(val) {
-    if (val) {
+    if (val !== undefined) {
       document
         .querySelectorAll("tab-bar > *")
         [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
@@ -40,17 +39,15 @@ class TabBar {
     this.children = children;
     this.focus = defaultFocus;
   }
-  render(parentElement) {
+  render(parentElement, position) {
     this.element = document.createElement("tab-bar");
-    parentElement.insertAdjacentElement("beforeend", this.element);
+    parentElement.insertAdjacentElement(position || "beforeend", this.element);
     if (Array.isArray(this.children)) {
       this.children.forEach((child) => child.render(this.element));
     }
-    if (this.focus) {
-      this.element.focus = this.focus;
-    }
+    this.element.focus = this.focus;
   }
-  get selected(){
+  get selected() {
     return this.element.focus;
   }
 }

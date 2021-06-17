@@ -1,18 +1,11 @@
 import Bill from "../model/bill";
+import Scaffold from "../layout/scaffold";
+import Header from "../layout/header";
+import TarBarNavigator from "../layout/tab_bar_navigator";
+import BillList from "../layout/bill_list";
 
-import items from "../constant/tab_bar_data";
-
-import header from "../layout/header";
-import TabBar from "../layout/tar-bar";
-
-import billList from "../widget/bill_list";
-import TabBarItem from "../widget/tab_bar_item";
-
-import route from "../utils/route";
+// -- test
 import { randomHex } from "../utils/utils";
-
-// ++ let assetDetail = ui.getAssetDetail({ assetID });
-
 const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
   return [
@@ -79,19 +72,13 @@ const getAssetDetail = (assetId) => {
   ];
 };
 
-const account = (scaffold, state) => {
+const account = (state, callback) => {
+  // ++ let assetDetail = ui.getAssetDetail({ assetID });
   const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
-  const tabBarItems = items.map((item) => {
-    const _state = JSON.parse(JSON.stringify(state));
-    _state.screen = item.screen;
-    return new TabBarItem(_state, item.title, item.title.toLowerCase(), (val) =>
-      route(val)
-    );
-  });
-  scaffold.header = header(state);
-  const tabBar = new TabBar(tabBarItems);
-  tabBar.render(scaffold.body);
-  scaffold.body = [billList(state, bills)];
+  const header = new Header(state);
+  const tarBarNavigator = new TarBarNavigator(state);
+  const billList = new BillList(state, bills);
+  new Scaffold(header, [tarBarNavigator, billList]);
 };
 
 export default account;

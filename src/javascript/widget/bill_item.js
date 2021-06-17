@@ -1,10 +1,13 @@
 import route from "../utils/route";
 import { addressFormatter } from "../utils/utils";
 
-class BillItem extends HTMLElement {
+class BillItemElement extends HTMLElement {
   constructor() {
     super();
-    this.markup = () => `
+  }
+  connectedCallback() {
+    this.classList = ["bill-item"];
+    this.innerHTML = `
     <div class="bill-item__main">
         <div class="bill-item__icon"></div>
         <div class="bill-item__title">
@@ -18,7 +21,7 @@ class BillItem extends HTMLElement {
         </div>
         <div class="bill-item__suffix">
             <div class="bill-item__amount">${this.bill.formattedAmount(
-              this.account
+              this.state.account
             )}</div>
             <div class="bill-item__time">${this.bill.dateTime}</div>
         </div>
@@ -29,22 +32,19 @@ class BillItem extends HTMLElement {
           this.bill.progress
         }"></span></div>
     </div>
-        `;
-    this.addEventListener("click", () => {
-      // let transactionDetail = ui.getTransactionDetail({ transactionID });
-      this.state.screen = "bill";
-      this.state.bill = this.bill;
-      route(this.state);
-    });
+    `;
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+    this.addEventListener("click", (e) => route(this.state));
   }
-  connectedCallback() {
-    this.classList = ["bill-item"];
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => route(this.state));
   }
   static get observedAttributes() {
     return ["pending", "confirming", "complete"];
   }
   set status(val) {
-    if (this.hasAttribute(val))return;
+    if (this.hasAttribute(val)) return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");
@@ -53,14 +53,17 @@ class BillItem extends HTMLElement {
   set action(val) {
     this.setAttribute(val, "");
   }
-  set child(data) {
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.bill = data.bill;
-    this.account = this.state.account;
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.status = this.bill.status.toLowerCase();
-    this.action = this.bill.action.toLowerCase();
-  }
 }
 
+customElements.define("bill-item", BillItemElement);
+class BillItem {
+  constructor(state) {
+    this.element = document.createElement("bill-item");
+    this.element.state = state;
+    this.element.bill = state.bill;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
 export default BillItem;

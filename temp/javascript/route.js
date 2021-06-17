@@ -5,22 +5,23 @@ import address from "../screen/address";
 import bill from "../screen/bill";
 
 const route = (state) => {
+
   switch (state.screen) {
     case "accounts":
     case "settings":
-      overview(state);
+      overview(root, state);
       break;
     case "account":
-      account(state);
+      account(root, state);
       break;
     case "transaction":
-      transaction(state);
+      transaction(root, state);
       break;
     case "address":
-      address(state);
+      address(root, state);
       break;
     case "bill":
-      bill(state);
+      bill(root, state);
       break;
   }
 };

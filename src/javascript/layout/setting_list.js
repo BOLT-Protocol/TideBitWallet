@@ -1,4 +1,4 @@
-import SettingColumn from "./setting_column";
+import SettingColumn from "../widget/setting_column";
 
 const getSettings = (state) => [
   {

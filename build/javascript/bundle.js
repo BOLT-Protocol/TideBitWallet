@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623804792973
+      // 1623892846231
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6006,12 +6006,11 @@ __webpack_require__.r(__webpack_exports__);
 const navigatorItemsData = [
   {
     screen: "accounts",
-    iconHtml: `<i class="fas fa-wallet"></i>`,
-    checked: true, // default
+    icon: "wallet",
   },
   {
     screen: 'settings',
-    iconHtml: `<i class="fas fa-cog"></i>`,
+    icon: "cog",
   },
 ];
 
@@ -6070,6 +6069,295 @@ start();
 
 /***/ }),
 
+/***/ "./src/javascript/layout/account_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/layout/account_list.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/account_item */ "./src/javascript/widget/account_item.js");
+
+
+class AccountListElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "account-list";
+    this.accounts.forEach((account) => account.render(this));
+  }
+}
+
+customElements.define("account-list", AccountListElement);
+
+class AccountList {
+  constructor(state) {
+    this.element = document.createElement("account-list");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.accounts = state.user.accounts.map((account) => {
+      const state = JSON.parse(JSON.stringify(this.element.state));
+      state.account = account;
+      state.screen = "account";
+      return new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+    });
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/address_content.js":
+/*!**************************************************!*\
+  !*** ./src/javascript/layout/address_content.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+class AddressContentElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "address";
+    this.innerHTML = `
+          <div class="address__header">Receiving address</div>
+          <div class="address__subtitle">We automatically generate a new address for you after every transaction you
+            receive
+            to protect your privacy, so that would be not easy to track your entire payment history.</div>
+          <div class="address__qrcode"><canvas></canvas></div>
+          <div class="address__text"></div>
+          <div class="address__button"></div>
+          `;
+    this.renderAddress();
+    this.setCoinbase();
+  }
+  /**
+   * ETH || BTC
+   */
+  setCoinbase() {
+    this.setAttribute(this.state.account.symbol, "");
+  }
+  renderAddress = () => {
+    qrcode__WEBPACK_IMPORTED_MODULE_0__.toCanvas(
+      this.children[2].children[0],
+      this.address,
+      {
+        version: "auto",
+        errorCorrectionLevel: "high",
+        color: {
+          light: "#fff",
+          dark: "#000",
+        },
+        toSJISFunc: qrcode__WEBPACK_IMPORTED_MODULE_0__.toSJIS,
+      },
+      (error) => {
+        if (error) console.error(error);
+      }
+    );
+    this.children[3].textContent = this.address;
+    const button = new _widget_button__WEBPACK_IMPORTED_MODULE_1__.default("Copy Wallet Address", () => {}, {
+      style: ["round", "outline"],
+      suffix: "copy",
+      popup: async () => {
+        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.to)(navigator.clipboard.writeText(this.address));
+        return err ? "Error!" : "Copy";
+      },
+    });
+    button.render(this.children[4]);
+  };
+}
+
+customElements.define("address-content", AddressContentElement);
+
+class AddressContent {
+  constructor(state, address) {
+    this.element = document.createElement("address-content");
+    this.element.state = state;
+    this.element.address = address;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AddressContent);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/bill_content.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/layout/bill_content.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+class BillElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "bill";
+    this.innerHTML = `
+    <div class="bill__header">
+        <span class="bill__sign">${this.bill.sign}</span>
+        <span class="bill__amount">${this.bill.amount}</span>
+        <span class="bill__unit">${this.account.symbol}</span>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Status</div>
+        <div class="bill__content">
+            <span class="bill__status">${this.bill.status}</span>
+            <span class="bill__status bill__confirmations">(${
+              this.bill.confirmations
+            } confirmation)</span>
+            <span class="bill__status-icon"></span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Time</div>
+        <div class="bill__content">
+            (${this.bill.dateTime})
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">${this.bill.direction}</div>
+        <div class="bill__content">
+        ${this.bill.address}
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Fee</div>
+        <div class="bill__content">
+            <span class="bill__fee">${this.bill.fee}</span>
+            <span class="bill__unit">${this.account.symbol}</span>
+        </div>
+    </div>
+    <div class="bill__cell">
+        <div class="bill__title">Transaction Id</div>
+        <div class="bill__content">
+            <span class="bill__asset-icon"><img src=${
+              this.account.image
+            } alt="ETH"></span>
+            <span class="bill__id"><a target="_blank" href=https://${
+              this.account.network
+            }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.addressFormatter)(
+      this.bill.txid
+    )}</a></span>
+        </div>
+    </div>
+    `;
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+  }
+  set action(val) {
+    this.setAttribute(val, "");
+  }
+  set status(val) {
+    if (this.hasAttribute(val)) return;
+    if (this.hasAttribute("pending")) this.removeAttribute("pending");
+    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
+    if (this.hasAttribute("complete")) this.removeAttribute("complete");
+    this.setAttribute(val, "");
+  }
+}
+
+customElements.define("bill-content", BillElement);
+
+class BillContent {
+  constructor(state) {
+    this.element = document.createElement("bill-content");
+    this.element.state = state;
+    this.element.account = state.account;
+    this.element.bill = state.bill;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillContent);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/bill_list.js":
+/*!********************************************!*\
+  !*** ./src/javascript/layout/bill_list.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bill_item */ "./src/javascript/widget/bill_item.js");
+
+
+class BillListElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "bill-list";
+    this.billItems.forEach((billItem) => billItem.render(this));
+  }
+}
+
+customElements.define("bill-list", BillListElement);
+
+class BillList {
+  constructor(state, bills) {
+    this.element = document.createElement("bill-list");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.bills = bills;
+    this.element.billItems = bills.map((bill) => {
+      const state = JSON.parse(JSON.stringify(this.element.state));
+      state.bill = bill;
+      state.screen = "bill";
+      return new _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+    });
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillList);
+
+
+/***/ }),
+
 /***/ "./src/javascript/layout/bottom_navigator.js":
 /*!***************************************************!*\
   !*** ./src/javascript/layout/bottom_navigator.js ***!
@@ -6082,59 +6370,213 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/bottom_navigator_item */ "./src/javascript/widget/bottom_navigator_item.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 
 
-class BottomNavigatorItem extends HTMLElement {
-  constructor() {
-    super();
-    this.markup = (itemData, state) => {
-      const markup = `
-          <input type="radio" name="bottom-navigator" class="bottom-navigator__item" id="${
-            itemData.screen
-          }" ${
-        itemData.checked || itemData.screen === state.screen ? "checked" : ""
-      }>
-          <label class="bottom-navigator__button" for="${itemData.screen}">
-              <div class="bottom-navigator__icon">${itemData.iconHtml}</div>
-          </label>
-          `;
-      return markup;
-    };
-    this.addEventListener("click", (_) => {
-      this.state.screen = this.itemData.screen;
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_1__.default)(this.state);
-    });
-  }
 
-  set child(data) {
-    this.className = "bottom-navigator";
-    this.itemData = data.itemData;
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.insertAdjacentHTML(
-      "afterbegin",
-      this.markup(this.itemData, this.state)
+
+
+class BottomNavigator {
+  constructor(state, focusIndex) {
+    this.focusIndex = focusIndex;
+    this.state = JSON.parse(JSON.stringify(state));
+    this.bottomNavigatorItems = _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.map(
+      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
     );
+  }
+  set focus(focusIndex){
+    this.focusIndex = focusIndex;
+  }
+  render(parentElement) {
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.bottomNavigatorItems, this.focusIndex);
+    this.tabBar.render(parentElement);
   }
 }
 
-customElements.define("bottom-navigator-item", BottomNavigatorItem);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigator);
 
-const bottomNavigator = (state) => {
-  const bottomNavigatorBar = document.createElement("footer");
-  bottomNavigatorBar.classList = ["bottom-navigator"];
-  _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.forEach((itemData) => {
-    const navigatorItem = document.createElement("bottom-navigator-item");
-    navigatorItem.child = {
-      itemData: itemData,
-      state: state,
-    };
-    bottomNavigatorBar.insertAdjacentElement("beforeend", navigatorItem);
-  });
-  return bottomNavigatorBar;
-};
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bottomNavigator);
+/***/ }),
+
+/***/ "./src/javascript/layout/form.js":
+/*!***************************************!*\
+  !*** ./src/javascript/layout/form.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+
+
+
+
+class FormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  disconnectedCallback() {
+    if (this.toggle) {
+      this.toggleButton.removeEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    }
+  }
+  connectedCallback() {
+    this.className = "form";
+    this.addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "text",
+      label: "Send to",
+      errorMessage: "Invalid Address",
+      validation: (value) => {
+        return value.startsWith("0x");
+      },
+      action: {
+        icon: "qrcode",
+        onPressed: () => {
+          console.log("action on pressed!");
+        },
+      },
+    });
+    this.amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Amount",
+      errorMessage: "Invalid Amount",
+      validation: (value) => {
+        return parseFloat(value) > 0;
+      },
+      pattern: `\d*.?\d*`,
+    });
+    this.gasPriceInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
+      pattern: `\d*.?\d*`,
+    });
+    this.gasInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Custom Gas (unit)",
+      pattern: `\d*`,
+    });
+    this.buttons = ["Slow", "Standard", "Fast"].map(
+      (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
+    );
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
+    this.action = new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
+    this.innerHTML = `
+    <div class="form__input"></div>
+    <p class="form__secondary-text form__align-end">
+      <span>Balance:</span>
+      <span class="account-balance"></span>
+    </p>
+    <p class="form__primary-text form__align-start">Transaction Fee</p>
+    <p class="form__secondary-text form__align-start estimate-time">
+        <span>Processing time</span>
+        <span></span>
+    </p>
+    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
+    <div class="form__toggle-content"></div>
+    <p class="form__column">
+      <span class="form__tertiary-text">Estimated:</span>
+      <span class="form__secondary-text estimate-fee">loading...</span>
+    </p>
+    <div class="form__toggle">
+      <div class="form__toggle-controller">
+        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
+        <div class="form__toggle-button">
+          <input type="checkbox" name="toggle-button" id="toggle-button">
+          <label for="toggle-button"></label>
+        </div>
+      </div>
+    </div>
+    <div class="form__button"></div>
+    `;
+    this.addressInput.render(this.children[0]);
+    this.amountInput.render(this.children[0]);
+    this.tabBar.render(this.children[5]);
+    this.estimateTime = "10 ~ 30 minutes";
+    this.availableAmount = this.state.account;
+    this.action.render(this.children[8]);
+    if (this.state.account.symbol === "ETH") {
+      // -- test
+      this.toggle = true;
+      this.toggleButton = document.querySelector(
+        ".form input[type='checkbox']"
+      );
+      this.toggleButton.addEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    } else {
+      this.toggle = false;
+    }
+  }
+  /**
+   *
+   * @param {Boolean} val
+   *
+   */
+  handleToggle(toggleContent) {
+    toggleContent.replaceChildren();
+    if (this.toggleButton.checked) {
+      this.gasPriceInput.render(toggleContent);
+      this.gasInput.render(toggleContent);
+      this.setAttribute("on", "");
+    } else {
+      this.tabBar.render(toggleContent);
+      this.removeAttribute("on");
+    }
+  }
+  set availableAmount(account) {
+    this.children[1].children[1].textContent =
+      account.balance + " " + account.symbol;
+  }
+  set estimateFee(fee) {
+    this.children[6].children[1].textContent = fee + " " + account.symbol;
+  }
+  set estimateTime(time) {
+    this.children[3].children[1].textContent = time;
+  }
+  /**
+   * @param {Array<Object>} HTMLElement
+   */
+  get toggleContent() {
+    return this.children[5];
+  }
+  set onSubmit(element) {
+    element.render(this.lastElementChild);
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set toggle(val) {
+    if (val) {
+      this.removeAttribute("disabled-toggle");
+    } else {
+      this.setAttribute("disabled-toggle", "");
+    }
+  }
+}
+
+customElements.define("transaction-form", FormElement);
+
+class Form {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+  }
+  render(parentElement) {
+    this.element = document.createElement("transaction-form");
+    this.element.state = this.state;
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
 
 
 /***/ }),
@@ -6153,28 +6595,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 // https://unicode-table.com/cn/2248/
 
-class BackButton extends HTMLElement {
-  constructor() {
-    super();
-    this.addEventListener("click", () => {
-      if (this.state.screen) {
-        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
-      }
-    });
-  }
-  connectedCallback() {
-    this.className = "header__leading";
-    this.innerHTML = `<i class="fas fa-arrow-left">`;
-  }
-  set icon(iconHTML) {
-    this.innerHTML = iconHTML;
-  }
-  set onClick(state){
-    this.state = JSON.parse(JSON.stringify(state));
-  }
- 
-}
-customElements.define("back-button", BackButton);
 
 const getHeaderInfo = (screen) => {
   switch (screen) {
@@ -6187,83 +6607,122 @@ const getHeaderInfo = (screen) => {
   }
 };
 
-const overviewHeader = (totalAsset, fiatSymbol) => {
-  const markup = `
-    <div class="header__title">Total Asset</div>
+class BackButtonElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "header__leading";
+    if (this.icon) {
+      this.innerHTML = `<i class="fas fa-${icon}">`;
+    } else {
+      this.innerHTML = `<i class="fas fa-arrow-left">`;
+    }
+    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+  }
+}
+
+customElements.define("back-button", BackButtonElement);
+
+class BackButton {
+  constructor(state, screen, icon) {
+    this.element = document.createElement("back-button");
+    this.element.icon = icon;
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.state.screen = screen;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+class HeaderElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    switch (this.state.screen) {
+      case "accounts":
+      case "settings":
+        this.classList = ["header header--overview"];
+        this.innerHTML = this.overviewHeader(
+          this.state.user.totalAsset,
+          this.state.walletConfig.fiat.symbol
+        );
+        break;
+      case "account":
+        this.classList = ["header header--account"];
+        this.innerHTML = this.accountHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "accounts");
+        this.headerLeading.render(this);
+        break;
+      default:
+        this.classList = ["header header--default"];
+        this.innerHTML = this.defaultHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "account");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
+  overviewHeader = (totalAsset, fiatSymbol) => {
+    const markup = `
+      <div class="header__title">Total Asset</div>
+      <div class="header__title-sub">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="user-total-balance">${totalAsset}</span>
+        <span class="currency-unit">${fiatSymbol}</span>
+      </div>
+    `;
+    return markup;
+  };
+  accountHeader = (state) => {
+    const account = state.account;
+    const fiat = state.walletConfig.fiat;
+    const markup = `
+    <div class="header__icon">
+      <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
+    </div>
+    <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
+    <div class="header__title">${account.balance}</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
-      <span class="user-total-balance">${totalAsset}</span>
-      <span class="currency-unit">${fiatSymbol}</span>
+      <span class="balance">${account.infiat}</span>
+      <span class="currency-unit">${fiat.symbol}</span>
     </div>
-  `;
-  return markup;
-};
+    `;
 
-const accountHeader = (state) => {
-  const account = state.account;
-  const fiat = state.walletConfig.fiat;
-  const markup = `
-  <div class="header__icon">
-    <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
-  </div>
-  <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
-  <div class="header__title">${account.balance}</div>
-  <div class="header__title-sub">
-    <span class="almost-equal-to">&#8776;</span>
-    <span class="balance">${account.infiat}</span>
-    <span class="currency-unit">${fiat.symbol}</span>
-  </div>
-  `;
-  const backButton = document.createElement("back-button");
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "accounts";
-  backButton.onClick = _state;
-  return [markup, backButton];
-};
-const defaultHeader = (state) => {
-  const { leadingHTML, screenTitle, actionHTML } = getHeaderInfo(state.screen);
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "account";
-  const markup = `
-      <div class="header__title">${screenTitle}</div>
-      <div class="header__action ${actionHTML ? "" : "disabled"}">${
-    actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
-  }</div>
-  `;
-  const backButton = document.createElement("back-button");
-  if (leadingHTML) backButton.icon = leadingHTML;
-  backButton.onClick = _state;
-  return [markup, backButton];
-};
+    return markup;
+  };
+  defaultHeader = (state) => {
+    const { screenTitle, actionHTML } = getHeaderInfo(state.screen);
+    const _state = JSON.parse(JSON.stringify(state));
+    _state.screen = "account";
+    const markup = `
+        <div class="header__title">${screenTitle}</div>
+        <div class="header__action ${actionHTML ? "" : "disabled"}">${
+      actionHTML ? actionHTML : '<i class="fas fa-ellipsis-h"></i>'
+    }</div>
+    `;
+    return markup;
+  };
+}
 
-const header = (state) => {
-  const header = document.createElement("header");
-  let markup, backButton;
-  switch (state.screen) {
-    case "accounts":
-    case "settings":
-      header.classList = ["header header--overview"];
-      markup = overviewHeader(
-        state.user.totalAsset,
-        state.walletConfig.fiat.symbol
-      );
-      break;
-    case "account":
-      header.classList = ["header header--account"];
-      // markup = accountHeader(state.account, state.walletConfig.fiat);
-      [markup, backButton] = accountHeader(state);
-      header.insertAdjacentElement("afterbegin", backButton);
-      break;
-    default:
-      header.classList = ["header header--default"];
-      [markup, backButton] = defaultHeader(state);
-      header.insertAdjacentElement("afterbegin", backButton);
+customElements.define("header-widget", HeaderElement);
+
+class Header {
+  constructor(state) {
+    this.element = document.createElement("header-widget");
+    this.element.state = JSON.parse(JSON.stringify(state));
   }
-  header.insertAdjacentHTML("beforeend", markup);
-  return header;
-};
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Header);
 
 
 /***/ }),
@@ -6277,65 +6736,86 @@ const header = (state) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Scaffold)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 // https://developers.google.com/web/fundamentals/web-components/customelements
-class Scaffold extends HTMLElement {
+class ScaffoldElement extends HTMLElement {
   // Can define constructor arguments if you wish.
   constructor() {
     // If you define a constructor, always call super() first!
     // This is specific to CE and required by the spec.
     super();
   }
-
   connectedCallback() {
-    // create an element with some default HTML:
-    this.innerHTML = `<main></main>`;
     this.className = "scaffold";
-  }
-
-  /**
-   * @param {HTMLElement} element
-   */
-  set header(element) {
-    this.insertAdjacentElement("afterbegin", element);
-  }
-
-  /**
-   * @param {HTMLElement} element or
-   * @param {HTMLElement} [element]
-   */
-  set body(element) {
-    if (Array.isArray(element)) {
-      element.forEach((element) =>
-        this.childNodes[1].insertAdjacentElement("beforeend", element)
-      );
-    } else {
-      this.childNodes[1].insertAdjacentElement("beforeend", element);
+    // create an element with some default HTML:
+    this.innerHTML = `
+    <header></header>
+    <main></main>
+    <footer></footer>
+    `;
+    if (this.header) this.header.render(this.children[0]);
+    if (this.body) {
+      if (Array.isArray(this.body)) {
+        this.body.forEach((element) => element.render(this.children[1]));
+      } else {
+        this.body.render(this.children[1]);
+      }
     }
+    if (this.footer) this.footer.render(this.children[2]);
   }
-
-  get body() {
-    return this.children[1];
+  updateHeader(newHeader) {
+    this.header = newHeader;
+    this.children[0].replaceChild();
+    this.header.render(this.children[0]);
   }
-
-  /**
-   * @param {HTMLElement} element
-   */
-  set bottomNavigator(element) {
-    this.insertAdjacentElement("beforeend", element);
+  updateBody(newBody) {
+    this.body = newBody;
+    this.children[1].replaceChild();
+    this.body.render(this.children[1]);
+  }
+  updateFooter(newFooter) {
+    this.footer = newFooter;
+    this.children[2].replaceChild();
+    this.footer.render(this.children[2]);
   }
 }
 
-// module.exports.Scaffold;
+customElements.define("scaffold-widget", ScaffoldElement);
+
+class Scaffold {
+  constructor(header, body, footer) {
+    this.element = document.createElement("scaffold-widget");
+    this.element.header = header;
+    this.element.body = body;
+    this.element.footer = footer;
+    document.body.replaceChildren();
+    document.body.insertAdjacentElement("afterbegin", this.element);
+  }
+  // render(parentElement) {
+  //   parentElement.replaceChildren();
+  //   parentElement.insertAdjacentElement("afterbegin", this.element);
+  // }
+  // updateHeader(newHeader) {
+  //   this.element.updateHeader(newHeader);
+  // }
+  // updateBody(newBody) {
+  //   this.element.updateBody(newBody);
+  // }
+  // updateFooter(newFooter) {
+  //   this.element.updateFooter(newFooter);
+  // }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Scaffold);
 
 
 /***/ }),
 
-/***/ "./src/javascript/layout/tar-bar.js":
-/*!******************************************!*\
-  !*** ./src/javascript/layout/tar-bar.js ***!
-  \******************************************/
+/***/ "./src/javascript/layout/setting_list.js":
+/*!***********************************************!*\
+  !*** ./src/javascript/layout/setting_list.js ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6343,64 +6823,123 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-class TabBarElement extends HTMLElement {
+/* harmony import */ var _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/setting_column */ "./src/javascript/widget/setting_column.js");
+
+
+const getSettings = (state) => [
+  {
+    title: "Security center",
+    items: [
+      {
+        name: "Reset Wallet",
+        onPressed: () => {
+          console.log("Reset Wallet Request");
+        },
+      },
+    ],
+  },
+  {
+    title: "General settings",
+    items: [
+      {
+        name: "Fiat currency unit",
+        label: state.walletConfig.fiat.symbol,
+        onPressed: () => {
+          console.log("Popup options of fiat currency");
+        },
+      },
+    ],
+  },
+  {
+    title: "About",
+    items: [
+      {
+        name: "Suggestions and feedback",
+        onPressed: () => {
+          console.log("Getting Complain");
+        },
+      },
+      {
+        name: "Terms of Service and Security policy",
+        onPressed: () => {
+          console.log("Ah!");
+        },
+      },
+    ],
+  },
+];
+class SettingListElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", this.onFocus);
-  }
-  onFocus(e) {
-    Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
-      el.removeAttribute("focus")
-    );
-    console.log(e.target);
-    if (e.target.className === "button") e.target.setAttribute("focus", "");
-    else e.target.parentElement.setAttribute("focus", "");
   }
   connectedCallback() {
-    this.className = "tab-bar";
+    this.className = "setting";
+    this.innerHTML = `
+    <div class="setting__list"></div>
+    <div class="setting__text">${this.state.walletConfig.version}</div>
+    `;
+    this.settings.forEach((setting) => setting.render(this.children[0]));
   }
-  disconnectedCallback() {
-    this.removeEventListener("click", this.onFocus);
-  }
-  get focus() {
-    return Array.from(document.querySelectorAll("tab-bar > *")).findIndex(
-      (el) => el.hasAttribute("focus")
+}
+
+customElements.define("setting-list", SettingListElement);
+class SettingList {
+  constructor(state) {
+    this.element = document.createElement("setting-list");
+    const settings = getSettings(state);
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.settings = settings.map(
+      (setting) => new _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
     );
   }
-  set focus(val) {
-    if (val) {
-      document
-        .querySelectorAll("tab-bar > *")
-        [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
-          "focus",
-          ""
-        );
-    }
-  }
-}
-customElements.define("tab-bar", TabBarElement);
-
-class TabBar {
-  constructor(children, defaultFocus) {
-    this.children = children;
-    this.focus = defaultFocus;
-  }
   render(parentElement) {
-    this.element = document.createElement("tab-bar");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    if (Array.isArray(this.children)) {
-      this.children.forEach((child) => child.render(this.element));
-    }
-    if (this.focus) {
-      this.element.focus = this.focus;
-    }
-  }
-  get selected(){
-    return this.element.focus;
   }
 }
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBar);
 
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/tab_bar_navigator.js":
+/*!****************************************************!*\
+  !*** ./src/javascript/layout/tab_bar_navigator.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
+
+
+
+class TarBarNavigator {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+    this.tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.map((item) => {
+      const state = JSON.parse(JSON.stringify(this.state));
+      state.screen = item.screen;
+      return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), (state) =>
+        (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
+      );
+    });
+  }
+  render(parentElement, position) {
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.tabBarItems);
+    this.tabBar.render(parentElement, position);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TarBarNavigator);
 
 /***/ }),
 
@@ -6531,33 +7070,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
-/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
-/* harmony import */ var _widget_bill_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/bill_list */ "./src/javascript/widget/bill_list.js");
-/* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
+/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
 
 
 
 
-
-
-
-
-
-
-
-// ++ let assetDetail = ui.getAssetDetail({ assetID });
+// -- test
 
 const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
   return [
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
       amount: 0.1,
       fee: 0.000021,
@@ -6569,7 +7099,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 0,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
       amount: 0.1,
       fee: 0.000021,
@@ -6581,7 +7111,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 1,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
       amount: 0.1,
       fee: 0.000021,
@@ -6593,7 +7123,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 4,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
       amount: 1,
       fee: 0.000021,
@@ -6605,7 +7135,7 @@ const getAssetDetail = (assetId) => {
       confirmations: 2160,
     },
     {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_7__.randomHex)(32),
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
       txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
       amount: 3,
       fee: 0.000021,
@@ -6619,19 +7149,13 @@ const getAssetDetail = (assetId) => {
   ];
 };
 
-const account = (scaffold, state) => {
+const account = (state, callback) => {
+  // ++ let assetDetail = ui.getAssetDetail({ assetID });
   const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-  const tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_1__.default.map((item) => {
-    const _state = JSON.parse(JSON.stringify(state));
-    _state.screen = item.screen;
-    return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_5__.default(_state, item.title, item.title.toLowerCase(), (val) =>
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_6__.default)(val)
-    );
-  });
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_2__.default)(state);
-  const tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_3__.default(tabBarItems);
-  tabBar.render(scaffold.body);
-  scaffold.body = [(0,_widget_bill_list__WEBPACK_IMPORTED_MODULE_4__.default)(state, bills)];
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  const tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__.default(state);
+  const billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(state, bills);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(header, [tarBarNavigator, billList]);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
@@ -6650,79 +7174,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
 
 
 
 
 
-class Address extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "address";
-    this.innerHTML = `
-        <div class="address__header">Receiving address</div>
-        <div class="address__subtitle">We automatically generate a new address for you after every transaction you
-          receive
-          to protect your privacy, so that would be not easy to track your entire payment history.</div>
-        <div class="address__qrcode"><canvas></canvas></div>
-        <div class="address__text"></div>
-        <div class="address__button"></div>
-        `;
-  }
-  /**
-   * ETH || BTC
-   */
-  set coinbase(val) {
-    this.setAttribute(val, "");
-  }
-  set address(address) {
-    qrcode__WEBPACK_IMPORTED_MODULE_2__.toCanvas(
-      this.children[2].children[0],
-      address,
-      {
-        version: "auto",
-        errorCorrectionLevel: "high",
-        color: {
-          light: "#fff",
-          dark: "#000",
-        },
-        toSJISFunc: qrcode__WEBPACK_IMPORTED_MODULE_2__.toSJIS,
-      },
-      (error) => {
-        if (error) console.error(error);
-        console.log("success!");
-      }
-    );
-    this.children[3].textContent = address;
-    const button = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("Copy Wallet Address", () => {}, {
-      style: ["round", "outline"],
-      suffix: "copy",
-      popup: async () => {
-        console.log("popup");
-        // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-        const [err, _] = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.to)(navigator.clipboard.writeText(address));
-        return err ? "Error!" : "Copy";
-      },
-    });
-    button.render(this.children[4]);
-  }
-}
 
-customElements.define("address-content", Address);
-
-const address = (scaffold, state) => {
-  let _address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; //ui.getReceiveAddress({ accountID });
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
-  const addressContent = document.createElement("address-content");
-  scaffold.body = addressContent;
-  addressContent.coinbase = state.account.symbol;
-  addressContent.address = _address;
+const address = (state, callback) => {
+  // ++ ui.getReceiveAddress({ accountID });
+  const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_2__.default(state, address);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, addressContent);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
@@ -6741,96 +7207,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bill_content */ "./src/javascript/layout/bill_content.js");
 
 
 
-class Bill extends HTMLElement {
-  constructor() {
-    super();
-    this.markup = () => `
-        <div class="bill__header">
-            <span class="bill__sign">${this.bill.sign}</span>
-            <span class="bill__amount">${this.bill.amount}</span>
-            <span class="bill__unit">${this.account.symbol}</span>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Status</div>
-            <div class="bill__content">
-                <span class="bill__status">${this.bill.status}</span>
-                <span class="bill__status bill__confirmations">(${
-                  this.bill.confirmations
-                } confirmation)</span>
-                <span class="bill__status-icon"></span>
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Time</div>
-            <div class="bill__content">
-                (${this.bill.dateTime})
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">${this.bill.direction}</div>
-            <div class="bill__content">
-            ${this.bill.address}
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Fee</div>
-            <div class="bill__content">
-                <span class="bill__fee">${this.bill.fee}</span>
-                <span class="bill__unit">${this.account.symbol}</span>
-            </div>
-        </div>
-        <div class="bill__cell">
-            <div class="bill__title">Transaction Id</div>
-            <div class="bill__content">
-                <span class="bill__asset-icon"><img src=${
-                  this.account.image
-                } alt="ETH"></span>
-                <span class="bill__id"><a target="_blank" href=https://${
-                  this.account.network
-                }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(
-      this.bill.txid
-    )}</a></span>
-            </div>
-        </div>
-    `;
-  }
-  connectedCallback() {
-    this.className = "bill";
-  }
-  set action(val) {
-    this.setAttribute(val, "");
-  }
-  set status(val) {
-    if (this.hasAttribute(val))return;
-    if (this.hasAttribute("pending")) this.removeAttribute("pending");
-    if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
-    if (this.hasAttribute("complete")) this.removeAttribute("complete");
-    this.setAttribute(val, "");
-  }
-  set child(data) {
-    this.bill = data.bill;
-    this.account = data.account;
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.status = this.bill.status.toLowerCase();
-    this.action = this.bill.action.toLowerCase();
-  }
-}
 
-customElements.define("bill-content", Bill);
-
-const bill = (scaffold, state) => {
-  const billContent = document.createElement("bill-content");
-  billContent.child = {
-    bill: state.bill,
-    account: state.account,
-  };
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-  scaffold.body = billContent;
+const bill = (state) => {
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, billContent);
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bill);
@@ -6849,28 +7236,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
-/* harmony import */ var _widget_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/account_list */ "./src/javascript/widget/account_list.js");
-/* harmony import */ var _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/setting_list */ "./src/javascript/widget/setting_list.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
+/* harmony import */ var _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/setting_list */ "./src/javascript/layout/setting_list.js");
+/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
 
 
 
 
 
-const overview = (scaffold, state) => {
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-  scaffold.bottomNavigator = (0,_layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+
+const overview = (state) => {
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const bottomNavigator = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(state);
   switch (state.screen) {
     case "accounts":
-      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      bottomNavigator.focus = 0;
+      const accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
+      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, accountList, bottomNavigator);
       break;
     case "settings":
-      const settingList = new _widget_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
-      settingList.render(scaffold.body);
+      bottomNavigator.focus = 1;
+      const settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
+      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, settingList, bottomNavigator);
       break;
     default:
-      scaffold.body = (0,_widget_account_list__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
   }
 };
@@ -6891,8 +7282,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_form__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/form */ "./src/javascript/widget/form.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
 
 
 
@@ -6903,10 +7295,10 @@ __webpack_require__.r(__webpack_exports__);
  * ui.sendTransaction(transaction);
  */
 
-const transaction = (scaffold, state) => {
-  scaffold.header = (0,_layout_header__WEBPACK_IMPORTED_MODULE_1__.default)(state);
-  const form = new _widget_form__WEBPACK_IMPORTED_MODULE_0__.default(state);
-  form.render( scaffold.body);
+const transaction = (state) => {
+  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
+  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, form);
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');
@@ -7062,46 +7454,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
 
 
 
 
 
-
-
-customElements.define("scaffold-widget", _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default);
-
-const setup = () => {
-  document.body.replaceChildren();
-  const root = document.createElement("scaffold-widget");
-  document.body.insertAdjacentElement("afterbegin", root);
-  return root;
-};
 
 const route = (state) => {
-  const root = setup();
   switch (state.screen) {
     case "accounts":
     case "settings":
-      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(root, state);
+      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(state);
       break;
     case "account":
-      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(root, state);
+      (0,_screen_account__WEBPACK_IMPORTED_MODULE_1__.default)(state);
       break;
     case "transaction":
-      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(root, state);
+      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
     case "address":
-      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(root, state);
+      (0,_screen_address__WEBPACK_IMPORTED_MODULE_3__.default)(state);
       break;
     case "bill":
-      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(root, state);
+      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_4__.default)(state);
       break;
   }
 };
@@ -7214,21 +7594,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 
-class AccountItem extends HTMLElement {
+class AccountItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.markup = () => `
-    <div class="account-item__icon">
-        <img src=${this.account.image} alt=${this.account.symbol.toUpperCase()}>
-    </div>
-    <div class="account-item__symbol">${this.account.symbol.toUpperCase()}</div>
-    <div class="account-item__balance">${this.account.balance}</div>
-    <div class="account-item__to-currency">
-        <span class="almost-equal-to">&#8776;</span>
-        <span class="balance">${this.account.infiat}</span>
-        <span class="currency-unit">${this.fiat.symbol}</span>
-    </div>
-      `;
     this.addEventListener("click", (_) => {
       if (this.account) {
         this.state.account = this.account;
@@ -7241,6 +7609,33 @@ class AccountItem extends HTMLElement {
   }
   connectedCallback() {
     this.className = "account-item";
+    this.innerHTML = `
+    <div class="account-item__icon"></div>
+    <div class="account-item__symbol"></div>
+    <div class="account-item__balance"></div>
+    <div class="account-item__to-currency">
+        <span class="almost-equal-to">&#8776;</span>
+        <span class="balance"></span>
+        <span class="currency-unit"></span>
+    </div>
+    `;
+    this.exchange();
+    this.publish = this.state.account.publish;
+    this.children[0].insertAdjacentHTML(
+      "afterbegin",
+      `<img src=${
+        this.state.account.image
+      } alt=${this.state.account.symbol.toUpperCase()}>`
+    );
+    this.children[1].textContent = this.state.account.symbol.toUpperCase();
+    this.children[2].textContent = this.state.account.balance;
+    this.children[3].children[1].textContent = this.state.account.infiat;
+    this.children[3].children[2].textContent =
+      this.state.walletConfig.fiat.symbol;
+    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   get publish() {
     return this.hasAttribute("publish");
@@ -7253,59 +7648,28 @@ class AccountItem extends HTMLElement {
     }
   }
   exchange() {
-    if (this.fiat) {
-      this.account.infiat = this.account.inUSD / this.fiat.inUSD;
+    if (this.state.walletConfig.fiat) {
+      this.state.account.infiat =
+        this.state.account.inUSD / this.state.walletConfig.fiat.inUSD;
       return;
     }
     return;
   }
-  set child(data) {
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.account = JSON.parse(JSON.stringify(data.account));
-    this.fiat = this.state.walletConfig.fiat;
-    this.exchange();
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.publish = this.account.publish;
-    this.id = this.account.id;
+}
+
+customElements.define("account-item", AccountItemElement);
+class AccountItem {
+  constructor(state) {
+    this.id = state.account.id;
+    this.element = document.createElement("account-item");
+    this.element.state = state;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountItem);
-
-
-/***/ }),
-
-/***/ "./src/javascript/widget/account_list.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/widget/account_list.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./account_item */ "./src/javascript/widget/account_item.js");
-
-
-customElements.define("account-item", _account_item__WEBPACK_IMPORTED_MODULE_0__.default);
-
-const accountList = (state) => {
-  const accountList = document.createElement("div");
-  accountList.className = "account-list";
-  state.user.accounts.forEach((account) => {
-    const accountItem = document.createElement("account-item");
-    accountItem.child = {
-      state: state,
-      account: account,
-    };
-    accountList.insertAdjacentElement("beforeend", accountItem);
-  });
-  return accountList;
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (accountList);
 
 
 /***/ }),
@@ -7326,10 +7690,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class BillItem extends HTMLElement {
+class BillItemElement extends HTMLElement {
   constructor() {
     super();
-    this.markup = () => `
+  }
+  connectedCallback() {
+    this.classList = ["bill-item"];
+    this.innerHTML = `
     <div class="bill-item__main">
         <div class="bill-item__icon"></div>
         <div class="bill-item__title">
@@ -7343,7 +7710,7 @@ class BillItem extends HTMLElement {
         </div>
         <div class="bill-item__suffix">
             <div class="bill-item__amount">${this.bill.formattedAmount(
-              this.account
+              this.state.account
             )}</div>
             <div class="bill-item__time">${this.bill.dateTime}</div>
         </div>
@@ -7354,22 +7721,19 @@ class BillItem extends HTMLElement {
           this.bill.progress
         }"></span></div>
     </div>
-        `;
-    this.addEventListener("click", () => {
-      // let transactionDetail = ui.getTransactionDetail({ transactionID });
-      this.state.screen = "bill";
-      this.state.bill = this.bill;
-      (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
-    });
+    `;
+    this.status = this.bill.status.toLowerCase();
+    this.action = this.bill.action.toLowerCase();
+    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
-  connectedCallback() {
-    this.classList = ["bill-item"];
+  disconnectedCallback() {
+    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   static get observedAttributes() {
     return ["pending", "confirming", "complete"];
   }
   set status(val) {
-    if (this.hasAttribute(val))return;
+    if (this.hasAttribute(val)) return;
     if (this.hasAttribute("pending")) this.removeAttribute("pending");
     if (this.hasAttribute("confirming")) this.removeAttribute("confirming");
     if (this.hasAttribute("complete")) this.removeAttribute("complete");
@@ -7378,25 +7742,28 @@ class BillItem extends HTMLElement {
   set action(val) {
     this.setAttribute(val, "");
   }
-  set child(data) {
-    this.state = JSON.parse(JSON.stringify(data.state));
-    this.bill = data.bill;
-    this.account = this.state.account;
-    this.insertAdjacentHTML("afterbegin", this.markup());
-    this.status = this.bill.status.toLowerCase();
-    this.action = this.bill.action.toLowerCase();
-  }
 }
 
+customElements.define("bill-item", BillItemElement);
+class BillItem {
+  constructor(state) {
+    this.element = document.createElement("bill-item");
+    this.element.state = state;
+    this.element.bill = state.bill;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillItem);
 
 
 /***/ }),
 
-/***/ "./src/javascript/widget/bill_list.js":
-/*!********************************************!*\
-  !*** ./src/javascript/widget/bill_list.js ***!
-  \********************************************/
+/***/ "./src/javascript/widget/bottom_navigator_item.js":
+/*!********************************************************!*\
+  !*** ./src/javascript/widget/bottom_navigator_item.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7404,26 +7771,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bill_item */ "./src/javascript/widget/bill_item.js");
+class BottomNavigatorItemElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "bottom-navigator__button";
+    this.innerHTML = `
+        <div class="bottom-navigator__icon"><i class="fas fa-${this.icon}"></i></div>
+    `;
+    this.addEventListener("click", () => this.onPressed(this.state));
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", () => this.onPressed(this.state));
+  }
+}
 
+customElements.define("bottom-navigator-item", BottomNavigatorItemElement);
 
-customElements.define("bill-item", _bill_item__WEBPACK_IMPORTED_MODULE_0__.default);
-
-const billList = (state, bills) => {
-  const billList = document.createElement("div");
-  billList.className = "bill-list";
-  bills.forEach((bill) => {
-    const billItem = document.createElement("bill-item");
-    billItem.child = {
-      state,
-      bill,
-    };
-    billList.insertAdjacentElement("beforeend", billItem);
-  });
-  return billList;
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (billList);
+class BottomNavigatorItem {
+  constructor(state, item, onPressed) {
+    this.element = document.createElement("bottom-navigator-item");
+    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.onPressed = onPressed;
+    this.element.icon = item.icon;
+    this.element.state.screen = item.screen;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigatorItem);
 
 
 /***/ }),
@@ -7442,8 +7820,23 @@ __webpack_require__.r(__webpack_exports__);
 class ButtonElement extends HTMLElement {
   constructor() {
     super();
+  }
+  connectedCallback() {
+    this.className = "button";
+    this.innerHTML = `
+        <div class="button__icon--leading button__icon"></div>
+        <div class="button__text"></div>
+        <div class="button__icon--suffix button__icon"></div>
+        <span class="button__popup"></span>
+        `;
     this.hasPopup = false;
     this.addEventListener("click", async (e) => {
+      this.onPressed();
+      this.handlePopup();
+    });
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
     });
@@ -7459,21 +7852,6 @@ class ButtonElement extends HTMLElement {
       }, 400);
     }
   };
-  connectedCallback() {
-    this.className = "button";
-    this.innerHTML = `
-        <div class="button__icon--leading button__icon"></div>
-        <div class="button__text"></div>
-        <div class="button__icon--suffix button__icon"></div>
-        <span class="button__popup"></span>
-        `;
-  }
-  disconnectedCallback() {
-    this.removeEventListener("click", async (e) => {
-      this.action();
-      this.handlePopup();
-    });
-  }
   set style(val) {
     if (Array.isArray(val)) {
       val.forEach((v) => this.setAttribute(v, ""));
@@ -7524,186 +7902,6 @@ class Button {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
-
-
-/***/ }),
-
-/***/ "./src/javascript/widget/form.js":
-/*!***************************************!*\
-  !*** ./src/javascript/widget/form.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/tar-bar */ "./src/javascript/layout/tar-bar.js");
-/* harmony import */ var _input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./input */ "./src/javascript/widget/input.js");
-/* harmony import */ var _button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./button */ "./src/javascript/widget/button.js");
-
-
-
-class FormElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  disconnectedCallback() {
-    if (this.toggle) {
-      this.toggleButton.removeEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    }
-  }
-  connectedCallback() {
-    this.className = "form";
-    this.addressInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "text",
-      label: "Send to",
-      errorMessage: "Invalid Address",
-      validation: (value) => {
-        return value.startsWith("0x");
-      },
-      action: {
-        icon: "qrcode",
-        onPressed: () => {
-          console.log("action on pressed!");
-        },
-      },
-    });
-    this.amountInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Amount",
-      errorMessage: "Invalid Amount",
-      validation: (value) => {
-        return parseFloat(value) > 0;
-      },
-      pattern: `\d*.?\d*`,
-    });
-    this.gasPriceInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
-      pattern: `\d*.?\d*`,
-    });
-    this.gasInput = new _input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Custom Gas (unit)",
-      pattern: `\d*`,
-    });
-    this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new _button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
-    );
-    this.tabBar = new _layout_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
-    this.action = new _button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
-    this.innerHTML = `
-    <div class="form__input"></div>
-    <p class="form__secondary-text form__align-end">
-      <span>Balance:</span>
-      <span class="account-balance"></span>
-    </p>
-    <p class="form__primary-text form__align-start">Transaction Fee</p>
-    <p class="form__secondary-text form__align-start estimate-time">
-        <span>Processing time</span>
-        <span></span>
-    </p>
-    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
-    <div class="form__toggle-content"></div>
-    <p class="form__column">
-      <span class="form__tertiary-text">Estimated:</span>
-      <span class="form__secondary-text estimate-fee">loading...</span>
-    </p>
-    <div class="form__toggle">
-      <div class="form__toggle-controller">
-        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
-        <div class="form__toggle-button">
-          <input type="checkbox" name="toggle-button" id="toggle-button">
-          <label for="toggle-button"></label>
-        </div>
-      </div>
-    </div>
-    <div class="form__button"></div>
-    `;
-    this.addressInput.render(this.children[0]);
-    this.amountInput.render(this.children[0]);
-    this.tabBar.render(this.children[5]);
-    this.estimateTime = "10 ~ 30 minutes";
-    this.availableAmount = this.state.account;
-    this.action.render(this.children[8]);
-    if (this.state.account.symbol === "ETH") {
-      // -- test
-      this.toggle = true;
-      this.toggleButton = document.querySelector(
-        ".form input[type='checkbox']"
-      );
-      this.toggleButton.addEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    } else {
-      this.toggle = false;
-    }
-  }
-  /**
-   *
-   * @param {Boolean} val
-   *
-   */
-  handleToggle(toggleContent) {
-    toggleContent.replaceChildren();
-    if (this.toggleButton.checked) {
-      this.gasPriceInput.render(toggleContent);
-      this.gasInput.render(toggleContent);
-      this.setAttribute("on", "");
-    } else {
-      this.tabBar.render(toggleContent);
-      this.removeAttribute("on");
-    }
-  }
-  set availableAmount(account) {
-    this.children[1].children[1].textContent =
-      account.balance + " " + account.symbol;
-  }
-  set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + account.symbol;
-  }
-  set estimateTime(time) {
-    this.children[3].children[1].textContent = time;
-  }
-  /**
-   * @param {Array<Object>} HTMLElement
-   */
-  get toggleContent() {
-    return this.children[5];
-  }
-  set onSubmit(element) {
-    element.render(this.lastElementChild);
-  }
-  /**
-   * @param {Boolean} val
-   */
-  set toggle(val) {
-    if (val) {
-      this.removeAttribute("disabled-toggle");
-    } else {
-      this.setAttribute("disabled-toggle", "");
-    }
-  }
-}
-
-customElements.define("transaction-form", FormElement);
-
-class Form {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
-  }
-  render(parentElement) {
-    this.element = document.createElement("transaction-form");
-    this.element.state = this.state;
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
 
 
 /***/ }),
@@ -7961,96 +8159,6 @@ class SettingColumn {
 
 /***/ }),
 
-/***/ "./src/javascript/widget/setting_list.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/widget/setting_list.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./setting_column */ "./src/javascript/widget/setting_column.js");
-
-
-const getSettings = (state) => [
-  {
-    title: "Security center",
-    items: [
-      {
-        name: "Reset Wallet",
-        onPressed: () => {
-          console.log("Reset Wallet Request");
-        },
-      },
-    ],
-  },
-  {
-    title: "General settings",
-    items: [
-      {
-        name: "Fiat currency unit",
-        label: state.walletConfig.fiat.symbol,
-        onPressed: () => {
-          console.log("Popup options of fiat currency");
-        },
-      },
-    ],
-  },
-  {
-    title: "About",
-    items: [
-      {
-        name: "Suggestions and feedback",
-        onPressed: () => {
-          console.log("Getting Complain");
-        },
-      },
-      {
-        name: "Terms of Service and Security policy",
-        onPressed: () => {
-          console.log("Ah!");
-        },
-      },
-    ],
-  },
-];
-class SettingListElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "setting";
-    this.innerHTML = `
-    <div class="setting__list"></div>
-    <div class="setting__text">${this.state.walletConfig.version}</div>
-    `;
-    this.settings.forEach((setting) => setting.render(this.children[0]));
-  }
-}
-
-customElements.define("setting-list", SettingListElement);
-class SettingList {
-  constructor(state) {
-    this.element = document.createElement("setting-list");
-    const settings = getSettings(state);
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.settings = settings.map(
-      (setting) => new _setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
-    );
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingList);
-
-
-/***/ }),
-
 /***/ "./src/javascript/widget/tab_bar_item.js":
 /*!***********************************************!*\
   !*** ./src/javascript/widget/tab_bar_item.js ***!
@@ -8065,7 +8173,6 @@ __webpack_require__.r(__webpack_exports__);
 class TabBarItemElement extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("click", () => this.onPressed(this.state));
   }
   connectedCallback() {
     this.className = "tab-bar__button";
@@ -8073,37 +8180,99 @@ class TabBarItemElement extends HTMLElement {
         <div class="tab-bar__icon"></div>
         <div class="tab-bar__text"></div>
     `;
+    this.setAttribute(this.action, "");
+    this.children[1].textContent = this.text;
+    this.addEventListener("click", () => this.onPressed(this.state));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", this.onPressed);
-  }
-  set action(val) {
-    this.setAttribute(val, "");
-  }
-  set text(title) {
-    this.children[1].textContent = title;
+    this.removeEventListener("click", () => this.onPressed(this.state));
   }
 }
 customElements.define("tab-bar-item", TabBarItemElement);
 
 class TabBarItem {
   constructor(state, title, type, onPressed) {
-    this.state = state;
-    this.text = title;
-    this.action = type;
-    this.onPressed = onPressed;
+    this.element = document.createElement("tab-bar-item");
+    this.element.state = state;
+    this.element.text = title;
+    this.element.action = type;
+    this.element.onPressed = onPressed;
   }
   render(parentElement) {
-    this.element = document.createElement("tab-bar-item");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.state = this.state;
-    this.element.text = this.text;
-    this.element.action = this.action;
-    this.element.onPressed = this.onPressed;
   }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBarItem);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/tar-bar.js":
+/*!******************************************!*\
+  !*** ./src/javascript/widget/tar-bar.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class TabBarElement extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", this.onFocus);
+  }
+  onFocus(e) {
+    Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
+      el.removeAttribute("focus")
+    );
+    if (e.target.className === "button") e.target.setAttribute("focus", "");
+    else e.target.parentElement.setAttribute("focus", "");
+  }
+  connectedCallback() {
+    this.className = "tab-bar";
+  }
+  disconnectedCallback() {
+    this.removeEventListener("click", this.onFocus);
+  }
+  get focus() {
+    return Array.from(document.querySelectorAll("tab-bar > *")).findIndex(
+      (el) => el.hasAttribute("focus")
+    );
+  }
+  set focus(val) {
+    if (val !== undefined) {
+      document
+        .querySelectorAll("tab-bar > *")
+        [Number.isInteger(val) ? val : this.childElementCount - 2].setAttribute(
+          "focus",
+          ""
+        );
+    }
+  }
+}
+customElements.define("tab-bar", TabBarElement);
+
+class TabBar {
+  constructor(children, defaultFocus) {
+    this.children = children;
+    this.focus = defaultFocus;
+  }
+  render(parentElement, position) {
+    this.element = document.createElement("tab-bar");
+    parentElement.insertAdjacentElement(position || "beforeend", this.element);
+    if (Array.isArray(this.children)) {
+      this.children.forEach((child) => child.render(this.element));
+    }
+    this.element.focus = this.focus;
+  }
+  get selected() {
+    return this.element.focus;
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabBar);
 
 
 /***/ }),
@@ -8205,7 +8374,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("9d0b9a0017fdcfd61165")
+/******/ 		__webpack_require__.h = () => ("27e9bd13717e247ab403")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

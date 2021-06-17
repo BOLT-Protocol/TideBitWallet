@@ -1,6 +1,6 @@
-import Form from "../widget/form";
-import header from "../layout/header";
-
+import Scaffold from "../layout/scaffold";
+import Header from "../layout/header";
+import Form from "../layout/form";
 
 /**
  * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
@@ -8,10 +8,10 @@ import header from "../layout/header";
  * ui.sendTransaction(transaction);
  */
 
-const transaction = (scaffold, state) => {
-  scaffold.header = header(state);
+const transaction = (state) => {
+  const header = new Header(state);
   const form = new Form(state);
-  form.render( scaffold.body);
+  new Scaffold(header, form);
   /**
    * getEstimateTime().then((timeString) => {
    *    const estimateTimeEl = document.querySelector('.estimate-time');

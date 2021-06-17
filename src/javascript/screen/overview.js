@@ -1,21 +1,24 @@
-import header from "../layout/header";
-import bottomNavigator from "../layout/bottom_navigator";
-import accountList from "../widget/account_list";
-import SettingList from "../widget/setting_list";
+import Scaffold from "../layout/scaffold";
+import Header from "../layout/header";
+import AccountList from "../layout/account_list";
+import SettingList from "../layout/setting_list";
+import BottomNavigator from "../layout/bottom_navigator";
 
-const overview = (scaffold, state) => {
-  scaffold.header = header(state);
-  scaffold.bottomNavigator = bottomNavigator(state);
+const overview = (state) => {
+  const header = new Header(state);
+  const bottomNavigator = new BottomNavigator(state);
   switch (state.screen) {
     case "accounts":
-      scaffold.body = accountList(state);
+      bottomNavigator.focus = 0;
+      const accountList = new AccountList(state);
+      new Scaffold(header, accountList, bottomNavigator);
       break;
     case "settings":
+      bottomNavigator.focus = 1;
       const settingList = new SettingList(state);
-      settingList.render(scaffold.body);
+      new Scaffold(header, settingList, bottomNavigator);
       break;
     default:
-      scaffold.body = accountList(state);
       break;
   }
 };
