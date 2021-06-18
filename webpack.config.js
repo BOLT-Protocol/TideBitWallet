@@ -43,23 +43,6 @@ const frontend = {
           },
         ],
       },
-      {
-        test: /\.svg$/,
-        loader: "svg-inline-loader",
-      },
-      // {
-      //   test: /\.svg$/i,
-      //   use: [
-      //     {
-      //       loader: "url-loader",
-      //       options: {
-      //         encoding: "utf8",
-      //         name: "image/[name].[ext]", // 修改生成路徑
-      //         publicPath: "../",
-      //       },
-      //     },
-      //   ],
-      // },
     ],
   },
   plugins: [
