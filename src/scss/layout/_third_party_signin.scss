@@ -1,0 +1,22 @@
+.third-party-signin {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-image: url("../image/welcome_bg.png");
+  background-position: center;
+  background-size: cover;
+  align-items: center;
+  //   justify-content: flex-end;
+  justify-content: center;
+
+  &__button {
+    width: 210px;
+    height: 40px;
+    background-color: $color-white;
+    // margin-bottom: 2rem;
+  }
+    &__button:not(:last-child){
+    margin-bottom: 2rem;
+    }
+}

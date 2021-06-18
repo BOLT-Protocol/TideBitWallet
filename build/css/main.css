@@ -345,6 +345,23 @@ body {
   .pop-over[confirm] .pop-over__button-box:not(:last-child) {
     border-right: 1px solid #eee; }
 
+.third-party-signin {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-image: url(../image/welcome_bg.png);
+  background-position: center;
+  background-size: cover;
+  align-items: center;
+  justify-content: center; }
+  .third-party-signin__button {
+    width: 210px;
+    height: 40px;
+    background-color: #fff; }
+  .third-party-signin__button:not(:last-child) {
+    margin-bottom: 2rem; }
+
 .bill {
   display: flex;
   flex-direction: column;

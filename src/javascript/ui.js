@@ -83,7 +83,7 @@ const startApp = () => {
     symbol: "USD",
     inUSD: 1,
   });
-  state.screen = "accounts";
+  state.screen = "landing";
   route(state);
 };
 

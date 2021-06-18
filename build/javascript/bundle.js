@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623978530393
+      // 1623980625066
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6983,6 +6983,45 @@ class TarBarNavigator {
 
 /***/ }),
 
+/***/ "./src/javascript/layout/third_party_signin_container.js":
+/*!***************************************************************!*\
+  !*** ./src/javascript/layout/third_party_signin_container.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class ThirdPartySigninContainerElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "third-party-signin";
+    this.innerHTML = `
+        <div id="googleid-signin" class="third-party-signin__button"></div>
+        <div id="appleid-signin" class="third-party-signin__button signin-button" data-color="black" data-border="true" data-type="sign-in"></div>
+        `;
+  }
+}
+
+customElements.define("third-party-signin", ThirdPartySigninContainerElement);
+class ThirdPartySigninContainer {
+  constructor() {
+    this.element = document.createElement("third-party-signin");
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ThirdPartySigninContainer);
+
+
+/***/ }),
+
 /***/ "./src/javascript/model/bill.js":
 /*!**************************************!*\
   !*** ./src/javascript/model/bill.js ***!
@@ -7265,6 +7304,30 @@ const bill = (state) => {
 
 /***/ }),
 
+/***/ "./src/javascript/screen/landing.js":
+/*!******************************************!*\
+  !*** ./src/javascript/screen/landing.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/javascript/layout/third_party_signin_container.js");
+
+
+
+const landing = () =>
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(undefined, new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(), undefined);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (landing);
+
+
+/***/ }),
+
 /***/ "./src/javascript/screen/overview.js":
 /*!*******************************************!*\
   !*** ./src/javascript/screen/overview.js ***!
@@ -7472,7 +7535,7 @@ const startApp = () => {
     symbol: "USD",
     inUSD: 1,
   });
-  state.screen = "accounts";
+  state.screen = "landing";
   (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 };
 
@@ -7494,11 +7557,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+
 
 
 
@@ -7507,21 +7572,24 @@ __webpack_require__.r(__webpack_exports__);
 
 const route = (state) => {
   switch (state.screen) {
+    case "landing":
+      (0,_screen_landing__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+      break;
     case "accounts":
     case "settings":
-      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(state);
       break;
     case "account":
-      (0,_screen_account__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
     case "transaction":
-      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(state);
       break;
     case "address":
-      (0,_screen_address__WEBPACK_IMPORTED_MODULE_3__.default)(state);
+      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(state);
       break;
     case "bill":
-      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_4__.default)(state);
+      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(state);
       break;
   }
 };
@@ -8552,7 +8620,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d4e61dc48cfa573592be")
+/******/ 		__webpack_require__.h = () => ("d68556d1e3b655bb8a66")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
