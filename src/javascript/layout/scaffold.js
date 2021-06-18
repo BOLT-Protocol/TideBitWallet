@@ -54,7 +54,7 @@ class Scaffold {
     this.element.body = body;
     this.element.footer = footer;
     document.body.replaceChildren();
-    document.body.insertAdjacentElement("afterbegin", this.element);
+    document.body.insertAdjacentElement("beforeend", this.element);
   }
   /**
    * @param {String only 4 type: "error", "success", "loading", "confirm"} type

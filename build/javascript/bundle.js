@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623980625066
+      // 1623989969114
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6795,7 +6795,7 @@ class Scaffold {
     this.element.body = body;
     this.element.footer = footer;
     document.body.replaceChildren();
-    document.body.insertAdjacentElement("afterbegin", this.element);
+    document.body.insertAdjacentElement("beforeend", this.element);
   }
   /**
    * @param {String only 4 type: "error", "success", "loading", "confirm"} type
@@ -7001,16 +7001,38 @@ class ThirdPartySigninContainerElement extends HTMLElement {
   connectedCallback() {
     this.className = "third-party-signin";
     this.innerHTML = `
-        <div id="googleid-signin" class="third-party-signin__button"></div>
-        <div id="appleid-signin" class="third-party-signin__button signin-button" data-color="black" data-border="true" data-type="sign-in"></div>
-        `;
+    <div class="third-party-signin__logo"></div>
+    <div class="third-party-signin__logo-text">${this.state.walletConfig.version}</div>
+    <div class="third-party-signin__action">
+        <div id="googleid-signin" class="third-party-signin__button">
+            <div class="third-party-signin__icon">
+                <img src='./image/btn_google_light_normal_ios.svg'/>
+            </div>
+            <div class="third-party-signin__text">Sign in with Google</div>
+        </div>
+        <div id="appleid-signin" class="third-party-signin__button signin-button" data-color="${this.colorMode}" data-border="true" data-type="sign-in"></div>
+    </div>
+    `;
+    this.googleSignInButton = this.children[2].children[0];
+    this.appleSignInButton = this.children[2].children[1];
+    this.googleSignInButton.addEventListener("click", this.googleSignin);
+    this.appleSignInButton.addEventListener("click", this.appleSignin);
+  }
+  disconnectedCallback(){
+    this.googleSignInButton.removeEventListener("click", this.googleSignin);
+    this.appleSignInButton.removeEventListener("click", this.appleSignin);
   }
 }
 
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
-  constructor() {
+  constructor(state, colorMode, googleSignin, appleSigin) {
+    this.state = JSON.parse(JSON.stringify(state));
     this.element = document.createElement("third-party-signin");
+    this.element.state = this.state;
+    this.element.googleSignin = googleSignin;
+    this.element.appleSigin = appleSigin;
+    this.element.colorMode = colorMode;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -7317,11 +7339,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/javascript/layout/third_party_signin_container.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
 
 
 
-const landing = () =>
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(undefined, new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(), undefined);
+
+const googleSignin = async (state) => {
+  // await;
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "accounts";
+  (0,_utils_route__WEBPACK_IMPORTED_MODULE_2__.default)(_state);
+};
+
+const landing = (state) =>
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
+    undefined,
+    new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(state, "white", () => googleSignin(state)),
+    undefined
+  );
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (landing);
 
@@ -8620,7 +8655,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d68556d1e3b655bb8a66")
+/******/ 		__webpack_require__.h = () => ("c4d0a4eb94670bfe9c20")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

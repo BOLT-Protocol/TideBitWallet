@@ -1,7 +1,19 @@
 import Scaffold from "../layout/scaffold";
 import ThirdPartySigninContainer from "../layout/third_party_signin_container";
+import route from "../utils/route";
 
-const landing = () =>
-  new Scaffold(undefined, new ThirdPartySigninContainer(), undefined);
+const googleSignin = async (state) => {
+  // await;
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "accounts";
+  route(_state);
+};
+
+const landing = (state) =>
+  new Scaffold(
+    undefined,
+    new ThirdPartySigninContainer(state, "white", () => googleSignin(state)),
+    undefined
+  );
 
 export default landing;
