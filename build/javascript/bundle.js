@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623892846231
+      // 1623978530393
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6738,6 +6738,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/pop_over */ "./src/javascript/widget/pop_over.js");
+
+
 // https://developers.google.com/web/fundamentals/web-components/customelements
 class ScaffoldElement extends HTMLElement {
   // Can define constructor arguments if you wish.
@@ -6763,20 +6766,22 @@ class ScaffoldElement extends HTMLElement {
       }
     }
     if (this.footer) this.footer.render(this.children[2]);
+    this.popover = new _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__.default();
+    this.insertAdjacentElement("beforeend", this.popover.element);
   }
   updateHeader(newHeader) {
     this.header = newHeader;
-    this.children[0].replaceChild();
+    this.children[0].replaceChildren();
     this.header.render(this.children[0]);
   }
   updateBody(newBody) {
     this.body = newBody;
-    this.children[1].replaceChild();
+    this.children[1].replaceChildren();
     this.body.render(this.children[1]);
   }
   updateFooter(newFooter) {
     this.footer = newFooter;
-    this.children[2].replaceChild();
+    this.children[2].replaceChildren();
     this.footer.render(this.children[2]);
   }
 }
@@ -6791,6 +6796,41 @@ class Scaffold {
     this.element.footer = footer;
     document.body.replaceChildren();
     document.body.insertAdjacentElement("afterbegin", this.element);
+  }
+  /**
+   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
+   * @param {String: show on the dialog} text
+   * @param {function} onConfirm
+   * @param {default true} cancellable
+   */
+  openPopover(type, text, onConfirm, cancellable = true) {
+    this.element.popover.open = true;
+    if (cancellable) {
+      this.element.popover.cancellable();
+    }
+    switch (type) {
+      case "error":
+        this.element.popover.errorPopup(text);
+        break;
+      case "success":
+        this.element.popover.successPopup(text);
+        break;
+      case "loading":
+        this.element.popover.loadingPopup(text);
+        break;
+      case "confirm":
+        this.element.popover.confirmPopup(text, onConfirm);
+        break;
+    }
+  }
+  closePopover(timeout) {
+    if (timeout !== undefined) {
+      setTimeout(() => {
+        this.element.popover.open = false;
+      }, timeout);
+    } else {
+      this.element.popover.open = false;
+    }
   }
   // render(parentElement) {
   //   parentElement.replaceChildren();
@@ -8087,6 +8127,144 @@ class Input {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/pop_over.js":
+/*!*******************************************!*\
+  !*** ./src/javascript/widget/pop_over.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class PopoverElement extends HTMLElement {
+  constructor() {
+    super();
+    this.addEventListener("click", (_) => {
+      if (this.cancellable) this.handleCancel;
+    });
+  }
+  connectedCallback() {
+    this.className = "pop-over";
+    this.innerHTML = `
+    <div class="pop-over__content">
+        <div class="pop-over__container>
+            <div class="pop-over__icon"></div>
+            <div class="pop-over__text"></div>
+            <div class="pop-over__button-box">
+                <div>Cancel</div>
+                <div>Confirm</div>
+            </div>
+        </div>
+    </div>
+    `;
+  }
+  get textElement() {
+    return this.children[0].children[0].children[1];
+  }
+  get cancelButton() {
+    return this.children[0].children[0].children[2].children[0];
+  }
+  get confirmButton() {
+    return this.children[0].children[0].children[2].children[1];
+  }
+  get open() {
+    return this.hasAttribute("open");
+  }
+  get error() {
+    return this.hasAttribute("error");
+  }
+  get success() {
+    return this.hasAttribute("success");
+  }
+  get loading() {
+    return this.hasAttribute("loading");
+  }
+  get confirm() {
+    return this.hasAttribute("confirm");
+  }
+  set open(val) {
+    // Reflect the value of the open property as an HTML attribute.
+    if (val) {
+      this.setAttribute("open", "");
+    } else {
+      this.removeAttribute("open");
+    }
+  }
+  handleCancel = () => {
+    if (this.open) {
+      this.open = false;
+      this.textElement.textContent = "";
+    }
+  };
+  disconnectedCallback() {
+    this.removeEventListener("click", (_) => {
+      if (this.cancellable) this.handleCancel;
+    });
+  }
+  static get observedAttributes() {
+    return ["open"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this.open) {
+      if (this.confirm) {
+        this.cancelButton.removeEventListener("click", this.handleCancel);
+        this.confirmButton.removeEventListener("click", this.onConfirm);
+      }
+    }
+  }
+
+  errorPopup(text) {
+    this.setAttribute("error", "");
+    this.textElement.textContent = text || "Some thing went wrong";
+  }
+  successPopup(text) {
+    this.setAttribute("success", "");
+    this.textElement.textContent = text || "Success";
+  }
+  loadingPopup(text) {
+    this.setAttribute("loading", "");
+    this.textElement.textContent = text || "Loading";
+  }
+  confirmPopup(text, onConfirm) {
+    this.setAttribute("confirm", "");
+    this.cancellable = false;
+    this.onConfirm = onConfirm;
+    this.textElement.textContent = text || "Are you sure?";
+    this.cancelButton.addEventListener("click", handleCancel);
+    this.confirmButton.addEventListener("click", this.onConfirm);
+  }
+}
+
+customElements.define("pop-over", PopoverElement);
+
+class Popover {
+  constructor() {
+    this.element = document.createElement("pop-over");
+  }
+  set open(val) {
+      
+  }
+  errorPopup(text) {
+    this.element.errorPopup(text);
+  }
+  successPopup(text) {
+    this.element.successPopup(text);
+  }
+  loadingPopup(text) {
+    this.element.loadingPopup(text);
+  }
+  confirmPopup(text, onConfirm) {
+    this.element.confirmPopup(text, onConfirm);
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Popover);
+
+
+/***/ }),
+
 /***/ "./src/javascript/widget/setting_column.js":
 /*!*************************************************!*\
   !*** ./src/javascript/widget/setting_column.js ***!
@@ -8374,7 +8552,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("27e9bd13717e247ab403")
+/******/ 		__webpack_require__.h = () => ("d4e61dc48cfa573592be")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

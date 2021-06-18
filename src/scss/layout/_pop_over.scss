@@ -1,0 +1,89 @@
+.pop-over {
+  background-color: rgba($color-grey-dark-2, 0.3);
+  width: 357px; //!important;
+  height: 600px; //!important;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  visibility: hidden;
+  position: fixed;
+  &__content {
+    @include absCenter;
+    width: 20rem;
+    height: fit-content;
+    padding: 2rem 0;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  &__content > &__container {
+    @include absCenter;
+    display: flex;
+    flex-direction: column;
+    background-color: $color-white;
+    opacity: 0;
+  }
+  &__text {
+    color: $color-secondary;
+    font-size: $default-font-size * 0.75;
+    width: 100%;
+    text-align: center;
+  }
+  &__icon,
+  &__text,
+  &__button-box {
+    display: none;
+  }
+  &[open] {
+    pointer-events: stroke !important;
+    opacity: 1;
+    z-index: 1;
+  }
+  &[open] > &__container {
+    z-index: 10;
+    opacity: 1;
+    * {
+        z-index: 9999;
+    }
+  }
+  &[open] &__text {
+    display: block;
+  }
+  &[loading] &__icon,
+  &[error] &__icon,
+  &[success] &__icon {
+    display: block;
+    width: 5rem;
+    height: 5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  &[error] &__icon {
+    background-image: url(../image/ic_fingerprint_alert.png);
+  }
+  &[success] &__icon {
+    background-image: url(../image/img_successful.png);
+  }
+  &[confirm] &__content {
+    padding: 0;
+  }
+  &[confirm] &__text {
+    padding: 2rem 0;
+    color: $color-grey-dark-2;
+    font-size: $default-font-size;
+    font-weight: 400;
+  }
+  &[confirm] &__button-box {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1;
+    border-top: 1px solid $color-grey-light-2;
+    & > div {
+      text-align: center;
+      color: $color-primary;
+    }
+  }
+  &[confirm] &__button-box:not(:last-child) {
+    border-right: 1px solid $color-grey-light-2;
+  }
+}
