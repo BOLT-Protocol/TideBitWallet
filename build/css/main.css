@@ -273,7 +273,15 @@ body {
   width: 357px;
   height: 600px;
   transition: opacity 0.3s;
-  position: fixed; }
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0; }
+  .pop-over[open] {
+    pointer-events: stroke !important;
+    visibility: visible;
+    opacity: 1; }
   .pop-over__content {
     position: absolute;
     top: 50%;
@@ -288,43 +296,32 @@ body {
     overflow: hidden;
     padding: 2rem 0;
     background-color: #fff;
+    opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
     transition: transform 0.3s, opacity 0.3s; }
-  .pop-over[confirm] .pop-over__content {
-    min-width: 18rem;
-    padding: 0; }
   .pop-over[open] .pop-over__content {
+    opacity: 1;
     transform: translate(-50%, -50%) scale(1); }
   .pop-over__content > .pop-over__container {
     display: flex;
     flex-direction: column;
+    align-items: center;
     flex: auto; }
   .pop-over__text {
     color: #446CB3;
     font-size: 1.2rem;
-    width: 18rem;
     text-align: center; }
-  .pop-over[open] {
-    pointer-events: stroke !important;
-    opacity: 1;
-    z-index: 1;
-    visibility: visible; }
-  .pop-over[open] > .pop-over__container {
-    z-index: 10;
-    opacity: 1; }
-    .pop-over[open] > .pop-over__container * {
-      z-index: 9999;
-      opacity: 1; }
-  .pop-over[open] .pop-over__text {
-    display: block; }
+  .pop-over__icon, .pop-over__button-box {
+    display: none; }
   .pop-over[loading] .pop-over__icon,
   .pop-over[error] .pop-over__icon,
   .pop-over[success] .pop-over__icon {
     display: block;
-    width: 5rem;
-    height: 5rem;
-    text-align: center;
-    margin-bottom: 1.5rem; }
+    width: 6rem;
+    height: 6rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain; }
   .pop-over[error] .pop-over__icon {
     background-image: url(../image/ic_fingerprint_alert.png); }
   .pop-over[success] .pop-over__icon {
@@ -335,7 +332,9 @@ body {
     padding: 2rem 0;
     color: #555;
     font-size: 1.6rem;
-    font-weight: 400; }
+    font-weight: 400;
+    line-height: 1.4;
+    width: 18rem; }
   .pop-over[confirm] .pop-over__button-box {
     display: flex;
     flex-direction: row;
@@ -352,6 +351,9 @@ body {
     cursor: pointer; }
   .pop-over[confirm] .pop-over__button-box > div:not(:last-child) {
     border-right: 1px solid #ECECEC; }
+  .pop-over[confirm] .pop-over__content {
+    min-width: 18rem;
+    padding: 0; }
 
 .third-party-signin {
   height: 100%;

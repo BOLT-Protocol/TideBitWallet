@@ -9,6 +9,8 @@ import Form from "../layout/form";
  */
 
 const sendTransaction = (transaction) => {
+  console.log("sendTransaction");
+
   console.log("to", transaction.to);
   console.log("amount", transaction.amount);
   console.log("priority", transaction.priority);
@@ -18,11 +20,11 @@ const sendTransaction = (transaction) => {
 
 const transaction = (state) => {
   const header = new Header(state);
-  const form = new Form(state, () =>
+  const form = new Form(state, (val) =>
     Scaffold.openPopover(
       "confirm",
       "Are you sure to make this transaction?",
-      sendTransaction,
+      () => sendTransaction(val),
       false
     )
   );

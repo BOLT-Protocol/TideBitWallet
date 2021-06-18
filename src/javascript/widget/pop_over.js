@@ -19,17 +19,15 @@ class PopoverElement extends HTMLElement {
         </div>
     </div>
     `;
-    this.setAttribute("confirm", "");
-    this.setAttribute("open", "");
   }
   get textElement() {
     return this.children[0].children[0].children[1];
   }
   get cancelButton() {
-    return this.children[0].children[0].children[2].children[0];
+    return this.children[0].children[1].children[0];
   }
   get confirmButton() {
-    return this.children[0].children[0].children[2].children[1];
+    return this.children[0].children[1].children[1];
   }
   get open() {
     return this.hasAttribute("open");
@@ -73,7 +71,9 @@ class PopoverElement extends HTMLElement {
     if (this.open) {
       if (this.confirm) {
         this.cancelButton.removeEventListener("click", this.handleCancel);
-        this.confirmButton.removeEventListener("click", this.onConfirm);
+        this.confirmButton.removeEventListener("click", (val) =>
+          this.onConfirm(val)
+        );
       }
     }
   }
@@ -93,18 +93,19 @@ class PopoverElement extends HTMLElement {
     this.children[0].children[0].children[1].textContent = text || "Loading";
   }
   confirmPopup(text, onConfirm) {
+    console.log('confirmPopup', onConfirm);
+
     this.setAttribute("confirm", "");
     // this.cancellable = false;
     this.onConfirm = onConfirm;
     this.children[0].children[0].children[1].textContent =
       text || "Are you sure?";
-    this.children[0].children[0].children[2].children[0].addEventListener(
+    this.children[0].children[1].children[0].addEventListener(
       "click",
       this.handleCancel
     );
-    this.children[0].children[0].children[2].children[1].addEventListener(
-      "click",
-      this.onConfirm
+    this.children[0].children[1].children[1].addEventListener("click", (val) =>
+      this.onConfirm(val)
     );
   }
 }

@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624002417528
+      // 1624004386128
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6520,8 +6520,10 @@ class FormElement extends HTMLElement {
     this.transactionButton = this.children[this.childElementCount - 1];
     console.log(this.transactionButton);
     this.transactionButton.addEventListener("click", () => {
+      console.log("transactionButton", this.callback);
       const to = this.addressInput.inputValue;
       const amount = this.amountInput.inputValue;
+
       let gasPrice, gas, priority;
       if (this.onAdvanced) {
         gasPrice = this.gasPrice.inputValue;
@@ -6529,7 +6531,7 @@ class FormElement extends HTMLElement {
         this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
       } else {
         priority = this.tabBar.selected;
-        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
+        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, priority }));
       }
     });
   }
@@ -6828,6 +6830,7 @@ class Scaffold {
    * @param {default true} cancellable
    */
   static openPopover(type, text, onConfirm, cancellable = true) {
+    console.log('openPopover', onConfirm);
     const popover = document.querySelector("pop-over");
     popover.open = true;
     if (cancellable) {
@@ -7496,6 +7499,8 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 const sendTransaction = (transaction) => {
+  console.log("sendTransaction");
+
   console.log("to", transaction.to);
   console.log("amount", transaction.amount);
   console.log("priority", transaction.priority);
@@ -7505,11 +7510,11 @@ const sendTransaction = (transaction) => {
 
 const transaction = (state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state, () =>
+  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state, (val) =>
     _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover(
       "confirm",
       "Are you sure to make this transaction?",
-      sendTransaction,
+      () => sendTransaction(val),
       false
     )
   );
@@ -8337,17 +8342,15 @@ class PopoverElement extends HTMLElement {
         </div>
     </div>
     `;
-    this.setAttribute("confirm", "");
-    this.setAttribute("open", "");
   }
   get textElement() {
     return this.children[0].children[0].children[1];
   }
   get cancelButton() {
-    return this.children[0].children[0].children[2].children[0];
+    return this.children[0].children[1].children[0];
   }
   get confirmButton() {
-    return this.children[0].children[0].children[2].children[1];
+    return this.children[0].children[1].children[1];
   }
   get open() {
     return this.hasAttribute("open");
@@ -8391,7 +8394,9 @@ class PopoverElement extends HTMLElement {
     if (this.open) {
       if (this.confirm) {
         this.cancelButton.removeEventListener("click", this.handleCancel);
-        this.confirmButton.removeEventListener("click", this.onConfirm);
+        this.confirmButton.removeEventListener("click", (val) =>
+          this.onConfirm(val)
+        );
       }
     }
   }
@@ -8411,18 +8416,19 @@ class PopoverElement extends HTMLElement {
     this.children[0].children[0].children[1].textContent = text || "Loading";
   }
   confirmPopup(text, onConfirm) {
+    console.log('confirmPopup', onConfirm);
+
     this.setAttribute("confirm", "");
     // this.cancellable = false;
     this.onConfirm = onConfirm;
     this.children[0].children[0].children[1].textContent =
       text || "Are you sure?";
-    this.children[0].children[0].children[2].children[0].addEventListener(
+    this.children[0].children[1].children[0].addEventListener(
       "click",
       this.handleCancel
     );
-    this.children[0].children[0].children[2].children[1].addEventListener(
-      "click",
-      this.onConfirm
+    this.children[0].children[1].children[1].addEventListener("click", (val) =>
+      this.onConfirm(val)
     );
   }
 }
@@ -8741,7 +8747,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b37f3ed8a105bd66e799")
+/******/ 		__webpack_require__.h = () => ("f0433ccabb15974924e4")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

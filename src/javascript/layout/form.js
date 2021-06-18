@@ -103,8 +103,10 @@ class FormElement extends HTMLElement {
     this.transactionButton = this.children[this.childElementCount - 1];
     console.log(this.transactionButton);
     this.transactionButton.addEventListener("click", () => {
+      console.log("transactionButton", this.callback);
       const to = this.addressInput.inputValue;
       const amount = this.amountInput.inputValue;
+
       let gasPrice, gas, priority;
       if (this.onAdvanced) {
         gasPrice = this.gasPrice.inputValue;
@@ -112,7 +114,7 @@ class FormElement extends HTMLElement {
         this.callback(new Transaction({ to, amount, gasPrice, gas }));
       } else {
         priority = this.tabBar.selected;
-        this.callback(new Transaction({ to, amount, gasPrice, gas }));
+        this.callback(new Transaction({ to, amount, priority }));
       }
     });
   }

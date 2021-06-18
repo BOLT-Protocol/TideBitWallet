@@ -2,11 +2,17 @@
   background-color: rgba($color-grey-dark-2, 0.3);
   width: 357px; //!important;
   height: 600px; //!important;
-  // pointer-events: none;
-  // opacity: 0;
   transition: opacity 0.3s;
-  // visibility: hidden;
   position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  &[open] {
+    pointer-events: stroke !important;
+    visibility: visible;
+    opacity: 1;
+  }
   &__content {
     @include absCenter;
     display: flex;
@@ -18,59 +24,38 @@
     overflow: hidden;
     padding: 2rem 0;
     background-color: $color-white;
-    // opacity: 0;
+    opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
     transition: transform 0.3s, opacity 0.3s;
   }
-  &[confirm] &__content {
-    min-width: 18rem;
-    padding: 0;
-  }
   &[open] &__content {
+    opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
   &__content > &__container {
     display: flex;
     flex-direction: column;
-    // opacity: 0;
+    align-items: center;
     flex: auto;
   }
   &__text {
     color: $color-secondary;
     font-size: $default-font-size * 0.75;
-    width: 18rem;
     text-align: center;
   }
   &__icon,
-  &__text,
   &__button-box {
-    // display: none;
-  }
-  &[open] {
-    pointer-events: stroke !important;
-    opacity: 1;
-    z-index: 1;
-    visibility: visible;
-  }
-  &[open] > &__container {
-    z-index: 10;
-    opacity: 1;
-    * {
-      z-index: 9999;
-      opacity: 1;
-    }
-  }
-  &[open] &__text {
-    display: block;
+    display: none;
   }
   &[loading] &__icon,
   &[error] &__icon,
   &[success] &__icon {
     display: block;
-    width: 5rem;
-    height: 5rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
+    width: 6rem;
+    height: 6rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
   }
   &[error] &__icon {
     background-image: url(../image/ic_fingerprint_alert.png);
@@ -86,6 +71,8 @@
     color: $color-grey-dark-2;
     font-size: $default-font-size;
     font-weight: 400;
+    line-height: 1.4;
+    width: 18rem;
   }
   &[confirm] &__button-box {
     display: flex;
@@ -97,16 +84,19 @@
       flex: auto;
     }
   }
-  
-  &[confirm] &__button-box > div{
+  &[confirm] &__button-box > div {
     padding: 1rem 0;
     font-size: $default-font-size * 0.8;
   }
-  &[confirm] &__button-box > div:hover{
+  &[confirm] &__button-box > div:hover {
     background-color: $color-grey-light-3;
     cursor: pointer;
   }
   &[confirm] &__button-box > div:not(:last-child) {
     border-right: 1px solid $color-grey-light-3;
+  }
+  &[confirm] &__content {
+    min-width: 18rem;
+    padding: 0;
   }
 }
