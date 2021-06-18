@@ -41,7 +41,6 @@ class ButtonElement extends HTMLElement {
     }
   }
   set text(str) {
-    console.log(str);
     this.children[1].textContent = str;
   }
   /**

@@ -9,13 +9,13 @@ import Form from "../layout/form";
  */
 
 const sendTransaction = (transaction) => {
-  console.log("sendTransaction");
-
   console.log("to", transaction.to);
   console.log("amount", transaction.amount);
   console.log("priority", transaction.priority);
   console.log("gasPrice", transaction.gasPrice);
   console.log("gas", transaction.gas);
+  Scaffold.openPopover('success', 'Success!');
+  // Scaffold.closePopover(2000);
 };
 
 const transaction = (state) => {

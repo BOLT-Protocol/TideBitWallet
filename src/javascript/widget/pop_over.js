@@ -1,8 +1,14 @@
+import Scaffold from "../layout/scaffold";
+
 class PopoverElement extends HTMLElement {
   constructor() {
     super();
+    this.click = 0;
     this.addEventListener("click", (_) => {
-      if (this.cancellable) this.handleCancel;
+      this.click += 1;
+      if ((this.success || this.error) && this.click > 1) {
+        this.closePopover();
+      }
     });
   }
   connectedCallback() {
@@ -52,15 +58,28 @@ class PopoverElement extends HTMLElement {
       this.removeAttribute("open");
     }
   }
-  handleCancel = () => {
+  closePopover = () => {
     if (this.open) {
       this.open = false;
+      this.click = 0;
       this.textElement.textContent = "";
+    }
+    if (this.confirm) {
+      this.removeAttribute("confirm");
+    }
+    if (this.error) {
+      this.removeAttribute("error");
+    }
+    if (this.success) {
+      this.removeAttribute("success");
+    }
+    if (this.loading) {
+      this.removeAttribute("loading");
     }
   };
   disconnectedCallback() {
     this.removeEventListener("click", (_) => {
-      if (this.cancellable) this.handleCancel;
+      if (this.cancellable) this.closePopover;
     });
   }
   static get observedAttributes() {
@@ -70,16 +89,18 @@ class PopoverElement extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (this.open) {
       if (this.confirm) {
-        this.cancelButton.removeEventListener("click", this.handleCancel);
-        this.confirmButton.removeEventListener("click", (val) =>
-          this.onConfirm(val)
-        );
+        this.cancelButton.removeEventListener("click", this.closePopover);
+        this.confirmButton.removeEventListener("click", async (val) => {
+          this.closePopover();
+          this.loadingPopup();
+          setTimeout(this.closePopover, 300);
+          this.onConfirm(val);
+        });
       }
     }
   }
 
   errorPopup(text) {
-    console.log(this);
     this.setAttribute("error", "");
     this.children[0].children[0].children[1].textContent =
       text || "Some thing went wrong";
@@ -93,8 +114,6 @@ class PopoverElement extends HTMLElement {
     this.children[0].children[0].children[1].textContent = text || "Loading";
   }
   confirmPopup(text, onConfirm) {
-    console.log('confirmPopup', onConfirm);
-
     this.setAttribute("confirm", "");
     // this.cancellable = false;
     this.onConfirm = onConfirm;
@@ -102,10 +121,14 @@ class PopoverElement extends HTMLElement {
       text || "Are you sure?";
     this.children[0].children[1].children[0].addEventListener(
       "click",
-      this.handleCancel
+      this.closePopover
     );
-    this.children[0].children[1].children[1].addEventListener("click", (val) =>
-      this.onConfirm(val)
+    this.children[0].children[1].children[1].addEventListener(
+      "click",
+      async (val) => {
+        this.closePopover();
+        this.onConfirm(val);
+      }
     );
   }
 }

@@ -64,7 +64,6 @@ class Scaffold {
    * @param {default true} cancellable
    */
   static openPopover(type, text, onConfirm, cancellable = true) {
-    console.log('openPopover', onConfirm);
     const popover = document.querySelector("pop-over");
     popover.open = true;
     if (cancellable) {
