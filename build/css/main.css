@@ -272,47 +272,49 @@ body {
   background-color: rgba(85, 85, 85, 0.3);
   width: 357px;
   height: 600px;
-  pointer-events: none;
-  opacity: 0;
   transition: opacity 0.3s;
-  visibility: hidden;
   position: fixed; }
   .pop-over__content {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 20rem;
-    height: fit-content;
-    padding: 2rem 0;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
-    transition: transform 0.3s, opacity 0.3s; }
-  .pop-over__content > .pop-over__container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
+    min-width: 14rem;
+    min-height: 12rem;
+    border-radius: 1rem;
+    height: fit-content;
+    overflow: hidden;
+    padding: 2rem 0;
     background-color: #fff;
-    opacity: 0; }
+    transform: translate(-50%, -50%) scale(0.5);
+    transition: transform 0.3s, opacity 0.3s; }
+  .pop-over[confirm] .pop-over__content {
+    min-width: 18rem;
+    padding: 0; }
+  .pop-over[open] .pop-over__content {
+    transform: translate(-50%, -50%) scale(1); }
+  .pop-over__content > .pop-over__container {
+    display: flex;
+    flex-direction: column;
+    flex: auto; }
   .pop-over__text {
     color: #446CB3;
     font-size: 1.2rem;
-    width: 100%;
+    width: 18rem;
     text-align: center; }
-  .pop-over__icon, .pop-over__text, .pop-over__button-box {
-    display: none; }
   .pop-over[open] {
     pointer-events: stroke !important;
     opacity: 1;
-    z-index: 1; }
+    z-index: 1;
+    visibility: visible; }
   .pop-over[open] > .pop-over__container {
     z-index: 10;
     opacity: 1; }
     .pop-over[open] > .pop-over__container * {
-      z-index: 9999; }
+      z-index: 9999;
+      opacity: 1; }
   .pop-over[open] .pop-over__text {
     display: block; }
   .pop-over[loading] .pop-over__icon,
@@ -337,13 +339,19 @@ body {
   .pop-over[confirm] .pop-over__button-box {
     display: flex;
     flex-direction: row;
-    flex: 1 1;
-    border-top: 1px solid #eee; }
+    border-top: 1px solid #ECECEC; }
     .pop-over[confirm] .pop-over__button-box > div {
       text-align: center;
-      color: #4ECDC4; }
-  .pop-over[confirm] .pop-over__button-box:not(:last-child) {
-    border-right: 1px solid #eee; }
+      color: #4ECDC4;
+      flex: auto; }
+  .pop-over[confirm] .pop-over__button-box > div {
+    padding: 1rem 0;
+    font-size: 1.28rem; }
+  .pop-over[confirm] .pop-over__button-box > div:hover {
+    background-color: #ECECEC;
+    cursor: pointer; }
+  .pop-over[confirm] .pop-over__button-box > div:not(:last-child) {
+    border-right: 1px solid #ECECEC; }
 
 .third-party-signin {
   height: 100%;

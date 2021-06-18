@@ -2,48 +2,62 @@
   background-color: rgba($color-grey-dark-2, 0.3);
   width: 357px; //!important;
   height: 600px; //!important;
-  pointer-events: none;
-  opacity: 0;
+  // pointer-events: none;
+  // opacity: 0;
   transition: opacity 0.3s;
-  visibility: hidden;
+  // visibility: hidden;
   position: fixed;
   &__content {
     @include absCenter;
-    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 14rem;
+    min-height: 12rem;
+    border-radius: 1rem;
     height: fit-content;
+    overflow: hidden;
     padding: 2rem 0;
-    opacity: 0;
+    background-color: $color-white;
+    // opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
     transition: transform 0.3s, opacity 0.3s;
   }
+  &[confirm] &__content {
+    min-width: 18rem;
+    padding: 0;
+  }
+  &[open] &__content {
+    transform: translate(-50%, -50%) scale(1);
+  }
   &__content > &__container {
-    @include absCenter;
     display: flex;
     flex-direction: column;
-    background-color: $color-white;
-    opacity: 0;
+    // opacity: 0;
+    flex: auto;
   }
   &__text {
     color: $color-secondary;
     font-size: $default-font-size * 0.75;
-    width: 100%;
+    width: 18rem;
     text-align: center;
   }
   &__icon,
   &__text,
   &__button-box {
-    display: none;
+    // display: none;
   }
   &[open] {
     pointer-events: stroke !important;
     opacity: 1;
     z-index: 1;
+    visibility: visible;
   }
   &[open] > &__container {
     z-index: 10;
     opacity: 1;
     * {
-        z-index: 9999;
+      z-index: 9999;
+      opacity: 1;
     }
   }
   &[open] &__text {
@@ -76,14 +90,23 @@
   &[confirm] &__button-box {
     display: flex;
     flex-direction: row;
-    flex: 1 1;
-    border-top: 1px solid $color-grey-light-2;
+    border-top: 1px solid $color-grey-light-3;
     & > div {
       text-align: center;
       color: $color-primary;
+      flex: auto;
     }
   }
-  &[confirm] &__button-box:not(:last-child) {
-    border-right: 1px solid $color-grey-light-2;
+  
+  &[confirm] &__button-box > div{
+    padding: 1rem 0;
+    font-size: $default-font-size * 0.8;
+  }
+  &[confirm] &__button-box > div:hover{
+    background-color: $color-grey-light-3;
+    cursor: pointer;
+  }
+  &[confirm] &__button-box > div:not(:last-child) {
+    border-right: 1px solid $color-grey-light-3;
   }
 }

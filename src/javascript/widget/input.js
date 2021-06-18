@@ -8,14 +8,14 @@ class InputElement extends HTMLElement {
     return ["focus", "has-value", "error"];
   }
   handleInput(e) {
-    if (this.value !== "") {
+    if (e.target.value !== "") {
       this.hasValue = true;
     } else {
       this.hasValue = false;
     }
     let checked;
     if (this.validator !== undefined) {
-      checked = this.value === "" || this.validator(this.value);
+      checked = e.target.value === "" || this.validator(e.target.value);
     }
     if (checked !== undefined) {
       this.error = !checked;
@@ -26,6 +26,7 @@ class InputElement extends HTMLElement {
       //   this.value = this.value.replace(/[^0-9.]/g, '');
       //   this.value = this.value.replace(/(\..*)\./g, '$1');
     }
+    this.inputValue = e.target.value;
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -107,9 +108,6 @@ class InputElement extends HTMLElement {
     if (val === undefined) this.children[1].style.display = "none";
     this.children[1].textContent = val;
   }
-  get value() {
-    return this.children[0].children[1].children[0].value;
-  }
   disconnectedCallback() {
     // target.removeEventListener('');
     this.children[0].children[1].children[0].removeEventListener(
@@ -157,8 +155,8 @@ class Input {
     if (this.action !== undefined) this.element.action = this.action;
     if (this.pattern !== undefined) this.element.pattern = this.pattern;
   }
-  get value() {
-    return this.element.value;
+  get inputValue() {
+    return this.element.inputValue;
   }
 }
 

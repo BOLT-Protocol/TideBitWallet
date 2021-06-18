@@ -26,7 +26,7 @@ class ScaffoldElement extends HTMLElement {
     }
     if (this.footer) this.footer.render(this.children[2]);
     this.popover = new Popover();
-    this.insertAdjacentElement("beforeend", this.popover.element);
+    this.popover.render(this);
   }
   updateHeader(newHeader) {
     this.header = newHeader;
@@ -56,39 +56,42 @@ class Scaffold {
     document.body.replaceChildren();
     document.body.insertAdjacentElement("beforeend", this.element);
   }
+
   /**
    * @param {String only 4 type: "error", "success", "loading", "confirm"} type
    * @param {String: show on the dialog} text
    * @param {function} onConfirm
    * @param {default true} cancellable
    */
-  openPopover(type, text, onConfirm, cancellable = true) {
-    this.element.popover.open = true;
+  static openPopover(type, text, onConfirm, cancellable = true) {
+    const popover = document.querySelector("pop-over");
+    popover.open = true;
     if (cancellable) {
-      this.element.popover.cancellable();
+      popover.cancellable = cancellable;
     }
     switch (type) {
       case "error":
-        this.element.popover.errorPopup(text);
+        popover.errorPopup(text);
         break;
       case "success":
-        this.element.popover.successPopup(text);
+        popover.successPopup(text);
         break;
       case "loading":
-        this.element.popover.loadingPopup(text);
+        popover.loadingPopup(text);
         break;
       case "confirm":
-        this.element.popover.confirmPopup(text, onConfirm);
+        popover.confirmPopup(text, onConfirm);
         break;
     }
   }
-  closePopover(timeout) {
+  static closePopover(timeout) {
+    const popover = document.querySelector("pop-over");
     if (timeout !== undefined) {
       setTimeout(() => {
-        this.element.popover.open = false;
+        popover.open = false;
       }, timeout);
     } else {
-      this.element.popover.open = false;
+      popover.open = false;
     }
   }
   // render(parentElement) {

@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623989969114
+      // 1624002417528
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6414,6 +6414,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
 /* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
 /* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _model_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/transaction */ "./src/javascript/model/transaction.js");
+
 
 
 
@@ -6515,7 +6517,23 @@ class FormElement extends HTMLElement {
     } else {
       this.toggle = false;
     }
+    this.transactionButton = this.children[this.childElementCount - 1];
+    console.log(this.transactionButton);
+    this.transactionButton.addEventListener("click", () => {
+      const to = this.addressInput.inputValue;
+      const amount = this.amountInput.inputValue;
+      let gasPrice, gas, priority;
+      if (this.onAdvanced) {
+        gasPrice = this.gasPrice.inputValue;
+        gas = this.gas.inputValue;
+        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
+      } else {
+        priority = this.tabBar.selected;
+        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
+      }
+    });
   }
+
   /**
    *
    * @param {Boolean} val
@@ -6531,6 +6549,9 @@ class FormElement extends HTMLElement {
       this.tabBar.render(toggleContent);
       this.removeAttribute("on");
     }
+  }
+  get onAdvanced() {
+    return this.hasAttribute("on");
   }
   set availableAmount(account) {
     this.children[1].children[1].textContent =
@@ -6566,12 +6587,14 @@ class FormElement extends HTMLElement {
 customElements.define("transaction-form", FormElement);
 
 class Form {
-  constructor(state) {
+  constructor(state, callback) {
     this.state = JSON.parse(JSON.stringify(state));
+    this.callback = callback;
   }
   render(parentElement) {
     this.element = document.createElement("transaction-form");
     this.element.state = this.state;
+    this.element.callback = this.callback;
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
@@ -6767,7 +6790,7 @@ class ScaffoldElement extends HTMLElement {
     }
     if (this.footer) this.footer.render(this.children[2]);
     this.popover = new _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__.default();
-    this.insertAdjacentElement("beforeend", this.popover.element);
+    this.popover.render(this);
   }
   updateHeader(newHeader) {
     this.header = newHeader;
@@ -6797,39 +6820,42 @@ class Scaffold {
     document.body.replaceChildren();
     document.body.insertAdjacentElement("beforeend", this.element);
   }
+
   /**
    * @param {String only 4 type: "error", "success", "loading", "confirm"} type
    * @param {String: show on the dialog} text
    * @param {function} onConfirm
    * @param {default true} cancellable
    */
-  openPopover(type, text, onConfirm, cancellable = true) {
-    this.element.popover.open = true;
+  static openPopover(type, text, onConfirm, cancellable = true) {
+    const popover = document.querySelector("pop-over");
+    popover.open = true;
     if (cancellable) {
-      this.element.popover.cancellable();
+      popover.cancellable = cancellable;
     }
     switch (type) {
       case "error":
-        this.element.popover.errorPopup(text);
+        popover.errorPopup(text);
         break;
       case "success":
-        this.element.popover.successPopup(text);
+        popover.successPopup(text);
         break;
       case "loading":
-        this.element.popover.loadingPopup(text);
+        popover.loadingPopup(text);
         break;
       case "confirm":
-        this.element.popover.confirmPopup(text, onConfirm);
+        popover.confirmPopup(text, onConfirm);
         break;
     }
   }
-  closePopover(timeout) {
+  static closePopover(timeout) {
+    const popover = document.querySelector("pop-over");
     if (timeout !== undefined) {
       setTimeout(() => {
-        this.element.popover.open = false;
+        popover.open = false;
       }, timeout);
     } else {
-      this.element.popover.open = false;
+      popover.open = false;
     }
   }
   // render(parentElement) {
@@ -7159,6 +7185,42 @@ class Bill {
 
 /***/ }),
 
+/***/ "./src/javascript/model/transaction.js":
+/*!*********************************************!*\
+  !*** ./src/javascript/model/transaction.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class Transaction {
+  constructor({ publish, to, amount, priority, gasPrice, gasLimit, message }) {
+    this.publish = publish;
+    this.to = to;
+    this.amount = amount;
+    this.priority = priority;
+    this.gasPrice = gasPrice;
+    this.gasLimit = gasLimit;
+    this.message = message;
+  }
+  // BTC
+  // constructor({
+  //     publish,
+  //     to,
+  //     amount,
+  //     priority,
+  //     message,
+  // })
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Transaction);
+
+
+/***/ }),
+
 /***/ "./src/javascript/screen/account.js":
 /*!******************************************!*\
   !*** ./src/javascript/screen/account.js ***!
@@ -7433,9 +7495,24 @@ __webpack_require__.r(__webpack_exports__);
  * ui.sendTransaction(transaction);
  */
 
+const sendTransaction = (transaction) => {
+  console.log("to", transaction.to);
+  console.log("amount", transaction.amount);
+  console.log("priority", transaction.priority);
+  console.log("gasPrice", transaction.gasPrice);
+  console.log("gas", transaction.gas);
+};
+
 const transaction = (state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state, () =>
+    _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover(
+      "confirm",
+      "Are you sure to make this transaction?",
+      sendTransaction,
+      false
+    )
+  );
   new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, form);
   /**
    * getEstimateTime().then((timeString) => {
@@ -8071,14 +8148,14 @@ class InputElement extends HTMLElement {
     return ["focus", "has-value", "error"];
   }
   handleInput(e) {
-    if (this.value !== "") {
+    if (e.target.value !== "") {
       this.hasValue = true;
     } else {
       this.hasValue = false;
     }
     let checked;
     if (this.validator !== undefined) {
-      checked = this.value === "" || this.validator(this.value);
+      checked = e.target.value === "" || this.validator(e.target.value);
     }
     if (checked !== undefined) {
       this.error = !checked;
@@ -8089,6 +8166,7 @@ class InputElement extends HTMLElement {
       //   this.value = this.value.replace(/[^0-9.]/g, '');
       //   this.value = this.value.replace(/(\..*)\./g, '$1');
     }
+    this.inputValue = e.target.value;
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -8170,9 +8248,6 @@ class InputElement extends HTMLElement {
     if (val === undefined) this.children[1].style.display = "none";
     this.children[1].textContent = val;
   }
-  get value() {
-    return this.children[0].children[1].children[0].value;
-  }
   disconnectedCallback() {
     // target.removeEventListener('');
     this.children[0].children[1].children[0].removeEventListener(
@@ -8220,8 +8295,8 @@ class Input {
     if (this.action !== undefined) this.element.action = this.action;
     if (this.pattern !== undefined) this.element.pattern = this.pattern;
   }
-  get value() {
-    return this.element.value;
+  get inputValue() {
+    return this.element.inputValue;
   }
 }
 
@@ -8252,16 +8327,18 @@ class PopoverElement extends HTMLElement {
     this.className = "pop-over";
     this.innerHTML = `
     <div class="pop-over__content">
-        <div class="pop-over__container>
+        <div class="pop-over__container">
             <div class="pop-over__icon"></div>
             <div class="pop-over__text"></div>
-            <div class="pop-over__button-box">
-                <div>Cancel</div>
-                <div>Confirm</div>
-            </div>
+        </div>
+        <div class="pop-over__button-box">
+            <div>Cancel</div>
+            <div>Confirm</div>
         </div>
     </div>
     `;
+    this.setAttribute("confirm", "");
+    this.setAttribute("open", "");
   }
   get textElement() {
     return this.children[0].children[0].children[1];
@@ -8320,24 +8397,33 @@ class PopoverElement extends HTMLElement {
   }
 
   errorPopup(text) {
+    console.log(this);
     this.setAttribute("error", "");
-    this.textElement.textContent = text || "Some thing went wrong";
+    this.children[0].children[0].children[1].textContent =
+      text || "Some thing went wrong";
   }
   successPopup(text) {
     this.setAttribute("success", "");
-    this.textElement.textContent = text || "Success";
+    this.children[0].children[0].children[1].textContent = text || "Success";
   }
   loadingPopup(text) {
     this.setAttribute("loading", "");
-    this.textElement.textContent = text || "Loading";
+    this.children[0].children[0].children[1].textContent = text || "Loading";
   }
   confirmPopup(text, onConfirm) {
     this.setAttribute("confirm", "");
-    this.cancellable = false;
+    // this.cancellable = false;
     this.onConfirm = onConfirm;
-    this.textElement.textContent = text || "Are you sure?";
-    this.cancelButton.addEventListener("click", handleCancel);
-    this.confirmButton.addEventListener("click", this.onConfirm);
+    this.children[0].children[0].children[1].textContent =
+      text || "Are you sure?";
+    this.children[0].children[0].children[2].children[0].addEventListener(
+      "click",
+      this.handleCancel
+    );
+    this.children[0].children[0].children[2].children[1].addEventListener(
+      "click",
+      this.onConfirm
+    );
   }
 }
 
@@ -8347,21 +8433,21 @@ class Popover {
   constructor() {
     this.element = document.createElement("pop-over");
   }
-  set open(val) {
-      
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
   }
-  errorPopup(text) {
-    this.element.errorPopup(text);
-  }
-  successPopup(text) {
-    this.element.successPopup(text);
-  }
-  loadingPopup(text) {
-    this.element.loadingPopup(text);
-  }
-  confirmPopup(text, onConfirm) {
-    this.element.confirmPopup(text, onConfirm);
-  }
+  // errorPopup(text) {
+  //   this.element.errorPopup(text);
+  // }
+  // successPopup(text) {
+  //   this.element.successPopup(text);
+  // }
+  // loadingPopup(text) {
+  //   this.element.loadingPopup(text);
+  // }
+  // confirmPopup(text, onConfirm) {
+  //   this.element.confirmPopup(text, onConfirm);
+  // }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Popover);
 
@@ -8655,7 +8741,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("c4d0a4eb94670bfe9c20")
+/******/ 		__webpack_require__.h = () => ("b37f3ed8a105bd66e799")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
