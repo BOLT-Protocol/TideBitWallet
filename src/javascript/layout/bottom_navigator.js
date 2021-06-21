@@ -11,9 +11,6 @@ class BottomNavigator {
       (item) => new BottomNavigatorItem(state, item, (state) => route(state))
     );
   }
-  set focus(focusIndex){
-    this.focusIndex = focusIndex;
-  }
   render(parentElement) {
     this.tabBar = new TabBar(this.bottomNavigatorItems, this.focusIndex);
     this.tabBar.render(parentElement);

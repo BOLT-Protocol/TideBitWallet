@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624262940163
+      // 1624266589459
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6386,9 +6386,6 @@ class BottomNavigator {
       (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
     );
   }
-  set focus(focusIndex){
-    this.focusIndex = focusIndex;
-  }
   render(parentElement) {
     this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.bottomNavigatorItems, this.focusIndex);
     this.tabBar.render(parentElement);
@@ -8702,8 +8699,7 @@ class TabBarElement extends HTMLElement {
     Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
       el.removeAttribute("focus")
     );
-    if (e.target.className === "button") e.target.setAttribute("focus", "");
-    else e.target.parentElement.setAttribute("focus", "");
+    e.target.closest("tab-bar > *").setAttribute("focus", "");
   }
   connectedCallback() {
     this.className = "tab-bar";
@@ -8848,7 +8844,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("ed794091ade421610b1c")
+/******/ 		__webpack_require__.h = () => ("32c4f404b39ddac386d9")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
