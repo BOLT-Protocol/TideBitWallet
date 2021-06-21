@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624286689985
+      // 1624287165324
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7541,9 +7541,9 @@ class Overview {
   }
   //
   // OnUpdateCurrency ,
-  // OnAccountUpdate
+  // OnUpdateAccount
   update(event, data) {
-    if (event === "OnAccountUpdate") {
+    if (event === "OnUpdateAccount") {
       this.accountList.updateAccount(data);
     } else if (event === "OnUpdateCurrency") {
       this.accountList.update(data);
@@ -8958,7 +8958,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("a0e2e503fdb88b9c5160")
+/******/ 		__webpack_require__.h = () => ("73b0bc546cb0c2c63441")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

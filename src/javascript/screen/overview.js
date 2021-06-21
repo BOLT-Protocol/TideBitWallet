@@ -47,9 +47,9 @@ class Overview {
   }
   //
   // OnUpdateCurrency ,
-  // OnAccountUpdate
+  // OnUpdateAccount
   update(event, data) {
-    if (event === "OnAccountUpdate") {
+    if (event === "OnUpdateAccount") {
       this.accountList.updateAccount(data);
     } else if (event === "OnUpdateCurrency") {
       this.accountList.update(data);
