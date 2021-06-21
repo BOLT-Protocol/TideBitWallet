@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624266589459
+      // 1624276390030
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6098,6 +6098,9 @@ customElements.define("account-list", AccountListElement);
 class AccountList {
   constructor(state) {
     this.element = document.createElement("account-list");
+    this.updateState(state);
+  }
+  updateState(state) {
     this.element.state = JSON.parse(JSON.stringify(state));
     this.element.accounts = state.user.accounts.map((account) => {
       const state = JSON.parse(JSON.stringify(this.element.state));
@@ -6662,30 +6665,6 @@ class HeaderElement extends HTMLElement {
   constructor() {
     super();
   }
-  connectedCallback() {
-    switch (this.state.screen) {
-      case "accounts":
-      case "settings":
-        this.classList = ["header header--overview"];
-        this.innerHTML = this.overviewHeader(
-          this.state.user.totalAsset,
-          this.state.walletConfig.fiat.symbol
-        );
-        break;
-      case "account":
-        this.classList = ["header header--account"];
-        this.innerHTML = this.accountHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "accounts");
-        this.headerLeading.render(this);
-        break;
-      default:
-        this.classList = ["header header--default"];
-        this.innerHTML = this.defaultHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "account");
-        this.headerLeading.render(this);
-        break;
-    }
-  }
   overviewHeader = (totalAsset, fiatSymbol) => {
     const markup = `
       <div class="header__title">Total Asset</div>
@@ -6712,7 +6691,6 @@ class HeaderElement extends HTMLElement {
       <span class="currency-unit">${fiat.symbol}</span>
     </div>
     `;
-
     return markup;
   };
   defaultHeader = (state) => {
@@ -6727,6 +6705,50 @@ class HeaderElement extends HTMLElement {
     `;
     return markup;
   };
+  updateHeader(state) {
+    switch (state.screen) {
+      case "accounts":
+      case "overviews":
+        if (state.totalAsset !== this.state.totalAsset) {
+          document.querySelector(".user-total-balance").textContent =
+            state.totalAsset;
+          this.state = JSON.parse(JSON.stringify(state));
+        } else if (
+          state.walletConfig.fiat.symbol != this.state.walletConfig.fiat.symbol
+        ) {
+          document.querySelector(".currency-unit").textContent =
+            state.walletConfig.fiat.symbol;
+          this.state = JSON.parse(JSON.stringify(state));
+        }
+        break;
+      case "account":
+        break;
+    }
+  }
+  connectedCallback() {
+    switch (this.state.screen) {
+      case "accounts":
+      case "settings":
+        this.classList = ["header header--overview"];
+        this.innerHTML = this.overviewHeader(
+          this.state.user.totalAsset,
+          this.state.walletConfig.fiat.symbol
+        );
+        break;
+      case "account":
+        this.classList = ["header header--account"];
+        this.innerHTML = this.accountHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "accounts");
+        this.headerLeading.render(this);
+        break;
+      default:
+        this.classList = ["header header--default"];
+        this.innerHTML = this.defaultHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "account");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
 }
 
 customElements.define("header-widget", HeaderElement);
@@ -6735,6 +6757,9 @@ class Header {
   constructor(state) {
     this.element = document.createElement("header-widget");
     this.element.state = JSON.parse(JSON.stringify(state));
+  }
+  updateState(state) {
+    this.element.updateHeader(state);
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -7475,6 +7500,7 @@ class Overview {
     ) {
       this.initialize(state);
     } else {
+      this.updateState(state);
       switch (state.screen) {
         case "accounts":
           this.body.focus = 0;
@@ -7681,6 +7707,8 @@ function launchTideBitUi(options, callback) {
   startApp();
 }
 
+window.state = state;
+window.route = _utils_route__WEBPACK_IMPORTED_MODULE_0__.default;
 
 /***/ }),
 
@@ -8844,7 +8872,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("32c4f404b39ddac386d9")
+/******/ 		__webpack_require__.h = () => ("ab4a75e38f10d9e98ae5")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -90,3 +90,6 @@ const startApp = () => {
 export default function launchTideBitUi(options, callback) {
   startApp();
 }
+
+window.state = state;
+window.route = route;

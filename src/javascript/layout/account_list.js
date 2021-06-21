@@ -15,6 +15,9 @@ customElements.define("account-list", AccountListElement);
 class AccountList {
   constructor(state) {
     this.element = document.createElement("account-list");
+    this.updateState(state);
+  }
+  updateState(state) {
     this.element.state = JSON.parse(JSON.stringify(state));
     this.element.accounts = state.user.accounts.map((account) => {
       const state = JSON.parse(JSON.stringify(this.element.state));

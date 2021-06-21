@@ -39,6 +39,7 @@ class Overview {
     ) {
       this.initialize(state);
     } else {
+      this.updateState(state);
       switch (state.screen) {
         case "accounts":
           this.body.focus = 0;
