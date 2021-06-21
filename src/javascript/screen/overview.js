@@ -45,9 +45,11 @@ class Overview {
       }
     }
   }
-  //
-  // OnUpdateCurrency ,
-  // OnUpdateAccount
+  /**
+   * 
+   * @param {OnUpdateCurrency, OnUpdateAccount} event 
+   * @param {accounts, account} data 
+   */
   update(event, data) {
     if (event === "OnUpdateAccount") {
       this.accountList.updateAccount(data);
