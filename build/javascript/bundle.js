@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624276390030
+      // 1624286689985
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6091,23 +6091,53 @@ class AccountListElement extends HTMLElement {
     this.className = "account-list";
     this.accounts.forEach((account) => account.render(this));
   }
+  update() {
+    this.replaceChildren();
+    this.accounts.forEach((account) => account.render(this));
+  }
 }
 
 customElements.define("account-list", AccountListElement);
 
 class AccountList {
   constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
     this.element = document.createElement("account-list");
-    this.updateState(state);
+    const { accounts } = this.state.user;
+    this.update(accounts);
   }
-  updateState(state) {
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.accounts = state.user.accounts.map((account) => {
-      const state = JSON.parse(JSON.stringify(this.element.state));
+  update(accounts) {
+    this.state.user.accounts = JSON.parse(JSON.stringify(accounts));
+    this.element.accounts = accounts.map((account) => {
+      const state = JSON.parse(JSON.stringify(this.state));
       state.account = account;
       state.screen = "account";
       return new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
     });
+    if(document.querySelector("account-list")){
+      this.element.update();
+    }
+  }
+  updateAccount(account) {
+    const { accounts } = this.state.user;
+    const index = accounts.findIndex((acc) => acc.id === account.id);
+    if (index > -1) {
+      this.state.user.accounts[index] = JSON.parse(JSON.stringify(account));
+      const state = JSON.parse(JSON.stringify(this.state));
+      state.account = this.state.user.accounts[index];
+      state.screen = "account";
+      this.element.accounts[index] = new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+      this.element.accounts[index].update();
+    } else {
+      this.state.user.accounts.push(account);
+      const state = JSON.parse(JSON.stringify(this.state));
+      state.account = account;
+      state.screen = "account";
+      this.element.accounts.push(new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state));
+      this.element.accounts[this.element.accounts.length - 1].render(
+        this.element
+      );
+    }
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -6722,6 +6752,9 @@ class HeaderElement extends HTMLElement {
         }
         break;
       case "account":
+        this.innerHTML = this.accountHeader(this.state);
+        this.headerLeading = new BackButton(this.state, "accounts");
+        this.headerLeading.render(this);
         break;
     }
   }
@@ -6758,7 +6791,7 @@ class Header {
     this.element = document.createElement("header-widget");
     this.element.state = JSON.parse(JSON.stringify(state));
   }
-  updateState(state) {
+  update(state) {
     this.element.updateHeader(state);
   }
   render(parentElement) {
@@ -7486,10 +7519,6 @@ class Overview {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
     this.scaffold.element.view = state.screen;
   }
-  updateState(state) {
-    this.header.updateState(state);
-    this.accountList.updateState(state);
-  }
   render(state) {
     const scaffold = document.querySelector("scaffold-widget");
     const view = scaffold?.attributes?.view?.value;
@@ -7500,7 +7529,6 @@ class Overview {
     ) {
       this.initialize(state);
     } else {
-      this.updateState(state);
       switch (state.screen) {
         case "accounts":
           this.body.focus = 0;
@@ -7509,6 +7537,16 @@ class Overview {
           this.body.focus = 1;
           break;
       }
+    }
+  }
+  //
+  // OnUpdateCurrency ,
+  // OnAccountUpdate
+  update(event, data) {
+    if (event === "OnAccountUpdate") {
+      this.accountList.updateAccount(data);
+    } else if (event === "OnUpdateCurrency") {
+      this.accountList.update(data);
     }
   }
 }
@@ -7597,6 +7635,42 @@ const transaction = (state) => {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
+
+
+/***/ }),
+
+/***/ "./src/javascript/test.js":
+/*!********************************!*\
+  !*** ./src/javascript/test.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+const createTestAccount = (id) => {
+  return {
+    id: id ? id : (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+    name: "Aretha",
+    symbol: "ARE",
+    network: "Testnet",
+    decimals: 8,
+    publish: true,
+    image: "https://www.tidebit.one/icons/btc.png",
+    balance: 100,
+    inUSD: 30000,
+  };
+};
+
+window.createTestAccount = createTestAccount;
+window.overview = _screen_overview__WEBPACK_IMPORTED_MODULE_0__.default;
+window.route = _utils_route__WEBPACK_IMPORTED_MODULE_1__.default;
 
 
 /***/ }),
@@ -7707,8 +7781,6 @@ function launchTideBitUi(options, callback) {
   startApp();
 }
 
-window.state = state;
-window.route = _utils_route__WEBPACK_IMPORTED_MODULE_0__.default;
 
 /***/ }),
 
@@ -7935,9 +8007,11 @@ class AccountItemElement extends HTMLElement {
       }
     });
   }
-  connectedCallback() {
-    this.className = "account-item";
-    this.innerHTML = `
+  set id(val) {
+    this.setAttribute("id", val);
+  }
+  static update(element, state) {
+    element.innerHTML = `
     <div class="account-item__icon"></div>
     <div class="account-item__symbol"></div>
     <div class="account-item__balance"></div>
@@ -7947,20 +8021,26 @@ class AccountItemElement extends HTMLElement {
         <span class="currency-unit"></span>
     </div>
     `;
-    this.exchange();
-    this.publish = this.state.account.publish;
-    this.children[0].insertAdjacentHTML(
+    element.exchange(state);
+    element.publish = state.account.publish;
+    element.children[0].insertAdjacentHTML(
       "afterbegin",
       `<img src=${
-        this.state.account.image
-      } alt=${this.state.account.symbol.toUpperCase()}>`
+        state.account.image
+      } alt=${state.account.symbol.toUpperCase()}>`
     );
-    this.children[1].textContent = this.state.account.symbol.toUpperCase();
-    this.children[2].textContent = this.state.account.balance;
-    this.children[3].children[1].textContent = this.state.account.infiat;
-    this.children[3].children[2].textContent =
-      this.state.walletConfig.fiat.symbol;
-    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    element.children[1].textContent =
+      state.account.symbol.toUpperCase();
+    element.children[2].textContent = state.account.balance;
+    element.children[3].children[1].textContent = state.account.infiat;
+    element.children[3].children[2].textContent =
+      state.walletConfig.fiat.symbol;
+    element.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state));
+  }
+  connectedCallback() {
+    this.className = "account-item";
+    this.id = this.state.account.id;
+    AccountItemElement.update(this, this.state);
   }
   disconnectedCallback() {
     this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
@@ -7975,10 +8055,10 @@ class AccountItemElement extends HTMLElement {
       this.removeAttribute("publish");
     }
   }
-  exchange() {
-    if (this.state.walletConfig.fiat) {
-      this.state.account.infiat =
-        this.state.account.inUSD / this.state.walletConfig.fiat.inUSD;
+  exchange(state) {
+    if (state.walletConfig.fiat) {
+      state.account.infiat =
+        state.account.inUSD / state.walletConfig.fiat.inUSD;
       return;
     }
     return;
@@ -7994,6 +8074,10 @@ class AccountItem {
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    const element = document.querySelector(`[id=${this.id}]`);
+    AccountItemElement.update(element, this.element.state);
   }
 }
 
@@ -8785,6 +8869,8 @@ class TabBar {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ "./src/scss/main.scss");
 /* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ "./src/javascript/index.js");
+/* harmony import */ var _javascript_test__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./javascript/test */ "./src/javascript/test.js");
+
 
 
 
@@ -8872,7 +8958,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("ab4a75e38f10d9e98ae5")
+/******/ 		__webpack_require__.h = () => ("a0e2e503fdb88b9c5160")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

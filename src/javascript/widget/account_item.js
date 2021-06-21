@@ -12,9 +12,11 @@ class AccountItemElement extends HTMLElement {
       }
     });
   }
-  connectedCallback() {
-    this.className = "account-item";
-    this.innerHTML = `
+  set id(val) {
+    this.setAttribute("id", val);
+  }
+  static update(element, state) {
+    element.innerHTML = `
     <div class="account-item__icon"></div>
     <div class="account-item__symbol"></div>
     <div class="account-item__balance"></div>
@@ -24,20 +26,26 @@ class AccountItemElement extends HTMLElement {
         <span class="currency-unit"></span>
     </div>
     `;
-    this.exchange();
-    this.publish = this.state.account.publish;
-    this.children[0].insertAdjacentHTML(
+    element.exchange(state);
+    element.publish = state.account.publish;
+    element.children[0].insertAdjacentHTML(
       "afterbegin",
       `<img src=${
-        this.state.account.image
-      } alt=${this.state.account.symbol.toUpperCase()}>`
+        state.account.image
+      } alt=${state.account.symbol.toUpperCase()}>`
     );
-    this.children[1].textContent = this.state.account.symbol.toUpperCase();
-    this.children[2].textContent = this.state.account.balance;
-    this.children[3].children[1].textContent = this.state.account.infiat;
-    this.children[3].children[2].textContent =
-      this.state.walletConfig.fiat.symbol;
-    this.addEventListener("click", (e) => route(this.state));
+    element.children[1].textContent =
+      state.account.symbol.toUpperCase();
+    element.children[2].textContent = state.account.balance;
+    element.children[3].children[1].textContent = state.account.infiat;
+    element.children[3].children[2].textContent =
+      state.walletConfig.fiat.symbol;
+    element.addEventListener("click", (e) => route(state));
+  }
+  connectedCallback() {
+    this.className = "account-item";
+    this.id = this.state.account.id;
+    AccountItemElement.update(this, this.state);
   }
   disconnectedCallback() {
     this.removeEventListener("click", (e) => route(this.state));
@@ -52,10 +60,10 @@ class AccountItemElement extends HTMLElement {
       this.removeAttribute("publish");
     }
   }
-  exchange() {
-    if (this.state.walletConfig.fiat) {
-      this.state.account.infiat =
-        this.state.account.inUSD / this.state.walletConfig.fiat.inUSD;
+  exchange(state) {
+    if (state.walletConfig.fiat) {
+      state.account.infiat =
+        state.account.inUSD / state.walletConfig.fiat.inUSD;
       return;
     }
     return;
@@ -71,6 +79,10 @@ class AccountItem {
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    const element = document.querySelector(`[id=${this.id}]`);
+    AccountItemElement.update(element, this.element.state);
   }
 }
 

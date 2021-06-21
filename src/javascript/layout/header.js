@@ -144,7 +144,7 @@ class Header {
     this.element = document.createElement("header-widget");
     this.element.state = JSON.parse(JSON.stringify(state));
   }
-  updateState(state) {
+  update(state) {
     this.element.updateHeader(state);
   }
   render(parentElement) {

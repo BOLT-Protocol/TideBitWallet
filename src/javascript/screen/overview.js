@@ -25,10 +25,6 @@ class Overview {
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.scaffold.element.view = state.screen;
   }
-  updateState(state) {
-    this.header.updateState(state);
-    this.accountList.updateState(state);
-  }
   render(state) {
     const scaffold = document.querySelector("scaffold-widget");
     const view = scaffold?.attributes?.view?.value;
@@ -39,7 +35,6 @@ class Overview {
     ) {
       this.initialize(state);
     } else {
-      this.updateState(state);
       switch (state.screen) {
         case "accounts":
           this.body.focus = 0;
@@ -48,6 +43,16 @@ class Overview {
           this.body.focus = 1;
           break;
       }
+    }
+  }
+  //
+  // OnUpdateCurrency ,
+  // OnAccountUpdate
+  update(event, data) {
+    if (event === "OnAccountUpdate") {
+      this.accountList.updateAccount(data);
+    } else if (event === "OnUpdateCurrency") {
+      this.accountList.update(data);
     }
   }
 }
