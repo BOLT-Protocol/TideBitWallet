@@ -6,13 +6,14 @@ import address from "../screen/address";
 import bill from "../screen/bill";
 
 const route = (state) => {
+  console.log(state);
   switch (state.screen) {
     case "landing":
       landing(state);
       break;
     case "accounts":
     case "settings":
-      overview(state);
+      overview.render(state);
       break;
     case "account":
       account(state);

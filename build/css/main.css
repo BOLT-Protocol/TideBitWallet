@@ -400,6 +400,13 @@ body {
   .third-party-signin #appleid-signin {
     display: none; }
 
+.slides-container {
+  display: flex;
+  flex-direction: row; }
+  .slides-container .slides {
+    display: none;
+    flex: auto; }
+
 .bill {
   display: flex;
   flex-direction: column;

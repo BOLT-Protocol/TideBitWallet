@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624007562943
+      // 1624262940163
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6791,21 +6791,10 @@ class ScaffoldElement extends HTMLElement {
     this.popover = new _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__.default();
     this.popover.render(this);
   }
-  updateHeader(newHeader) {
-    this.header = newHeader;
-    this.children[0].replaceChildren();
-    this.header.render(this.children[0]);
+  set view(name) {
+    this.setAttribute("view", name);
   }
-  updateBody(newBody) {
-    this.body = newBody;
-    this.children[1].replaceChildren();
-    this.body.render(this.children[1]);
-  }
-  updateFooter(newFooter) {
-    this.footer = newFooter;
-    this.children[2].replaceChildren();
-    this.footer.render(this.children[2]);
-  }
+
 }
 
 customElements.define("scaffold-widget", ScaffoldElement);
@@ -6819,57 +6808,6 @@ class Scaffold {
     document.body.replaceChildren();
     document.body.insertAdjacentElement("beforeend", this.element);
   }
-
-  /**
-   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
-   * @param {String: show on the dialog} text
-   * @param {function} onConfirm
-   * @param {default true} cancellable
-   */
-  static openPopover(type, text, onConfirm, cancellable = true) {
-    const popover = document.querySelector("pop-over");
-    popover.open = true;
-    if (cancellable) {
-      popover.cancellable = cancellable;
-    }
-    switch (type) {
-      case "error":
-        popover.errorPopup(text);
-        break;
-      case "success":
-        popover.successPopup(text);
-        break;
-      case "loading":
-        popover.loadingPopup(text);
-        break;
-      case "confirm":
-        popover.confirmPopup(text, onConfirm);
-        break;
-    }
-  }
-  static closePopover(timeout) {
-    const popover = document.querySelector("pop-over");
-    if (timeout !== undefined) {
-      setTimeout(() => {
-        popover.open = false;
-      }, timeout);
-    } else {
-      popover.open = false;
-    }
-  }
-  // render(parentElement) {
-  //   parentElement.replaceChildren();
-  //   parentElement.insertAdjacentElement("afterbegin", this.element);
-  // }
-  // updateHeader(newHeader) {
-  //   this.element.updateHeader(newHeader);
-  // }
-  // updateBody(newBody) {
-  //   this.element.updateBody(newBody);
-  // }
-  // updateFooter(newFooter) {
-  //   this.element.updateFooter(newFooter);
-  // }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Scaffold);
@@ -6963,6 +6901,64 @@ class SettingList {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/slider_container.js":
+/*!***************************************************!*\
+  !*** ./src/javascript/layout/slider_container.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class SlidesContainerElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  set focus(index) {
+    this.setAttribute("focus", index);
+  }
+  static get observedAttributes() {
+    return ["focus"];
+  }
+  connectedCallback() {
+    this.className = "slides-container";
+    this.childrenData.forEach((childData) => {
+      const slidesNode = document.createElement("div");
+      slidesNode.className = "slides";
+      this.insertAdjacentElement("beforeend", slidesNode);
+      childData.render(slidesNode);
+    });
+    this.focus = 0;
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "focus") {
+      if (oldValue) this.children[oldValue].style.display = "none";
+      this.children[newValue].style.display = "block";
+    }
+  }
+  // disconnectedCallback() {}
+}
+customElements.define("slides-container", SlidesContainerElement);
+
+class SlidesContainer {
+  constructor(children) {
+    this.element = document.createElement("slides-container");
+    this.element.childrenData = children;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  set focus(index) {
+    this.element.focus = index;
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SlidesContainer);
 
 
 /***/ }),
@@ -7440,30 +7436,61 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
 /* harmony import */ var _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/setting_list */ "./src/javascript/layout/setting_list.js");
 /* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
+/* harmony import */ var _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../layout/slider_container */ "./src/javascript/layout/slider_container.js");
 
 
 
 
 
 
-const overview = (state) => {
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const bottomNavigator = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(state);
-  switch (state.screen) {
-    case "accounts":
-      bottomNavigator.focus = 0;
-      const accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
-      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, accountList, bottomNavigator);
-      break;
-    case "settings":
-      bottomNavigator.focus = 1;
-      const settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
-      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, settingList, bottomNavigator);
-      break;
-    default:
-      break;
+
+class Overview {
+  /**
+   * total assets
+   * current currency
+   * assets list
+   * page index
+   */
+  constructor() {}
+  initialize(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(this.state);
+    this.accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(this.state);
+    this.body = new _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__.default([
+      this.accountList,
+      new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(this.state),
+    ]);
+    this.footer = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(this.state, 0);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
+    this.scaffold.element.view = state.screen;
   }
-};
+  updateState(state) {
+    this.header.updateState(state);
+    this.accountList.updateState(state);
+  }
+  render(state) {
+    const scaffold = document.querySelector("scaffold-widget");
+    const view = scaffold?.attributes?.view?.value;
+    if (
+      !scaffold ||
+      (view !== "accounts" && view !== "settings") ||
+      !this.scaffold
+    ) {
+      this.initialize(state);
+    } else {
+      switch (state.screen) {
+        case "accounts":
+          this.body.focus = 0;
+          break;
+        case "settings":
+          this.body.focus = 1;
+          break;
+      }
+    }
+  }
+}
+
+const overview = new Overview();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
 
@@ -7484,6 +7511,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 /* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
+/* harmony import */ var _utils_popup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/popup */ "./src/javascript/utils/popup.js");
+
 
 
 
@@ -7500,14 +7529,13 @@ const sendTransaction = (transaction) => {
   console.log("priority", transaction.priority);
   console.log("gasPrice", transaction.gasPrice);
   console.log("gas", transaction.gas);
-  _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover('success', 'Success!');
-  // Scaffold.closePopover(2000);
+  _utils_popup__WEBPACK_IMPORTED_MODULE_3__.open("success", "Success!");
 };
 
 const transaction = (state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
   const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state, (val) =>
-    _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover(
+    _utils_popup__WEBPACK_IMPORTED_MODULE_3__.open(
       "confirm",
       "Are you sure to make this transaction?",
       () => sendTransaction(val),
@@ -7659,6 +7687,59 @@ function launchTideBitUi(options, callback) {
 
 /***/ }),
 
+/***/ "./src/javascript/utils/popup.js":
+/*!***************************************!*\
+  !*** ./src/javascript/utils/popup.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "open": () => (/* binding */ open),
+/* harmony export */   "close": () => (/* binding */ close)
+/* harmony export */ });
+/**
+   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
+   * @param {String: show on the dialog} text
+   * @param {function} onConfirm
+   * @param {default true} cancellable
+   */
+const open = (type, text, onConfirm, cancellable = true) => {
+  const popover = document.querySelector("pop-over");
+  popover.open = true;
+  if (cancellable) {
+    popover.cancellable = cancellable;
+  }
+  switch (type) {
+    case "error":
+      popover.errorPopup(text);
+      break;
+    case "success":
+      popover.successPopup(text);
+      break;
+    case "loading":
+      popover.loadingPopup(text);
+      break;
+    case "confirm":
+      popover.confirmPopup(text, onConfirm);
+      break;
+  }
+};
+const close = (timeout) => {
+  const popover = document.querySelector("pop-over");
+  if (timeout !== undefined) {
+    setTimeout(() => {
+      popover.open = false;
+    }, timeout);
+  } else {
+    popover.open = false;
+  }
+};
+
+
+/***/ }),
+
 /***/ "./src/javascript/utils/route.js":
 /*!***************************************!*\
   !*** ./src/javascript/utils/route.js ***!
@@ -7684,13 +7765,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const route = (state) => {
+  console.log(state);
   switch (state.screen) {
     case "landing":
       (0,_screen_landing__WEBPACK_IMPORTED_MODULE_0__.default)(state);
       break;
     case "accounts":
     case "settings":
-      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+      _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.render(state);
       break;
     case "account":
       (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(state);
@@ -8766,7 +8848,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("0bdf49dfe9e73322b62a")
+/******/ 		__webpack_require__.h = () => ("ed794091ade421610b1c")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

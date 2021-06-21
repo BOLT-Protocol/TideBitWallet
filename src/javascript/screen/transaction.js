@@ -1,6 +1,7 @@
 import Scaffold from "../layout/scaffold";
 import Header from "../layout/header";
 import Form from "../layout/form";
+import * as popup from "../utils/popup";
 
 /**
  * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
@@ -14,14 +15,13 @@ const sendTransaction = (transaction) => {
   console.log("priority", transaction.priority);
   console.log("gasPrice", transaction.gasPrice);
   console.log("gas", transaction.gas);
-  Scaffold.openPopover('success', 'Success!');
-  // Scaffold.closePopover(2000);
+  popup.open("success", "Success!");
 };
 
 const transaction = (state) => {
   const header = new Header(state);
   const form = new Form(state, (val) =>
-    Scaffold.openPopover(
+    popup.open(
       "confirm",
       "Are you sure to make this transaction?",
       () => sendTransaction(val),

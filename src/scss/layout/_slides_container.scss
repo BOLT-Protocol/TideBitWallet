@@ -1,0 +1,8 @@
+.slides-container {
+  display: flex;
+  flex-direction: row;
+  & .slides {
+    display: none;
+    flex: auto;
+  }
+}
