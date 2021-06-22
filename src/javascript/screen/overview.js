@@ -7,17 +7,10 @@ import SlidesContainer from "../layout/slider_container";
 import { currentView } from "../utils/utils";
 
 class Overview {
-  /**
-   * total assets
-   * current currency
-   * assets list
-   * page index
-   */
   constructor() {}
-
   initialize(screen, totalAsset, assets, fiat, version) {
     this.assets = JSON.parse(JSON.stringify(assets));
-    this.header = new Header(screen, fiat, { totalAsset });
+    this.header = new Header({ screen, fiat, totalAsset });
     this.assetList = new AssetList(assets, fiat);
     this.settingList = new SettingList(fiat, version);
     this.body = new SlidesContainer([this.assetList, this.settingList]);
@@ -28,7 +21,6 @@ class Overview {
   }
   render(screen, totalAsset, assets, fiat, version) {
     const view = currentView();
-    console.log(screen);
     if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
       this.initialize(screen, totalAsset, assets, fiat, version);
     } else {
@@ -50,10 +42,10 @@ class Overview {
    */
   update(event, totalAsset, fiat, { assets, asset }) {
     if (event === "OnUpdateAccount") {
-      this.header.update(this.screen, fiat, { totalAsset, asset });
+      this.header.update({ screen: this.screen, fiat, totalAsset, asset });
       this.assetList.updateAsset(asset, fiat);
     } else if (event === "OnUpdateCurrency") {
-      this.header.update(this.screen, fiat, { totalAsset });
+      this.header.update({ screen: this.screen, fiat, totalAsset });
       this.assetList.update(assets, fiat);
     }
   }

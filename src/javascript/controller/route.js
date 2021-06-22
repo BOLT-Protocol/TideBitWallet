@@ -1,6 +1,6 @@
 import landing from "../screen/landing";
 import overview from "../screen/overview";
-import account from "../screen/account";
+import account from "../screen/asset";
 import transaction from "../screen/transaction";
 import address from "../screen/address";
 import bill from "../screen/bill";

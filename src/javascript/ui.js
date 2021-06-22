@@ -1,5 +1,5 @@
 // MVC: View
-
+import Asset from "./model/asset";
 import viewController from "./controller/view";
 import { randomHex } from "./utils/utils";
 
@@ -14,7 +14,7 @@ const createTestAsset = (id) => {
     publish: true,
     image: "https://www.tidebit.one/icons/btc.png",
     balance: 100,
-    inUSD: 30000,
+    inFiat: 30000,
   };
 };
 // ++ let assetList = ui.getAssets();
@@ -31,7 +31,7 @@ const getUserDetail = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        infiat: 0,
+        inFiat: 0,
       },
       {
         id: randomHex(32),
@@ -42,7 +42,7 @@ const getUserDetail = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        infiat: 0,
+        inFiat: 0,
       },
       {
         id: randomHex(32),
@@ -53,7 +53,7 @@ const getUserDetail = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        infiat: 0,
+        inFiat: 0,
       },
       {
         id: "e0642b1b64b8b0214e758dd0be63242839e63db7",
@@ -64,7 +64,7 @@ const getUserDetail = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 2,
-        infiat: 52.29,
+        inFiat: 52.29,
       },
       {
         id: randomHex(32),
@@ -75,7 +75,7 @@ const getUserDetail = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        infiat: 0,
+        inFiat: 0,
       },
     ],
   };
@@ -87,14 +87,18 @@ const getWalletConfig = () => {
     fiat: "USD",
   };
 };
+
 //-- test
 
 const startApp = () => {
   // const tideWallet = new TideWalletJS();
   viewController.route("landing");
   // onReady
-  viewController.initialize(getUserDetail(), getWalletConfig());
+  const user = getUserDetail();
+  user.assets = user.assets.map((asset) => new Asset(asset));
+  viewController.initialize(user, getWalletConfig());
   // viewController.route("assets");
+  // viewController.route("asset", asset);
 };
 
 startApp();

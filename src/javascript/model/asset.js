@@ -1,5 +1,5 @@
 class Asset {
-  constructor(
+  constructor({
     id,
     name,
     symbol,
@@ -8,8 +8,8 @@ class Asset {
     publish,
     image,
     balance,
-    inUSD
-  ) {
+    inFiat,
+  }) {
     this.id = id;
     this.name = name;
     this.symbol = symbol;
@@ -18,6 +18,7 @@ class Asset {
     this.publish = publish;
     this.image = image;
     this.balance = balance;
-    this.inUSD = inUSD;
+    this.inFiat = inFiat;
   }
 }
+export default Asset;

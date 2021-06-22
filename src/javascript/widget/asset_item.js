@@ -1,4 +1,5 @@
 import route from "../controller/route";
+import viewController from "../controller/view";
 class AssetItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
@@ -25,10 +26,10 @@ class AssetItemElement extends HTMLElement {
     );
     element.children[1].textContent = asset.symbol.toUpperCase();
     element.children[2].textContent = asset.balance;
-    element.children[3].children[1].textContent = asset.infiat;
-    element.children[3].children[2].textContent = fiat.symbol;
-    element.addEventListener("click", (e) =>
-      route({ screen: "asset", asset, fiat })
+    element.children[3].children[1].textContent = asset.inFiat;
+    element.children[3].children[2].textContent = fiat;
+    element.addEventListener("click", (_) =>
+      viewController.route("asset", asset)
     );
   }
   connectedCallback() {
@@ -37,8 +38,8 @@ class AssetItemElement extends HTMLElement {
     AssetItemElement.update(this, this.asset, this.fiat);
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) =>
-      route({ screen: "asset", asset, fiat })
+    this.removeEventListener("click", (_) =>
+      viewController.route("asset", asset)
     );
   }
   get publish() {

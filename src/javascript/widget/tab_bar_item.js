@@ -1,3 +1,4 @@
+import viewController from "../controller/view";
 class TabBarItemElement extends HTMLElement {
   constructor() {
     super();
@@ -6,25 +7,24 @@ class TabBarItemElement extends HTMLElement {
     this.className = "tab-bar__button";
     this.innerHTML = `
         <div class="tab-bar__icon"></div>
-        <div class="tab-bar__text"></div>
+        <div class="tab-bar__screen"></div>
     `;
     this.setAttribute(this.action, "");
     this.children[1].textContent = this.text;
-    this.addEventListener("click", () => this.onPressed(this.state));
+    this.addEventListener("click", () => viewController.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", () => this.onPressed(this.state));
+    this.removeEventListener("click", () => viewController.route(this.screen));
   }
 }
 customElements.define("tab-bar-item", TabBarItemElement);
 
 class TabBarItem {
-  constructor(state, title, type, onPressed) {
+  constructor(item) {
     this.element = document.createElement("tab-bar-item");
-    this.element.state = state;
-    this.element.text = title;
-    this.element.action = type;
-    this.element.onPressed = onPressed;
+    this.element.text = item.title;
+    this.element.screen = item.screen;
+    this.element.action = item.title.toLowerCase();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);

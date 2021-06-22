@@ -3,9 +3,8 @@ import Scaffold from "../layout/scaffold";
 import Header from "../layout/header";
 import TarBarNavigator from "../layout/tab_bar_navigator";
 import BillList from "../layout/bill_list";
+import { currentView, randomHex } from "../utils/utils";
 
-// -- test
-import { randomHex } from "../utils/utils";
 const getAssetDetail = (assetId) => {
   if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
   return [
@@ -72,13 +71,34 @@ const getAssetDetail = (assetId) => {
   ];
 };
 
-const account = (state, callback) => {
-  // ++ let assetDetail = ui.getAssetDetail({ assetID });
-  const bills = getAssetDetail(state.account.id)?.map((obj) => new Bill(obj));
-  const header = new Header(state);
-  const tarBarNavigator = new TarBarNavigator(state);
-  const billList = new BillList(state, bills);
-  new Scaffold(header, [tarBarNavigator, billList]);
-};
+class Asset {
+  constructor() {}
+  initialize(screen, asset, fiat) {
+    this.bills = getAssetDetail(asset.id)?.map((obj) => new Bill(obj));
+    this.header = new Header({ screen, fiat, asset });
+    this.tarBarNavigator = new TarBarNavigator();
+    this.billList = new BillList(asset, this.bills);
+    this.scaffold = new Scaffold(this.header, [
+      this.tarBarNavigator,
+      this.billList,
+    ]);
+    this.scaffold.element.view = screen;
+    this.screen = screen;
+  }
+  render(screen, asset, fiat) {
+    const view = currentView();
+    if (!view || view !== "asset" || !this.scaffold) {
+      this.initialize(screen, asset, fiat);
+    }
+  }
+  // ++ Emily 2021/6/22
+  update(event, asset, fiat, { bills, bill }) {
+    if (event === "OnUpdateAccount") {
+    } else if (event === "OnUpdateCurrency") {
+    }
+  }
+}
 
-export default account;
+const asset = new Asset();
+
+export default asset;

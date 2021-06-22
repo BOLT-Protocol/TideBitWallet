@@ -17,7 +17,7 @@ const getSettings = (fiat) => [
     items: [
       {
         name: "Fiat currency unit",
-        label: fiat.symbol,
+        label: fiat,
         onPressed: () => {
           console.log("Popup options of fiat currency");
         },

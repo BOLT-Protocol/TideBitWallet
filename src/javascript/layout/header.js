@@ -5,11 +5,11 @@ import viewController from "../controller/view";
 const getHeaderInfo = (screen) => {
   switch (screen) {
     case "transaction":
-      return { screenTitle: "Send Coin" };
+      return { screenTitle: "Send Coin"};
     case "bill":
-      return { screenTitle: "Transaction Detail" };
+      return { screenTitle: "Transaction Detail"};
     case "address":
-      return { screenTitle: "My Wallet" };
+      return { screenTitle: "My Wallet"};
   }
 };
 
@@ -68,7 +68,7 @@ class HeaderElement extends HTMLElement {
     <div class="header__title">${asset.balance}</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
-      <span class="balance">${asset.infiat}</span>
+      <span class="balance">${asset.inFiat}</span>
       <span class="currency-unit">${fiat}</span>
     </div>
     `;
@@ -105,7 +105,7 @@ class HeaderElement extends HTMLElement {
         break;
     }
   }
-  update(screen, fiat, { totalAsset, asset }) {
+  update({ screen, fiat, totalAsset, asset }) {
     switch (screen) {
       case "assets":
       case "settings":
@@ -132,18 +132,18 @@ class HeaderElement extends HTMLElement {
 customElements.define("header-widget", HeaderElement);
 
 class Header {
-  constructor(screen, fiat, { totalAsset, asset }) {
+  constructor({ screen, fiat, totalAsset, asset }) {
     this.element = document.createElement("header-widget");
     this.element.screen = screen;
-    this.element.totalAsset = totalAsset;
-    this.element.fiat = fiat;
+    if (totalAsset) this.element.totalAsset = totalAsset;
+    if (fiat) this.element.fiat = fiat;
     if (asset) this.element.asset = JSON.parse(JSON.stringify(asset));
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
-  update(screen, fiat, { totalAsset, asset }) {
-    this.element.update(screen, fiat, { totalAsset, asset });
+  update({ screen, fiat, totalAsset, asset }) {
+    this.element.update({ screen, fiat, totalAsset, asset });
   }
 }
 

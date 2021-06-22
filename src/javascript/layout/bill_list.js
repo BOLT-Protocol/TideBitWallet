@@ -13,16 +13,9 @@ class BillListElement extends HTMLElement {
 customElements.define("bill-list", BillListElement);
 
 class BillList {
-  constructor(state, bills) {
+  constructor(asset, bills) {
     this.element = document.createElement("bill-list");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.bills = bills;
-    this.element.billItems = bills.map((bill) => {
-      const state = JSON.parse(JSON.stringify(this.element.state));
-      state.bill = bill;
-      state.screen = "bill";
-      return new BillItem(state);
-    });
+    this.element.billItems = bills.map((bill) => new BillItem(asset, bill));
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);

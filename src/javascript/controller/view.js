@@ -1,6 +1,7 @@
-import account from "../screen/account";
+import asset from "../screen/asset";
 import landing from "../screen/landing";
 import overview from "../screen/overview";
+import bill from "../screen/bill";
 import { currentView } from "../utils/utils";
 
 class ViewController {
@@ -9,13 +10,13 @@ class ViewController {
     this.currentBill;
     this.currentScreen;
     this.userBalanceInFiat = user.userBalanceInFiat;
-    this.userAssets = JSON.parse(JSON.stringify(user.assets));
+    this.userAssets = user.assets;
     this.walletFiat = config.fiat;
     this.walletVersion = config.version;
     this.walletMode = config.mode;
   }
   updateAssets = (assets, userBalanceInFiat, fiat) => {
-    this.userAssets = JSON.parse(JSON.stringify(assets));
+    this.userAssets = assets;
     this.userBalanceInFiat = userBalanceInFiat;
     if (fiat) this.walletFiat = fiat;
     const view = currentView();
@@ -33,7 +34,7 @@ class ViewController {
         break;
     }
   };
-  updateAsset = (account, userBalanceInFiat) => {
+  updateAsset = (asset, userBalanceInFiat) => {
     this.userBalanceInFiat = userBalanceInFiat;
     const view = currentView();
     switch (view) {
@@ -43,7 +44,7 @@ class ViewController {
           "OnUpdateAccount",
           this.userBalanceInFiat,
           this.walletFiat,
-          { account }
+          { asset }
         );
         break;
       case "asset":
@@ -57,7 +58,7 @@ class ViewController {
   updateBills = (bills) => {};
   updateBill = (bill) => {};
   updateAddress = (address) => {};
-  route = (screen) => {
+  route = (screen, data) => {
     switch (screen) {
       case "landing":
         landing.render(screen);
@@ -72,8 +73,16 @@ class ViewController {
           this.walletVersion
         );
         break;
-      case "account":
-        account(data, this.walletFiat);
+      case "asset":
+        if (data) {
+          this.currentAsset = data; //Asset
+        }
+        asset.render(screen, this.currentAsset, this.walletFiat);
+        break;
+      case "bill":
+        this.currentBill = data; //Bill
+        bill.render(screen, this.currentAsset, this.currentBill);
+        break;
     }
   };
 }
