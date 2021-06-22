@@ -6,7 +6,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.className = "third-party-signin";
     this.innerHTML = `
     <div class="third-party-signin__logo"></div>
-    <div class="third-party-signin__logo-text">${version}</div>
+    <div class="third-party-signin__logo-text">${this.version}</div>
     <div class="third-party-signin__action">
         <div id="googleid-signin" class="third-party-signin__button">
             <div class="third-party-signin__icon">

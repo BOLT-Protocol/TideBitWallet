@@ -1,14 +1,12 @@
 import items from "../constant/bottom_navigator_data";
 import TabBar from "../widget/tar-bar";
 import BottomNavigatorItem from "../widget/bottom_navigator_item";
-import route from "../controller/route";
 
 class BottomNavigator {
-  constructor(state, focusIndex) {
+  constructor(focusIndex) {
     this.focusIndex = focusIndex;
-    this.state = JSON.parse(JSON.stringify(state));
     this.bottomNavigatorItems = items.map(
-      (item) => new BottomNavigatorItem(state, item, (state) => route(state))
+      (item) => new BottomNavigatorItem(item)
     );
   }
   render(parentElement) {

@@ -1,6 +1,6 @@
 const navigatorItemsData = [
   {
-    screen: "accounts",
+    screen: "assets",
     icon: "wallet",
   },
   {

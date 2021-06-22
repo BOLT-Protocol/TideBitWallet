@@ -8,7 +8,7 @@ class ViewController {
     this.currentAsset;
     this.currentBill;
     this.currentScreen;
-    this.userBalanceInFiat = userBalanceInFiat;
+    this.userBalanceInFiat = user.userBalanceInFiat;
     this.userAssets = JSON.parse(JSON.stringify(user.assets));
     this.walletFiat = config.fiat;
     this.walletVersion = config.version;

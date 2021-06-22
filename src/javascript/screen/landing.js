@@ -13,7 +13,7 @@ class Landing {
     this.scaffold = new Scaffold(
       this.header,
       new ThirdPartySigninContainer(version, "white", () =>
-        googleSignin(state)
+        googleSignin("assets")
       ),
       this.footer
     );

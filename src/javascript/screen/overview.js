@@ -21,19 +21,16 @@ class Overview {
     this.assetList = new AssetList(assets, fiat);
     this.settingList = new SettingList(fiat, version);
     this.body = new SlidesContainer([this.assetList, this.settingList]);
-    this.footer = new BottomNavigator(this.state, 0);
+    this.footer = new BottomNavigator(0);
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.scaffold.element.view = screen;
     this.screen = screen;
   }
   render(screen, totalAsset, assets, fiat, version) {
     const view = currentView();
-    if (
-      !view ||
-      (view !== "assets" && view !== "settings") ||
-      !this.scaffold
-    ) {
-      initialize(screen, totalAsset, assets, fiat, version);
+    console.log(screen);
+    if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
+      this.initialize(screen, totalAsset, assets, fiat, version);
     } else {
       this.screen = screen;
       switch (this.screen) {

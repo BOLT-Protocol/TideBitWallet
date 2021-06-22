@@ -34,4 +34,4 @@ class Router {
   };
 }
 
-export default route;
+export default Router;

@@ -94,7 +94,7 @@ const startApp = () => {
   viewController.route("landing");
   // onReady
   viewController.initialize(getUserDetail(), getWalletConfig());
-  viewController.route("assets");
+  // viewController.route("assets");
 };
 
 startApp();

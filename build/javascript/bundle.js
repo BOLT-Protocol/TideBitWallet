@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624345190796
+      // 1624346673935
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6005,7 +6005,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 const navigatorItemsData = [
   {
-    screen: "accounts",
+    screen: "assets",
     icon: "wallet",
   },
   {
@@ -6098,7 +6098,7 @@ class Router {
   };
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (route);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Router);
 
 
 /***/ }),
@@ -6128,7 +6128,7 @@ class ViewController {
     this.currentAsset;
     this.currentBill;
     this.currentScreen;
-    this.userBalanceInFiat = userBalanceInFiat;
+    this.userBalanceInFiat = user.userBalanceInFiat;
     this.userAssets = JSON.parse(JSON.stringify(user.assets));
     this.walletFiat = config.fiat;
     this.walletVersion = config.version;
@@ -6535,18 +6535,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
 /* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
 /* harmony import */ var _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/bottom_navigator_item */ "./src/javascript/widget/bottom_navigator_item.js");
-/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
-
 
 
 
 
 class BottomNavigator {
-  constructor(state, focusIndex) {
+  constructor(focusIndex) {
     this.focusIndex = focusIndex;
-    this.state = JSON.parse(JSON.stringify(state));
     this.bottomNavigatorItems = _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.map(
-      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_controller_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
+      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(item)
     );
   }
   render(parentElement) {
@@ -7204,7 +7201,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.className = "third-party-signin";
     this.innerHTML = `
     <div class="third-party-signin__logo"></div>
-    <div class="third-party-signin__logo-text">${version}</div>
+    <div class="third-party-signin__logo-text">${this.version}</div>
     <div class="third-party-signin__action">
         <div id="googleid-signin" class="third-party-signin__button">
             <div class="third-party-signin__icon">
@@ -7593,7 +7590,7 @@ class Landing {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
       this.header,
       new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", () =>
-        googleSignin(state)
+        googleSignin("assets")
       ),
       this.footer
     );
@@ -7648,19 +7645,16 @@ class Overview {
     this.assetList = new _layout_asset_list__WEBPACK_IMPORTED_MODULE_2__.default(assets, fiat);
     this.settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(fiat, version);
     this.body = new _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__.default([this.assetList, this.settingList]);
-    this.footer = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(this.state, 0);
+    this.footer = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(0);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
     this.scaffold.element.view = screen;
     this.screen = screen;
   }
   render(screen, totalAsset, assets, fiat, version) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_6__.currentView)();
-    if (
-      !view ||
-      (view !== "assets" && view !== "settings") ||
-      !this.scaffold
-    ) {
-      initialize(screen, totalAsset, assets, fiat, version);
+    console.log(screen);
+    if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
+      this.initialize(screen, totalAsset, assets, fiat, version);
     } else {
       this.screen = screen;
       switch (this.screen) {
@@ -7883,7 +7877,7 @@ const startApp = () => {
   _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("landing");
   // onReady
   _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.initialize(getUserDetail(), getWalletConfig());
-  _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("assets");
+  // viewController.route("assets");
 };
 
 startApp();
@@ -8232,6 +8226,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
+
+
 class BottomNavigatorItemElement extends HTMLElement {
   constructor() {
     super();
@@ -8241,22 +8238,20 @@ class BottomNavigatorItemElement extends HTMLElement {
     this.innerHTML = `
         <div class="bottom-navigator__icon"><i class="fas fa-${this.icon}"></i></div>
     `;
-    this.addEventListener("click", () => this.onPressed(this.state));
+    this.addEventListener("click", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", () => this.onPressed(this.state));
+    this.removeEventListener("click", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
 }
 
 customElements.define("bottom-navigator-item", BottomNavigatorItemElement);
 
 class BottomNavigatorItem {
-  constructor(state, item, onPressed) {
+  constructor(item) {
     this.element = document.createElement("bottom-navigator-item");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.onPressed = onPressed;
     this.element.icon = item.icon;
-    this.element.state.screen = item.screen;
+    this.element.screen = item.screen;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -9006,7 +9001,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("cda0486dd156c79af9b4")
+/******/ 		__webpack_require__.h = () => ("d871362c81ca03775fcd")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
