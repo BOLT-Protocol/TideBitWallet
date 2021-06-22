@@ -1,7 +1,7 @@
 import items from "../constant/tab_bar_data";
 import TabBar from "../widget/tar-bar";
 import TabBarItem from "../widget/tab_bar_item";
-import route from "../utils/route";
+import route from "../controller/route";
 
 class TarBarNavigator {
   constructor(state) {

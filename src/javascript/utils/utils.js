@@ -70,3 +70,9 @@ export const addressFormatter = (address, showLength = 6) => {
   const suffix = address.slice(address.length - showLength, address.length);
   return prefix + "..." + suffix;
 };
+
+export const currentView = () => {
+  const scaffold = document.querySelector("scaffold-widget");
+  const view = scaffold?.attributes?.view?.value;
+  return view;
+};

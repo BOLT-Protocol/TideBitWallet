@@ -1,5 +1,5 @@
-import overview from "./screen/overview";
-import route from "./utils/route";
+import viewController from "./controller/updateView";
+import route from "./controller/route";
 import { randomHex } from "./utils/utils";
 
 const createTestAccount = (id) => {
@@ -17,5 +17,5 @@ const createTestAccount = (id) => {
 };
 
 window.createTestAccount = createTestAccount;
-window.overview = overview;
+window.viewController = viewController;
 window.route = route;

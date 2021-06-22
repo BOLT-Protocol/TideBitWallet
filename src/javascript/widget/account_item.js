@@ -1,21 +1,13 @@
-import route from "../utils/route";
+import route from "../controller/route";
 class AccountItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.addEventListener("click", (_) => {
-      if (this.account) {
-        this.state.account = this.account;
-        this.state.screen = "account";
-        route(this.state);
-      } else {
-        return;
-      }
-    });
   }
   set id(val) {
     this.setAttribute("id", val);
   }
-  static update(element, state) {
+  static update(element, account, fiat) {
+    if (element === undefined || element === null) return;
     element.innerHTML = `
     <div class="account-item__icon"></div>
     <div class="account-item__symbol"></div>
@@ -26,29 +18,28 @@ class AccountItemElement extends HTMLElement {
         <span class="currency-unit"></span>
     </div>
     `;
-    element.exchange(state);
-    element.publish = state.account.publish;
+    element.publish = account.publish;
     element.children[0].insertAdjacentHTML(
       "afterbegin",
-      `<img src=${
-        state.account.image
-      } alt=${state.account.symbol.toUpperCase()}>`
+      `<img src=${account.image} alt=${account.symbol.toUpperCase()}>`
     );
-    element.children[1].textContent =
-      state.account.symbol.toUpperCase();
-    element.children[2].textContent = state.account.balance;
-    element.children[3].children[1].textContent = state.account.infiat;
-    element.children[3].children[2].textContent =
-      state.walletConfig.fiat.symbol;
-    element.addEventListener("click", (e) => route(state));
+    element.children[1].textContent = account.symbol.toUpperCase();
+    element.children[2].textContent = account.balance;
+    element.children[3].children[1].textContent = account.infiat;
+    element.children[3].children[2].textContent = fiat.symbol;
+    element.addEventListener("click", (e) =>
+      route({ screen: "account", account, fiat })
+    );
   }
   connectedCallback() {
     this.className = "account-item";
-    this.id = this.state.account.id;
-    AccountItemElement.update(this, this.state);
+    this.id = this.account.id;
+    AccountItemElement.update(this, this.account, this.fiat);
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => route(this.state));
+    this.removeEventListener("click", (e) =>
+      route({ screen: "account", account, fiat })
+    );
   }
   get publish() {
     return this.hasAttribute("publish");
@@ -60,29 +51,22 @@ class AccountItemElement extends HTMLElement {
       this.removeAttribute("publish");
     }
   }
-  exchange(state) {
-    if (state.walletConfig.fiat) {
-      state.account.infiat =
-        state.account.inUSD / state.walletConfig.fiat.inUSD;
-      return;
-    }
-    return;
-  }
 }
 
 customElements.define("account-item", AccountItemElement);
 class AccountItem {
-  constructor(state) {
-    this.id = state.account.id;
+  constructor(account, fiat) {
+    this.id = account.id;
     this.element = document.createElement("account-item");
-    this.element.state = state;
+    this.element.account = account;
+    this.element.fiat = fiat;
+  }
+  update(account, fiat) {
+    const element = document.querySelector(`[id=${this.id}]`);
+    AccountItemElement.update(element, account, fiat);
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-  update() {
-    const element = document.querySelector(`[id=${this.id}]`);
-    AccountItemElement.update(element, this.element.state);
   }
 }
 

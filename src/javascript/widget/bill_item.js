@@ -1,4 +1,4 @@
-import route from "../utils/route";
+import route from "../controller/route";
 import { addressFormatter } from "../utils/utils";
 
 class BillItemElement extends HTMLElement {

@@ -1,5 +1,6 @@
 // https://unicode-table.com/cn/2248/
-import route from "../utils/route";
+
+import viewController from "../controller/updateView";
 
 const getHeaderInfo = (screen) => {
   switch (screen) {
@@ -23,21 +24,20 @@ class BackButtonElement extends HTMLElement {
     } else {
       this.innerHTML = `<i class="fas fa-arrow-left">`;
     }
-    this.addEventListener("click", (e) => route(this.state));
+    this.addEventListener("click", (_) => viewController.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => route(this.state));
+    this.removeEventListener("click", (_) => viewController.route(this.screen));
   }
 }
 
 customElements.define("back-button", BackButtonElement);
 
 class BackButton {
-  constructor(state, screen, icon) {
+  constructor(screen, icon) {
     this.element = document.createElement("back-button");
+    this.element.screen = screen;
     this.element.icon = icon;
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.state.screen = screen;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -48,20 +48,18 @@ class HeaderElement extends HTMLElement {
   constructor() {
     super();
   }
-  overviewHeader = (totalAsset, fiatSymbol) => {
+  overviewHeader = (totalAsset, fiat) => {
     const markup = `
       <div class="header__title">Total Asset</div>
       <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
         <span class="user-total-balance">${totalAsset}</span>
-        <span class="currency-unit">${fiatSymbol}</span>
+        <span class="currency-unit">${fiat.symbol}</span>
       </div>
     `;
     return markup;
   };
-  accountHeader = (state) => {
-    const account = state.account;
-    const fiat = state.walletConfig.fiat;
+  accountHeader = (account, fiat) => {
     const markup = `
     <div class="header__icon">
       <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
@@ -76,10 +74,8 @@ class HeaderElement extends HTMLElement {
     `;
     return markup;
   };
-  defaultHeader = (state) => {
-    const { screenTitle, actionHTML } = getHeaderInfo(state.screen);
-    const _state = JSON.parse(JSON.stringify(state));
-    _state.screen = "account";
+  defaultHeader = (screen) => {
+    const { screenTitle, actionHTML } = getHeaderInfo(screen);
     const markup = `
         <div class="header__title">${screenTitle}</div>
         <div class="header__action ${actionHTML ? "" : "disabled"}">${
@@ -88,49 +84,45 @@ class HeaderElement extends HTMLElement {
     `;
     return markup;
   };
-  updateHeader(state) {
-    switch (state.screen) {
-      case "accounts":
-      case "overviews":
-        if (state.totalAsset !== this.state.totalAsset) {
-          document.querySelector(".user-total-balance").textContent =
-            state.totalAsset;
-          this.state = JSON.parse(JSON.stringify(state));
-        } else if (
-          state.walletConfig.fiat.symbol != this.state.walletConfig.fiat.symbol
-        ) {
-          document.querySelector(".currency-unit").textContent =
-            state.walletConfig.fiat.symbol;
-          this.state = JSON.parse(JSON.stringify(state));
-        }
-        break;
-      case "account":
-        this.innerHTML = this.accountHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "accounts");
-        this.headerLeading.render(this);
-        break;
-    }
-  }
   connectedCallback() {
-    switch (this.state.screen) {
+    switch (this.screen) {
       case "accounts":
       case "settings":
         this.classList = ["header header--overview"];
-        this.innerHTML = this.overviewHeader(
-          this.state.user.totalAsset,
-          this.state.walletConfig.fiat.symbol
-        );
+        this.innerHTML = this.overviewHeader(this.totalAsset, this.fiat);
         break;
       case "account":
         this.classList = ["header header--account"];
-        this.innerHTML = this.accountHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "accounts");
+        this.innerHTML = this.accountHeader(this.account, this.fiat);
+        this.headerLeading = new BackButton("accounts");
         this.headerLeading.render(this);
         break;
       default:
         this.classList = ["header header--default"];
-        this.innerHTML = this.defaultHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "account");
+        this.innerHTML = this.defaultHeader(this.screen);
+        this.headerLeading = new BackButton("account");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
+  update(screen, fiat, { totalAsset, account }) {
+    switch (screen) {
+      case "accounts":
+      case "settings":
+        if (totalAsset !== this.totalAsset) {
+          this.totalAsset = totalAsset;
+          document.querySelector(".user-total-balance").textContent =
+            totalAsset;
+        } else if (fiat.symbol != this.fiat.symbol) {
+          this.fiat = JSON.parse(JSON.stringify(fiat));
+          document.querySelector(".currency-unit").textContent = fiat.symbol;
+        }
+        break;
+      case "account":
+        this.fiat = JSON.parse(JSON.stringify(fiat));
+        this.account = JSON.parse(JSON.stringify(account));
+        this.innerHTML = this.accountHeader(account, fiat);
+        this.headerLeading = new BackButton("accounts");
         this.headerLeading.render(this);
         break;
     }
@@ -140,15 +132,18 @@ class HeaderElement extends HTMLElement {
 customElements.define("header-widget", HeaderElement);
 
 class Header {
-  constructor(state) {
+  constructor(screen, fiat, { totalAsset, account }) {
     this.element = document.createElement("header-widget");
-    this.element.state = JSON.parse(JSON.stringify(state));
-  }
-  update(state) {
-    this.element.updateHeader(state);
+    this.element.screen = screen;
+    this.element.totalAsset = totalAsset;
+    this.element.fiat = JSON.parse(JSON.stringify(fiat));
+    if (account) this.element.account = JSON.parse(JSON.stringify(account));
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+  update(screen, fiat, { totalAsset, account }) {
+    this.element.update(screen, fiat, { totalAsset, account });
   }
 }
 

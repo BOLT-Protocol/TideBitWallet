@@ -1,6 +1,6 @@
 import Scaffold from "../layout/scaffold";
 import ThirdPartySigninContainer from "../layout/third_party_signin_container";
-import route from "../utils/route";
+import route from "../controller/route";
 
 const googleSignin = async (state) => {
   // await;

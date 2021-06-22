@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624287165324
+      // 1624340359459
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6045,6 +6045,161 @@ const tabBarItemData = [
 
 /***/ }),
 
+/***/ "./src/javascript/controller/route.js":
+/*!********************************************!*\
+  !*** ./src/javascript/controller/route.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+
+
+
+
+
+
+class Router {
+  constructor(state) {
+    this.state = JSON.parse(JSON.stringify(state));
+  }
+  route = (state) => {
+    console.log(state);
+    switch (state.screen) {
+      case "landing":
+        (0,_screen_landing__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+        break;
+      case "accounts":
+      case "settings":
+        _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.render(state);
+        break;
+      case "account":
+        (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+        break;
+      case "transaction":
+        (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(state);
+        break;
+      case "address":
+        (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(state);
+        break;
+      case "bill":
+        (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(state);
+        break;
+    }
+  };
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (route);
+
+
+/***/ }),
+
+/***/ "./src/javascript/controller/updateView.js":
+/*!*************************************************!*\
+  !*** ./src/javascript/controller/updateView.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+class ViewController {
+  constructor(currentScreen, user, config) {
+    this.currentAccount;
+    this.currentBill;
+    this.currentScreen = currentScreen;
+    this.userBalanceInFiat = userBalanceInFiat;
+    this.userAccounts = JSON.parse(JSON.stringify(user.accounts));
+    this.walletFiat = JSON.parse(JSON.stringify(config.fiat));
+    this.walletVersion = JSON.parse(JSON.stringify(config.version));
+    this.walletMode = JSON.parse(JSON.stringify(config.mode));
+  }
+  updateAccounts = (accounts, userBalanceInFiat, walletFiat) => {
+    this.userAccounts = JSON.parse(JSON.stringify(accounts));
+    this.userBalanceInFiat = userBalanceInFiat;
+    if (walletFiat) this.walletFiat = JSON.parse(JSON.stringify(walletFiat));
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.currentView)();
+    switch (view) {
+      case "accounts":
+      case "settings":
+        _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.update(
+          "OnUpdateCurrency",
+          this.userBalanceInFiat,
+          this.walletFiat,
+          { accounts }
+        );
+        break;
+      default:
+        break;
+    }
+  };
+  updateAccount = (account, userBalanceInFiat) => {
+    this.userBalanceInFiat = userBalanceInFiat;
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.currentView)();
+    switch (view) {
+      case "accounts":
+      case "settings":
+        _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.update(
+          "OnUpdateAccount",
+          this.userBalanceInFiat,
+          this.walletFiat,
+          { account }
+        );
+        break;
+      case "acccount":
+        // ++ 2021/6/22 Emily
+        break;
+      default:
+        break;
+    }
+    _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.update("OnUpdateAccount", account);
+  };
+  updateBills = (bills) => {};
+  updateBill = (bill) => {};
+  updateAddress = (address) => {};
+  route = (screen) => {
+    switch (screen) {
+      case "accounts":
+      case "settings":
+        _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.render(
+          screen,
+          this.userBalanceInFiat,
+          this.userAccounts,
+          this.walletFiat,
+          this.walletVersion
+        );
+        break;
+      case "account":
+        (0,_screen_account__WEBPACK_IMPORTED_MODULE_0__.default)(data, this.walletFiat);
+    }
+  };
+}
+
+const viewController = new ViewController();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (viewController);
+
+
+/***/ }),
+
 /***/ "./src/javascript/index.js":
 /*!*********************************!*\
   !*** ./src/javascript/index.js ***!
@@ -6087,56 +6242,57 @@ class AccountListElement extends HTMLElement {
   constructor() {
     super();
   }
-  connectedCallback() {
-    this.className = "account-list";
-    this.accounts.forEach((account) => account.render(this));
-  }
   update() {
     this.replaceChildren();
     this.accounts.forEach((account) => account.render(this));
+  }
+  connectedCallback() {
+    this.className = "account-list";
+    this.update();
   }
 }
 
 customElements.define("account-list", AccountListElement);
 
 class AccountList {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
+  constructor(accounts, fiat) {
+    this.updateAccounts(accounts);
+    this.updateFiat(fiat);
     this.element = document.createElement("account-list");
-    const { accounts } = this.state.user;
-    this.update(accounts);
+    this.element.accounts = this.accounts.map((account) =>
+      this.accountItem(account)
+    );
   }
-  update(accounts) {
-    this.state.user.accounts = JSON.parse(JSON.stringify(accounts));
-    this.element.accounts = accounts.map((account) => {
-      const state = JSON.parse(JSON.stringify(this.state));
-      state.account = account;
-      state.screen = "account";
-      return new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
-    });
-    if(document.querySelector("account-list")){
-      this.element.update();
-    }
+  accountItem = (account) => new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(account, this.fiat);
+  updateAccounts(accounts) {
+    this.accounts = JSON.parse(JSON.stringify(accounts));
   }
-  updateAccount(account) {
-    const { accounts } = this.state.user;
-    const index = accounts.findIndex((acc) => acc.id === account.id);
+  updateFiat(fiat) {
+    this.fiat = JSON.parse(JSON.stringify(fiat));
+  }
+  update(accounts, fiat) {
+    this.updateAccounts(accounts);
+    this.updateFiat(fiat);
+    this.element.accounts = this.accounts.map((account) =>
+      this.accountItem(account)
+    );
+    this.element.update();
+  }
+  updateAccount(account, fiat) {
+    updateFiat(fiat);
+    const index = this.accounts.findIndex((acc) => acc.id === account.id);
     if (index > -1) {
-      this.state.user.accounts[index] = JSON.parse(JSON.stringify(account));
-      const state = JSON.parse(JSON.stringify(this.state));
-      state.account = this.state.user.accounts[index];
-      state.screen = "account";
-      this.element.accounts[index] = new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
+      this.element.accounts[index] = accountItem(account);
       this.element.accounts[index].update();
     } else {
-      this.state.user.accounts.push(account);
-      const state = JSON.parse(JSON.stringify(this.state));
-      state.account = account;
-      state.screen = "account";
+      this.accounts.push(account);
       this.element.accounts.push(new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state));
       this.element.accounts[this.element.accounts.length - 1].render(
         this.element
       );
+    }
+    if (document.querySelector("account-list")) {
+      this.element.update();
     }
   }
   render(parentElement) {
@@ -6405,7 +6561,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
 /* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
 /* harmony import */ var _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/bottom_navigator_item */ "./src/javascript/widget/bottom_navigator_item.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
 
 
 
@@ -6416,7 +6572,7 @@ class BottomNavigator {
     this.focusIndex = focusIndex;
     this.state = JSON.parse(JSON.stringify(state));
     this.bottomNavigatorItems = _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.map(
-      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
+      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_controller_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
     );
   }
   render(parentElement) {
@@ -6644,8 +6800,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_updateView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/updateView */ "./src/javascript/controller/updateView.js");
 // https://unicode-table.com/cn/2248/
+
 
 
 const getHeaderInfo = (screen) => {
@@ -6670,21 +6827,20 @@ class BackButtonElement extends HTMLElement {
     } else {
       this.innerHTML = `<i class="fas fa-arrow-left">`;
     }
-    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.addEventListener("click", (_) => _controller_updateView__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.removeEventListener("click", (_) => _controller_updateView__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
 }
 
 customElements.define("back-button", BackButtonElement);
 
 class BackButton {
-  constructor(state, screen, icon) {
+  constructor(screen, icon) {
     this.element = document.createElement("back-button");
+    this.element.screen = screen;
     this.element.icon = icon;
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.state.screen = screen;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -6695,20 +6851,18 @@ class HeaderElement extends HTMLElement {
   constructor() {
     super();
   }
-  overviewHeader = (totalAsset, fiatSymbol) => {
+  overviewHeader = (totalAsset, fiat) => {
     const markup = `
       <div class="header__title">Total Asset</div>
       <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
         <span class="user-total-balance">${totalAsset}</span>
-        <span class="currency-unit">${fiatSymbol}</span>
+        <span class="currency-unit">${fiat.symbol}</span>
       </div>
     `;
     return markup;
   };
-  accountHeader = (state) => {
-    const account = state.account;
-    const fiat = state.walletConfig.fiat;
+  accountHeader = (account, fiat) => {
     const markup = `
     <div class="header__icon">
       <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
@@ -6723,10 +6877,8 @@ class HeaderElement extends HTMLElement {
     `;
     return markup;
   };
-  defaultHeader = (state) => {
-    const { screenTitle, actionHTML } = getHeaderInfo(state.screen);
-    const _state = JSON.parse(JSON.stringify(state));
-    _state.screen = "account";
+  defaultHeader = (screen) => {
+    const { screenTitle, actionHTML } = getHeaderInfo(screen);
     const markup = `
         <div class="header__title">${screenTitle}</div>
         <div class="header__action ${actionHTML ? "" : "disabled"}">${
@@ -6735,49 +6887,45 @@ class HeaderElement extends HTMLElement {
     `;
     return markup;
   };
-  updateHeader(state) {
-    switch (state.screen) {
-      case "accounts":
-      case "overviews":
-        if (state.totalAsset !== this.state.totalAsset) {
-          document.querySelector(".user-total-balance").textContent =
-            state.totalAsset;
-          this.state = JSON.parse(JSON.stringify(state));
-        } else if (
-          state.walletConfig.fiat.symbol != this.state.walletConfig.fiat.symbol
-        ) {
-          document.querySelector(".currency-unit").textContent =
-            state.walletConfig.fiat.symbol;
-          this.state = JSON.parse(JSON.stringify(state));
-        }
-        break;
-      case "account":
-        this.innerHTML = this.accountHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "accounts");
-        this.headerLeading.render(this);
-        break;
-    }
-  }
   connectedCallback() {
-    switch (this.state.screen) {
+    switch (this.screen) {
       case "accounts":
       case "settings":
         this.classList = ["header header--overview"];
-        this.innerHTML = this.overviewHeader(
-          this.state.user.totalAsset,
-          this.state.walletConfig.fiat.symbol
-        );
+        this.innerHTML = this.overviewHeader(this.totalAsset, this.fiat);
         break;
       case "account":
         this.classList = ["header header--account"];
-        this.innerHTML = this.accountHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "accounts");
+        this.innerHTML = this.accountHeader(this.account, this.fiat);
+        this.headerLeading = new BackButton("accounts");
         this.headerLeading.render(this);
         break;
       default:
         this.classList = ["header header--default"];
-        this.innerHTML = this.defaultHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "account");
+        this.innerHTML = this.defaultHeader(this.screen);
+        this.headerLeading = new BackButton("account");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
+  update(screen, fiat, { totalAsset, account }) {
+    switch (screen) {
+      case "accounts":
+      case "settings":
+        if (totalAsset !== this.totalAsset) {
+          this.totalAsset = totalAsset;
+          document.querySelector(".user-total-balance").textContent =
+            totalAsset;
+        } else if (fiat.symbol != this.fiat.symbol) {
+          this.fiat = JSON.parse(JSON.stringify(fiat));
+          document.querySelector(".currency-unit").textContent = fiat.symbol;
+        }
+        break;
+      case "account":
+        this.fiat = JSON.parse(JSON.stringify(fiat));
+        this.account = JSON.parse(JSON.stringify(account));
+        this.innerHTML = this.accountHeader(account, fiat);
+        this.headerLeading = new BackButton("accounts");
         this.headerLeading.render(this);
         break;
     }
@@ -6787,15 +6935,18 @@ class HeaderElement extends HTMLElement {
 customElements.define("header-widget", HeaderElement);
 
 class Header {
-  constructor(state) {
+  constructor(screen, fiat, { totalAsset, account }) {
     this.element = document.createElement("header-widget");
-    this.element.state = JSON.parse(JSON.stringify(state));
-  }
-  update(state) {
-    this.element.updateHeader(state);
+    this.element.screen = screen;
+    this.element.totalAsset = totalAsset;
+    this.element.fiat = JSON.parse(JSON.stringify(fiat));
+    if (account) this.element.account = JSON.parse(JSON.stringify(account));
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+  update(screen, fiat, { totalAsset, account }) {
+    this.element.update(screen, fiat, { totalAsset, account });
   }
 }
 
@@ -6884,7 +7035,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/setting_column */ "./src/javascript/widget/setting_column.js");
 
 
-const getSettings = (state) => [
+const getSettings = (fiat) => [
   {
     title: "Security center",
     items: [
@@ -6901,7 +7052,7 @@ const getSettings = (state) => [
     items: [
       {
         name: "Fiat currency unit",
-        label: state.walletConfig.fiat.symbol,
+        label: fiat.symbol,
         onPressed: () => {
           console.log("Popup options of fiat currency");
         },
@@ -6934,7 +7085,7 @@ class SettingListElement extends HTMLElement {
     this.className = "setting";
     this.innerHTML = `
     <div class="setting__list"></div>
-    <div class="setting__text">${this.state.walletConfig.version}</div>
+    <div class="setting__text">${this.version}</div>
     `;
     this.settings.forEach((setting) => setting.render(this.children[0]));
   }
@@ -6942,10 +7093,11 @@ class SettingListElement extends HTMLElement {
 
 customElements.define("setting-list", SettingListElement);
 class SettingList {
-  constructor(state) {
+  constructor(fiat, version) {
+    const settings = getSettings(fiat);
     this.element = document.createElement("setting-list");
-    const settings = getSettings(state);
-    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.version = version;
+    this.element.fiat = JSON.parse(JSON.stringify(fiat));
     this.element.settings = settings.map(
       (setting) => new _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
     );
@@ -7032,7 +7184,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
 /* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
 /* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
 
 
 
@@ -7045,7 +7197,7 @@ class TarBarNavigator {
       const state = JSON.parse(JSON.stringify(this.state));
       state.screen = item.screen;
       return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), (state) =>
-        (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
+        (0,_controller_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
       );
     });
   }
@@ -7451,7 +7603,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/javascript/layout/third_party_signin_container.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
 
 
 
@@ -7460,7 +7612,7 @@ const googleSignin = async (state) => {
   // await;
   const _state = JSON.parse(JSON.stringify(state));
   _state.screen = "accounts";
-  (0,_utils_route__WEBPACK_IMPORTED_MODULE_2__.default)(_state);
+  (0,_controller_route__WEBPACK_IMPORTED_MODULE_2__.default)(_state);
 };
 
 const landing = (state) =>
@@ -7492,6 +7644,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/setting_list */ "./src/javascript/layout/setting_list.js");
 /* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
 /* harmony import */ var _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../layout/slider_container */ "./src/javascript/layout/slider_container.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
 
 
 
@@ -7507,29 +7661,29 @@ class Overview {
    * page index
    */
   constructor() {}
-  initialize(state) {
-    this.state = JSON.parse(JSON.stringify(state));
-    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(this.state);
-    this.accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(this.state);
-    this.body = new _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__.default([
-      this.accountList,
-      new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(this.state),
-    ]);
+
+  initialize(screen, totalAsset, accounts, fiat, version) {
+    this.accounts = JSON.parse(JSON.stringify(accounts));
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, fiat, { totalAsset });
+    this.accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(accounts, fiat);
+    this.settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(fiat, version);
+    this.body = new _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__.default([this.accountList, this.settingList]);
     this.footer = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(this.state, 0);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
-    this.scaffold.element.view = state.screen;
+    this.scaffold.element.view = screen;
+    this.screen = screen;
   }
-  render(state) {
-    const scaffold = document.querySelector("scaffold-widget");
-    const view = scaffold?.attributes?.view?.value;
+  render(screen, totalAsset, accounts, fiat, version) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_6__.currentView)();
     if (
-      !scaffold ||
+      !view ||
       (view !== "accounts" && view !== "settings") ||
       !this.scaffold
     ) {
-      this.initialize(state);
+      initialize(screen, totalAsset, accounts, fiat, version);
     } else {
-      switch (state.screen) {
+      this.screen = screen;
+      switch (this.screen) {
         case "accounts":
           this.body.focus = 0;
           break;
@@ -7539,14 +7693,18 @@ class Overview {
       }
     }
   }
-  //
-  // OnUpdateCurrency ,
-  // OnUpdateAccount
-  update(event, data) {
+  /**
+   *
+   * @param {OnUpdateCurrency, {accounts, fiat, totalAsset}} event
+   * @param {OnUpdateAccount {account, fiat, totalAsset}} data
+   */
+  update(event, totalAsset, fiat, { accounts, account }) {
     if (event === "OnUpdateAccount") {
-      this.accountList.updateAccount(data);
+      this.header.update(this.screen, fiat, { totalAsset, account });
+      this.accountList.updateAccount(account, fiat);
     } else if (event === "OnUpdateCurrency") {
-      this.accountList.update(data);
+      this.header.update(this.screen, fiat, { totalAsset });
+      this.accountList.update(accounts, fiat);
     }
   }
 }
@@ -7647,8 +7805,8 @@ const transaction = (state) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_updateView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./controller/updateView */ "./src/javascript/controller/updateView.js");
+/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./controller/route */ "./src/javascript/controller/route.js");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
 
 
@@ -7669,8 +7827,8 @@ const createTestAccount = (id) => {
 };
 
 window.createTestAccount = createTestAccount;
-window.overview = _screen_overview__WEBPACK_IMPORTED_MODULE_0__.default;
-window.route = _utils_route__WEBPACK_IMPORTED_MODULE_1__.default;
+window.viewController = _controller_updateView__WEBPACK_IMPORTED_MODULE_0__.default;
+window.route = _controller_route__WEBPACK_IMPORTED_MODULE_1__.default;
 
 
 /***/ }),
@@ -7686,7 +7844,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ launchTideBitUi)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./controller/route */ "./src/javascript/controller/route.js");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
 // MVC: View
 
@@ -7698,7 +7856,7 @@ const state = {};
 // ++ let assetList = ui.getAssets();
 const getAssets = () => {
   return {
-    totalAsset: 52.29,
+    userBalanceInFiat: 52.29,
     accounts: [
       {
         id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
@@ -7709,7 +7867,7 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
       {
         id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
@@ -7720,7 +7878,7 @@ const getAssets = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
       {
         id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
@@ -7731,7 +7889,7 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
       {
         id: "e0642b1b64b8b0214e758dd0be63242839e63db7",
@@ -7742,7 +7900,7 @@ const getAssets = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 2,
-        inUSD: 52.29,
+        infiat: 52.29,
       },
       {
         id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
@@ -7753,7 +7911,7 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
     ],
   };
@@ -7771,10 +7929,10 @@ const startApp = () => {
   state.user = getAssets();
   state.walletConfig = setWallet("development", "v 0.1.0 (1)", {
     symbol: "USD",
-    inUSD: 1,
+    infiat: 1,
   });
   state.screen = "landing";
-  (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+  (0,_controller_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 };
 
 function launchTideBitUi(options, callback) {
@@ -7837,60 +7995,6 @@ const close = (timeout) => {
 
 /***/ }),
 
-/***/ "./src/javascript/utils/route.js":
-/*!***************************************!*\
-  !*** ./src/javascript/utils/route.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
-
-
-
-
-
-
-
-const route = (state) => {
-  console.log(state);
-  switch (state.screen) {
-    case "landing":
-      (0,_screen_landing__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-      break;
-    case "accounts":
-    case "settings":
-      _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.render(state);
-      break;
-    case "account":
-      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(state);
-      break;
-    case "transaction":
-      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(state);
-      break;
-    case "address":
-      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(state);
-      break;
-    case "bill":
-      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(state);
-      break;
-  }
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (route);
-
-
-/***/ }),
-
 /***/ "./src/javascript/utils/utils.js":
 /*!***************************************!*\
   !*** ./src/javascript/utils/utils.js ***!
@@ -7903,7 +8007,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "randomHex": () => (/* binding */ randomHex),
 /* harmony export */   "to": () => (/* binding */ to),
 /* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter),
-/* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter)
+/* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter),
+/* harmony export */   "currentView": () => (/* binding */ currentView)
 /* harmony export */ });
 const randomHex = (n) => {
   var ID = "";
@@ -7978,6 +8083,12 @@ const addressFormatter = (address, showLength = 6) => {
   return prefix + "..." + suffix;
 };
 
+const currentView = () => {
+  const scaffold = document.querySelector("scaffold-widget");
+  const view = scaffold?.attributes?.view?.value;
+  return view;
+};
+
 
 /***/ }),
 
@@ -7992,25 +8103,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
 
 class AccountItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.addEventListener("click", (_) => {
-      if (this.account) {
-        this.state.account = this.account;
-        this.state.screen = "account";
-        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
-      } else {
-        return;
-      }
-    });
   }
   set id(val) {
     this.setAttribute("id", val);
   }
-  static update(element, state) {
+  static update(element, account, fiat) {
+    if (element === undefined || element === null) return;
     element.innerHTML = `
     <div class="account-item__icon"></div>
     <div class="account-item__symbol"></div>
@@ -8021,29 +8124,28 @@ class AccountItemElement extends HTMLElement {
         <span class="currency-unit"></span>
     </div>
     `;
-    element.exchange(state);
-    element.publish = state.account.publish;
+    element.publish = account.publish;
     element.children[0].insertAdjacentHTML(
       "afterbegin",
-      `<img src=${
-        state.account.image
-      } alt=${state.account.symbol.toUpperCase()}>`
+      `<img src=${account.image} alt=${account.symbol.toUpperCase()}>`
     );
-    element.children[1].textContent =
-      state.account.symbol.toUpperCase();
-    element.children[2].textContent = state.account.balance;
-    element.children[3].children[1].textContent = state.account.infiat;
-    element.children[3].children[2].textContent =
-      state.walletConfig.fiat.symbol;
-    element.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state));
+    element.children[1].textContent = account.symbol.toUpperCase();
+    element.children[2].textContent = account.balance;
+    element.children[3].children[1].textContent = account.infiat;
+    element.children[3].children[2].textContent = fiat.symbol;
+    element.addEventListener("click", (e) =>
+      (0,_controller_route__WEBPACK_IMPORTED_MODULE_0__.default)({ screen: "account", account, fiat })
+    );
   }
   connectedCallback() {
     this.className = "account-item";
-    this.id = this.state.account.id;
-    AccountItemElement.update(this, this.state);
+    this.id = this.account.id;
+    AccountItemElement.update(this, this.account, this.fiat);
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.removeEventListener("click", (e) =>
+      (0,_controller_route__WEBPACK_IMPORTED_MODULE_0__.default)({ screen: "account", account, fiat })
+    );
   }
   get publish() {
     return this.hasAttribute("publish");
@@ -8055,29 +8157,22 @@ class AccountItemElement extends HTMLElement {
       this.removeAttribute("publish");
     }
   }
-  exchange(state) {
-    if (state.walletConfig.fiat) {
-      state.account.infiat =
-        state.account.inUSD / state.walletConfig.fiat.inUSD;
-      return;
-    }
-    return;
-  }
 }
 
 customElements.define("account-item", AccountItemElement);
 class AccountItem {
-  constructor(state) {
-    this.id = state.account.id;
+  constructor(account, fiat) {
+    this.id = account.id;
     this.element = document.createElement("account-item");
-    this.element.state = state;
+    this.element.account = account;
+    this.element.fiat = fiat;
+  }
+  update(account, fiat) {
+    const element = document.querySelector(`[id=${this.id}]`);
+    AccountItemElement.update(element, account, fiat);
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-  update() {
-    const element = document.querySelector(`[id=${this.id}]`);
-    AccountItemElement.update(element, this.element.state);
   }
 }
 
@@ -8097,7 +8192,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
@@ -8136,10 +8231,10 @@ class BillItemElement extends HTMLElement {
     `;
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
-    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.addEventListener("click", (e) => (0,_controller_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.removeEventListener("click", (e) => (0,_controller_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
   }
   static get observedAttributes() {
     return ["pending", "confirming", "complete"];
@@ -8958,7 +9053,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("73b0bc546cb0c2c63441")
+/******/ 		__webpack_require__.h = () => ("dd7d207048a66dd9f167")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -1,5 +1,5 @@
 // MVC: View
-import route from "./utils/route";
+import route from "./controller/route";
 
 import * as utils from "./utils/utils";
 
@@ -8,7 +8,7 @@ const state = {};
 // ++ let assetList = ui.getAssets();
 const getAssets = () => {
   return {
-    totalAsset: 52.29,
+    userBalanceInFiat: 52.29,
     accounts: [
       {
         id: utils.randomHex(32),
@@ -19,7 +19,7 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
       {
         id: utils.randomHex(32),
@@ -30,7 +30,7 @@ const getAssets = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
       {
         id: utils.randomHex(32),
@@ -41,7 +41,7 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
       {
         id: "e0642b1b64b8b0214e758dd0be63242839e63db7",
@@ -52,7 +52,7 @@ const getAssets = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 2,
-        inUSD: 52.29,
+        infiat: 52.29,
       },
       {
         id: utils.randomHex(32),
@@ -63,7 +63,7 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD: 0,
+        infiat: 0,
       },
     ],
   };
@@ -81,7 +81,7 @@ const startApp = () => {
   state.user = getAssets();
   state.walletConfig = setWallet("development", "v 0.1.0 (1)", {
     symbol: "USD",
-    inUSD: 1,
+    infiat: 1,
   });
   state.screen = "landing";
   route(state);
