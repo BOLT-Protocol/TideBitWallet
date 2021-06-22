@@ -1,3 +1,4 @@
+import landing from "../screen/landing";
 import overview from "../screen/overview";
 import account from "../screen/account";
 import transaction from "../screen/transaction";
@@ -6,6 +7,9 @@ import bill from "../screen/bill";
 
 const route = (state) => {
   switch (state.screen) {
+    case "landing":
+      landing(state);
+      break;
     case "accounts":
     case "settings":
       overview(state);

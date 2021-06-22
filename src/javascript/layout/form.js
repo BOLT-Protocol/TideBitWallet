@@ -1,6 +1,7 @@
 import TabBar from "../widget/tar-bar";
 import Input from "../widget/input";
 import Button from "../widget/button";
+import Transaction from "../model/transaction";
 
 class FormElement extends HTMLElement {
   constructor() {
@@ -99,7 +100,22 @@ class FormElement extends HTMLElement {
     } else {
       this.toggle = false;
     }
+    this.transactionButton = this.children[this.childElementCount - 1];
+    this.transactionButton.addEventListener("click", () => {
+      const to = this.addressInput.inputValue;
+      const amount = this.amountInput.inputValue;
+      let gasPrice, gas, priority;
+      if (this.onAdvanced) {
+        gasPrice = this.gasPrice.inputValue;
+        gas = this.gas.inputValue;
+        this.callback(new Transaction({ to, amount, gasPrice, gas }));
+      } else {
+        priority = this.tabBar.selected;
+        this.callback(new Transaction({ to, amount, priority }));
+      }
+    });
   }
+
   /**
    *
    * @param {Boolean} val
@@ -115,6 +131,9 @@ class FormElement extends HTMLElement {
       this.tabBar.render(toggleContent);
       this.removeAttribute("on");
     }
+  }
+  get onAdvanced() {
+    return this.hasAttribute("on");
   }
   set availableAmount(account) {
     this.children[1].children[1].textContent =
@@ -150,12 +169,14 @@ class FormElement extends HTMLElement {
 customElements.define("transaction-form", FormElement);
 
 class Form {
-  constructor(state) {
+  constructor(state, callback) {
     this.state = JSON.parse(JSON.stringify(state));
+    this.callback = callback;
   }
   render(parentElement) {
     this.element = document.createElement("transaction-form");
     this.element.state = this.state;
+    this.element.callback = this.callback;
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }

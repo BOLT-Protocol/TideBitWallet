@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1623892846231
+      // 1624006021832
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6414,6 +6414,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
 /* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
 /* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _model_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/transaction */ "./src/javascript/model/transaction.js");
+
 
 
 
@@ -6515,7 +6517,22 @@ class FormElement extends HTMLElement {
     } else {
       this.toggle = false;
     }
+    this.transactionButton = this.children[this.childElementCount - 1];
+    this.transactionButton.addEventListener("click", () => {
+      const to = this.addressInput.inputValue;
+      const amount = this.amountInput.inputValue;
+      let gasPrice, gas, priority;
+      if (this.onAdvanced) {
+        gasPrice = this.gasPrice.inputValue;
+        gas = this.gas.inputValue;
+        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
+      } else {
+        priority = this.tabBar.selected;
+        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, priority }));
+      }
+    });
   }
+
   /**
    *
    * @param {Boolean} val
@@ -6531,6 +6548,9 @@ class FormElement extends HTMLElement {
       this.tabBar.render(toggleContent);
       this.removeAttribute("on");
     }
+  }
+  get onAdvanced() {
+    return this.hasAttribute("on");
   }
   set availableAmount(account) {
     this.children[1].children[1].textContent =
@@ -6566,12 +6586,14 @@ class FormElement extends HTMLElement {
 customElements.define("transaction-form", FormElement);
 
 class Form {
-  constructor(state) {
+  constructor(state, callback) {
     this.state = JSON.parse(JSON.stringify(state));
+    this.callback = callback;
   }
   render(parentElement) {
     this.element = document.createElement("transaction-form");
     this.element.state = this.state;
+    this.element.callback = this.callback;
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
@@ -6738,6 +6760,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/pop_over */ "./src/javascript/widget/pop_over.js");
+
+
 // https://developers.google.com/web/fundamentals/web-components/customelements
 class ScaffoldElement extends HTMLElement {
   // Can define constructor arguments if you wish.
@@ -6763,20 +6788,22 @@ class ScaffoldElement extends HTMLElement {
       }
     }
     if (this.footer) this.footer.render(this.children[2]);
+    this.popover = new _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__.default();
+    this.popover.render(this);
   }
   updateHeader(newHeader) {
     this.header = newHeader;
-    this.children[0].replaceChild();
+    this.children[0].replaceChildren();
     this.header.render(this.children[0]);
   }
   updateBody(newBody) {
     this.body = newBody;
-    this.children[1].replaceChild();
+    this.children[1].replaceChildren();
     this.body.render(this.children[1]);
   }
   updateFooter(newFooter) {
     this.footer = newFooter;
-    this.children[2].replaceChild();
+    this.children[2].replaceChildren();
     this.footer.render(this.children[2]);
   }
 }
@@ -6790,7 +6817,45 @@ class Scaffold {
     this.element.body = body;
     this.element.footer = footer;
     document.body.replaceChildren();
-    document.body.insertAdjacentElement("afterbegin", this.element);
+    document.body.insertAdjacentElement("beforeend", this.element);
+  }
+
+  /**
+   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
+   * @param {String: show on the dialog} text
+   * @param {function} onConfirm
+   * @param {default true} cancellable
+   */
+  static openPopover(type, text, onConfirm, cancellable = true) {
+    const popover = document.querySelector("pop-over");
+    popover.open = true;
+    if (cancellable) {
+      popover.cancellable = cancellable;
+    }
+    switch (type) {
+      case "error":
+        popover.errorPopup(text);
+        break;
+      case "success":
+        popover.successPopup(text);
+        break;
+      case "loading":
+        popover.loadingPopup(text);
+        break;
+      case "confirm":
+        popover.confirmPopup(text, onConfirm);
+        break;
+    }
+  }
+  static closePopover(timeout) {
+    const popover = document.querySelector("pop-over");
+    if (timeout !== undefined) {
+      setTimeout(() => {
+        popover.open = false;
+      }, timeout);
+    } else {
+      popover.open = false;
+    }
   }
   // render(parentElement) {
   //   parentElement.replaceChildren();
@@ -6943,6 +7008,67 @@ class TarBarNavigator {
 
 /***/ }),
 
+/***/ "./src/javascript/layout/third_party_signin_container.js":
+/*!***************************************************************!*\
+  !*** ./src/javascript/layout/third_party_signin_container.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class ThirdPartySigninContainerElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "third-party-signin";
+    this.innerHTML = `
+    <div class="third-party-signin__logo"></div>
+    <div class="third-party-signin__logo-text">${this.state.walletConfig.version}</div>
+    <div class="third-party-signin__action">
+        <div id="googleid-signin" class="third-party-signin__button">
+            <div class="third-party-signin__icon">
+                <img src='./image/btn_google_light_normal_ios.svg'/>
+            </div>
+            <div class="third-party-signin__text">Sign in with Google</div>
+        </div>
+        <div id="appleid-signin" class="third-party-signin__button signin-button" data-color="${this.colorMode}" data-border="true" data-type="sign-in"></div>
+    </div>
+    `;
+    this.googleSignInButton = this.children[2].children[0];
+    this.appleSignInButton = this.children[2].children[1];
+    this.googleSignInButton.addEventListener("click", this.googleSignin);
+    this.appleSignInButton.addEventListener("click", this.appleSignin);
+  }
+  disconnectedCallback(){
+    this.googleSignInButton.removeEventListener("click", this.googleSignin);
+    this.appleSignInButton.removeEventListener("click", this.appleSignin);
+  }
+}
+
+customElements.define("third-party-signin", ThirdPartySigninContainerElement);
+class ThirdPartySigninContainer {
+  constructor(state, colorMode, googleSignin, appleSigin) {
+    this.state = JSON.parse(JSON.stringify(state));
+    this.element = document.createElement("third-party-signin");
+    this.element.state = this.state;
+    this.element.googleSignin = googleSignin;
+    this.element.appleSigin = appleSigin;
+    this.element.colorMode = colorMode;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ThirdPartySigninContainer);
+
+
+/***/ }),
+
 /***/ "./src/javascript/model/bill.js":
 /*!**************************************!*\
   !*** ./src/javascript/model/bill.js ***!
@@ -7054,6 +7180,42 @@ class Bill {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Bill);
+
+
+/***/ }),
+
+/***/ "./src/javascript/model/transaction.js":
+/*!*********************************************!*\
+  !*** ./src/javascript/model/transaction.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class Transaction {
+  constructor({ publish, to, amount, priority, gasPrice, gasLimit, message }) {
+    this.publish = publish;
+    this.to = to;
+    this.amount = amount;
+    this.priority = priority;
+    this.gasPrice = gasPrice;
+    this.gasLimit = gasLimit;
+    this.message = message;
+  }
+  // BTC
+  // constructor({
+  //     publish,
+  //     to,
+  //     amount,
+  //     priority,
+  //     message,
+  // })
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Transaction);
 
 
 /***/ }),
@@ -7225,6 +7387,43 @@ const bill = (state) => {
 
 /***/ }),
 
+/***/ "./src/javascript/screen/landing.js":
+/*!******************************************!*\
+  !*** ./src/javascript/screen/landing.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/javascript/layout/third_party_signin_container.js");
+/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+
+
+
+
+const googleSignin = async (state) => {
+  // await;
+  const _state = JSON.parse(JSON.stringify(state));
+  _state.screen = "accounts";
+  (0,_utils_route__WEBPACK_IMPORTED_MODULE_2__.default)(_state);
+};
+
+const landing = (state) =>
+  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
+    undefined,
+    new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(state, "white", () => googleSignin(state)),
+    undefined
+  );
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (landing);
+
+
+/***/ }),
+
 /***/ "./src/javascript/screen/overview.js":
 /*!*******************************************!*\
   !*** ./src/javascript/screen/overview.js ***!
@@ -7295,9 +7494,26 @@ __webpack_require__.r(__webpack_exports__);
  * ui.sendTransaction(transaction);
  */
 
+const sendTransaction = (transaction) => {
+  console.log("to", transaction.to);
+  console.log("amount", transaction.amount);
+  console.log("priority", transaction.priority);
+  console.log("gasPrice", transaction.gasPrice);
+  console.log("gas", transaction.gas);
+  _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover('success', 'Success!');
+  // Scaffold.closePopover(2000);
+};
+
 const transaction = (state) => {
   const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state);
+  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state, (val) =>
+    _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover(
+      "confirm",
+      "Are you sure to make this transaction?",
+      () => sendTransaction(val),
+      false
+    )
+  );
   new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, form);
   /**
    * getEstimateTime().then((timeString) => {
@@ -7432,7 +7648,7 @@ const startApp = () => {
     symbol: "USD",
     inUSD: 1,
   });
-  state.screen = "accounts";
+  state.screen = "landing";
   (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
 };
 
@@ -7454,11 +7670,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+
 
 
 
@@ -7467,21 +7685,24 @@ __webpack_require__.r(__webpack_exports__);
 
 const route = (state) => {
   switch (state.screen) {
+    case "landing":
+      (0,_screen_landing__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+      break;
     case "accounts":
     case "settings":
-      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(state);
       break;
     case "account":
-      (0,_screen_account__WEBPACK_IMPORTED_MODULE_1__.default)(state);
+      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(state);
       break;
     case "transaction":
-      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_2__.default)(state);
+      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(state);
       break;
     case "address":
-      (0,_screen_address__WEBPACK_IMPORTED_MODULE_3__.default)(state);
+      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(state);
       break;
     case "bill":
-      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_4__.default)(state);
+      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(state);
       break;
   }
 };
@@ -7860,7 +8081,6 @@ class ButtonElement extends HTMLElement {
     }
   }
   set text(str) {
-    console.log(str);
     this.children[1].textContent = str;
   }
   /**
@@ -7928,14 +8148,14 @@ class InputElement extends HTMLElement {
     return ["focus", "has-value", "error"];
   }
   handleInput(e) {
-    if (this.value !== "") {
+    if (e.target.value !== "") {
       this.hasValue = true;
     } else {
       this.hasValue = false;
     }
     let checked;
     if (this.validator !== undefined) {
-      checked = this.value === "" || this.validator(this.value);
+      checked = e.target.value === "" || this.validator(e.target.value);
     }
     if (checked !== undefined) {
       this.error = !checked;
@@ -7946,6 +8166,7 @@ class InputElement extends HTMLElement {
       //   this.value = this.value.replace(/[^0-9.]/g, '');
       //   this.value = this.value.replace(/(\..*)\./g, '$1');
     }
+    this.inputValue = e.target.value;
   }
   connectedCallback() {
     this.className = "input__controller";
@@ -8027,9 +8248,6 @@ class InputElement extends HTMLElement {
     if (val === undefined) this.children[1].style.display = "none";
     this.children[1].textContent = val;
   }
-  get value() {
-    return this.children[0].children[1].children[0].value;
-  }
   disconnectedCallback() {
     // target.removeEventListener('');
     this.children[0].children[1].children[0].removeEventListener(
@@ -8077,12 +8295,186 @@ class Input {
     if (this.action !== undefined) this.element.action = this.action;
     if (this.pattern !== undefined) this.element.pattern = this.pattern;
   }
-  get value() {
-    return this.element.value;
+  get inputValue() {
+    return this.element.inputValue;
   }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Input);
+
+
+/***/ }),
+
+/***/ "./src/javascript/widget/pop_over.js":
+/*!*******************************************!*\
+  !*** ./src/javascript/widget/pop_over.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+
+
+class PopoverElement extends HTMLElement {
+  constructor() {
+    super();
+    this.click = 0;
+    this.addEventListener("click", (_) => {
+      this.click += 1;
+      if ((this.success || this.error) && this.click > 1) {
+        this.closePopover();
+      }
+    });
+  }
+  connectedCallback() {
+    this.className = "pop-over";
+    this.innerHTML = `
+    <div class="pop-over__content">
+        <div class="pop-over__container">
+            <div class="pop-over__icon"></div>
+            <div class="pop-over__text"></div>
+        </div>
+        <div class="pop-over__button-box">
+            <div>Cancel</div>
+            <div>Confirm</div>
+        </div>
+    </div>
+    `;
+  }
+  get textElement() {
+    return this.children[0].children[0].children[1];
+  }
+  get cancelButton() {
+    return this.children[0].children[1].children[0];
+  }
+  get confirmButton() {
+    return this.children[0].children[1].children[1];
+  }
+  get open() {
+    return this.hasAttribute("open");
+  }
+  get error() {
+    return this.hasAttribute("error");
+  }
+  get success() {
+    return this.hasAttribute("success");
+  }
+  get loading() {
+    return this.hasAttribute("loading");
+  }
+  get confirm() {
+    return this.hasAttribute("confirm");
+  }
+  set open(val) {
+    // Reflect the value of the open property as an HTML attribute.
+    if (val) {
+      this.setAttribute("open", "");
+    } else {
+      this.removeAttribute("open");
+    }
+  }
+  closePopover = () => {
+    if (this.open) {
+      this.open = false;
+      this.click = 0;
+      this.textElement.textContent = "";
+    }
+    if (this.confirm) {
+      this.removeAttribute("confirm");
+    }
+    if (this.error) {
+      this.removeAttribute("error");
+    }
+    if (this.success) {
+      this.removeAttribute("success");
+    }
+    if (this.loading) {
+      this.removeAttribute("loading");
+    }
+  };
+  disconnectedCallback() {
+    this.removeEventListener("click", (_) => {
+      if (this.cancellable) this.closePopover;
+    });
+  }
+  static get observedAttributes() {
+    return ["open"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this.open) {
+      if (this.confirm) {
+        this.cancelButton.removeEventListener("click", this.closePopover);
+        this.confirmButton.removeEventListener("click", async (val) => {
+          this.closePopover();
+          this.loadingPopup();
+          setTimeout(this.closePopover, 300);
+          this.onConfirm(val);
+        });
+      }
+    }
+  }
+
+  errorPopup(text) {
+    this.setAttribute("error", "");
+    this.children[0].children[0].children[1].textContent =
+      text || "Some thing went wrong";
+  }
+  successPopup(text) {
+    this.setAttribute("success", "");
+    this.children[0].children[0].children[1].textContent = text || "Success";
+  }
+  loadingPopup(text) {
+    this.setAttribute("loading", "");
+    this.children[0].children[0].children[1].textContent = text || "Loading";
+  }
+  confirmPopup(text, onConfirm) {
+    this.setAttribute("confirm", "");
+    // this.cancellable = false;
+    this.onConfirm = onConfirm;
+    this.children[0].children[0].children[1].textContent =
+      text || "Are you sure?";
+    this.children[0].children[1].children[0].addEventListener(
+      "click",
+      this.closePopover
+    );
+    this.children[0].children[1].children[1].addEventListener(
+      "click",
+      async (val) => {
+        this.closePopover();
+        this.onConfirm(val);
+      }
+    );
+  }
+}
+
+customElements.define("pop-over", PopoverElement);
+
+class Popover {
+  constructor() {
+    this.element = document.createElement("pop-over");
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  // errorPopup(text) {
+  //   this.element.errorPopup(text);
+  // }
+  // successPopup(text) {
+  //   this.element.successPopup(text);
+  // }
+  // loadingPopup(text) {
+  //   this.element.loadingPopup(text);
+  // }
+  // confirmPopup(text, onConfirm) {
+  //   this.element.confirmPopup(text, onConfirm);
+  // }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Popover);
 
 
 /***/ }),
@@ -8374,7 +8766,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("27e9bd13717e247ab403")
+/******/ 		__webpack_require__.h = () => ("3b5547ab545917ff80e4")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
