@@ -1,8 +1,9 @@
+import { currentView } from "../utils/utils";
 import asset from "../screen/asset";
 import landing from "../screen/landing";
 import overview from "../screen/overview";
 import bill from "../screen/bill";
-import { currentView } from "../utils/utils";
+import address from "../screen/address";
 
 class ViewController {
   initialize(user, config) {
@@ -53,7 +54,7 @@ class ViewController {
       default:
         break;
     }
-    overview.update("OnUpdateAccount", account);
+    overview.update("OnUpdateAccount", asset);
   };
   updateBills = (bills) => {};
   updateBill = (bill) => {};
@@ -83,6 +84,8 @@ class ViewController {
         this.currentBill = data; //Bill
         bill.render(screen, this.currentAsset, this.currentBill);
         break;
+      case "address":
+        address.render(screen, this.currentAsset);
     }
   };
 }

@@ -5,7 +5,7 @@ import { currentView } from "../utils/utils";
 class Bill {
   constructor() {}
   initialize(screen, asset, bill) {
-    const header = new Header({ screen });
+    const header = new Header(screen);
     const billContent = new BillContent(asset, bill);
     this.scaffold = new Scaffold(header, billContent);
     this.scaffold.element.view = screen;

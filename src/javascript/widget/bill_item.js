@@ -1,4 +1,3 @@
-import route from "../controller/route";
 import viewController from "../controller/view";
 import { addressFormatter } from "../utils/utils";
 

@@ -75,7 +75,9 @@ class Asset {
   constructor() {}
   initialize(screen, asset, fiat) {
     this.bills = getAssetDetail(asset.id)?.map((obj) => new Bill(obj));
-    this.header = new Header({ screen, fiat, asset });
+    //++
+    window.bills = this.bills;
+    this.header = new Header(screen, { fiat, asset });
     this.tarBarNavigator = new TarBarNavigator();
     this.billList = new BillList(asset, this.bills);
     this.scaffold = new Scaffold(this.header, [

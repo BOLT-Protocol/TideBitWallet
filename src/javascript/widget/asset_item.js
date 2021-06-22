@@ -1,4 +1,3 @@
-import route from "../controller/route";
 import viewController from "../controller/view";
 class AssetItemElement extends HTMLElement {
   constructor() {

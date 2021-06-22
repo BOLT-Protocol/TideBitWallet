@@ -5,11 +5,11 @@ import viewController from "../controller/view";
 const getHeaderInfo = (screen) => {
   switch (screen) {
     case "transaction":
-      return { screenTitle: "Send Coin"};
+      return { screenTitle: "Send Coin" };
     case "bill":
-      return { screenTitle: "Transaction Detail"};
+      return { screenTitle: "Transaction Detail" };
     case "address":
-      return { screenTitle: "My Wallet"};
+      return { screenTitle: "My Wallet" };
   }
 };
 
@@ -105,7 +105,7 @@ class HeaderElement extends HTMLElement {
         break;
     }
   }
-  update({ screen, fiat, totalAsset, asset }) {
+  update(screen, { fiat, totalAsset, asset } = {}) {
     switch (screen) {
       case "assets":
       case "settings":
@@ -132,7 +132,7 @@ class HeaderElement extends HTMLElement {
 customElements.define("header-widget", HeaderElement);
 
 class Header {
-  constructor({ screen, fiat, totalAsset, asset }) {
+  constructor(screen, { fiat, totalAsset, asset } = {}) {
     this.element = document.createElement("header-widget");
     this.element.screen = screen;
     if (totalAsset) this.element.totalAsset = totalAsset;
@@ -142,8 +142,8 @@ class Header {
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
-  update({ screen, fiat, totalAsset, asset }) {
-    this.element.update({ screen, fiat, totalAsset, asset });
+  update(screen, { fiat, totalAsset, asset }) {
+    this.element.update(screen, { fiat, totalAsset, asset });
   }
 }
 

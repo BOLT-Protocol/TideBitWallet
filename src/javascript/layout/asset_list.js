@@ -25,10 +25,10 @@ class AssetList {
   }
   assetItem = (asset) => new AssetItem(asset, this.fiat);
   updateAssets(assets) {
-    this.assets = JSON.parse(JSON.stringify(assets));
+    this.assets = assets;
   }
   updateFiat(fiat) {
-    this.fiat = JSON.parse(JSON.stringify(fiat));
+    this.fiat = fiat;
   }
   update(assets, fiat) {
     this.updateAssets(assets);
@@ -37,7 +37,7 @@ class AssetList {
     this.element.update();
   }
   updateAsset(asset, fiat) {
-    updateFiat(fiat);
+    this.updateFiat(fiat);
     const index = this.assets.findIndex((ass) => ass.id === asset.id);
     if (index > -1) {
       this.element.assets[index] = this.assetItem(asset);

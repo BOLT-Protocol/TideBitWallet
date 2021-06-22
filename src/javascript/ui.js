@@ -95,10 +95,20 @@ const startApp = () => {
   viewController.route("landing");
   // onReady
   const user = getUserDetail();
+  const wallet = getWalletConfig();
+  // ++ test
   user.assets = user.assets.map((asset) => new Asset(asset));
-  viewController.initialize(user, getWalletConfig());
+  window.user = user;
+  window.wallet = wallet;
+  viewController.initialize(user, wallet);
   // viewController.route("assets");
   // viewController.route("asset", asset);
+  // onUpdate
+  // switch (event) {
+  //   case "":
+  //     // viewController.updateAsset();
+  //     break;
+  // }
 };
 
 startApp();

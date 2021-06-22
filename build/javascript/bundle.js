@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624353735311
+      // 1624359688167
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6045,64 +6045,6 @@ const tabBarItemData = [
 
 /***/ }),
 
-/***/ "./src/javascript/controller/route.js":
-/*!********************************************!*\
-  !*** ./src/javascript/controller/route.js ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_asset__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/asset */ "./src/javascript/screen/asset.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
-
-
-
-
-
-
-class Router {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
-  }
-  route = (state) => {
-    console.log(state);
-    switch (state.screen) {
-      case "landing":
-        (0,_screen_landing__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-        break;
-      case "accounts":
-      case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_1__.default.render(state);
-        break;
-      case "account":
-        (0,_screen_asset__WEBPACK_IMPORTED_MODULE_2__.default)(state);
-        break;
-      case "transaction":
-        (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(state);
-        break;
-      case "address":
-        (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(state);
-        break;
-      case "bill":
-        (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(state);
-        break;
-    }
-  };
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Router);
-
-
-/***/ }),
-
 /***/ "./src/javascript/controller/view.js":
 /*!*******************************************!*\
   !*** ./src/javascript/controller/view.js ***!
@@ -6114,11 +6056,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _screen_asset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/asset */ "./src/javascript/screen/asset.js");
-/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _screen_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/asset */ "./src/javascript/screen/asset.js");
+/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+
 
 
 
@@ -6140,11 +6084,11 @@ class ViewController {
     this.userAssets = assets;
     this.userBalanceInFiat = userBalanceInFiat;
     if (fiat) this.walletFiat = fiat;
-    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     switch (view) {
       case "assets":
       case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_2__.default.update(
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.update(
           "OnUpdateCurrency",
           this.userBalanceInFiat,
           this.walletFiat,
@@ -6157,11 +6101,11 @@ class ViewController {
   };
   updateAsset = (asset, userBalanceInFiat) => {
     this.userBalanceInFiat = userBalanceInFiat;
-    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     switch (view) {
       case "assets":
       case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_2__.default.update(
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.update(
           "OnUpdateAccount",
           this.userBalanceInFiat,
           this.walletFiat,
@@ -6174,7 +6118,7 @@ class ViewController {
       default:
         break;
     }
-    _screen_overview__WEBPACK_IMPORTED_MODULE_2__.default.update("OnUpdateAccount", account);
+    _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.update("OnUpdateAccount", asset);
   };
   updateBills = (bills) => {};
   updateBill = (bill) => {};
@@ -6182,11 +6126,11 @@ class ViewController {
   route = (screen, data) => {
     switch (screen) {
       case "landing":
-        _screen_landing__WEBPACK_IMPORTED_MODULE_1__.default.render(screen);
+        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen);
         break;
       case "assets":
       case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_2__.default.render(
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.render(
           screen,
           this.userBalanceInFiat,
           this.userAssets,
@@ -6198,12 +6142,14 @@ class ViewController {
         if (data) {
           this.currentAsset = data; //Asset
         }
-        _screen_asset__WEBPACK_IMPORTED_MODULE_0__.default.render(screen, this.currentAsset, this.walletFiat);
+        _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.render(screen, this.currentAsset, this.walletFiat);
         break;
       case "bill":
         this.currentBill = data; //Bill
-        _screen_bill__WEBPACK_IMPORTED_MODULE_3__.default.render(screen, this.currentAsset, this.currentBill);
+        _screen_bill__WEBPACK_IMPORTED_MODULE_4__.default.render(screen, this.currentAsset, this.currentBill);
         break;
+      case "address":
+        _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset);
     }
   };
 }
@@ -6254,7 +6200,7 @@ class AddressContentElement extends HTMLElement {
    * ETH || BTC
    */
   setCoinbase() {
-    this.setAttribute(this.state.account.symbol, "");
+    this.setAttribute(this.asset.symbol, "");
   }
   renderAddress = () => {
     qrcode__WEBPACK_IMPORTED_MODULE_0__.toCanvas(
@@ -6290,10 +6236,12 @@ class AddressContentElement extends HTMLElement {
 customElements.define("address-content", AddressContentElement);
 
 class AddressContent {
-  constructor(state, address) {
+  constructor(asset, address) {
     this.element = document.createElement("address-content");
-    this.element.state = state;
+    this.element.asset = asset;
     this.element.address = address;
+    console.log(asset);
+    console.log(address);
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -6344,10 +6292,10 @@ class AssetList {
   }
   assetItem = (asset) => new _widget_asset_item__WEBPACK_IMPORTED_MODULE_0__.default(asset, this.fiat);
   updateAssets(assets) {
-    this.assets = JSON.parse(JSON.stringify(assets));
+    this.assets = assets;
   }
   updateFiat(fiat) {
-    this.fiat = JSON.parse(JSON.stringify(fiat));
+    this.fiat = fiat;
   }
   update(assets, fiat) {
     this.updateAssets(assets);
@@ -6356,7 +6304,7 @@ class AssetList {
     this.element.update();
   }
   updateAsset(asset, fiat) {
-    updateFiat(fiat);
+    this.updateFiat(fiat);
     const index = this.assets.findIndex((ass) => ass.id === asset.id);
     if (index > -1) {
       this.element.assets[index] = this.assetItem(asset);
@@ -6559,209 +6507,6 @@ class BottomNavigator {
 
 /***/ }),
 
-/***/ "./src/javascript/layout/form.js":
-/*!***************************************!*\
-  !*** ./src/javascript/layout/form.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
-/* harmony import */ var _model_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/transaction */ "./src/javascript/model/transaction.js");
-
-
-
-
-
-class FormElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  disconnectedCallback() {
-    if (this.toggle) {
-      this.toggleButton.removeEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    }
-  }
-  connectedCallback() {
-    this.className = "form";
-    this.addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "text",
-      label: "Send to",
-      errorMessage: "Invalid Address",
-      validation: (value) => {
-        return value.startsWith("0x");
-      },
-      action: {
-        icon: "qrcode",
-        onPressed: () => {
-          console.log("action on pressed!");
-        },
-      },
-    });
-    this.amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Amount",
-      errorMessage: "Invalid Amount",
-      validation: (value) => {
-        return parseFloat(value) > 0;
-      },
-      pattern: `\d*.?\d*`,
-    });
-    this.gasPriceInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
-      pattern: `\d*.?\d*`,
-    });
-    this.gasInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Custom Gas (unit)",
-      pattern: `\d*`,
-    });
-    this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
-    );
-    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
-    this.action = new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
-    this.innerHTML = `
-    <div class="form__input"></div>
-    <p class="form__secondary-text form__align-end">
-      <span>Balance:</span>
-      <span class="account-balance"></span>
-    </p>
-    <p class="form__primary-text form__align-start">Transaction Fee</p>
-    <p class="form__secondary-text form__align-start estimate-time">
-        <span>Processing time</span>
-        <span></span>
-    </p>
-    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
-    <div class="form__toggle-content"></div>
-    <p class="form__column">
-      <span class="form__tertiary-text">Estimated:</span>
-      <span class="form__secondary-text estimate-fee">loading...</span>
-    </p>
-    <div class="form__toggle">
-      <div class="form__toggle-controller">
-        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
-        <div class="form__toggle-button">
-          <input type="checkbox" name="toggle-button" id="toggle-button">
-          <label for="toggle-button"></label>
-        </div>
-      </div>
-    </div>
-    <div class="form__button"></div>
-    `;
-    this.addressInput.render(this.children[0]);
-    this.amountInput.render(this.children[0]);
-    this.tabBar.render(this.children[5]);
-    this.estimateTime = "10 ~ 30 minutes";
-    this.availableAmount = this.state.account;
-    this.action.render(this.children[8]);
-    if (this.state.account.symbol === "ETH") {
-      // -- test
-      this.toggle = true;
-      this.toggleButton = document.querySelector(
-        ".form input[type='checkbox']"
-      );
-      this.toggleButton.addEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    } else {
-      this.toggle = false;
-    }
-    this.transactionButton = this.children[this.childElementCount - 1];
-    this.transactionButton.addEventListener("click", () => {
-      const to = this.addressInput.inputValue;
-      const amount = this.amountInput.inputValue;
-      let gasPrice, gas, priority;
-      if (this.onAdvanced) {
-        gasPrice = this.gasPrice.inputValue;
-        gas = this.gas.inputValue;
-        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
-      } else {
-        priority = this.tabBar.selected;
-        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, priority }));
-      }
-    });
-  }
-
-  /**
-   *
-   * @param {Boolean} val
-   *
-   */
-  handleToggle(toggleContent) {
-    toggleContent.replaceChildren();
-    if (this.toggleButton.checked) {
-      this.gasPriceInput.render(toggleContent);
-      this.gasInput.render(toggleContent);
-      this.setAttribute("on", "");
-    } else {
-      this.tabBar.render(toggleContent);
-      this.removeAttribute("on");
-    }
-  }
-  get onAdvanced() {
-    return this.hasAttribute("on");
-  }
-  set availableAmount(account) {
-    this.children[1].children[1].textContent =
-      account.balance + " " + account.symbol;
-  }
-  set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + account.symbol;
-  }
-  set estimateTime(time) {
-    this.children[3].children[1].textContent = time;
-  }
-  /**
-   * @param {Array<Object>} HTMLElement
-   */
-  get toggleContent() {
-    return this.children[5];
-  }
-  set onSubmit(element) {
-    element.render(this.lastElementChild);
-  }
-  /**
-   * @param {Boolean} val
-   */
-  set toggle(val) {
-    if (val) {
-      this.removeAttribute("disabled-toggle");
-    } else {
-      this.setAttribute("disabled-toggle", "");
-    }
-  }
-}
-
-customElements.define("transaction-form", FormElement);
-
-class Form {
-  constructor(state, callback) {
-    this.state = JSON.parse(JSON.stringify(state));
-    this.callback = callback;
-  }
-  render(parentElement) {
-    this.element = document.createElement("transaction-form");
-    this.element.state = this.state;
-    this.element.callback = this.callback;
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
-
-
-/***/ }),
-
 /***/ "./src/javascript/layout/header.js":
 /*!*****************************************!*\
   !*** ./src/javascript/layout/header.js ***!
@@ -6781,11 +6526,11 @@ __webpack_require__.r(__webpack_exports__);
 const getHeaderInfo = (screen) => {
   switch (screen) {
     case "transaction":
-      return { screenTitle: "Send Coin"};
+      return { screenTitle: "Send Coin" };
     case "bill":
-      return { screenTitle: "Transaction Detail"};
+      return { screenTitle: "Transaction Detail" };
     case "address":
-      return { screenTitle: "My Wallet"};
+      return { screenTitle: "My Wallet" };
   }
 };
 
@@ -6881,7 +6626,7 @@ class HeaderElement extends HTMLElement {
         break;
     }
   }
-  update({ screen, fiat, totalAsset, asset }) {
+  update(screen, { fiat, totalAsset, asset } = {}) {
     switch (screen) {
       case "assets":
       case "settings":
@@ -6908,7 +6653,7 @@ class HeaderElement extends HTMLElement {
 customElements.define("header-widget", HeaderElement);
 
 class Header {
-  constructor({ screen, fiat, totalAsset, asset }) {
+  constructor(screen, { fiat, totalAsset, asset } = {}) {
     this.element = document.createElement("header-widget");
     this.element.screen = screen;
     if (totalAsset) this.element.totalAsset = totalAsset;
@@ -6918,8 +6663,8 @@ class Header {
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
-  update({ screen, fiat, totalAsset, asset }) {
-    this.element.update({ screen, fiat, totalAsset, asset });
+  update(screen, { fiat, totalAsset, asset }) {
+    this.element.update(screen, { fiat, totalAsset, asset });
   }
 }
 
@@ -7393,42 +7138,6 @@ class Bill {
 
 /***/ }),
 
-/***/ "./src/javascript/model/transaction.js":
-/*!*********************************************!*\
-  !*** ./src/javascript/model/transaction.js ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-class Transaction {
-  constructor({ publish, to, amount, priority, gasPrice, gasLimit, message }) {
-    this.publish = publish;
-    this.to = to;
-    this.amount = amount;
-    this.priority = priority;
-    this.gasPrice = gasPrice;
-    this.gasLimit = gasLimit;
-    this.message = message;
-  }
-  // BTC
-  // constructor({
-  //     publish,
-  //     to,
-  //     amount,
-  //     priority,
-  //     message,
-  // })
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Transaction);
-
-
-/***/ }),
-
 /***/ "./src/javascript/screen/address.js":
 /*!******************************************!*\
   !*** ./src/javascript/screen/address.js ***!
@@ -7440,22 +7149,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
 
 
 
 
 
+class Address {
+  constructor() {}
+  initialize(screen, asset) {
+    // ++ ui.getReceiveAddress({ asset.id });
+    this.address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen);
+    this.addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_3__.default(asset, this.address);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.addressContent);
+  }
+  render(screen, asset) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    if (!view || view !== "address" || !this.scaffold) {
+      this.initialize(screen, asset);
+    }
+  }
+  // ++ Emily 2021/6/22
+  update(event, address) {}
+}
 
-const address = (state, callback) => {
-  // ++ ui.getReceiveAddress({ accountID });
-  const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_2__.default(state, address);
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, addressContent);
-};
+const address = new Address();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
 
@@ -7556,7 +7278,9 @@ class Asset {
   constructor() {}
   initialize(screen, asset, fiat) {
     this.bills = getAssetDetail(asset.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default({ screen, fiat, asset });
+    //++
+    window.bills = this.bills;
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen, { fiat, asset });
     this.tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__.default();
     this.billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(asset, this.bills);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, [
@@ -7609,7 +7333,7 @@ __webpack_require__.r(__webpack_exports__);
 class Bill {
   constructor() {}
   initialize(screen, asset, bill) {
-    const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default({ screen });
+    const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
     const billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(asset, bill);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, billContent);
     this.scaffold.element.view = screen;
@@ -7709,7 +7433,7 @@ class Overview {
   constructor() {}
   initialize(screen, totalAsset, assets, fiat, version) {
     this.assets = JSON.parse(JSON.stringify(assets));
-    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default({ screen, fiat, totalAsset });
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { fiat, totalAsset });
     this.assetList = new _layout_asset_list__WEBPACK_IMPORTED_MODULE_2__.default(assets, fiat);
     this.settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(fiat, version);
     this.body = new _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__.default([this.assetList, this.settingList]);
@@ -7739,12 +7463,12 @@ class Overview {
    * @param {OnUpdateCurrency, {assets, fiat, totalAsset}} event
    * @param {OnUpdateAccount {asset, fiat, totalAsset}} data
    */
-  update(event, totalAsset, fiat, { assets, asset }) {
+  update(event, totalAsset, fiat, { assets, asset } = {}) {
     if (event === "OnUpdateAccount") {
-      this.header.update({ screen: this.screen, fiat, totalAsset, asset });
+      this.header.update(this.screen, { fiat, totalAsset, asset });
       this.assetList.updateAsset(asset, fiat);
     } else if (event === "OnUpdateCurrency") {
-      this.header.update({ screen: this.screen, fiat, totalAsset });
+      this.header.update(this.screen, { fiat, totalAsset });
       this.assetList.update(assets, fiat);
     }
   }
@@ -7753,87 +7477,6 @@ class Overview {
 const overview = new Overview();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
-
-
-/***/ }),
-
-/***/ "./src/javascript/screen/transaction.js":
-/*!**********************************************!*\
-  !*** ./src/javascript/screen/transaction.js ***!
-  \**********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
-/* harmony import */ var _utils_popup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/popup */ "./src/javascript/utils/popup.js");
-
-
-
-
-
-/**
- * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
- * let transaction = ui.prepareTransaction({ to, amount, data, speed });
- * ui.sendTransaction(transaction);
- */
-
-const sendTransaction = (transaction) => {
-  console.log("to", transaction.to);
-  console.log("amount", transaction.amount);
-  console.log("priority", transaction.priority);
-  console.log("gasPrice", transaction.gasPrice);
-  console.log("gas", transaction.gas);
-  _utils_popup__WEBPACK_IMPORTED_MODULE_3__.open("success", "Success!");
-};
-
-const transaction = (state) => {
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state, (val) =>
-    _utils_popup__WEBPACK_IMPORTED_MODULE_3__.open(
-      "confirm",
-      "Are you sure to make this transaction?",
-      () => sendTransaction(val),
-      false
-    )
-  );
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, form);
-  /**
-   * getEstimateTime().then((timeString) => {
-   *    const estimateTimeEl = document.querySelector('.estimate-time');
-   *    estimateTimeEl.textContent = timeString;
-   * }).catch((error) => {
-   *    estimateTimeEl.textContent = "would take longer than you can expected";
-   * })
-   */
-
-  /**
-   * feeObj = {
-   *    gasPrice: {
-   *        fast: '',
-   *        standard: '',
-   *        slow: '',
-   *    },
-   *    gasLimit: 21000
-   * }
-   */
-  /**
-   * getTransactionFee().then((feeObj) => {
-   *    const estimateFeeEl = document.querySelector('.estimate-fee');
-   *    ++ get Setected tab index
-   *    estimateFeeEl.textContent = `${parseFloat(feeObj.gasPrice[1]) * gasLimit}`;
-   * }).catch((error) => {
-   *    estimateTimeEl.textContent = "would surprise you!";
-   * })
-   */
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
 
 
 /***/ }),
@@ -7946,10 +7589,20 @@ const startApp = () => {
   _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.route("landing");
   // onReady
   const user = getUserDetail();
+  const wallet = getWalletConfig();
+  // ++ test
   user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_0__.default(asset));
-  _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.initialize(user, getWalletConfig());
+  window.user = user;
+  window.wallet = wallet;
+  _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.initialize(user, wallet);
   // viewController.route("assets");
   // viewController.route("asset", asset);
+  // onUpdate
+  // switch (event) {
+  //   case "":
+  //     // viewController.updateAsset();
+  //     break;
+  // }
 };
 
 startApp();
@@ -7958,59 +7611,6 @@ window.viewController = _controller_view__WEBPACK_IMPORTED_MODULE_1__.default;
 window.getUserDetail = getUserDetail;
 window.getWalletConfig = getWalletConfig;
 window.createTestAsset = createTestAsset;
-
-
-/***/ }),
-
-/***/ "./src/javascript/utils/popup.js":
-/*!***************************************!*\
-  !*** ./src/javascript/utils/popup.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "open": () => (/* binding */ open),
-/* harmony export */   "close": () => (/* binding */ close)
-/* harmony export */ });
-/**
-   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
-   * @param {String: show on the dialog} text
-   * @param {function} onConfirm
-   * @param {default true} cancellable
-   */
-const open = (type, text, onConfirm, cancellable = true) => {
-  const popover = document.querySelector("pop-over");
-  popover.open = true;
-  if (cancellable) {
-    popover.cancellable = cancellable;
-  }
-  switch (type) {
-    case "error":
-      popover.errorPopup(text);
-      break;
-    case "success":
-      popover.successPopup(text);
-      break;
-    case "loading":
-      popover.loadingPopup(text);
-      break;
-    case "confirm":
-      popover.confirmPopup(text, onConfirm);
-      break;
-  }
-};
-const close = (timeout) => {
-  const popover = document.querySelector("pop-over");
-  if (timeout !== undefined) {
-    setTimeout(() => {
-      popover.open = false;
-    }, timeout);
-  } else {
-    popover.open = false;
-  }
-};
 
 
 /***/ }),
@@ -8123,9 +7723,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
-
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
 
 class AssetItemElement extends HTMLElement {
   constructor() {
@@ -8156,7 +7754,7 @@ class AssetItemElement extends HTMLElement {
     element.children[3].children[1].textContent = asset.inFiat;
     element.children[3].children[2].textContent = fiat;
     element.addEventListener("click", (_) =>
-      _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.route("asset", asset)
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("asset", asset)
     );
   }
   connectedCallback() {
@@ -8166,7 +7764,7 @@ class AssetItemElement extends HTMLElement {
   }
   disconnectedCallback() {
     this.removeEventListener("click", (_) =>
-      _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.route("asset", asset)
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("asset", asset)
     );
   }
   get publish() {
@@ -8214,10 +7812,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/route */ "./src/javascript/controller/route.js");
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
-
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
 
@@ -8234,7 +7830,7 @@ class BillItemElement extends HTMLElement {
             <div class="bill-item__action">${this.bill.action}</div>
             <div class="bill-item__detail">
                 <span class="bill-item__direction">${this.bill.direction}</span>
-                <span class="bill-item__address">${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.addressFormatter)(
+                <span class="bill-item__address">${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_1__.addressFormatter)(
                   this.bill.address
                 )}</span>
             </div>
@@ -8256,12 +7852,12 @@ class BillItemElement extends HTMLElement {
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
     this.addEventListener("click", (_) =>
-      _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.route("bill", this.bill)
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("bill", this.bill)
     );
   }
   disconnectedCallback() {
     this.removeEventListener("click", (_) =>
-      _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.route("bill", this.bill)
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("bill", this.bill)
     );
   }
   static get observedAttributes() {
@@ -8437,185 +8033,6 @@ class Button {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Button);
-
-
-/***/ }),
-
-/***/ "./src/javascript/widget/input.js":
-/*!****************************************!*\
-  !*** ./src/javascript/widget/input.js ***!
-  \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
-
-
-class InputElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  static get observedAttributes() {
-    return ["focus", "has-value", "error"];
-  }
-  handleInput(e) {
-    if (e.target.value !== "") {
-      this.hasValue = true;
-    } else {
-      this.hasValue = false;
-    }
-    let checked;
-    if (this.validator !== undefined) {
-      checked = e.target.value === "" || this.validator(e.target.value);
-    }
-    if (checked !== undefined) {
-      this.error = !checked;
-    }
-    // ++
-    // https://stackoverflow.com/questions/8808590/number-input-type-that-takes-only-integers
-    if (e.target.pattern === "d*") {
-      //   this.value = this.value.replace(/[^0-9.]/g, '');
-      //   this.value = this.value.replace(/(\..*)\./g, '$1');
-    }
-    this.inputValue = e.target.value;
-  }
-  connectedCallback() {
-    this.className = "input__controller";
-    this.id = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(6);
-    this.innerHTML = `
-    <div class="input__field">
-        <label class="input__label" for=${this.id}><p></p></label>
-        <div class="input__content">
-            <input type="text" class="input__input" id=${this.id}>
-            <div class="input__action"></i></div>
-        </div>
-    </div>
-    <div class="input__error-message"></div>
-    `;
-    this.children[0].children[1].children[0].addEventListener(
-      "focus",
-      (e) => (this.focus = true)
-    );
-    this.children[0].children[1].children[0].addEventListener(
-      "focusout",
-      (e) => (this.focus = false)
-    );
-    // this.children[0].children[1].children[0].addEventListener("change", (e) => {
-    this.children[0].children[1].children[0].addEventListener("input", (e) =>
-      this.handleInput(e)
-    );
-    this.children[0].children[1].children[1].style.display = "none";
-  }
-  get hasValue() {
-    return this.hasAttribute("has-value");
-  }
-  set focus(val) {
-    if (val) {
-      Array.from(document.querySelectorAll("input__controller")).forEach(
-        (controller) => (controller.focus = false)
-      );
-      this.setAttribute("focus", "");
-    } else {
-      this.removeAttribute("focus");
-    }
-  }
-  set hasValue(val) {
-    if (val) {
-      this.setAttribute("has-value", "");
-    } else {
-      this.removeAttribute("has-value");
-    }
-  }
-  set error(val) {
-    if (val) {
-      this.setAttribute("error", "");
-    } else {
-      this.removeAttribute("error");
-    }
-  }
-  set inputType(val) {
-    this.children[0].children[1].children[0].type = val;
-  }
-  set pattern(val) {
-    this.children[0].children[1].children[0].pattern = val;
-  }
-  set label(val) {
-    this.children[0].children[0].children[0].textContent = val;
-  }
-  set action(obj) {
-    this.children[0].children[1].children[1].style.display = "inline-block";
-    this.children[0].children[1].children[1].insertAdjacentHTML(
-      "afterbegin",
-      `<i class="far fa-${obj.icon}"></i>`
-    );
-    this.children[0].children[1].children[1].addEventListener("click", (e) =>
-      obj.onPressed()
-    );
-  }
-  set validation(val) {
-    this.validator = val;
-  }
-  set errorMessage(val) {
-    if (val === undefined) this.children[1].style.display = "none";
-    this.children[1].textContent = val;
-  }
-  disconnectedCallback() {
-    // target.removeEventListener('');
-    this.children[0].children[1].children[0].removeEventListener(
-      "focus",
-      (e) => (this.focus = true)
-    );
-    this.children[0].children[1].children[0].removeEventListener(
-      "focusout",
-      (e) => (this.focus = false)
-    );
-    this.children[0].children[1].children[0].removeEventListener("input", (e) =>
-      handleInput(e)
-    );
-    this.children[0].children[1].children[1].removeEventListener("click", (e) =>
-      obj.onPressed()
-    );
-  }
-}
-
-customElements.define("input-controller", InputElement);
-
-class Input {
-  constructor({
-    inputType = "text",
-    label,
-    errorMessage = "",
-    validation,
-    action,
-    pattern,
-  }) {
-    this.inputType = inputType;
-    this.label = label;
-    this.errorMessage = errorMessage;
-    this.validation = validation;
-    if (action !== undefined) this.action = action;
-    this.pattern = pattern;
-  }
-  render(parentElement) {
-    this.element = document.createElement("input-controller");
-    parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.inputType = this.inputType;
-    this.element.label = this.label;
-    this.element.errorMessage = this.errorMessage;
-    this.element.validation = this.validation;
-    if (this.action !== undefined) this.element.action = this.action;
-    if (this.pattern !== undefined) this.element.pattern = this.pattern;
-  }
-  get inputValue() {
-    return this.element.inputValue;
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Input);
 
 
 /***/ }),
@@ -9082,7 +8499,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("0f2f255f19158c15526e")
+/******/ 		__webpack_require__.h = () => ("c805335ea50a518d1aed")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

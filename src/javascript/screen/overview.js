@@ -10,7 +10,7 @@ class Overview {
   constructor() {}
   initialize(screen, totalAsset, assets, fiat, version) {
     this.assets = JSON.parse(JSON.stringify(assets));
-    this.header = new Header({ screen, fiat, totalAsset });
+    this.header = new Header(screen, { fiat, totalAsset });
     this.assetList = new AssetList(assets, fiat);
     this.settingList = new SettingList(fiat, version);
     this.body = new SlidesContainer([this.assetList, this.settingList]);
@@ -40,12 +40,12 @@ class Overview {
    * @param {OnUpdateCurrency, {assets, fiat, totalAsset}} event
    * @param {OnUpdateAccount {asset, fiat, totalAsset}} data
    */
-  update(event, totalAsset, fiat, { assets, asset }) {
+  update(event, totalAsset, fiat, { assets, asset } = {}) {
     if (event === "OnUpdateAccount") {
-      this.header.update({ screen: this.screen, fiat, totalAsset, asset });
+      this.header.update(this.screen, { fiat, totalAsset, asset });
       this.assetList.updateAsset(asset, fiat);
     } else if (event === "OnUpdateCurrency") {
-      this.header.update({ screen: this.screen, fiat, totalAsset });
+      this.header.update(this.screen, { fiat, totalAsset });
       this.assetList.update(assets, fiat);
     }
   }
