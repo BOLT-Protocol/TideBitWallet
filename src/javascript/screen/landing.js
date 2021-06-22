@@ -1,19 +1,25 @@
 import Scaffold from "../layout/scaffold";
 import ThirdPartySigninContainer from "../layout/third_party_signin_container";
-import route from "../controller/route";
+import viewController from "../controller/view"
 
-const googleSignin = async (state) => {
+const googleSignin = async (screen) => {
   // await;
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "accounts";
-  route(_state);
+  viewController.route(screen);
 };
 
-const landing = (state) =>
-  new Scaffold(
-    undefined,
-    new ThirdPartySigninContainer(state, "white", () => googleSignin(state)),
-    undefined
-  );
+class Landing {
+  constructor() {}
+  render(screen, version) {
+    this.scaffold = new Scaffold(
+      this.header,
+      new ThirdPartySigninContainer(version, "white", () =>
+        googleSignin(state)
+      ),
+      this.footer
+    );
+    this.scaffold.element.view = screen;
+  }
+}
 
+const landing = new Landing();
 export default landing;

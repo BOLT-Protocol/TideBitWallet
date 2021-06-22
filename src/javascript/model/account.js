@@ -1,4 +1,4 @@
-class Account {
+class Asset {
   constructor(
     id,
     name,

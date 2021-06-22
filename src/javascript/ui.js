@@ -1,17 +1,29 @@
 // MVC: View
-import route from "./controller/route";
 
-import * as utils from "./utils/utils";
+import viewController from "./controller/view";
+import { randomHex } from "./utils/utils";
 
-const state = {};
-
+// test
+const createTestAsset = (id) => {
+  return {
+    id: id ? id : randomHex(32),
+    name: "Aretha",
+    symbol: "ARE",
+    network: "Testnet",
+    decimals: 8,
+    publish: true,
+    image: "https://www.tidebit.one/icons/btc.png",
+    balance: 100,
+    inUSD: 30000,
+  };
+};
 // ++ let assetList = ui.getAssets();
-const getAssets = () => {
+const getUserDetail = () => {
   return {
     userBalanceInFiat: 52.29,
-    accounts: [
+    assets: [
       {
-        id: utils.randomHex(32),
+        id: randomHex(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "mainnet",
@@ -22,7 +34,7 @@ const getAssets = () => {
         infiat: 0,
       },
       {
-        id: utils.randomHex(32),
+        id: randomHex(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "testnet",
@@ -33,7 +45,7 @@ const getAssets = () => {
         infiat: 0,
       },
       {
-        id: utils.randomHex(32),
+        id: randomHex(32),
         name: "Ethereum",
         symbol: "ETH",
         network: "mainnet",
@@ -55,7 +67,7 @@ const getAssets = () => {
         infiat: 52.29,
       },
       {
-        id: utils.randomHex(32),
+        id: randomHex(32),
         name: "Tidetain",
         symbol: "TTN",
         network: "mainnet",
@@ -68,25 +80,26 @@ const getAssets = () => {
     ],
   };
 };
-
-const setWallet = (mode, version, fiat) => {
+const getWalletConfig = () => {
   return {
-    mode,
-    version,
-    fiat,
+    mode: "development",
+    version: "v 0.1.0 (1)",
+    fiat: "USD",
   };
 };
+//-- test
 
 const startApp = () => {
-  state.user = getAssets();
-  state.walletConfig = setWallet("development", "v 0.1.0 (1)", {
-    symbol: "USD",
-    infiat: 1,
-  });
-  state.screen = "landing";
-  route(state);
+  // const tideWallet = new TideWalletJS();
+  viewController.route("landing");
+  // onReady
+  viewController.initialize(getUserDetail(), getWalletConfig());
+  viewController.route("assets");
 };
 
-export default function launchTideBitUi(options, callback) {
-  startApp();
-}
+startApp();
+
+window.viewController = viewController;
+window.getUserDetail = getUserDetail;
+window.getWalletConfig = getWalletConfig;
+window.createTestAsset = createTestAsset;

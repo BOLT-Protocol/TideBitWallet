@@ -1,42 +1,43 @@
 import account from "../screen/account";
+import landing from "../screen/landing";
 import overview from "../screen/overview";
 import { currentView } from "../utils/utils";
 
 class ViewController {
-  constructor(currentScreen, user, config) {
-    this.currentAccount;
+  initialize(user, config) {
+    this.currentAsset;
     this.currentBill;
-    this.currentScreen = currentScreen;
+    this.currentScreen;
     this.userBalanceInFiat = userBalanceInFiat;
-    this.userAccounts = JSON.parse(JSON.stringify(user.accounts));
-    this.walletFiat = JSON.parse(JSON.stringify(config.fiat));
-    this.walletVersion = JSON.parse(JSON.stringify(config.version));
-    this.walletMode = JSON.parse(JSON.stringify(config.mode));
+    this.userAssets = JSON.parse(JSON.stringify(user.assets));
+    this.walletFiat = config.fiat;
+    this.walletVersion = config.version;
+    this.walletMode = config.mode;
   }
-  updateAccounts = (accounts, userBalanceInFiat, walletFiat) => {
-    this.userAccounts = JSON.parse(JSON.stringify(accounts));
+  updateAssets = (assets, userBalanceInFiat, fiat) => {
+    this.userAssets = JSON.parse(JSON.stringify(assets));
     this.userBalanceInFiat = userBalanceInFiat;
-    if (walletFiat) this.walletFiat = JSON.parse(JSON.stringify(walletFiat));
+    if (fiat) this.walletFiat = fiat;
     const view = currentView();
     switch (view) {
-      case "accounts":
+      case "assets":
       case "settings":
         overview.update(
           "OnUpdateCurrency",
           this.userBalanceInFiat,
           this.walletFiat,
-          { accounts }
+          { assets }
         );
         break;
       default:
         break;
     }
   };
-  updateAccount = (account, userBalanceInFiat) => {
+  updateAsset = (account, userBalanceInFiat) => {
     this.userBalanceInFiat = userBalanceInFiat;
     const view = currentView();
     switch (view) {
-      case "accounts":
+      case "assets":
       case "settings":
         overview.update(
           "OnUpdateAccount",
@@ -45,7 +46,7 @@ class ViewController {
           { account }
         );
         break;
-      case "acccount":
+      case "asset":
         // ++ 2021/6/22 Emily
         break;
       default:
@@ -58,12 +59,15 @@ class ViewController {
   updateAddress = (address) => {};
   route = (screen) => {
     switch (screen) {
-      case "accounts":
+      case "landing":
+        landing.render(screen);
+        break;
+      case "assets":
       case "settings":
         overview.render(
           screen,
           this.userBalanceInFiat,
-          this.userAccounts,
+          this.userAssets,
           this.walletFiat,
           this.walletVersion
         );
@@ -73,7 +77,6 @@ class ViewController {
     }
   };
 }
-
 const viewController = new ViewController();
 
 export default viewController;

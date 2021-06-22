@@ -1,6 +1,6 @@
 import Scaffold from "../layout/scaffold";
 import Header from "../layout/header";
-import AccountList from "../layout/account_list";
+import AssetList from "../layout/asset_list";
 import SettingList from "../layout/setting_list";
 import BottomNavigator from "../layout/bottom_navigator";
 import SlidesContainer from "../layout/slider_container";
@@ -15,29 +15,29 @@ class Overview {
    */
   constructor() {}
 
-  initialize(screen, totalAsset, accounts, fiat, version) {
-    this.accounts = JSON.parse(JSON.stringify(accounts));
+  initialize(screen, totalAsset, assets, fiat, version) {
+    this.assets = JSON.parse(JSON.stringify(assets));
     this.header = new Header(screen, fiat, { totalAsset });
-    this.accountList = new AccountList(accounts, fiat);
+    this.assetList = new AssetList(assets, fiat);
     this.settingList = new SettingList(fiat, version);
-    this.body = new SlidesContainer([this.accountList, this.settingList]);
+    this.body = new SlidesContainer([this.assetList, this.settingList]);
     this.footer = new BottomNavigator(this.state, 0);
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.scaffold.element.view = screen;
     this.screen = screen;
   }
-  render(screen, totalAsset, accounts, fiat, version) {
+  render(screen, totalAsset, assets, fiat, version) {
     const view = currentView();
     if (
       !view ||
-      (view !== "accounts" && view !== "settings") ||
+      (view !== "assets" && view !== "settings") ||
       !this.scaffold
     ) {
-      initialize(screen, totalAsset, accounts, fiat, version);
+      initialize(screen, totalAsset, assets, fiat, version);
     } else {
       this.screen = screen;
       switch (this.screen) {
-        case "accounts":
+        case "assets":
           this.body.focus = 0;
           break;
         case "settings":
@@ -48,16 +48,16 @@ class Overview {
   }
   /**
    *
-   * @param {OnUpdateCurrency, {accounts, fiat, totalAsset}} event
-   * @param {OnUpdateAccount {account, fiat, totalAsset}} data
+   * @param {OnUpdateCurrency, {assets, fiat, totalAsset}} event
+   * @param {OnUpdateAccount {asset, fiat, totalAsset}} data
    */
-  update(event, totalAsset, fiat, { accounts, account }) {
+  update(event, totalAsset, fiat, { assets, asset }) {
     if (event === "OnUpdateAccount") {
-      this.header.update(this.screen, fiat, { totalAsset, account });
-      this.accountList.updateAccount(account, fiat);
+      this.header.update(this.screen, fiat, { totalAsset, asset });
+      this.assetList.updateAsset(asset, fiat);
     } else if (event === "OnUpdateCurrency") {
       this.header.update(this.screen, fiat, { totalAsset });
-      this.accountList.update(accounts, fiat);
+      this.assetList.update(assets, fiat);
     }
   }
 }
