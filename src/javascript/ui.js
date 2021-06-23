@@ -191,7 +191,7 @@ const startApp = () => {
     );
   }, 4500);
 
-  // onUpdateTransaction
+  // onUpdateTransactions
   // eth ropsten transaction
   setTimeout(() => {
     bills = getAssetDetail(user.assets[3].id)?.map((obj) => new Bill(obj));
@@ -201,6 +201,8 @@ const startApp = () => {
       viewController.updateBills(user.assets[3], bills);
       const updateBill = (bill = user.assets[3].bills[0]) => {
         bill.confirmations += 1;
+        // onUpdateTransaction
+        // eth ropsten 1st transaction
         viewController.updateBill(user.assets[3], bills[0]);
         if (bill.confirmations === 4) {
           viewController.route("bill", bills[0]);
