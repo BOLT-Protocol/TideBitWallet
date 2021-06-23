@@ -25,7 +25,7 @@ class Asset {
     this.scaffold.view = screen;
     this.screen = screen;
     if (asset.bills) {
-      this.scaffold.openPopover("loading", "loading...");
+      // this.scaffold.openPopover("loading", "loading...");
     }
   }
   render(screen, asset, fiat) {
@@ -37,7 +37,7 @@ class Asset {
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });
     this.billList.updateBills(bills);
-    this.scaffold.closePopover();
+    // this.scaffold.closePopover();
   }
   updateBill(asset, billIndex, bill) {
     this.header.update(this.screen, { asset });

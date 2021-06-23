@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624445309307
+      // 1624446551726
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7362,7 +7362,7 @@ class Asset {
     this.scaffold.view = screen;
     this.screen = screen;
     if (asset.bills) {
-      this.scaffold.openPopover("loading", "loading...");
+      // this.scaffold.openPopover("loading", "loading...");
     }
   }
   render(screen, asset, fiat) {
@@ -7374,7 +7374,7 @@ class Asset {
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });
     this.billList.updateBills(bills);
-    this.scaffold.closePopover();
+    // this.scaffold.closePopover();
   }
   updateBill(asset, billIndex, bill) {
     this.header.update(this.screen, { asset });
@@ -7521,7 +7521,7 @@ class Overview {
     this.scaffold.view = screen;
     this.screen = screen;
     if (assets) {
-      this.scaffold.openPopover("loading", "loading...");
+      // this.scaffold.openPopover("loading", "loading...");
     }
   }
   render(screen, fiat, version, { totalAsset, assets } = {}) {
@@ -7547,7 +7547,7 @@ class Overview {
    * @param {fiat} String
    */
   updateAssets(totalAsset, fiat, assets) {
-    this.scaffold.closePopover();
+    // this.scaffold.closePopover();
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
   }
@@ -7739,83 +7739,62 @@ const getWalletConfig = () => {
 //-- test
 
 const startApp = () => {
-  // const tideWallet = new TideWalletJS();
   let user, wallet, bills;
+  // initialize
   wallet = getWalletConfig();
-  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.initialize(wallet);
   // -- test
   window.wallet = wallet;
-  // -- test
+  // --
+  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.initialize(wallet);
   _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("landing");
-  // onReady
 
+  // onReady
   // -- test
   setTimeout(() => {
     user = getUserDetail();
     user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_1__.default(asset));
     _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateUser(user);
-    // -- test
-    window.user = user;
-    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAssets(
-      user.assets,
-      user.userBalanceInFiat,
-      wallet.fiat
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("assets");
+  }, 2000);
+  // --
+
+  // onUpdateAccount
+  // new Account
+  setTimeout(() => {
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(createTestAsset(), user.userBalanceInFiat);
+  }, 3500);
+
+  // onUpdateAccount
+  // existAccount
+  setTimeout(() => {
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(
+      createTestAsset(user.assets[1].id),
+      user.userBalanceInFiat
     );
-    setTimeout(() => {
-      _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(createTestAsset(), user.userBalanceInFiat);
-    }, 5000);
+  }, 4500);
 
+  // onUpdateTransaction
+  // eth ropsten transaction
+  setTimeout(() => {
+    bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
+    window.bills = bills;
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
     setTimeout(() => {
-      bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-      window.bills = bills;
       _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(user.assets[3], bills);
-      
-    }, 5000);
-    // -- test
-
-    setTimeout(() => {
       const updateBill = (bill = user.assets[3].bills[0]) => {
         bill.confirmations += 1;
         _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBill(user.assets[3], bills[0]);
-        if (bill.confirmations > 6) {
+        if (bill.confirmations === 4) {
+          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("bill", bills[0]);
+        }
+        if (bill.confirmations > 7) {
+          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
           clearInterval(interval);
         }
       };
       const interval = setInterval(updateBill, 2000);
-    }, 5000);
-  }, 5000);
-
-  // -- test
-
-  // viewController.route("assets");
-  // viewController.route("settings");
-  // viewController.route("asset", asset);
-  // viewController.route("bill", bill);
-  // viewController.route("address", bill);
-  /**
-   *  onUpdate
-   *  OnUpdateCurrency
-   */
-  // viewController.updateAssets(
-  //   user.assets,
-  //   user.userBalanceInFiat,
-  //   wallet.fiat
-  // );
-  /**
-   *  onUpdate
-   *  OnUpdateAccount
-   */
-  // viewController.updateAsset();
-  /**
-   *  onUpdate
-   *  OnUpdateTransactions
-   */
-  // viewController.updateTransactions();
-  /**
-   *  onUpdate
-   *  OnUpdateTransaction
-   */
-  // viewController.updateTransaction();
+    }, 1000);
+  }, 6000);
 };
 
 startApp();
@@ -8734,7 +8713,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("f2979e889e77ad45605b")
+/******/ 		__webpack_require__.h = () => ("9073ea1ca1a1918816a0")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -157,83 +157,62 @@ const getWalletConfig = () => {
 //-- test
 
 const startApp = () => {
-  // const tideWallet = new TideWalletJS();
   let user, wallet, bills;
+  // initialize
   wallet = getWalletConfig();
-  viewController.initialize(wallet);
   // -- test
   window.wallet = wallet;
-  // -- test
+  // --
+  viewController.initialize(wallet);
   viewController.route("landing");
-  // onReady
 
+  // onReady
   // -- test
   setTimeout(() => {
     user = getUserDetail();
     user.assets = user.assets.map((asset) => new Asset(asset));
     viewController.updateUser(user);
-    // -- test
-    window.user = user;
-    viewController.updateAssets(
-      user.assets,
-      user.userBalanceInFiat,
-      wallet.fiat
+    viewController.route("assets");
+  }, 2000);
+  // --
+
+  // onUpdateAccount
+  // new Account
+  setTimeout(() => {
+    viewController.updateAsset(createTestAsset(), user.userBalanceInFiat);
+  }, 3500);
+
+  // onUpdateAccount
+  // existAccount
+  setTimeout(() => {
+    viewController.updateAsset(
+      createTestAsset(user.assets[1].id),
+      user.userBalanceInFiat
     );
-    setTimeout(() => {
-      viewController.updateAsset(createTestAsset(), user.userBalanceInFiat);
-    }, 5000);
+  }, 4500);
 
+  // onUpdateTransaction
+  // eth ropsten transaction
+  setTimeout(() => {
+    bills = getAssetDetail(user.assets[3].id)?.map((obj) => new Bill(obj));
+    window.bills = bills;
+    viewController.route("asset", user.assets[3]);
     setTimeout(() => {
-      bills = getAssetDetail(user.assets[3].id)?.map((obj) => new Bill(obj));
-      window.bills = bills;
       viewController.updateBills(user.assets[3], bills);
-      
-    }, 5000);
-    // -- test
-
-    setTimeout(() => {
       const updateBill = (bill = user.assets[3].bills[0]) => {
         bill.confirmations += 1;
         viewController.updateBill(user.assets[3], bills[0]);
-        if (bill.confirmations > 6) {
+        if (bill.confirmations === 4) {
+          viewController.route("bill", bills[0]);
+        }
+        if (bill.confirmations > 7) {
+          viewController.route("asset", user.assets[3]);
           clearInterval(interval);
         }
       };
       const interval = setInterval(updateBill, 2000);
-    }, 5000);
-  }, 5000);
-
-  // -- test
-
-  // viewController.route("assets");
-  // viewController.route("settings");
-  // viewController.route("asset", asset);
-  // viewController.route("bill", bill);
-  // viewController.route("address", bill);
-  /**
-   *  onUpdate
-   *  OnUpdateCurrency
-   */
-  // viewController.updateAssets(
-  //   user.assets,
-  //   user.userBalanceInFiat,
-  //   wallet.fiat
-  // );
-  /**
-   *  onUpdate
-   *  OnUpdateAccount
-   */
-  // viewController.updateAsset();
-  /**
-   *  onUpdate
-   *  OnUpdateTransactions
-   */
-  // viewController.updateTransactions();
-  /**
-   *  onUpdate
-   *  OnUpdateTransaction
-   */
-  // viewController.updateTransaction();
+    }, 1000);
+  }, 6000);
 };
 
 startApp();
