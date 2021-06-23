@@ -7,7 +7,7 @@ import { currentView } from "../utils/utils";
 class Asset {
   constructor() {}
   initialize(screen, asset, fiat) {
-    // ++ tidewallet is ready
+    // ++ if tidewallet is ready
     // tidewallet.getAssetDetail(user.assets[3].id)
     //   .then((objs) => objs?.map((obj) => new Bill(obj)))
     //   .then((bills) => {

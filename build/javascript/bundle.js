@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624440692656
+      // 1624444955639
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6226,6 +6226,9 @@ class AddressContentElement extends HTMLElement {
   constructor() {
     super();
   }
+  set id(val) {
+    this.setAttribute("id", val);
+  }
   connectedCallback() {
     this.className = "address";
     this.innerHTML = `
@@ -6237,7 +6240,7 @@ class AddressContentElement extends HTMLElement {
           <div class="address__text"></div>
           <div class="address__button"></div>
           `;
-    this.renderAddress();
+    this.id = this.asset.id;
     this.setCoinbase();
   }
   /**
@@ -6280,12 +6283,15 @@ class AddressContentElement extends HTMLElement {
 customElements.define("address-content", AddressContentElement);
 
 class AddressContent {
-  constructor(asset, address) {
+  constructor(asset) {
+    this.asset = asset;
     this.element = document.createElement("address-content");
     this.element.asset = asset;
+  }
+  update(address) {
+    this.element = document.querySelector(`address-content[id="${this.asset.id}"]`);
     this.element.address = address;
-    console.log(asset);
-    console.log(address);
+    this.element.renderAddress();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -7294,10 +7300,10 @@ __webpack_require__.r(__webpack_exports__);
 class Address {
   constructor() {}
   initialize(screen, asset) {
-    // ++ ui.getReceiveAddress({ asset.id });
-    this.address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
+    // ++ if tidewallet is ready
+    // tidewallet.getReceiveAddress({ asset.id });
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen);
-    this.addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_3__.default(asset, this.address);
+    this.addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_3__.default(asset);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.addressContent);
   }
   render(screen, asset) {
@@ -7305,9 +7311,16 @@ class Address {
     if (!view || view !== "address" || !this.scaffold) {
       this.initialize(screen, asset);
     }
+    // -- test
+    setTimeout(() => {
+      const address = "0xd885833741f554a0e64ffd1141887d65e0dded01";
+      this.update(address);
+    }, 1000);
   }
   // ++ Emily 2021/6/22
-  update(event, address) {}
+  update(address) {
+    this.addressContent.update(address);
+  }
 }
 
 const address = new Address();
@@ -7342,8 +7355,8 @@ __webpack_require__.r(__webpack_exports__);
 class Asset {
   constructor() {}
   initialize(screen, asset, fiat) {
-    // ++
-    // ui.getAssetDetail(user.assets[3].id)
+    // ++ if tidewallet is ready
+    // tidewallet.getAssetDetail(user.assets[3].id)
     //   .then((objs) => objs?.map((obj) => new Bill(obj)))
     //   .then((bills) => {
     //     this.updateBills(bills);
@@ -7545,9 +7558,9 @@ class Overview {
    * @param {fiat} String
    */
   updateAssets(totalAsset, fiat, assets) {
+    this.scaffold.closePopover();
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
-    this.scaffold.closePopover();
   }
   updateAsset(index, totalAsset, asset) {
     this.header.update(this.screen, { totalAsset });
@@ -7767,7 +7780,7 @@ const startApp = () => {
       bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
       window.bills = bills;
       _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(user.assets[3], bills);
-      const interval = setInterval(() => {});
+      
     }, 5000);
     // -- test
 
@@ -8732,7 +8745,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("f944849509dd105d2b4b")
+/******/ 		__webpack_require__.h = () => ("cf214b7168e71f6339c4")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

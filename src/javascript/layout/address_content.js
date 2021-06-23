@@ -6,6 +6,9 @@ class AddressContentElement extends HTMLElement {
   constructor() {
     super();
   }
+  set id(val) {
+    this.setAttribute("id", val);
+  }
   connectedCallback() {
     this.className = "address";
     this.innerHTML = `
@@ -17,7 +20,7 @@ class AddressContentElement extends HTMLElement {
           <div class="address__text"></div>
           <div class="address__button"></div>
           `;
-    this.renderAddress();
+    this.id = this.asset.id;
     this.setCoinbase();
   }
   /**
@@ -60,12 +63,15 @@ class AddressContentElement extends HTMLElement {
 customElements.define("address-content", AddressContentElement);
 
 class AddressContent {
-  constructor(asset, address) {
+  constructor(asset) {
+    this.asset = asset;
     this.element = document.createElement("address-content");
     this.element.asset = asset;
+  }
+  update(address) {
+    this.element = document.querySelector(`address-content[id="${this.asset.id}"]`);
     this.element.address = address;
-    console.log(asset);
-    console.log(address);
+    this.element.renderAddress();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
