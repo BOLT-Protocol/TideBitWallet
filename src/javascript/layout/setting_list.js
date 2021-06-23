@@ -62,7 +62,7 @@ class SettingList {
     const settings = getSettings(fiat);
     this.element = document.createElement("setting-list");
     this.element.version = version;
-    this.element.fiat = JSON.parse(JSON.stringify(fiat));
+    this.element.fiat = fiat;
     this.element.settings = settings.map(
       (setting) => new SettingColumn(setting)
     );

@@ -8,8 +8,7 @@ import { currentView } from "../utils/utils";
 
 class Overview {
   constructor() {}
-  initialize(screen, totalAsset, assets, fiat, version) {
-    this.assets = JSON.parse(JSON.stringify(assets));
+  initialize(screen, fiat, version, { totalAsset, assets } = {}) {
     this.header = new Header(screen, { fiat, totalAsset });
     this.assetList = new AssetList(assets, fiat);
     this.settingList = new SettingList(fiat, version);
@@ -19,10 +18,10 @@ class Overview {
     this.scaffold.element.view = screen;
     this.screen = screen;
   }
-  render(screen, totalAsset, assets, fiat, version) {
+  render(screen, fiat, version, { totalAsset, assets } = {}) {
     const view = currentView();
     if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
-      this.initialize(screen, totalAsset, assets, fiat, version);
+      this.initialize(screen, fiat, version, { totalAsset, assets });
     } else {
       this.screen = screen;
       switch (this.screen) {
@@ -36,18 +35,18 @@ class Overview {
     }
   }
   /**
-   *
-   * @param {OnUpdateCurrency, {assets, fiat, totalAsset}} event
-   * @param {OnUpdateAccount {asset, fiat, totalAsset}} data
+   * @param {List of Asset} assets
+   * @param {Asset} asset
+   * @param {totalAsset} String
+   * @param {fiat} String
    */
-  update(event, totalAsset, fiat, { assets, asset } = {}) {
-    if (event === "OnUpdateAccount") {
-      this.header.update(this.screen, { fiat, totalAsset, asset });
-      this.assetList.updateAsset(asset, fiat);
-    } else if (event === "OnUpdateCurrency") {
-      this.header.update(this.screen, { fiat, totalAsset });
-      this.assetList.update(assets, fiat);
-    }
+  updateAssets(totalAsset, fiat, assets) {
+    this.header.update(this.screen, { fiat, totalAsset });
+    this.assetList.updateAssets(assets, fiat);
+  }
+  updateAsset(totalAsset, asset) {
+    this.header.update(this.screen, { totalAsset });
+    this.assetList.updateAsset(asset);
   }
 }
 

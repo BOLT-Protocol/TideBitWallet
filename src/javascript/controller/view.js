@@ -6,15 +6,18 @@ import bill from "../screen/bill";
 import address from "../screen/address";
 
 class ViewController {
-  initialize(user, config) {
+  initialize(config, user) {
     this.currentAsset;
     this.currentBill;
     this.currentScreen;
-    this.userBalanceInFiat = user.userBalanceInFiat;
-    this.userAssets = user.assets;
     this.walletFiat = config.fiat;
     this.walletVersion = config.version;
     this.walletMode = config.mode;
+    this.updateUser(user);
+  }
+  updateUser(user) {
+    this.userBalanceInFiat = user?.userBalanceInFiat;
+    this.userAssets = user?.assets;
   }
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
@@ -24,12 +27,7 @@ class ViewController {
     switch (view) {
       case "assets":
       case "settings":
-        overview.update(
-          "OnUpdateCurrency",
-          this.userBalanceInFiat,
-          this.walletFiat,
-          { assets }
-        );
+        overview.updateAssets(this.userBalanceInFiat, this.walletFiat, assets);
         break;
       default:
         break;
@@ -41,12 +39,7 @@ class ViewController {
     switch (view) {
       case "assets":
       case "settings":
-        overview.update(
-          "OnUpdateAccount",
-          this.userBalanceInFiat,
-          this.walletFiat,
-          { asset }
-        );
+        overview.updateAsset(this.userBalanceInFiat, asset);
         break;
       case "asset":
         // ++ 2021/6/22 Emily
@@ -54,7 +47,6 @@ class ViewController {
       default:
         break;
     }
-    overview.update("OnUpdateAccount", asset);
   };
   updateBills = (bills) => {};
   updateBill = (bill) => {};
@@ -62,17 +54,14 @@ class ViewController {
   route = (screen, data) => {
     switch (screen) {
       case "landing":
-        landing.render(screen);
+        landing.render(screen, this.walletVersion);
         break;
       case "assets":
       case "settings":
-        overview.render(
-          screen,
-          this.userBalanceInFiat,
-          this.userAssets,
-          this.walletFiat,
-          this.walletVersion
-        );
+        overview.render(screen, this.walletFiat, this.walletVersion, {
+          totalAsset: this.userBalanceInFiat,
+          assets: this.userAssets,
+        });
         break;
       case "asset":
         if (data) {

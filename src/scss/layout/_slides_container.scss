@@ -1,8 +1,11 @@
 .slides-container {
+  height: 100%;
   display: flex;
   flex-direction: row;
   & .slides {
-    display: none;
+    position: relative;
     flex: auto;
+    height: 100%;
+    display: none;
   }
 }

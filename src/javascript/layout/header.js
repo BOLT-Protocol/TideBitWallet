@@ -53,8 +53,10 @@ class HeaderElement extends HTMLElement {
       <div class="header__title">Total Asset</div>
       <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
-        <span class="user-total-balance">${totalAsset}</span>
-        <span class="currency-unit">${fiat}</span>
+        <span class="user-total-balance">${
+          totalAsset ? totalAsset : "Loading..."
+        }</span>
+        <span class="currency-unit">${totalAsset ? fiat : ""}</span>
       </div>
     `;
     return markup;
@@ -113,10 +115,11 @@ class HeaderElement extends HTMLElement {
           this.totalAsset = totalAsset;
           document.querySelector(".user-total-balance").textContent =
             totalAsset;
-        } else if (fiat != this.fiat) {
-          this.fiat = fiat;
-          document.querySelector(".currency-unit").textContent = fiat;
         }
+        if (!this.fiat || this.fiat !== fiat) {
+          this.fiat = fiat;
+        }
+        document.querySelector(".currency-unit").textContent = this.fiat;
         break;
       case "asset":
         this.fiat = fiat;
@@ -143,6 +146,9 @@ class Header {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
   update(screen, { fiat, totalAsset, asset }) {
+    // -- test
+    console.log(fiat);
+    // -- test
     this.element.update(screen, { fiat, totalAsset, asset });
   }
 }

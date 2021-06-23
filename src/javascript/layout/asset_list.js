@@ -6,10 +6,16 @@ class AssetListElement extends HTMLElement {
   }
   update() {
     this.replaceChildren();
-    this.assets.forEach((asset) => asset.render(this));
+    if (this.assets) {
+      this.className = "asset-list";
+      this.assets.forEach((asset) => asset.render(this));
+    } else {
+      this.innerHTML = `
+      <div class="loading__text">Loading...</div>
+      `;
+    }
   }
   connectedCallback() {
-    this.className = "asset-list";
     this.update();
   }
 }
@@ -18,26 +24,21 @@ customElements.define("asset-list", AssetListElement);
 
 class AssetList {
   constructor(assets, fiat) {
-    this.updateAssets(assets);
-    this.updateFiat(fiat);
     this.element = document.createElement("asset-list");
-    this.element.assets = this.assets.map((asset) => this.assetItem(asset));
+    this.fiat = fiat;
+    if (assets) {
+      this.assets = assets;
+      this.element.assets = this.assets.map((asset) => this.assetItem(asset));
+    }
   }
   assetItem = (asset) => new AssetItem(asset, this.fiat);
-  updateAssets(assets) {
+  updateAssets(assets, fiat) {
     this.assets = assets;
-  }
-  updateFiat(fiat) {
     this.fiat = fiat;
-  }
-  update(assets, fiat) {
-    this.updateAssets(assets);
-    this.updateFiat(fiat);
     this.element.assets = this.assets.map((asset) => this.assetItem(asset));
     this.element.update();
   }
-  updateAsset(asset, fiat) {
-    this.updateFiat(fiat);
+  updateAsset(asset) {
     const index = this.assets.findIndex((ass) => ass.id === asset.id);
     if (index > -1) {
       this.element.assets[index] = this.assetItem(asset);

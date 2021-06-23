@@ -3,7 +3,8 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
   gap: 5px;
-//   overflow: hidden;
+  height: 400px;
+  overflow: scroll;
   & > * {
     cursor: pointer;
   }
@@ -15,5 +16,12 @@
     //   rgba($color-grey-dark-2, 0.3) 0px 1px 3px -1px;
     // transform: translate(0, -1px);
     transition: all 0.2s;
+  }
+}
+asset-list {
+  .loading__text {
+    @include absCenter;
+    font-size: $default-font-size;
+    color: $color-grey-dark-2;
   }
 }

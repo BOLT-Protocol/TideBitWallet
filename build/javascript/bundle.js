@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624359688167
+      // 1624419770470
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6070,15 +6070,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ViewController {
-  initialize(user, config) {
+  initialize(config, user) {
     this.currentAsset;
     this.currentBill;
     this.currentScreen;
-    this.userBalanceInFiat = user.userBalanceInFiat;
-    this.userAssets = user.assets;
     this.walletFiat = config.fiat;
     this.walletVersion = config.version;
     this.walletMode = config.mode;
+    this.updateUser(user);
+  }
+  updateUser(user) {
+    this.userBalanceInFiat = user?.userBalanceInFiat;
+    this.userAssets = user?.assets;
   }
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
@@ -6088,12 +6091,7 @@ class ViewController {
     switch (view) {
       case "assets":
       case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.update(
-          "OnUpdateCurrency",
-          this.userBalanceInFiat,
-          this.walletFiat,
-          { assets }
-        );
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.updateAssets(this.userBalanceInFiat, this.walletFiat, assets);
         break;
       default:
         break;
@@ -6105,12 +6103,7 @@ class ViewController {
     switch (view) {
       case "assets":
       case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.update(
-          "OnUpdateAccount",
-          this.userBalanceInFiat,
-          this.walletFiat,
-          { asset }
-        );
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.updateAsset(this.userBalanceInFiat, asset);
         break;
       case "asset":
         // ++ 2021/6/22 Emily
@@ -6118,7 +6111,6 @@ class ViewController {
       default:
         break;
     }
-    _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.update("OnUpdateAccount", asset);
   };
   updateBills = (bills) => {};
   updateBill = (bill) => {};
@@ -6126,17 +6118,14 @@ class ViewController {
   route = (screen, data) => {
     switch (screen) {
       case "landing":
-        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen);
+        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion);
         break;
       case "assets":
       case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.render(
-          screen,
-          this.userBalanceInFiat,
-          this.userAssets,
-          this.walletFiat,
-          this.walletVersion
-        );
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.render(screen, this.walletFiat, this.walletVersion, {
+          totalAsset: this.userBalanceInFiat,
+          assets: this.userAssets,
+        });
         break;
       case "asset":
         if (data) {
@@ -6273,10 +6262,16 @@ class AssetListElement extends HTMLElement {
   }
   update() {
     this.replaceChildren();
-    this.assets.forEach((asset) => asset.render(this));
+    if (this.assets) {
+      this.className = "asset-list";
+      this.assets.forEach((asset) => asset.render(this));
+    } else {
+      this.innerHTML = `
+      <div class="loading__text">Loading...</div>
+      `;
+    }
   }
   connectedCallback() {
-    this.className = "asset-list";
     this.update();
   }
 }
@@ -6285,26 +6280,21 @@ customElements.define("asset-list", AssetListElement);
 
 class AssetList {
   constructor(assets, fiat) {
-    this.updateAssets(assets);
-    this.updateFiat(fiat);
     this.element = document.createElement("asset-list");
-    this.element.assets = this.assets.map((asset) => this.assetItem(asset));
+    this.fiat = fiat;
+    if (assets) {
+      this.assets = assets;
+      this.element.assets = this.assets.map((asset) => this.assetItem(asset));
+    }
   }
   assetItem = (asset) => new _widget_asset_item__WEBPACK_IMPORTED_MODULE_0__.default(asset, this.fiat);
-  updateAssets(assets) {
+  updateAssets(assets, fiat) {
     this.assets = assets;
-  }
-  updateFiat(fiat) {
     this.fiat = fiat;
-  }
-  update(assets, fiat) {
-    this.updateAssets(assets);
-    this.updateFiat(fiat);
     this.element.assets = this.assets.map((asset) => this.assetItem(asset));
     this.element.update();
   }
-  updateAsset(asset, fiat) {
-    this.updateFiat(fiat);
+  updateAsset(asset) {
     const index = this.assets.findIndex((ass) => ass.id === asset.id);
     if (index > -1) {
       this.element.assets[index] = this.assetItem(asset);
@@ -6574,8 +6564,10 @@ class HeaderElement extends HTMLElement {
       <div class="header__title">Total Asset</div>
       <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
-        <span class="user-total-balance">${totalAsset}</span>
-        <span class="currency-unit">${fiat}</span>
+        <span class="user-total-balance">${
+          totalAsset ? totalAsset : "Loading..."
+        }</span>
+        <span class="currency-unit">${totalAsset ? fiat : ""}</span>
       </div>
     `;
     return markup;
@@ -6634,10 +6626,11 @@ class HeaderElement extends HTMLElement {
           this.totalAsset = totalAsset;
           document.querySelector(".user-total-balance").textContent =
             totalAsset;
-        } else if (fiat != this.fiat) {
-          this.fiat = fiat;
-          document.querySelector(".currency-unit").textContent = fiat;
         }
+        if (!this.fiat || this.fiat !== fiat) {
+          this.fiat = fiat;
+        }
+        document.querySelector(".currency-unit").textContent = this.fiat;
         break;
       case "asset":
         this.fiat = fiat;
@@ -6664,6 +6657,9 @@ class Header {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
   update(screen, { fiat, totalAsset, asset }) {
+    // -- test
+    console.log(fiat);
+    // -- test
     this.element.update(screen, { fiat, totalAsset, asset });
   }
 }
@@ -6815,7 +6811,7 @@ class SettingList {
     const settings = getSettings(fiat);
     this.element = document.createElement("setting-list");
     this.element.version = version;
-    this.element.fiat = JSON.parse(JSON.stringify(fiat));
+    this.element.fiat = fiat;
     this.element.settings = settings.map(
       (setting) => new _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
     );
@@ -7431,8 +7427,7 @@ __webpack_require__.r(__webpack_exports__);
 
 class Overview {
   constructor() {}
-  initialize(screen, totalAsset, assets, fiat, version) {
-    this.assets = JSON.parse(JSON.stringify(assets));
+  initialize(screen, fiat, version, { totalAsset, assets } = {}) {
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { fiat, totalAsset });
     this.assetList = new _layout_asset_list__WEBPACK_IMPORTED_MODULE_2__.default(assets, fiat);
     this.settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(fiat, version);
@@ -7442,10 +7437,10 @@ class Overview {
     this.scaffold.element.view = screen;
     this.screen = screen;
   }
-  render(screen, totalAsset, assets, fiat, version) {
+  render(screen, fiat, version, { totalAsset, assets } = {}) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_6__.currentView)();
     if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
-      this.initialize(screen, totalAsset, assets, fiat, version);
+      this.initialize(screen, fiat, version, { totalAsset, assets });
     } else {
       this.screen = screen;
       switch (this.screen) {
@@ -7459,18 +7454,18 @@ class Overview {
     }
   }
   /**
-   *
-   * @param {OnUpdateCurrency, {assets, fiat, totalAsset}} event
-   * @param {OnUpdateAccount {asset, fiat, totalAsset}} data
+   * @param {List of Asset} assets
+   * @param {Asset} asset
+   * @param {totalAsset} String
+   * @param {fiat} String
    */
-  update(event, totalAsset, fiat, { assets, asset } = {}) {
-    if (event === "OnUpdateAccount") {
-      this.header.update(this.screen, { fiat, totalAsset, asset });
-      this.assetList.updateAsset(asset, fiat);
-    } else if (event === "OnUpdateCurrency") {
-      this.header.update(this.screen, { fiat, totalAsset });
-      this.assetList.update(assets, fiat);
-    }
+  updateAssets(totalAsset, fiat, assets) {
+    this.header.update(this.screen, { fiat, totalAsset });
+    this.assetList.updateAssets(assets, fiat);
+  }
+  updateAsset(totalAsset, asset) {
+    this.header.update(this.screen, { totalAsset });
+    this.assetList.updateAsset(asset);
   }
 }
 
@@ -7581,28 +7576,59 @@ const getWalletConfig = () => {
     fiat: "USD",
   };
 };
-
 //-- test
 
 const startApp = () => {
   // const tideWallet = new TideWalletJS();
+  let user, wallet;
+  wallet = getWalletConfig();
+  _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.initialize(wallet);
+  // -- test
+  window.wallet = wallet;
+  // -- test
   _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.route("landing");
   // onReady
-  const user = getUserDetail();
-  const wallet = getWalletConfig();
-  // ++ test
-  user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_0__.default(asset));
-  window.user = user;
-  window.wallet = wallet;
-  _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.initialize(user, wallet);
+
+  // -- test
+  setTimeout(() => {
+    user = getUserDetail();
+    user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_0__.default(asset));
+    _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.updateUser(user);
+    // -- test
+    window.user = user;
+    _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.updateAssets(
+      user.assets,
+      user.userBalanceInFiat,
+      wallet.fiat
+    );
+  }, 10000);
+  // -- test
+
   // viewController.route("assets");
+  // viewController.route("settings");
   // viewController.route("asset", asset);
-  // onUpdate
-  // switch (event) {
-  //   case "":
-  //     // viewController.updateAsset();
-  //     break;
-  // }
+  // viewController.route("bill", bill);
+  // viewController.route("address", bill);
+  /**
+   *  onUpdate
+   *  OnUpdateCurrency
+   */
+  // viewController.updateAssets();
+  /**
+   *  onUpdate
+   *  OnUpdateAccount
+   */
+  // viewController.updateAsset();
+  /**
+   *  onUpdate
+   *  OnUpdateTransactions
+   */
+  // viewController.updateTransactions();
+  /**
+   *  onUpdate
+   *  OnUpdateTransaction
+   */
+  // viewController.updateTransaction();
 };
 
 startApp();
@@ -8499,7 +8525,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("c805335ea50a518d1aed")
+/******/ 		__webpack_require__.h = () => ("f635de7d0b0295aebf4e")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

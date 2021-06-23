@@ -87,28 +87,59 @@ const getWalletConfig = () => {
     fiat: "USD",
   };
 };
-
 //-- test
 
 const startApp = () => {
   // const tideWallet = new TideWalletJS();
+  let user, wallet;
+  wallet = getWalletConfig();
+  viewController.initialize(wallet);
+  // -- test
+  window.wallet = wallet;
+  // -- test
   viewController.route("landing");
   // onReady
-  const user = getUserDetail();
-  const wallet = getWalletConfig();
-  // ++ test
-  user.assets = user.assets.map((asset) => new Asset(asset));
-  window.user = user;
-  window.wallet = wallet;
-  viewController.initialize(user, wallet);
+
+  // -- test
+  setTimeout(() => {
+    user = getUserDetail();
+    user.assets = user.assets.map((asset) => new Asset(asset));
+    viewController.updateUser(user);
+    // -- test
+    window.user = user;
+    viewController.updateAssets(
+      user.assets,
+      user.userBalanceInFiat,
+      wallet.fiat
+    );
+  }, 10000);
+  // -- test
+
   // viewController.route("assets");
+  // viewController.route("settings");
   // viewController.route("asset", asset);
-  // onUpdate
-  // switch (event) {
-  //   case "":
-  //     // viewController.updateAsset();
-  //     break;
-  // }
+  // viewController.route("bill", bill);
+  // viewController.route("address", bill);
+  /**
+   *  onUpdate
+   *  OnUpdateCurrency
+   */
+  // viewController.updateAssets();
+  /**
+   *  onUpdate
+   *  OnUpdateAccount
+   */
+  // viewController.updateAsset();
+  /**
+   *  onUpdate
+   *  OnUpdateTransactions
+   */
+  // viewController.updateTransactions();
+  /**
+   *  onUpdate
+   *  OnUpdateTransaction
+   */
+  // viewController.updateTransaction();
 };
 
 startApp();
