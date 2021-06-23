@@ -112,7 +112,11 @@ const startApp = () => {
       user.userBalanceInFiat,
       wallet.fiat
     );
+    setTimeout(() => {
+      viewController.updateAsset(createTestAsset(), user.userBalanceInFiat);
+    }, 5000);
   }, 10000);
+
   // -- test
 
   // viewController.route("assets");
@@ -124,7 +128,11 @@ const startApp = () => {
    *  onUpdate
    *  OnUpdateCurrency
    */
-  // viewController.updateAssets();
+  // viewController.updateAssets(
+  //   user.assets,
+  //   user.userBalanceInFiat,
+  //   wallet.fiat
+  // );
   /**
    *  onUpdate
    *  OnUpdateAccount
