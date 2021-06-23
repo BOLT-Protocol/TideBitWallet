@@ -18,6 +18,9 @@ class ViewController {
   updateUser(user) {
     this.userBalanceInFiat = user?.userBalanceInFiat;
     this.userAssets = user?.assets;
+    if (this.userAssets) {
+      this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
+    }
   }
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;

@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624446551726
+      // 1624447449685
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6082,6 +6082,9 @@ class ViewController {
   updateUser(user) {
     this.userBalanceInFiat = user?.userBalanceInFiat;
     this.userAssets = user?.assets;
+    if (this.userAssets) {
+      this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
+    }
   }
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
@@ -7773,7 +7776,7 @@ const startApp = () => {
     );
   }, 4500);
 
-  // onUpdateTransaction
+  // onUpdateTransactions
   // eth ropsten transaction
   setTimeout(() => {
     bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
@@ -7783,6 +7786,8 @@ const startApp = () => {
       _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(user.assets[3], bills);
       const updateBill = (bill = user.assets[3].bills[0]) => {
         bill.confirmations += 1;
+        // onUpdateTransaction
+        // eth ropsten 1st transaction
         _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBill(user.assets[3], bills[0]);
         if (bill.confirmations === 4) {
           _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("bill", bills[0]);
@@ -8713,7 +8718,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("9073ea1ca1a1918816a0")
+/******/ 		__webpack_require__.h = () => ("596c34af272607f9775f")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
