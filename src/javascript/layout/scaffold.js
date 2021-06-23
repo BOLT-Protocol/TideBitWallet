@@ -31,7 +31,9 @@ class ScaffoldElement extends HTMLElement {
   set view(name) {
     this.setAttribute("view", name);
   }
-
+  set id(val) {
+    this.setAttribute("id", val);
+  }
 }
 
 customElements.define("scaffold-widget", ScaffoldElement);
@@ -44,6 +46,18 @@ class Scaffold {
     this.element.footer = footer;
     document.body.replaceChildren();
     document.body.insertAdjacentElement("beforeend", this.element);
+  }
+  /**
+   * @param {string} id
+   */
+  set id(id) {
+    this.element.id = id;
+  }
+  /**
+   * @param {string} name
+   */
+   set view(name) {
+    this.element.view = name;
   }
 }
 

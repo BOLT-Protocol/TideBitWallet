@@ -15,7 +15,7 @@ class Overview {
     this.body = new SlidesContainer([this.assetList, this.settingList]);
     this.footer = new BottomNavigator(0);
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
-    this.scaffold.element.view = screen;
+    this.scaffold.view = screen;
     this.screen = screen;
   }
   render(screen, fiat, version, { totalAsset, assets } = {}) {
@@ -44,9 +44,13 @@ class Overview {
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
   }
-  updateAsset(totalAsset, asset) {
+  updateAsset(index, totalAsset, asset) {
     this.header.update(this.screen, { totalAsset });
-    this.assetList.updateAsset(asset);
+    this.assetList.updateAsset(index, asset);
+  }
+  addNewAsset(totalAsset, asset) {
+    this.header.update(this.screen, { totalAsset });
+    this.assetList.addNewAsset(asset);
   }
 }
 

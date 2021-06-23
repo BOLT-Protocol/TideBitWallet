@@ -17,7 +17,7 @@ class Landing {
       ),
       this.footer
     );
-    this.scaffold.element.view = screen;
+    this.scaffold.view = screen;
   }
 }
 

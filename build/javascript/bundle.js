@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624419770470
+      // 1624438741126
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6098,12 +6098,19 @@ class ViewController {
     }
   };
   updateAsset = (asset, userBalanceInFiat) => {
+    const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
     this.userBalanceInFiat = userBalanceInFiat;
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     switch (view) {
       case "assets":
       case "settings":
-        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.updateAsset(this.userBalanceInFiat, asset);
+        if (index > -1) {
+          this.userAssets[index] = asset;
+          _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.updateAsset(index, this.userBalanceInFiat, asset);
+        } else {
+          this.userAssets.push(asset);
+          _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.addNewAsset(this.userBalanceInFiat, asset);
+        }
         break;
       case "asset":
         // ++ 2021/6/22 Emily
@@ -6112,9 +6119,55 @@ class ViewController {
         break;
     }
   };
-  updateBills = (bills) => {};
-  updateBill = (bill) => {};
-  updateAddress = (address) => {};
+  updateBills = (asset, bills) => {
+    const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
+    this.userAssets[index].bills = bills;
+    if (asset.id !== this.currentAsset.id) return;
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    switch (view) {
+      case "asset":
+        _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.updateBills(asset, bills);
+        break;
+      default:
+        break;
+    }
+  };
+  updateBill = (asset, bill) => {
+    const assetIndex = this.userAssets.findIndex((ass) => ass.id === asset.id);
+    const billIndex = this.userAssets[assetIndex].bills.findIndex(
+      (billObj) => billObj.id === bill.id
+    );
+    billIndex > -1
+      ? (this.userAssets[assetIndex].bills[billIndex] = bill)
+      : this.userAssets[assetIndex].bills.push(bill);
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    switch (view) {
+      case "asset":
+        if (asset.id !== this.currentAsset.id) return;
+        billIndex > -1
+          ? _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.updateBill(asset, billIndex, bill)
+          : _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.addNewBill(asset, bill);
+        break;
+      case "bill":
+        if (bill.id !== this.currentBill.id) return;
+        // ++
+        _screen_bill__WEBPACK_IMPORTED_MODULE_4__.default.update(asset, bill);
+        break;
+      default:
+        break;
+    }
+  };
+  updateAddress = (address) => {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    switch (view) {
+      case "address":
+        // ++
+        _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.update(address);
+        break;
+      default:
+        break;
+    }
+  };
   route = (screen, data) => {
     switch (screen) {
       case "landing":
@@ -6139,6 +6192,8 @@ class ViewController {
         break;
       case "address":
         _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset);
+      default:
+        break;
     }
   };
 }
@@ -6283,30 +6338,22 @@ class AssetList {
     this.element = document.createElement("asset-list");
     this.fiat = fiat;
     if (assets) {
-      this.assets = assets;
-      this.element.assets = this.assets.map((asset) => this.assetItem(asset));
+      this.element.assets = assets.map((asset) => this.assetItem(asset));
     }
   }
   assetItem = (asset) => new _widget_asset_item__WEBPACK_IMPORTED_MODULE_0__.default(asset, this.fiat);
   updateAssets(assets, fiat) {
-    this.assets = assets;
     this.fiat = fiat;
-    this.element.assets = this.assets.map((asset) => this.assetItem(asset));
+    this.element.assets = assets.map((asset) => this.assetItem(asset));
     this.element.update();
   }
-  updateAsset(asset) {
-    const index = this.assets.findIndex((ass) => ass.id === asset.id);
-    if (index > -1) {
-      this.element.assets[index] = this.assetItem(asset);
-      this.element.assets[index].update();
-    } else {
-      this.assets.push(asset);
-      this.element.assets.push(this.assetItem(asset));
-      this.element.assets[this.element.assets.length - 1].render(this.element);
-    }
-    if (document.querySelector("asset-list")) {
-      this.element.update();
-    }
+  addNewAsset(asset) {
+    this.element.assets.push(this.assetItem(asset));
+    this.element.assets[this.element.assets.length - 1].render(this.element);
+  }
+  updateAsset(index, asset) {
+    this.element.assets[index] = this.assetItem(asset);
+    this.element.assets[index].update();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -6335,6 +6382,9 @@ __webpack_require__.r(__webpack_exports__);
 class BillElement extends HTMLElement {
   constructor() {
     super();
+  }
+  set id(val) {
+    this.setAttribute("id", val);
   }
   connectedCallback() {
     this.className = "bill";
@@ -6389,6 +6439,14 @@ class BillElement extends HTMLElement {
     `;
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
+    this.id = this.bill.id;
+  }
+  update() {
+    if (this.status !== this.bill.status.toLowerCase())
+      this.status = this.bill.status.toLowerCase();
+    // this.children[2].children[1].textContent = this.bill.dateTime;
+    this.children[1].children[1].children[0].textContent = this.bill.status;
+    this.children[1].children[1].children[1].textContent = `(${this.bill.confirmations} confirmation)`;
   }
   set action(val) {
     this.setAttribute(val, "");
@@ -6406,12 +6464,18 @@ customElements.define("bill-content", BillElement);
 
 class BillContent {
   constructor(asset, bill) {
-    this.element = document.createElement("bill-content");
+    this.bill = bill;
+    this.element =
+      document.querySelector(`bill-content[id="${this.bill.id}"]`) ||
+      document.createElement("bill-content");
     this.element.asset = asset;
     this.element.bill = bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    this.element.update();
   }
 }
 
@@ -6438,9 +6502,19 @@ class BillListElement extends HTMLElement {
   constructor() {
     super();
   }
+  update() {
+    this.replaceChildren();
+    if (this.billItems) {
+      this.className = "bill-list";
+      this.billItems.forEach((billItem) => billItem.render(this));
+    } else {
+      this.innerHTML = `
+      <div class="loading__text">Loading...</div>
+      `;
+    }
+  }
   connectedCallback() {
-    this.className = "bill-list";
-    this.billItems.forEach((billItem) => billItem.render(this));
+    this.update();
   }
 }
 
@@ -6449,7 +6523,25 @@ customElements.define("bill-list", BillListElement);
 class BillList {
   constructor(asset, bills) {
     this.element = document.createElement("bill-list");
-    this.element.billItems = bills.map((bill) => new _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__.default(asset, bill));
+    this.asset = asset;
+    if (bills) {
+      this.bills = bills;
+      this.element.billItems = this.bills.map((bill) => this.billItem(bill));
+    }
+  }
+  billItem = (bill) => new _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__.default(this.asset, bill);
+  updateBills = (bills) => {
+    this.bills = bills;
+    this.element.billItems = this.bills.map((bill) => this.billItem(bill));
+    this.element.update();
+  };
+  updateBill(index, bill) {
+    this.element.billItems[index] = this.billItem(bill);
+    this.element.billItems[index].update();
+  }
+  addNewBill(bill) {
+    this.element.billItems.push(this.billItem(bill));
+    this.element.billItems[this.element.billItems.length - 1].render(this.element);
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -6627,15 +6719,17 @@ class HeaderElement extends HTMLElement {
           document.querySelector(".user-total-balance").textContent =
             totalAsset;
         }
-        if (!this.fiat || this.fiat !== fiat) {
+        if (!this.fiat || (fiat && this.fiat !== fiat)) {
           this.fiat = fiat;
         }
         document.querySelector(".currency-unit").textContent = this.fiat;
         break;
       case "asset":
-        this.fiat = fiat;
+        if (!this.fiat || (fiat && this.fiat !== fiat)) {
+          this.fiat = fiat;
+        }
         this.asset = JSON.parse(JSON.stringify(asset));
-        this.innerHTML = this.assetHeader(asset, fiat);
+        this.innerHTML = this.assetHeader(asset, this.fiat);
         this.headerLeading = new BackButton("assets");
         this.headerLeading.render(this);
         break;
@@ -6657,9 +6751,6 @@ class Header {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
   update(screen, { fiat, totalAsset, asset }) {
-    // -- test
-    console.log(fiat);
-    // -- test
     this.element.update(screen, { fiat, totalAsset, asset });
   }
 }
@@ -6714,7 +6805,9 @@ class ScaffoldElement extends HTMLElement {
   set view(name) {
     this.setAttribute("view", name);
   }
-
+  set id(val) {
+    this.setAttribute("id", val);
+  }
 }
 
 customElements.define("scaffold-widget", ScaffoldElement);
@@ -6727,6 +6820,18 @@ class Scaffold {
     this.element.footer = footer;
     document.body.replaceChildren();
     document.body.insertAdjacentElement("beforeend", this.element);
+  }
+  /**
+   * @param {string} id
+   */
+  set id(id) {
+    this.element.id = id;
+  }
+  /**
+   * @param {string} name
+   */
+   set view(name) {
+    this.element.view = name;
   }
 }
 
@@ -7191,112 +7296,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
-/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
+/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+// import Bill from "./model/bill";
 
 
 
 
-
-
-
-const getAssetDetail = (assetId) => {
-  if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
-  return [
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
-      amount: 0.1,
-      fee: 0.000021,
-      message: "",
-      timestamp: Date.now(),
-      direction: "send",
-      from: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      to: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      confirmations: 0,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
-      amount: 0.1,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1625993323880,
-      direction: "receive",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 1,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
-      amount: 0.1,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1625953323880,
-      direction: "send",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 4,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
-      amount: 1,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1620719000000,
-      direction: "send",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 2160,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
-      amount: 3,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1620719218543,
-      direction: "receive",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 214560,
-    },
-  ];
-};
 
 class Asset {
   constructor() {}
-  initialize(screen, asset, fiat) {
-    this.bills = getAssetDetail(asset.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-    //++
-    window.bills = this.bills;
-    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen, { fiat, asset });
-    this.tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__.default();
-    this.billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(asset, this.bills);
-    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, [
+  initialize(screen, asset) {
+    // ++
+    // ui.getAssetDetail(user.assets[3].id)
+    //   .then((objs) => objs?.map((obj) => new Bill(obj)))
+    //   .then((bills) => {
+    //     this.updateBills(bills);
+    //   });
+    //
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { asset });
+    this.tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default();
+    this.billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(asset, asset.bills);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, [
       this.tarBarNavigator,
       this.billList,
     ]);
-    this.scaffold.element.view = screen;
+    this.scaffold.id = asset.id;
+    this.scaffold.view = screen;
     this.screen = screen;
   }
-  render(screen, asset, fiat) {
-    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.currentView)();
+  render(screen, asset) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
     if (!view || view !== "asset" || !this.scaffold) {
-      this.initialize(screen, asset, fiat);
+      this.initialize(screen, asset);
     }
   }
-  // ++ Emily 2021/6/22
-  update(event, asset, fiat, { bills, bill }) {
-    if (event === "OnUpdateAccount") {
-    } else if (event === "OnUpdateCurrency") {
-    }
+  updateBills(asset, bills) {
+    this.header.update(this.screen, { asset });
+    this.billList.updateBills(bills);
+  }
+  updateBill(asset, billIndex, bill) {
+    this.header.update(this.screen, { asset });
+    this.billList.updateBill(billIndex, bill);
+  }
+  addNewBill(asset, bill) {
+    this.header.update(this.screen, { asset });
+    this.billList.addNewBill(bill);
   }
 }
 
@@ -7330,9 +7378,9 @@ class Bill {
   constructor() {}
   initialize(screen, asset, bill) {
     const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
-    const billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(asset, bill);
-    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, billContent);
-    this.scaffold.element.view = screen;
+    this.billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(asset, bill);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, this.billContent);
+    this.scaffold.view = screen;
     this.screen = screen;
   }
   render(screen, asset, bill) {
@@ -7341,11 +7389,9 @@ class Bill {
       this.initialize(screen, asset, bill);
     }
   }
-  // ++ Emily 2021/6/22
-  update(event, asset, fiat, { bills, bill }) {
-    if (event === "OnUpdateAccount") {
-    } else if (event === "OnUpdateCurrency") {
-    }
+  update(asset, bill) {
+    this.billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(asset, bill);
+    this.billContent.update();
   }
 }
 
@@ -7389,7 +7435,7 @@ class Landing {
       ),
       this.footer
     );
-    this.scaffold.element.view = screen;
+    this.scaffold.view = screen;
   }
 }
 
@@ -7434,7 +7480,7 @@ class Overview {
     this.body = new _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__.default([this.assetList, this.settingList]);
     this.footer = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(0);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
-    this.scaffold.element.view = screen;
+    this.scaffold.view = screen;
     this.screen = screen;
   }
   render(screen, fiat, version, { totalAsset, assets } = {}) {
@@ -7463,9 +7509,13 @@ class Overview {
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
   }
-  updateAsset(totalAsset, asset) {
+  updateAsset(index, totalAsset, asset) {
     this.header.update(this.screen, { totalAsset });
-    this.assetList.updateAsset(asset);
+    this.assetList.updateAsset(index, asset);
+  }
+  addNewAsset(totalAsset, asset) {
+    this.header.update(this.screen, { totalAsset });
+    this.assetList.addNewAsset(asset);
   }
 }
 
@@ -7484,10 +7534,12 @@ const overview = new Overview();
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model/asset */ "./src/javascript/model/asset.js");
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./controller/view */ "./src/javascript/controller/view.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model/bill */ "./src/javascript/model/bill.js");
+/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./model/asset */ "./src/javascript/model/asset.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./controller/view */ "./src/javascript/controller/view.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
 // MVC: View
+
 
 
 
@@ -7495,7 +7547,7 @@ __webpack_require__.r(__webpack_exports__);
 // test
 const createTestAsset = (id) => {
   return {
-    id: id ? id : (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+    id: id ? id : (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
     name: "Aretha",
     symbol: "ARE",
     network: "Testnet",
@@ -7512,7 +7564,7 @@ const getUserDetail = () => {
     userBalanceInFiat: 52.29,
     assets: [
       {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "mainnet",
@@ -7523,7 +7575,7 @@ const getUserDetail = () => {
         inFiat: 0,
       },
       {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "testnet",
@@ -7534,7 +7586,7 @@ const getUserDetail = () => {
         inFiat: 0,
       },
       {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Ethereum",
         symbol: "ETH",
         network: "mainnet",
@@ -7556,7 +7608,7 @@ const getUserDetail = () => {
         inFiat: 52.29,
       },
       {
-        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.randomHex)(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Tidetain",
         symbol: "TTN",
         network: "mainnet",
@@ -7569,6 +7621,72 @@ const getUserDetail = () => {
     ],
   };
 };
+const getAssetDetail = (assetId) => {
+  if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
+  return [
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: Date.now(),
+      direction: "send",
+      from: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      to: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      confirmations: 0,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1625993323880,
+      direction: "receive",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 1,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1625953323880,
+      direction: "send",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 4,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+      amount: 1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1620719000000,
+      direction: "send",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 2160,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+      amount: 3,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1620719218543,
+      direction: "receive",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 214560,
+    },
+  ];
+};
+
 const getWalletConfig = () => {
   return {
     mode: "development",
@@ -7580,28 +7698,51 @@ const getWalletConfig = () => {
 
 const startApp = () => {
   // const tideWallet = new TideWalletJS();
-  let user, wallet;
+  let user, wallet, bills;
   wallet = getWalletConfig();
-  _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.initialize(wallet);
+  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.initialize(wallet);
   // -- test
   window.wallet = wallet;
   // -- test
-  _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.route("landing");
+  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("landing");
   // onReady
 
   // -- test
   setTimeout(() => {
     user = getUserDetail();
-    user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_0__.default(asset));
-    _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.updateUser(user);
+    user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_1__.default(asset));
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateUser(user);
     // -- test
     window.user = user;
-    _controller_view__WEBPACK_IMPORTED_MODULE_1__.default.updateAssets(
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAssets(
       user.assets,
       user.userBalanceInFiat,
       wallet.fiat
     );
-  }, 10000);
+    setTimeout(() => {
+      _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(createTestAsset(), user.userBalanceInFiat);
+    }, 5000);
+
+    setTimeout(() => {
+      bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
+      window.bills = bills;
+      _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(user.assets[3], bills);
+      const interval = setInterval(() => {});
+    }, 5000);
+    // -- test
+
+    setTimeout(() => {
+      const updateBill = (bill = user.assets[3].bills[0]) => {
+        bill.confirmations += 1;
+        _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBill(user.assets[3], bills[0]);
+        if (bill.confirmations > 6) {
+          clearInterval(interval);
+        }
+      };
+      const interval = setInterval(updateBill, 2000);
+    }, 5000);
+  }, 5000);
+
   // -- test
 
   // viewController.route("assets");
@@ -7613,7 +7754,11 @@ const startApp = () => {
    *  onUpdate
    *  OnUpdateCurrency
    */
-  // viewController.updateAssets();
+  // viewController.updateAssets(
+  //   user.assets,
+  //   user.userBalanceInFiat,
+  //   wallet.fiat
+  // );
   /**
    *  onUpdate
    *  OnUpdateAccount
@@ -7633,7 +7778,7 @@ const startApp = () => {
 
 startApp();
 
-window.viewController = _controller_view__WEBPACK_IMPORTED_MODULE_1__.default;
+window.viewController = _controller_view__WEBPACK_IMPORTED_MODULE_2__.default;
 window.getUserDetail = getUserDetail;
 window.getWalletConfig = getWalletConfig;
 window.createTestAsset = createTestAsset;
@@ -7758,9 +7903,9 @@ class AssetItemElement extends HTMLElement {
   set id(val) {
     this.setAttribute("id", val);
   }
-  static update(element, asset, fiat) {
-    if (element === undefined || element === null) return;
-    element.innerHTML = `
+  update() {
+    if (this === undefined || this === null) return;
+    this.innerHTML = `
     <div class="asset-item__icon"></div>
     <div class="asset-item__symbol"></div>
     <div class="asset-item__balance"></div>
@@ -7770,23 +7915,23 @@ class AssetItemElement extends HTMLElement {
         <span class="currency-unit"></span>
     </div>
     `;
-    element.publish = asset.publish;
-    element.children[0].insertAdjacentHTML(
+    this.publish = this.asset.publish;
+    this.children[0].insertAdjacentHTML(
       "afterbegin",
-      `<img src=${asset.image} alt=${asset.symbol.toUpperCase()}>`
+      `<img src=${this.asset.image} alt=${this.asset.symbol.toUpperCase()}>`
     );
-    element.children[1].textContent = asset.symbol.toUpperCase();
-    element.children[2].textContent = asset.balance;
-    element.children[3].children[1].textContent = asset.inFiat;
-    element.children[3].children[2].textContent = fiat;
-    element.addEventListener("click", (_) =>
-      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("asset", asset)
-    );
+    this.children[1].textContent = this.asset.symbol.toUpperCase();
+    this.children[2].textContent = this.asset.balance;
+    this.children[3].children[1].textContent = this.asset.inFiat;
+    this.children[3].children[2].textContent = this.fiat;
   }
   connectedCallback() {
     this.className = "asset-item";
     this.id = this.asset.id;
-    AssetItemElement.update(this, this.asset, this.fiat);
+    this.update();
+    this.addEventListener("click", (_) =>
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("asset", this.asset)
+    );
   }
   disconnectedCallback() {
     this.removeEventListener("click", (_) =>
@@ -7808,14 +7953,16 @@ class AssetItemElement extends HTMLElement {
 customElements.define("asset-item", AssetItemElement);
 class AssetItem {
   constructor(asset, fiat) {
-    this.id = asset.id;
-    this.element = document.createElement("asset-item");
+    this.asset = asset;
+    this.fiat = fiat;
+    this.element =
+      document.querySelector(`asset-item[id="${this.asset.id}"]`) ||
+      document.createElement("asset-item");
     this.element.asset = asset;
     this.element.fiat = fiat;
   }
-  update(asset, fiat) {
-    const element = document.querySelector(`[id=${this.id}]`);
-    AssetItemElement.update(element, asset, fiat);
+  update() {
+    this.element.update();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -7846,6 +7993,9 @@ __webpack_require__.r(__webpack_exports__);
 class BillItemElement extends HTMLElement {
   constructor() {
     super();
+  }
+  set id(val) {
+    this.setAttribute("id", val);
   }
   connectedCallback() {
     this.classList = ["bill-item"];
@@ -7880,6 +8030,14 @@ class BillItemElement extends HTMLElement {
     this.addEventListener("click", (_) =>
       _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("bill", this.bill)
     );
+    this.id = this.bill.id;
+  }
+  update() {
+    if (this.status !== this.bill.status.toLowerCase())
+      this.status = this.bill.status.toLowerCase();
+    // this.children[0].children[2].children[1].textContent = this.bill.dateTime;
+    this.children[1].children[0].textContent = this.bill.status;
+    this.children[1].children[1].children[0].style.width = this.bill.progress;
   }
   disconnectedCallback() {
     this.removeEventListener("click", (_) =>
@@ -7904,12 +8062,18 @@ class BillItemElement extends HTMLElement {
 customElements.define("bill-item", BillItemElement);
 class BillItem {
   constructor(asset, bill) {
-    this.element = document.createElement("bill-item");
+    this.bill = bill;
+    this.element =
+      document.querySelector(`bill-item[id="${this.bill.id}"]`) ||
+      document.createElement("bill-item");
     this.element.asset = asset;
     this.element.bill = bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    this.element.update();
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillItem);
@@ -8525,7 +8689,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("f635de7d0b0295aebf4e")
+/******/ 		__webpack_require__.h = () => ("f87a59b045943b6e37a6")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

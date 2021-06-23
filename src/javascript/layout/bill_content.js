@@ -4,6 +4,9 @@ class BillElement extends HTMLElement {
   constructor() {
     super();
   }
+  set id(val) {
+    this.setAttribute("id", val);
+  }
   connectedCallback() {
     this.className = "bill";
     this.innerHTML = `
@@ -57,6 +60,14 @@ class BillElement extends HTMLElement {
     `;
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
+    this.id = this.bill.id;
+  }
+  update() {
+    if (this.status !== this.bill.status.toLowerCase())
+      this.status = this.bill.status.toLowerCase();
+    // this.children[2].children[1].textContent = this.bill.dateTime;
+    this.children[1].children[1].children[0].textContent = this.bill.status;
+    this.children[1].children[1].children[1].textContent = `(${this.bill.confirmations} confirmation)`;
   }
   set action(val) {
     this.setAttribute(val, "");
@@ -74,12 +85,18 @@ customElements.define("bill-content", BillElement);
 
 class BillContent {
   constructor(asset, bill) {
-    this.element = document.createElement("bill-content");
+    this.bill = bill;
+    this.element =
+      document.querySelector(`bill-content[id="${this.bill.id}"]`) ||
+      document.createElement("bill-content");
     this.element.asset = asset;
     this.element.bill = bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    this.element.update();
   }
 }
 

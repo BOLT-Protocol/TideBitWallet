@@ -6,9 +6,9 @@ class Bill {
   constructor() {}
   initialize(screen, asset, bill) {
     const header = new Header(screen);
-    const billContent = new BillContent(asset, bill);
-    this.scaffold = new Scaffold(header, billContent);
-    this.scaffold.element.view = screen;
+    this.billContent = new BillContent(asset, bill);
+    this.scaffold = new Scaffold(header, this.billContent);
+    this.scaffold.view = screen;
     this.screen = screen;
   }
   render(screen, asset, bill) {
@@ -17,11 +17,9 @@ class Bill {
       this.initialize(screen, asset, bill);
     }
   }
-  // ++ Emily 2021/6/22
-  update(event, asset, fiat, { bills, bill }) {
-    if (event === "OnUpdateAccount") {
-    } else if (event === "OnUpdateCurrency") {
-    }
+  update(asset, bill) {
+    this.billContent = new BillContent(asset, bill);
+    this.billContent.update();
   }
 }
 

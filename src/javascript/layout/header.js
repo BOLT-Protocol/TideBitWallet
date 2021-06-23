@@ -116,15 +116,17 @@ class HeaderElement extends HTMLElement {
           document.querySelector(".user-total-balance").textContent =
             totalAsset;
         }
-        if (!this.fiat || this.fiat !== fiat) {
+        if (!this.fiat || (fiat && this.fiat !== fiat)) {
           this.fiat = fiat;
         }
         document.querySelector(".currency-unit").textContent = this.fiat;
         break;
       case "asset":
-        this.fiat = fiat;
+        if (!this.fiat || (fiat && this.fiat !== fiat)) {
+          this.fiat = fiat;
+        }
         this.asset = JSON.parse(JSON.stringify(asset));
-        this.innerHTML = this.assetHeader(asset, fiat);
+        this.innerHTML = this.assetHeader(asset, this.fiat);
         this.headerLeading = new BackButton("assets");
         this.headerLeading.render(this);
         break;
@@ -146,9 +148,6 @@ class Header {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
   update(screen, { fiat, totalAsset, asset }) {
-    // -- test
-    console.log(fiat);
-    // -- test
     this.element.update(screen, { fiat, totalAsset, asset });
   }
 }

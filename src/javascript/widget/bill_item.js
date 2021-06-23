@@ -5,6 +5,9 @@ class BillItemElement extends HTMLElement {
   constructor() {
     super();
   }
+  set id(val) {
+    this.setAttribute("id", val);
+  }
   connectedCallback() {
     this.classList = ["bill-item"];
     this.innerHTML = `
@@ -38,6 +41,14 @@ class BillItemElement extends HTMLElement {
     this.addEventListener("click", (_) =>
       viewController.route("bill", this.bill)
     );
+    this.id = this.bill.id;
+  }
+  update() {
+    if (this.status !== this.bill.status.toLowerCase())
+      this.status = this.bill.status.toLowerCase();
+    // this.children[0].children[2].children[1].textContent = this.bill.dateTime;
+    this.children[1].children[0].textContent = this.bill.status;
+    this.children[1].children[1].children[0].style.width = this.bill.progress;
   }
   disconnectedCallback() {
     this.removeEventListener("click", (_) =>
@@ -62,12 +73,18 @@ class BillItemElement extends HTMLElement {
 customElements.define("bill-item", BillItemElement);
 class BillItem {
   constructor(asset, bill) {
-    this.element = document.createElement("bill-item");
+    this.bill = bill;
+    this.element =
+      document.querySelector(`bill-item[id="${this.bill.id}"]`) ||
+      document.createElement("bill-item");
     this.element.asset = asset;
     this.element.bill = bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    this.element.update();
   }
 }
 export default BillItem;

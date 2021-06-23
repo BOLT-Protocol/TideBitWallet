@@ -1,9 +1,9 @@
 import { currentView } from "../utils/utils";
-import asset from "../screen/asset";
-import landing from "../screen/landing";
-import overview from "../screen/overview";
-import bill from "../screen/bill";
-import address from "../screen/address";
+import AssetScreen from "../screen/asset";
+import Landing from "../screen/landing";
+import Overview from "../screen/overview";
+import BillScreen from "../screen/bill";
+import AddressScreen from "../screen/address";
 
 class ViewController {
   initialize(config, user) {
@@ -27,19 +27,26 @@ class ViewController {
     switch (view) {
       case "assets":
       case "settings":
-        overview.updateAssets(this.userBalanceInFiat, this.walletFiat, assets);
+        Overview.updateAssets(this.userBalanceInFiat, this.walletFiat, assets);
         break;
       default:
         break;
     }
   };
   updateAsset = (asset, userBalanceInFiat) => {
+    const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
     this.userBalanceInFiat = userBalanceInFiat;
     const view = currentView();
     switch (view) {
       case "assets":
       case "settings":
-        overview.updateAsset(this.userBalanceInFiat, asset);
+        if (index > -1) {
+          this.userAssets[index] = asset;
+          Overview.updateAsset(index, this.userBalanceInFiat, asset);
+        } else {
+          this.userAssets.push(asset);
+          Overview.addNewAsset(this.userBalanceInFiat, asset);
+        }
         break;
       case "asset":
         // ++ 2021/6/22 Emily
@@ -48,17 +55,63 @@ class ViewController {
         break;
     }
   };
-  updateBills = (bills) => {};
-  updateBill = (bill) => {};
-  updateAddress = (address) => {};
+  updateBills = (asset, bills) => {
+    const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
+    this.userAssets[index].bills = bills;
+    if (asset.id !== this.currentAsset.id) return;
+    const view = currentView();
+    switch (view) {
+      case "asset":
+        AssetScreen.updateBills(asset, bills);
+        break;
+      default:
+        break;
+    }
+  };
+  updateBill = (asset, bill) => {
+    const assetIndex = this.userAssets.findIndex((ass) => ass.id === asset.id);
+    const billIndex = this.userAssets[assetIndex].bills.findIndex(
+      (billObj) => billObj.id === bill.id
+    );
+    billIndex > -1
+      ? (this.userAssets[assetIndex].bills[billIndex] = bill)
+      : this.userAssets[assetIndex].bills.push(bill);
+    const view = currentView();
+    switch (view) {
+      case "asset":
+        if (asset.id !== this.currentAsset.id) return;
+        billIndex > -1
+          ? AssetScreen.updateBill(asset, billIndex, bill)
+          : AssetScreen.addNewBill(asset, bill);
+        break;
+      case "bill":
+        if (bill.id !== this.currentBill.id) return;
+        // ++
+        BillScreen.update(asset, bill);
+        break;
+      default:
+        break;
+    }
+  };
+  updateAddress = (address) => {
+    const view = currentView();
+    switch (view) {
+      case "address":
+        // ++
+        AddressScreen.update(address);
+        break;
+      default:
+        break;
+    }
+  };
   route = (screen, data) => {
     switch (screen) {
       case "landing":
-        landing.render(screen, this.walletVersion);
+        Landing.render(screen, this.walletVersion);
         break;
       case "assets":
       case "settings":
-        overview.render(screen, this.walletFiat, this.walletVersion, {
+        Overview.render(screen, this.walletFiat, this.walletVersion, {
           totalAsset: this.userBalanceInFiat,
           assets: this.userAssets,
         });
@@ -67,14 +120,16 @@ class ViewController {
         if (data) {
           this.currentAsset = data; //Asset
         }
-        asset.render(screen, this.currentAsset, this.walletFiat);
+        AssetScreen.render(screen, this.currentAsset, this.walletFiat);
         break;
       case "bill":
         this.currentBill = data; //Bill
-        bill.render(screen, this.currentAsset, this.currentBill);
+        BillScreen.render(screen, this.currentAsset, this.currentBill);
         break;
       case "address":
-        address.render(screen, this.currentAsset);
+        AddressScreen.render(screen, this.currentAsset);
+      default:
+        break;
     }
   };
 }

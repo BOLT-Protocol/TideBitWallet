@@ -6,9 +6,9 @@ class AssetItemElement extends HTMLElement {
   set id(val) {
     this.setAttribute("id", val);
   }
-  static update(element, asset, fiat) {
-    if (element === undefined || element === null) return;
-    element.innerHTML = `
+  update() {
+    if (this === undefined || this === null) return;
+    this.innerHTML = `
     <div class="asset-item__icon"></div>
     <div class="asset-item__symbol"></div>
     <div class="asset-item__balance"></div>
@@ -18,23 +18,23 @@ class AssetItemElement extends HTMLElement {
         <span class="currency-unit"></span>
     </div>
     `;
-    element.publish = asset.publish;
-    element.children[0].insertAdjacentHTML(
+    this.publish = this.asset.publish;
+    this.children[0].insertAdjacentHTML(
       "afterbegin",
-      `<img src=${asset.image} alt=${asset.symbol.toUpperCase()}>`
+      `<img src=${this.asset.image} alt=${this.asset.symbol.toUpperCase()}>`
     );
-    element.children[1].textContent = asset.symbol.toUpperCase();
-    element.children[2].textContent = asset.balance;
-    element.children[3].children[1].textContent = asset.inFiat;
-    element.children[3].children[2].textContent = fiat;
-    element.addEventListener("click", (_) =>
-      viewController.route("asset", asset)
-    );
+    this.children[1].textContent = this.asset.symbol.toUpperCase();
+    this.children[2].textContent = this.asset.balance;
+    this.children[3].children[1].textContent = this.asset.inFiat;
+    this.children[3].children[2].textContent = this.fiat;
   }
   connectedCallback() {
     this.className = "asset-item";
     this.id = this.asset.id;
-    AssetItemElement.update(this, this.asset, this.fiat);
+    this.update();
+    this.addEventListener("click", (_) =>
+      viewController.route("asset", this.asset)
+    );
   }
   disconnectedCallback() {
     this.removeEventListener("click", (_) =>
@@ -56,14 +56,16 @@ class AssetItemElement extends HTMLElement {
 customElements.define("asset-item", AssetItemElement);
 class AssetItem {
   constructor(asset, fiat) {
-    this.id = asset.id;
-    this.element = document.createElement("asset-item");
+    this.asset = asset;
+    this.fiat = fiat;
+    this.element =
+      document.querySelector(`asset-item[id="${this.asset.id}"]`) ||
+      document.createElement("asset-item");
     this.element.asset = asset;
     this.element.fiat = fiat;
   }
-  update(asset, fiat) {
-    const element = document.querySelector(`[id=${this.id}]`);
-    AssetItemElement.update(element, asset, fiat);
+  update() {
+    this.element.update();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
