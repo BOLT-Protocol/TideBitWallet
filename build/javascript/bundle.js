@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624444955639
+      // 1624445309307
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6157,17 +6157,6 @@ class ViewController {
         break;
     }
   };
-  updateAddress = (address) => {
-    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
-    switch (view) {
-      case "address":
-        // ++
-        _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.update(address);
-        break;
-      default:
-        break;
-    }
-  };
   route = (screen, data) => {
     switch (screen) {
       case "landing":
@@ -8745,7 +8734,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("cf214b7168e71f6339c4")
+/******/ 		__webpack_require__.h = () => ("f2979e889e77ad45605b")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

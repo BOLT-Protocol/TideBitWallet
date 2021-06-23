@@ -93,17 +93,6 @@ class ViewController {
         break;
     }
   };
-  updateAddress = (address) => {
-    const view = currentView();
-    switch (view) {
-      case "address":
-        // ++
-        AddressScreen.update(address);
-        break;
-      default:
-        break;
-    }
-  };
   route = (screen, data) => {
     switch (screen) {
       case "landing":

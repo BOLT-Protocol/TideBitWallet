@@ -593,7 +593,8 @@ body {
       display: block;
       border-radius: 3px;
       height: 100%;
-      background-color: #4ECDC4; }
+      background-color: #4ECDC4;
+      transition: width ease 0.2s; }
   .bill-item__status {
     text-align: right;
     font-size: 0.96rem;
