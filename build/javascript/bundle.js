@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624438741126
+      // 1624438885002
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6122,10 +6122,10 @@ class ViewController {
   updateBills = (asset, bills) => {
     const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
     this.userAssets[index].bills = bills;
-    if (asset.id !== this.currentAsset.id) return;
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     switch (view) {
       case "asset":
+        if (asset.id !== this.currentAsset.id) return;
         _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.updateBills(asset, bills);
         break;
       default:
@@ -8689,7 +8689,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("f87a59b045943b6e37a6")
+/******/ 		__webpack_require__.h = () => ("e1957c7c6948dfcc345a")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

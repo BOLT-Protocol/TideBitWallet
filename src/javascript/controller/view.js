@@ -58,10 +58,10 @@ class ViewController {
   updateBills = (asset, bills) => {
     const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
     this.userAssets[index].bills = bills;
-    if (asset.id !== this.currentAsset.id) return;
     const view = currentView();
     switch (view) {
       case "asset":
+        if (asset.id !== this.currentAsset.id) return;
         AssetScreen.updateBills(asset, bills);
         break;
       default:
