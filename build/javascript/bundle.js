@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624006021832
+      // 1624447449685
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6005,7 +6005,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 const navigatorItemsData = [
   {
-    screen: "accounts",
+    screen: "assets",
     icon: "wallet",
   },
   {
@@ -6045,34 +6045,10 @@ const tabBarItemData = [
 
 /***/ }),
 
-/***/ "./src/javascript/index.js":
-/*!*********************************!*\
-  !*** ./src/javascript/index.js ***!
-  \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ui */ "./src/javascript/ui.js");
-
-
-
-const start = async()=> {
-  console.log('start');
-  (0,_ui__WEBPACK_IMPORTED_MODULE_0__.default)();
-}
-
-start();
-
-
-
-
-/***/ }),
-
-/***/ "./src/javascript/layout/account_list.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/layout/account_list.js ***!
-  \***********************************************/
+/***/ "./src/javascript/controller/view.js":
+/*!*******************************************!*\
+  !*** ./src/javascript/controller/view.js ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6080,38 +6056,142 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_account_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/account_item */ "./src/javascript/widget/account_item.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _screen_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/asset */ "./src/javascript/screen/asset.js");
+/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
 
 
-class AccountListElement extends HTMLElement {
-  constructor() {
-    super();
+
+
+
+
+
+class ViewController {
+  initialize(config, user) {
+    this.currentAsset;
+    this.currentBill;
+    this.currentScreen;
+    this.walletFiat = config.fiat;
+    this.walletVersion = config.version;
+    this.walletMode = config.mode;
+    this.updateUser(user);
   }
-  connectedCallback() {
-    this.className = "account-list";
-    this.accounts.forEach((account) => account.render(this));
+  updateUser(user) {
+    this.userBalanceInFiat = user?.userBalanceInFiat;
+    this.userAssets = user?.assets;
+    if (this.userAssets) {
+      this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
+    }
   }
+  updateAssets = (assets, userBalanceInFiat, fiat) => {
+    this.userAssets = assets;
+    this.userBalanceInFiat = userBalanceInFiat;
+    if (fiat) this.walletFiat = fiat;
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    switch (view) {
+      case "assets":
+      case "settings":
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.updateAssets(this.userBalanceInFiat, this.walletFiat, assets);
+        break;
+      default:
+        break;
+    }
+  };
+  updateAsset = (asset, userBalanceInFiat) => {
+    const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
+    this.userBalanceInFiat = userBalanceInFiat;
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    switch (view) {
+      case "assets":
+      case "settings":
+        if (index > -1) {
+          this.userAssets[index] = asset;
+          _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.updateAsset(index, this.userBalanceInFiat, asset);
+        } else {
+          this.userAssets.push(asset);
+          _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.addNewAsset(this.userBalanceInFiat, asset);
+        }
+        break;
+      case "asset":
+        // ++ 2021/6/22 Emily
+        break;
+      default:
+        break;
+    }
+  };
+  updateBills = (asset, bills) => {
+    const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
+    this.userAssets[index].bills = bills;
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    switch (view) {
+      case "asset":
+        if (asset.id !== this.currentAsset.id) return;
+        _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.updateBills(asset, bills);
+        break;
+      default:
+        break;
+    }
+  };
+  updateBill = (asset, bill) => {
+    const assetIndex = this.userAssets.findIndex((ass) => ass.id === asset.id);
+    const billIndex = this.userAssets[assetIndex].bills.findIndex(
+      (billObj) => billObj.id === bill.id
+    );
+    billIndex > -1
+      ? (this.userAssets[assetIndex].bills[billIndex] = bill)
+      : this.userAssets[assetIndex].bills.push(bill);
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    switch (view) {
+      case "asset":
+        if (asset.id !== this.currentAsset.id) return;
+        billIndex > -1
+          ? _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.updateBill(asset, billIndex, bill)
+          : _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.addNewBill(asset, bill);
+        break;
+      case "bill":
+        if (bill.id !== this.currentBill.id) return;
+        // ++
+        _screen_bill__WEBPACK_IMPORTED_MODULE_4__.default.update(asset, bill);
+        break;
+      default:
+        break;
+    }
+  };
+  route = (screen, data) => {
+    switch (screen) {
+      case "landing":
+        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion);
+        break;
+      case "assets":
+      case "settings":
+        _screen_overview__WEBPACK_IMPORTED_MODULE_3__.default.render(screen, this.walletFiat, this.walletVersion, {
+          totalAsset: this.userBalanceInFiat,
+          assets: this.userAssets,
+        });
+        break;
+      case "asset":
+        if (data) {
+          this.currentAsset = data; //Asset
+        }
+        _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.render(screen, this.currentAsset, this.walletFiat);
+        break;
+      case "bill":
+        this.currentBill = data; //Bill
+        _screen_bill__WEBPACK_IMPORTED_MODULE_4__.default.render(screen, this.currentAsset, this.currentBill);
+        break;
+      case "address":
+        _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset);
+      default:
+        break;
+    }
+  };
 }
+const viewController = new ViewController();
 
-customElements.define("account-list", AccountListElement);
-
-class AccountList {
-  constructor(state) {
-    this.element = document.createElement("account-list");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.accounts = state.user.accounts.map((account) => {
-      const state = JSON.parse(JSON.stringify(this.element.state));
-      state.account = account;
-      state.screen = "account";
-      return new _widget_account_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
-    });
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountList);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (viewController);
 
 
 /***/ }),
@@ -6138,6 +6218,9 @@ class AddressContentElement extends HTMLElement {
   constructor() {
     super();
   }
+  set id(val) {
+    this.setAttribute("id", val);
+  }
   connectedCallback() {
     this.className = "address";
     this.innerHTML = `
@@ -6149,14 +6232,14 @@ class AddressContentElement extends HTMLElement {
           <div class="address__text"></div>
           <div class="address__button"></div>
           `;
-    this.renderAddress();
+    this.id = this.asset.id;
     this.setCoinbase();
   }
   /**
    * ETH || BTC
    */
   setCoinbase() {
-    this.setAttribute(this.state.account.symbol, "");
+    this.setAttribute(this.asset.symbol, "");
   }
   renderAddress = () => {
     qrcode__WEBPACK_IMPORTED_MODULE_0__.toCanvas(
@@ -6192,10 +6275,15 @@ class AddressContentElement extends HTMLElement {
 customElements.define("address-content", AddressContentElement);
 
 class AddressContent {
-  constructor(state, address) {
+  constructor(asset) {
+    this.asset = asset;
     this.element = document.createElement("address-content");
-    this.element.state = state;
+    this.element.asset = asset;
+  }
+  update(address) {
+    this.element = document.querySelector(`address-content[id="${this.asset.id}"]`);
     this.element.address = address;
+    this.element.renderAddress();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -6203,6 +6291,74 @@ class AddressContent {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AddressContent);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/asset_list.js":
+/*!*********************************************!*\
+  !*** ./src/javascript/layout/asset_list.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_asset_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/asset_item */ "./src/javascript/widget/asset_item.js");
+
+
+class AssetListElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  update() {
+    this.replaceChildren();
+    if (this.assets) {
+      this.className = "asset-list";
+      this.assets.forEach((asset) => asset.render(this));
+    } else {
+      this.innerHTML = `
+      <div class="loading__text">Loading...</div>
+      `;
+    }
+  }
+  connectedCallback() {
+    this.update();
+  }
+}
+
+customElements.define("asset-list", AssetListElement);
+
+class AssetList {
+  constructor(assets, fiat) {
+    this.element = document.createElement("asset-list");
+    this.fiat = fiat;
+    if (assets) {
+      this.element.assets = assets.map((asset) => this.assetItem(asset));
+    }
+  }
+  assetItem = (asset) => new _widget_asset_item__WEBPACK_IMPORTED_MODULE_0__.default(asset, this.fiat);
+  updateAssets(assets, fiat) {
+    this.fiat = fiat;
+    this.element.assets = assets.map((asset) => this.assetItem(asset));
+    this.element.update();
+  }
+  addNewAsset(asset) {
+    this.element.assets.push(this.assetItem(asset));
+    this.element.assets[this.element.assets.length - 1].render(this.element);
+  }
+  updateAsset(index, asset) {
+    this.element.assets[index] = this.assetItem(asset);
+    this.element.assets[index].update();
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AssetList);
 
 
 /***/ }),
@@ -6225,13 +6381,16 @@ class BillElement extends HTMLElement {
   constructor() {
     super();
   }
+  set id(val) {
+    this.setAttribute("id", val);
+  }
   connectedCallback() {
     this.className = "bill";
     this.innerHTML = `
     <div class="bill__header">
         <span class="bill__sign">${this.bill.sign}</span>
         <span class="bill__amount">${this.bill.amount}</span>
-        <span class="bill__unit">${this.account.symbol}</span>
+        <span class="bill__unit">${this.asset.symbol}</span>
     </div>
     <div class="bill__cell">
         <div class="bill__title">Status</div>
@@ -6259,17 +6418,17 @@ class BillElement extends HTMLElement {
         <div class="bill__title">Fee</div>
         <div class="bill__content">
             <span class="bill__fee">${this.bill.fee}</span>
-            <span class="bill__unit">${this.account.symbol}</span>
+            <span class="bill__unit">${this.asset.symbol}</span>
         </div>
     </div>
     <div class="bill__cell">
         <div class="bill__title">Transaction Id</div>
         <div class="bill__content">
             <span class="bill__asset-icon"><img src=${
-              this.account.image
+              this.asset.image
             } alt="ETH"></span>
             <span class="bill__id"><a target="_blank" href=https://${
-              this.account.network
+              this.asset.network
             }.etherscan.io/tx/${this.bill.txid}>${(0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.addressFormatter)(
       this.bill.txid
     )}</a></span>
@@ -6278,6 +6437,17 @@ class BillElement extends HTMLElement {
     `;
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
+    this.id = this.bill.id;
+  }
+  update() {
+    if (this.status !== this.bill.status.toLowerCase())
+      this.status = this.bill.status.toLowerCase();
+    // this.children[2].children[1].textContent = this.bill.dateTime;
+    this.children[1].children[1].innerHTML = `
+    <span class="bill__status">${this.bill.status}</span>
+    <span class="bill__status bill__confirmations">(${this.bill.confirmations} confirmation)</span>
+    <span class="bill__status-icon"></span>
+    `;
   }
   set action(val) {
     this.setAttribute(val, "");
@@ -6294,14 +6464,19 @@ class BillElement extends HTMLElement {
 customElements.define("bill-content", BillElement);
 
 class BillContent {
-  constructor(state) {
-    this.element = document.createElement("bill-content");
-    this.element.state = state;
-    this.element.account = state.account;
-    this.element.bill = state.bill;
+  constructor(asset, bill) {
+    this.bill = bill;
+    this.element =
+      document.querySelector(`bill-content[id="${this.bill.id}"]`) ||
+      document.createElement("bill-content");
+    this.element.asset = asset;
+    this.element.bill = bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    this.element.update();
   }
 }
 
@@ -6328,25 +6503,46 @@ class BillListElement extends HTMLElement {
   constructor() {
     super();
   }
+  update() {
+    this.replaceChildren();
+    if (this.billItems) {
+      this.className = "bill-list";
+      this.billItems.forEach((billItem) => billItem.render(this));
+    } else {
+      this.innerHTML = `
+      <div class="loading__text">Loading...</div>
+      `;
+    }
+  }
   connectedCallback() {
-    this.className = "bill-list";
-    this.billItems.forEach((billItem) => billItem.render(this));
+    this.update();
   }
 }
 
 customElements.define("bill-list", BillListElement);
 
 class BillList {
-  constructor(state, bills) {
+  constructor(asset, bills) {
     this.element = document.createElement("bill-list");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.bills = bills;
-    this.element.billItems = bills.map((bill) => {
-      const state = JSON.parse(JSON.stringify(this.element.state));
-      state.bill = bill;
-      state.screen = "bill";
-      return new _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__.default(state);
-    });
+    this.asset = asset;
+    if (bills) {
+      this.bills = bills;
+      this.element.billItems = this.bills.map((bill) => this.billItem(bill));
+    }
+  }
+  billItem = (bill) => new _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__.default(this.asset, bill);
+  updateBills = (bills) => {
+    this.bills = bills;
+    this.element.billItems = this.bills.map((bill) => this.billItem(bill));
+    this.element.update();
+  };
+  updateBill(index, bill) {
+    this.element.billItems[index] = this.billItem(bill);
+    this.element.billItems[index].update();
+  }
+  addNewBill(bill) {
+    this.element.billItems.push(this.billItem(bill));
+    this.element.billItems[this.element.billItems.length - 1].render(this.element);
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -6372,22 +6568,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/javascript/constant/bottom_navigator_data.js");
 /* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
 /* harmony import */ var _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/bottom_navigator_item */ "./src/javascript/widget/bottom_navigator_item.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
-
 
 
 
 
 class BottomNavigator {
-  constructor(state, focusIndex) {
+  constructor(focusIndex) {
     this.focusIndex = focusIndex;
-    this.state = JSON.parse(JSON.stringify(state));
     this.bottomNavigatorItems = _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__.default.map(
-      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item, (state) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state))
+      (item) => new _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__.default(item)
     );
-  }
-  set focus(focusIndex){
-    this.focusIndex = focusIndex;
   }
   render(parentElement) {
     this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__.default(this.bottomNavigatorItems, this.focusIndex);
@@ -6396,209 +6586,6 @@ class BottomNavigator {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigator);
-
-
-/***/ }),
-
-/***/ "./src/javascript/layout/form.js":
-/*!***************************************!*\
-  !*** ./src/javascript/layout/form.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
-/* harmony import */ var _model_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/transaction */ "./src/javascript/model/transaction.js");
-
-
-
-
-
-class FormElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  disconnectedCallback() {
-    if (this.toggle) {
-      this.toggleButton.removeEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    }
-  }
-  connectedCallback() {
-    this.className = "form";
-    this.addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "text",
-      label: "Send to",
-      errorMessage: "Invalid Address",
-      validation: (value) => {
-        return value.startsWith("0x");
-      },
-      action: {
-        icon: "qrcode",
-        onPressed: () => {
-          console.log("action on pressed!");
-        },
-      },
-    });
-    this.amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Amount",
-      errorMessage: "Invalid Amount",
-      validation: (value) => {
-        return parseFloat(value) > 0;
-      },
-      pattern: `\d*.?\d*`,
-    });
-    this.gasPriceInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
-      pattern: `\d*.?\d*`,
-    });
-    this.gasInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
-      inputType: "number",
-      label: "Custom Gas (unit)",
-      pattern: `\d*`,
-    });
-    this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
-    );
-    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
-    this.action = new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
-    this.innerHTML = `
-    <div class="form__input"></div>
-    <p class="form__secondary-text form__align-end">
-      <span>Balance:</span>
-      <span class="account-balance"></span>
-    </p>
-    <p class="form__primary-text form__align-start">Transaction Fee</p>
-    <p class="form__secondary-text form__align-start estimate-time">
-        <span>Processing time</span>
-        <span></span>
-    </p>
-    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
-    <div class="form__toggle-content"></div>
-    <p class="form__column">
-      <span class="form__tertiary-text">Estimated:</span>
-      <span class="form__secondary-text estimate-fee">loading...</span>
-    </p>
-    <div class="form__toggle">
-      <div class="form__toggle-controller">
-        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
-        <div class="form__toggle-button">
-          <input type="checkbox" name="toggle-button" id="toggle-button">
-          <label for="toggle-button"></label>
-        </div>
-      </div>
-    </div>
-    <div class="form__button"></div>
-    `;
-    this.addressInput.render(this.children[0]);
-    this.amountInput.render(this.children[0]);
-    this.tabBar.render(this.children[5]);
-    this.estimateTime = "10 ~ 30 minutes";
-    this.availableAmount = this.state.account;
-    this.action.render(this.children[8]);
-    if (this.state.account.symbol === "ETH") {
-      // -- test
-      this.toggle = true;
-      this.toggleButton = document.querySelector(
-        ".form input[type='checkbox']"
-      );
-      this.toggleButton.addEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
-      });
-    } else {
-      this.toggle = false;
-    }
-    this.transactionButton = this.children[this.childElementCount - 1];
-    this.transactionButton.addEventListener("click", () => {
-      const to = this.addressInput.inputValue;
-      const amount = this.amountInput.inputValue;
-      let gasPrice, gas, priority;
-      if (this.onAdvanced) {
-        gasPrice = this.gasPrice.inputValue;
-        gas = this.gas.inputValue;
-        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
-      } else {
-        priority = this.tabBar.selected;
-        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, priority }));
-      }
-    });
-  }
-
-  /**
-   *
-   * @param {Boolean} val
-   *
-   */
-  handleToggle(toggleContent) {
-    toggleContent.replaceChildren();
-    if (this.toggleButton.checked) {
-      this.gasPriceInput.render(toggleContent);
-      this.gasInput.render(toggleContent);
-      this.setAttribute("on", "");
-    } else {
-      this.tabBar.render(toggleContent);
-      this.removeAttribute("on");
-    }
-  }
-  get onAdvanced() {
-    return this.hasAttribute("on");
-  }
-  set availableAmount(account) {
-    this.children[1].children[1].textContent =
-      account.balance + " " + account.symbol;
-  }
-  set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + account.symbol;
-  }
-  set estimateTime(time) {
-    this.children[3].children[1].textContent = time;
-  }
-  /**
-   * @param {Array<Object>} HTMLElement
-   */
-  get toggleContent() {
-    return this.children[5];
-  }
-  set onSubmit(element) {
-    element.render(this.lastElementChild);
-  }
-  /**
-   * @param {Boolean} val
-   */
-  set toggle(val) {
-    if (val) {
-      this.removeAttribute("disabled-toggle");
-    } else {
-      this.setAttribute("disabled-toggle", "");
-    }
-  }
-}
-
-customElements.define("transaction-form", FormElement);
-
-class Form {
-  constructor(state, callback) {
-    this.state = JSON.parse(JSON.stringify(state));
-    this.callback = callback;
-  }
-  render(parentElement) {
-    this.element = document.createElement("transaction-form");
-    this.element.state = this.state;
-    this.element.callback = this.callback;
-    parentElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
 
 
 /***/ }),
@@ -6614,8 +6601,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
 // https://unicode-table.com/cn/2248/
+
 
 
 const getHeaderInfo = (screen) => {
@@ -6640,21 +6628,20 @@ class BackButtonElement extends HTMLElement {
     } else {
       this.innerHTML = `<i class="fas fa-arrow-left">`;
     }
-    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.addEventListener("click", (_) => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.removeEventListener("click", (_) => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
 }
 
 customElements.define("back-button", BackButtonElement);
 
 class BackButton {
-  constructor(state, screen, icon) {
+  constructor(screen, icon) {
     this.element = document.createElement("back-button");
+    this.element.screen = screen;
     this.element.icon = icon;
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.state.screen = screen;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -6665,63 +6652,36 @@ class HeaderElement extends HTMLElement {
   constructor() {
     super();
   }
-  connectedCallback() {
-    switch (this.state.screen) {
-      case "accounts":
-      case "settings":
-        this.classList = ["header header--overview"];
-        this.innerHTML = this.overviewHeader(
-          this.state.user.totalAsset,
-          this.state.walletConfig.fiat.symbol
-        );
-        break;
-      case "account":
-        this.classList = ["header header--account"];
-        this.innerHTML = this.accountHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "accounts");
-        this.headerLeading.render(this);
-        break;
-      default:
-        this.classList = ["header header--default"];
-        this.innerHTML = this.defaultHeader(this.state);
-        this.headerLeading = new BackButton(this.state, "account");
-        this.headerLeading.render(this);
-        break;
-    }
-  }
-  overviewHeader = (totalAsset, fiatSymbol) => {
+  overviewHeader = (totalAsset, fiat) => {
     const markup = `
       <div class="header__title">Total Asset</div>
       <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
-        <span class="user-total-balance">${totalAsset}</span>
-        <span class="currency-unit">${fiatSymbol}</span>
+        <span class="user-total-balance">${
+          totalAsset ? totalAsset : "Loading..."
+        }</span>
+        <span class="currency-unit">${totalAsset ? fiat : ""}</span>
       </div>
     `;
     return markup;
   };
-  accountHeader = (state) => {
-    const account = state.account;
-    const fiat = state.walletConfig.fiat;
+  assetHeader = (asset, fiat) => {
     const markup = `
     <div class="header__icon">
-      <img src=${account.image}  alt=${account.symbol.toUpperCase()}>
+      <img src=${asset.image}  alt=${asset.symbol.toUpperCase()}>
     </div>
-    <div class="header__icon-title">${account.symbol.toUpperCase()}</div>
-    <div class="header__title">${account.balance}</div>
+    <div class="header__icon-title">${asset.symbol.toUpperCase()}</div>
+    <div class="header__title">${asset.balance}</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
-      <span class="balance">${account.infiat}</span>
-      <span class="currency-unit">${fiat.symbol}</span>
+      <span class="balance">${asset.inFiat}</span>
+      <span class="currency-unit">${fiat}</span>
     </div>
     `;
-
     return markup;
   };
-  defaultHeader = (state) => {
-    const { screenTitle, actionHTML } = getHeaderInfo(state.screen);
-    const _state = JSON.parse(JSON.stringify(state));
-    _state.screen = "account";
+  defaultHeader = (screen) => {
+    const { screenTitle, actionHTML } = getHeaderInfo(screen);
     const markup = `
         <div class="header__title">${screenTitle}</div>
         <div class="header__action ${actionHTML ? "" : "disabled"}">${
@@ -6730,17 +6690,69 @@ class HeaderElement extends HTMLElement {
     `;
     return markup;
   };
+  connectedCallback() {
+    switch (this.screen) {
+      case "assets":
+      case "settings":
+        this.classList = ["header header--overview"];
+        this.innerHTML = this.overviewHeader(this.totalAsset, this.fiat);
+        break;
+      case "asset":
+        this.classList = ["header header--asset"];
+        this.innerHTML = this.assetHeader(this.asset, this.fiat);
+        this.headerLeading = new BackButton("assets");
+        this.headerLeading.render(this);
+        break;
+      default:
+        this.classList = ["header header--default"];
+        this.innerHTML = this.defaultHeader(this.screen);
+        this.headerLeading = new BackButton("asset");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
+  update(screen, { fiat, totalAsset, asset } = {}) {
+    switch (screen) {
+      case "assets":
+      case "settings":
+        if (totalAsset !== this.totalAsset) {
+          this.totalAsset = totalAsset;
+          document.querySelector(".user-total-balance").textContent =
+            totalAsset;
+        }
+        if (!this.fiat || (fiat && this.fiat !== fiat)) {
+          this.fiat = fiat;
+        }
+        document.querySelector(".currency-unit").textContent = this.fiat;
+        break;
+      case "asset":
+        if (!this.fiat || (fiat && this.fiat !== fiat)) {
+          this.fiat = fiat;
+        }
+        this.asset = JSON.parse(JSON.stringify(asset));
+        this.innerHTML = this.assetHeader(asset, this.fiat);
+        this.headerLeading = new BackButton("assets");
+        this.headerLeading.render(this);
+        break;
+    }
+  }
 }
 
 customElements.define("header-widget", HeaderElement);
 
 class Header {
-  constructor(state) {
+  constructor(screen, { fiat, totalAsset, asset } = {}) {
     this.element = document.createElement("header-widget");
-    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.screen = screen;
+    if (totalAsset) this.element.totalAsset = totalAsset;
+    if (fiat) this.element.fiat = fiat;
+    if (asset) this.element.asset = JSON.parse(JSON.stringify(asset));
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+  update(screen, { fiat, totalAsset, asset }) {
+    this.element.update(screen, { fiat, totalAsset, asset });
   }
 }
 
@@ -6791,20 +6803,11 @@ class ScaffoldElement extends HTMLElement {
     this.popover = new _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__.default();
     this.popover.render(this);
   }
-  updateHeader(newHeader) {
-    this.header = newHeader;
-    this.children[0].replaceChildren();
-    this.header.render(this.children[0]);
+  set view(name) {
+    this.setAttribute("view", name);
   }
-  updateBody(newBody) {
-    this.body = newBody;
-    this.children[1].replaceChildren();
-    this.body.render(this.children[1]);
-  }
-  updateFooter(newFooter) {
-    this.footer = newFooter;
-    this.children[2].replaceChildren();
-    this.footer.render(this.children[2]);
+  set id(val) {
+    this.setAttribute("id", val);
   }
 }
 
@@ -6819,57 +6822,47 @@ class Scaffold {
     document.body.replaceChildren();
     document.body.insertAdjacentElement("beforeend", this.element);
   }
-
   /**
-   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
-   * @param {String: show on the dialog} text
-   * @param {function} onConfirm
-   * @param {default true} cancellable
+   * @param {string} id
    */
-  static openPopover(type, text, onConfirm, cancellable = true) {
-    const popover = document.querySelector("pop-over");
-    popover.open = true;
+  set id(id) {
+    this.element.id = id;
+  }
+  /**
+   * @param {string} name
+   */
+  set view(name) {
+    this.element.view = name;
+  }
+  openPopover = (type, text, onConfirm, cancellable = true) => {
+    this.element.popover.open = true;
     if (cancellable) {
-      popover.cancellable = cancellable;
+      this.element.popover.cancellable = cancellable;
     }
     switch (type) {
       case "error":
-        popover.errorPopup(text);
+        this.element.popover.errorPopup(text);
         break;
       case "success":
-        popover.successPopup(text);
+        this.element.popover.successPopup(text);
         break;
       case "loading":
-        popover.loadingPopup(text);
+        this.element.popover.loadingPopup(text);
         break;
       case "confirm":
-        popover.confirmPopup(text, onConfirm);
+        this.element.popover.confirmPopup(text, onConfirm);
         break;
     }
-  }
-  static closePopover(timeout) {
-    const popover = document.querySelector("pop-over");
+  };
+  closePopover = (timeout) => {
     if (timeout !== undefined) {
       setTimeout(() => {
-        popover.open = false;
+        this.element.popover.open = false;
       }, timeout);
     } else {
-      popover.open = false;
+      this.element.popover.open = false;
     }
-  }
-  // render(parentElement) {
-  //   parentElement.replaceChildren();
-  //   parentElement.insertAdjacentElement("afterbegin", this.element);
-  // }
-  // updateHeader(newHeader) {
-  //   this.element.updateHeader(newHeader);
-  // }
-  // updateBody(newBody) {
-  //   this.element.updateBody(newBody);
-  // }
-  // updateFooter(newFooter) {
-  //   this.element.updateFooter(newFooter);
-  // }
+  };
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Scaffold);
@@ -6891,7 +6884,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/setting_column */ "./src/javascript/widget/setting_column.js");
 
 
-const getSettings = (state) => [
+const getSettings = (fiat) => [
   {
     title: "Security center",
     items: [
@@ -6908,7 +6901,7 @@ const getSettings = (state) => [
     items: [
       {
         name: "Fiat currency unit",
-        label: state.walletConfig.fiat.symbol,
+        label: fiat,
         onPressed: () => {
           console.log("Popup options of fiat currency");
         },
@@ -6941,7 +6934,7 @@ class SettingListElement extends HTMLElement {
     this.className = "setting";
     this.innerHTML = `
     <div class="setting__list"></div>
-    <div class="setting__text">${this.state.walletConfig.version}</div>
+    <div class="setting__text">${this.version}</div>
     `;
     this.settings.forEach((setting) => setting.render(this.children[0]));
   }
@@ -6949,10 +6942,11 @@ class SettingListElement extends HTMLElement {
 
 customElements.define("setting-list", SettingListElement);
 class SettingList {
-  constructor(state) {
+  constructor(fiat, version) {
+    const settings = getSettings(fiat);
     this.element = document.createElement("setting-list");
-    const settings = getSettings(state);
-    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.version = version;
+    this.element.fiat = fiat;
     this.element.settings = settings.map(
       (setting) => new _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__.default(setting)
     );
@@ -6963,6 +6957,64 @@ class SettingList {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SettingList);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/slider_container.js":
+/*!***************************************************!*\
+  !*** ./src/javascript/layout/slider_container.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class SlidesContainerElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  set focus(index) {
+    this.setAttribute("focus", index);
+  }
+  static get observedAttributes() {
+    return ["focus"];
+  }
+  connectedCallback() {
+    this.className = "slides-container";
+    this.childrenData.forEach((childData) => {
+      const slidesNode = document.createElement("div");
+      slidesNode.className = "slides";
+      this.insertAdjacentElement("beforeend", slidesNode);
+      childData.render(slidesNode);
+    });
+    this.focus = 0;
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "focus") {
+      if (oldValue) this.children[oldValue].style.display = "none";
+      this.children[newValue].style.display = "block";
+    }
+  }
+  // disconnectedCallback() {}
+}
+customElements.define("slides-container", SlidesContainerElement);
+
+class SlidesContainer {
+  constructor(children) {
+    this.element = document.createElement("slides-container");
+    this.element.childrenData = children;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  set focus(index) {
+    this.element.focus = index;
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SlidesContainer);
 
 
 /***/ }),
@@ -6981,21 +7033,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/javascript/constant/tab_bar_data.js");
 /* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
 /* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/javascript/widget/tab_bar_item.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
-
 
 
 
 
 class TarBarNavigator {
-  constructor(state) {
-    this.state = JSON.parse(JSON.stringify(state));
+  constructor() {
     this.tabBarItems = _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__.default.map((item) => {
-      const state = JSON.parse(JSON.stringify(this.state));
-      state.screen = item.screen;
-      return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(state, item.title, item.title.toLowerCase(), (state) =>
-        (0,_utils_route__WEBPACK_IMPORTED_MODULE_3__.default)(state)
-      );
+      return new _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__.default(item);
     });
   }
   render(parentElement, position) {
@@ -7005,6 +7050,7 @@ class TarBarNavigator {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TarBarNavigator);
+
 
 /***/ }),
 
@@ -7027,7 +7073,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.className = "third-party-signin";
     this.innerHTML = `
     <div class="third-party-signin__logo"></div>
-    <div class="third-party-signin__logo-text">${this.state.walletConfig.version}</div>
+    <div class="third-party-signin__logo-text">${this.version}</div>
     <div class="third-party-signin__action">
         <div id="googleid-signin" class="third-party-signin__button">
             <div class="third-party-signin__icon">
@@ -7051,13 +7097,13 @@ class ThirdPartySigninContainerElement extends HTMLElement {
 
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
-  constructor(state, colorMode, googleSignin, appleSigin) {
-    this.state = JSON.parse(JSON.stringify(state));
+  constructor(version, colorMode, googleSignin, appleSigin) {
+    this.version = version;
     this.element = document.createElement("third-party-signin");
-    this.element.state = this.state;
     this.element.googleSignin = googleSignin;
     this.element.appleSigin = appleSigin;
     this.element.colorMode = colorMode;
+    this.element.version = version;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -7065,6 +7111,45 @@ class ThirdPartySigninContainer {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ThirdPartySigninContainer);
+
+
+/***/ }),
+
+/***/ "./src/javascript/model/asset.js":
+/*!***************************************!*\
+  !*** ./src/javascript/model/asset.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class Asset {
+  constructor({
+    id,
+    name,
+    symbol,
+    network,
+    decimals,
+    publish,
+    image,
+    balance,
+    inFiat,
+  }) {
+    this.id = id;
+    this.name = name;
+    this.symbol = symbol;
+    this.network = network;
+    this.decimals = decimals;
+    this.publish = publish;
+    this.image = image;
+    this.balance = balance;
+    this.inFiat = inFiat;
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Asset);
 
 
 /***/ }),
@@ -7167,12 +7252,12 @@ class Bill {
         return "Unknown";
     }
   }
-  formattedAmount(account) {
+  formattedAmount(asset) {
     switch (this._direction) {
       case "receive":
-        return this.sign + " " + this.amount + " " + account.symbol;
+        return this.sign + " " + this.amount + " " + asset.symbol;
       case "send":
-        return this.sign + " " + this.amount + " " + account.symbol;
+        return this.sign + " " + this.amount + " " + asset.symbol;
       default:
         return "Unknown";
     }
@@ -7180,147 +7265,6 @@ class Bill {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Bill);
-
-
-/***/ }),
-
-/***/ "./src/javascript/model/transaction.js":
-/*!*********************************************!*\
-  !*** ./src/javascript/model/transaction.js ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-class Transaction {
-  constructor({ publish, to, amount, priority, gasPrice, gasLimit, message }) {
-    this.publish = publish;
-    this.to = to;
-    this.amount = amount;
-    this.priority = priority;
-    this.gasPrice = gasPrice;
-    this.gasLimit = gasLimit;
-    this.message = message;
-  }
-  // BTC
-  // constructor({
-  //     publish,
-  //     to,
-  //     amount,
-  //     priority,
-  //     message,
-  // })
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Transaction);
-
-
-/***/ }),
-
-/***/ "./src/javascript/screen/account.js":
-/*!******************************************!*\
-  !*** ./src/javascript/screen/account.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/bill */ "./src/javascript/model/bill.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
-/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
-
-
-
-
-
-
-// -- test
-
-const getAssetDetail = (assetId) => {
-  if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
-  return [
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
-      amount: 0.1,
-      fee: 0.000021,
-      message: "",
-      timestamp: Date.now(),
-      direction: "send",
-      from: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      to: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      confirmations: 0,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
-      amount: 0.1,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1625993323880,
-      direction: "receive",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 1,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
-      amount: 0.1,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1625953323880,
-      direction: "send",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 4,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
-      amount: 1,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1620719000000,
-      direction: "send",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 2160,
-    },
-    {
-      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_5__.randomHex)(32),
-      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
-      amount: 3,
-      fee: 0.000021,
-      message: "",
-      timestamp: 1620719218543,
-      direction: "receive",
-      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
-      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
-      confirmations: 214560,
-    },
-  ];
-};
-
-const account = (state, callback) => {
-  // ++ let assetDetail = ui.getAssetDetail({ assetID });
-  const bills = getAssetDetail(state.account.id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(state);
-  const tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_3__.default(state);
-  const billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_4__.default(state, bills);
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(header, [tarBarNavigator, billList]);
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (account);
 
 
 /***/ }),
@@ -7336,24 +7280,118 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/address_content */ "./src/javascript/layout/address_content.js");
 
 
 
 
 
+class Address {
+  constructor() {}
+  initialize(screen, asset) {
+    // ++ if tidewallet is ready
+    // tidewallet.getReceiveAddress({ asset.id });
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen);
+    this.addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_3__.default(asset);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.addressContent);
+  }
+  render(screen, asset) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
+    if (!view || view !== "address" || !this.scaffold) {
+      this.initialize(screen, asset);
+    }
+    // -- test
+    setTimeout(() => {
+      const address = "0xd885833741f554a0e64ffd1141887d65e0dded01";
+      this.update(address);
+    }, 1000);
+  }
+  // ++ Emily 2021/6/22
+  update(address) {
+    this.addressContent.update(address);
+  }
+}
 
-const address = (state, callback) => {
-  // ++ ui.getReceiveAddress({ accountID });
-  const address = "0xd885833741f554a0e64ffd1141887d65e0dded01"; // --
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_2__.default(state, address);
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, addressContent);
-};
+const address = new Address();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (address);
+
+
+/***/ }),
+
+/***/ "./src/javascript/screen/asset.js":
+/*!****************************************!*\
+  !*** ./src/javascript/screen/asset.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/javascript/layout/tab_bar_navigator.js");
+/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/bill_list */ "./src/javascript/layout/bill_list.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+// import Bill from "./model/bill";
+
+
+
+
+
+class Asset {
+  constructor() {}
+  initialize(screen, asset, fiat) {
+    // ++ if tidewallet is ready
+    // tidewallet.getAssetDetail(user.assets[3].id)
+    //   .then((objs) => objs?.map((obj) => new Bill(obj)))
+    //   .then((bills) => {
+    //     this.updateBills(bills);
+    //   });
+    //
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { asset, fiat });
+    this.tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default();
+    this.billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(asset, asset.bills);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, [
+      this.tarBarNavigator,
+      this.billList,
+    ]);
+    this.scaffold.id = asset.id;
+    this.scaffold.view = screen;
+    this.screen = screen;
+    if (asset.bills) {
+      // this.scaffold.openPopover("loading", "loading...");
+    }
+  }
+  render(screen, asset, fiat) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
+    if (!view || view !== "asset" || !this.scaffold) {
+      this.initialize(screen, asset, fiat);
+    }
+  }
+  updateBills(asset, bills) {
+    this.header.update(this.screen, { asset });
+    this.billList.updateBills(bills);
+    // this.scaffold.closePopover();
+  }
+  updateBill(asset, billIndex, bill) {
+    this.header.update(this.screen, { asset });
+    this.billList.updateBill(billIndex, bill);
+  }
+  addNewBill(asset, bill) {
+    this.header.update(this.screen, { asset });
+    this.billList.addNewBill(bill);
+  }
+}
+
+const asset = new Asset();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (asset);
 
 
 /***/ }),
@@ -7372,15 +7410,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
 /* harmony import */ var _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bill_content */ "./src/javascript/layout/bill_content.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
 
 
-const bill = (state) => {
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(state);
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, billContent);
-};
+class Bill {
+  constructor() {}
+  initialize(screen, asset, bill) {
+    const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
+    this.billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(asset, bill);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, this.billContent);
+    this.scaffold.view = screen;
+    this.screen = screen;
+  }
+  render(screen, asset, bill) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.currentView)();
+    if (!view || view !== "bill" || !this.scaffold) {
+      this.initialize(screen, asset, bill);
+    }
+  }
+  update(asset, bill) {
+    this.billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(asset, bill);
+    this.billContent.update();
+  }
+}
+
+const bill = new Bill();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bill);
 
@@ -7400,25 +7456,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/javascript/layout/third_party_signin_container.js");
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
 
 
 
 
-const googleSignin = async (state) => {
+const googleSignin = async (screen) => {
   // await;
-  const _state = JSON.parse(JSON.stringify(state));
-  _state.screen = "accounts";
-  (0,_utils_route__WEBPACK_IMPORTED_MODULE_2__.default)(_state);
+  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
 };
 
-const landing = (state) =>
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
-    undefined,
-    new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(state, "white", () => googleSignin(state)),
-    undefined
-  );
+class Landing {
+  constructor() {}
+  render(screen, version) {
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
+      this.header,
+      new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", () =>
+        googleSignin("assets")
+      ),
+      this.footer
+    );
+    this.scaffold.view = screen;
+  }
+}
 
+const landing = new Landing();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (landing);
 
 
@@ -7437,115 +7499,74 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_account_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/account_list */ "./src/javascript/layout/account_list.js");
+/* harmony import */ var _layout_asset_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/asset_list */ "./src/javascript/layout/asset_list.js");
 /* harmony import */ var _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/setting_list */ "./src/javascript/layout/setting_list.js");
 /* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/javascript/layout/bottom_navigator.js");
+/* harmony import */ var _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../layout/slider_container */ "./src/javascript/layout/slider_container.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
 
 
 
 
-const overview = (state) => {
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const bottomNavigator = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(state);
-  switch (state.screen) {
-    case "accounts":
-      bottomNavigator.focus = 0;
-      const accountList = new _layout_account_list__WEBPACK_IMPORTED_MODULE_2__.default(state);
-      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, accountList, bottomNavigator);
-      break;
-    case "settings":
-      bottomNavigator.focus = 1;
-      const settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(state);
-      new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, settingList, bottomNavigator);
-      break;
-    default:
-      break;
+
+
+class Overview {
+  constructor() {}
+  initialize(screen, fiat, version, { totalAsset, assets } = {}) {
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { fiat, totalAsset });
+    this.assetList = new _layout_asset_list__WEBPACK_IMPORTED_MODULE_2__.default(assets, fiat);
+    this.settingList = new _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__.default(fiat, version);
+    this.body = new _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__.default([this.assetList, this.settingList]);
+    this.footer = new _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__.default(0);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
+    this.scaffold.view = screen;
+    this.screen = screen;
+    if (assets) {
+      // this.scaffold.openPopover("loading", "loading...");
+    }
   }
-};
+  render(screen, fiat, version, { totalAsset, assets } = {}) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_6__.currentView)();
+    if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
+      this.initialize(screen, fiat, version, { totalAsset, assets });
+    } else {
+      this.screen = screen;
+      switch (this.screen) {
+        case "assets":
+          this.body.focus = 0;
+          break;
+        case "settings":
+          this.body.focus = 1;
+          break;
+      }
+    }
+  }
+  /**
+   * @param {List of Asset} assets
+   * @param {Asset} asset
+   * @param {totalAsset} String
+   * @param {fiat} String
+   */
+  updateAssets(totalAsset, fiat, assets) {
+    // this.scaffold.closePopover();
+    this.header.update(this.screen, { fiat, totalAsset });
+    this.assetList.updateAssets(assets, fiat);
+  }
+  updateAsset(index, totalAsset, asset) {
+    this.header.update(this.screen, { totalAsset });
+    this.assetList.updateAsset(index, asset);
+  }
+  addNewAsset(totalAsset, asset) {
+    this.header.update(this.screen, { totalAsset });
+    this.assetList.addNewAsset(asset);
+  }
+}
+
+const overview = new Overview();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
-
-
-/***/ }),
-
-/***/ "./src/javascript/screen/transaction.js":
-/*!**********************************************!*\
-  !*** ./src/javascript/screen/transaction.js ***!
-  \**********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
-/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
-
-
-
-
-/**
- * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
- * let transaction = ui.prepareTransaction({ to, amount, data, speed });
- * ui.sendTransaction(transaction);
- */
-
-const sendTransaction = (transaction) => {
-  console.log("to", transaction.to);
-  console.log("amount", transaction.amount);
-  console.log("priority", transaction.priority);
-  console.log("gasPrice", transaction.gasPrice);
-  console.log("gas", transaction.gas);
-  _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover('success', 'Success!');
-  // Scaffold.closePopover(2000);
-};
-
-const transaction = (state) => {
-  const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(state);
-  const form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(state, (val) =>
-    _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default.openPopover(
-      "confirm",
-      "Are you sure to make this transaction?",
-      () => sendTransaction(val),
-      false
-    )
-  );
-  new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, form);
-  /**
-   * getEstimateTime().then((timeString) => {
-   *    const estimateTimeEl = document.querySelector('.estimate-time');
-   *    estimateTimeEl.textContent = timeString;
-   * }).catch((error) => {
-   *    estimateTimeEl.textContent = "would take longer than you can expected";
-   * })
-   */
-
-  /**
-   * feeObj = {
-   *    gasPrice: {
-   *        fast: '',
-   *        standard: '',
-   *        slow: '',
-   *    },
-   *    gasLimit: 21000
-   * }
-   */
-  /**
-   * getTransactionFee().then((feeObj) => {
-   *    const estimateFeeEl = document.querySelector('.estimate-fee');
-   *    ++ get Setected tab index
-   *    estimateFeeEl.textContent = `${parseFloat(feeObj.gasPrice[1]) * gasLimit}`;
-   * }).catch((error) => {
-   *    estimateTimeEl.textContent = "would surprise you!";
-   * })
-   */
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
 
 
 /***/ }),
@@ -7558,25 +7579,37 @@ const transaction = (state) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ launchTideBitUi)
-/* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/route */ "./src/javascript/utils/route.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
+/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model/bill */ "./src/javascript/model/bill.js");
+/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./model/asset */ "./src/javascript/model/asset.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./controller/view */ "./src/javascript/controller/view.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/utils */ "./src/javascript/utils/utils.js");
 // MVC: View
 
 
 
 
-const state = {};
 
-// ++ let assetList = ui.getAssets();
-const getAssets = () => {
+// test
+const createTestAsset = (id) => {
   return {
-    totalAsset: 52.29,
-    accounts: [
+    id: id ? id : (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+    name: "Aretha",
+    symbol: "ARE",
+    network: "Testnet",
+    decimals: 8,
+    publish: true,
+    image: "https://www.tidebit.one/icons/btc.png",
+    balance: 100,
+    inFiat: 30000,
+  };
+};
+// ++ let assetList = ui.getAssets();
+const getUserDetail = () => {
+  return {
+    userBalanceInFiat: 52.29,
+    assets: [
       {
-        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "mainnet",
@@ -7584,10 +7617,10 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD: 0,
+        inFiat: 0,
       },
       {
-        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Bitcoin",
         symbol: "BTC",
         network: "testnet",
@@ -7595,10 +7628,10 @@ const getAssets = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/btc.png",
         balance: 0,
-        inUSD: 0,
+        inFiat: 0,
       },
       {
-        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Ethereum",
         symbol: "ETH",
         network: "mainnet",
@@ -7606,7 +7639,7 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD: 0,
+        inFiat: 0,
       },
       {
         id: "e0642b1b64b8b0214e758dd0be63242839e63db7",
@@ -7617,10 +7650,10 @@ const getAssets = () => {
         publish: false,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 2,
-        inUSD: 52.29,
+        inFiat: 52.29,
       },
       {
-        id: _utils_utils__WEBPACK_IMPORTED_MODULE_1__.randomHex(32),
+        id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
         name: "Tidetain",
         symbol: "TTN",
         network: "mainnet",
@@ -7628,86 +7661,153 @@ const getAssets = () => {
         publish: true,
         image: "https://www.tidebit.one/icons/eth.png",
         balance: 0,
-        inUSD: 0,
+        inFiat: 0,
       },
     ],
   };
 };
+const getAssetDetail = (assetId) => {
+  if (assetId !== "e0642b1b64b8b0214e758dd0be63242839e63db7") return [];
+  return [
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xaf40440a607d8ecea5236c22a70c806bcd36c29cdb81811694a3cb3f634be276",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: Date.now(),
+      direction: "send",
+      from: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      to: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      confirmations: 0,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1625993323880,
+      direction: "receive",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 1,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xa51396e2d31bef6825b25d7078a912e3d9ecaab6bdce949e2ed5193bb7c73044",
+      amount: 0.1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1625953323880,
+      direction: "send",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 4,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+      amount: 1,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1620719000000,
+      direction: "send",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 2160,
+    },
+    {
+      id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
+      txid: "0xab4372209b00d0669a440e93134ee7812b779b62ac4e0b254eb18541c78af3b9",
+      amount: 3,
+      fee: 0.000021,
+      message: "",
+      timestamp: 1620719218543,
+      direction: "receive",
+      from: "0xd885833741f554a0e64ffd1141887d65e0dded01",
+      to: "0xe0642b1b64b8b0214e758dd0be63242839e63db7",
+      confirmations: 214560,
+    },
+  ];
+};
 
-const setWallet = (mode, version, fiat) => {
+const getWalletConfig = () => {
   return {
-    mode,
-    version,
-    fiat,
+    mode: "development",
+    version: "v 0.1.0 (1)",
+    fiat: "USD",
   };
 };
+//-- test
 
 const startApp = () => {
-  state.user = getAssets();
-  state.walletConfig = setWallet("development", "v 0.1.0 (1)", {
-    symbol: "USD",
-    inUSD: 1,
-  });
-  state.screen = "landing";
-  (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(state);
+  let user, wallet, bills;
+  // initialize
+  wallet = getWalletConfig();
+  // -- test
+  window.wallet = wallet;
+  // --
+  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.initialize(wallet);
+  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("landing");
+
+  // onReady
+  // -- test
+  setTimeout(() => {
+    user = getUserDetail();
+    user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_1__.default(asset));
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateUser(user);
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("assets");
+  }, 2000);
+  // --
+
+  // onUpdateAccount
+  // new Account
+  setTimeout(() => {
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(createTestAsset(), user.userBalanceInFiat);
+  }, 3500);
+
+  // onUpdateAccount
+  // existAccount
+  setTimeout(() => {
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(
+      createTestAsset(user.assets[1].id),
+      user.userBalanceInFiat
+    );
+  }, 4500);
+
+  // onUpdateTransactions
+  // eth ropsten transaction
+  setTimeout(() => {
+    bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
+    window.bills = bills;
+    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
+    setTimeout(() => {
+      _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(user.assets[3], bills);
+      const updateBill = (bill = user.assets[3].bills[0]) => {
+        bill.confirmations += 1;
+        // onUpdateTransaction
+        // eth ropsten 1st transaction
+        _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBill(user.assets[3], bills[0]);
+        if (bill.confirmations === 4) {
+          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("bill", bills[0]);
+        }
+        if (bill.confirmations > 7) {
+          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
+          clearInterval(interval);
+        }
+      };
+      const interval = setInterval(updateBill, 2000);
+    }, 1000);
+  }, 6000);
 };
 
-function launchTideBitUi(options, callback) {
-  startApp();
-}
+startApp();
 
-
-/***/ }),
-
-/***/ "./src/javascript/utils/route.js":
-/*!***************************************!*\
-  !*** ./src/javascript/utils/route.js ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../screen/landing */ "./src/javascript/screen/landing.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
-/* harmony import */ var _screen_account__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/account */ "./src/javascript/screen/account.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
-
-
-
-
-
-
-
-const route = (state) => {
-  switch (state.screen) {
-    case "landing":
-      (0,_screen_landing__WEBPACK_IMPORTED_MODULE_0__.default)(state);
-      break;
-    case "accounts":
-    case "settings":
-      (0,_screen_overview__WEBPACK_IMPORTED_MODULE_1__.default)(state);
-      break;
-    case "account":
-      (0,_screen_account__WEBPACK_IMPORTED_MODULE_2__.default)(state);
-      break;
-    case "transaction":
-      (0,_screen_transaction__WEBPACK_IMPORTED_MODULE_3__.default)(state);
-      break;
-    case "address":
-      (0,_screen_address__WEBPACK_IMPORTED_MODULE_4__.default)(state);
-      break;
-    case "bill":
-      (0,_screen_bill__WEBPACK_IMPORTED_MODULE_5__.default)(state);
-      break;
-  }
-};
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (route);
+window.viewController = _controller_view__WEBPACK_IMPORTED_MODULE_2__.default;
+window.getUserDetail = getUserDetail;
+window.getWalletConfig = getWalletConfig;
+window.createTestAsset = createTestAsset;
 
 
 /***/ }),
@@ -7724,7 +7824,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "randomHex": () => (/* binding */ randomHex),
 /* harmony export */   "to": () => (/* binding */ to),
 /* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter),
-/* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter)
+/* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter),
+/* harmony export */   "currentView": () => (/* binding */ currentView)
 /* harmony export */ });
 const randomHex = (n) => {
   var ID = "";
@@ -7799,13 +7900,19 @@ const addressFormatter = (address, showLength = 6) => {
   return prefix + "..." + suffix;
 };
 
+const currentView = () => {
+  const scaffold = document.querySelector("scaffold-widget");
+  const view = scaffold?.attributes?.view?.value;
+  return view;
+};
+
 
 /***/ }),
 
-/***/ "./src/javascript/widget/account_item.js":
-/*!***********************************************!*\
-  !*** ./src/javascript/widget/account_item.js ***!
-  \***********************************************/
+/***/ "./src/javascript/widget/asset_item.js":
+/*!*********************************************!*\
+  !*** ./src/javascript/widget/asset_item.js ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7813,50 +7920,49 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
 
-class AccountItemElement extends HTMLElement {
+class AssetItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
-    this.addEventListener("click", (_) => {
-      if (this.account) {
-        this.state.account = this.account;
-        this.state.screen = "account";
-        (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state);
-      } else {
-        return;
-      }
-    });
   }
-  connectedCallback() {
-    this.className = "account-item";
+  set id(val) {
+    this.setAttribute("id", val);
+  }
+  update() {
+    if (this === undefined || this === null) return;
     this.innerHTML = `
-    <div class="account-item__icon"></div>
-    <div class="account-item__symbol"></div>
-    <div class="account-item__balance"></div>
-    <div class="account-item__to-currency">
+    <div class="asset-item__icon"></div>
+    <div class="asset-item__symbol"></div>
+    <div class="asset-item__balance"></div>
+    <div class="asset-item__to-currency">
         <span class="almost-equal-to">&#8776;</span>
         <span class="balance"></span>
         <span class="currency-unit"></span>
     </div>
     `;
-    this.exchange();
-    this.publish = this.state.account.publish;
+    this.publish = this.asset.publish;
     this.children[0].insertAdjacentHTML(
       "afterbegin",
-      `<img src=${
-        this.state.account.image
-      } alt=${this.state.account.symbol.toUpperCase()}>`
+      `<img src=${this.asset.image} alt=${this.asset.symbol.toUpperCase()}>`
     );
-    this.children[1].textContent = this.state.account.symbol.toUpperCase();
-    this.children[2].textContent = this.state.account.balance;
-    this.children[3].children[1].textContent = this.state.account.infiat;
-    this.children[3].children[2].textContent =
-      this.state.walletConfig.fiat.symbol;
-    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.children[1].textContent = this.asset.symbol.toUpperCase();
+    this.children[2].textContent = this.asset.balance;
+    this.children[3].children[1].textContent = this.asset.inFiat;
+    this.children[3].children[2].textContent = this.fiat;
+  }
+  connectedCallback() {
+    this.className = "asset-item";
+    this.id = this.asset.id;
+    this.update();
+    this.addEventListener("click", (_) =>
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("asset", this.asset)
+    );
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.removeEventListener("click", (_) =>
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("asset", asset)
+    );
   }
   get publish() {
     return this.hasAttribute("publish");
@@ -7868,29 +7974,28 @@ class AccountItemElement extends HTMLElement {
       this.removeAttribute("publish");
     }
   }
-  exchange() {
-    if (this.state.walletConfig.fiat) {
-      this.state.account.infiat =
-        this.state.account.inUSD / this.state.walletConfig.fiat.inUSD;
-      return;
-    }
-    return;
-  }
 }
 
-customElements.define("account-item", AccountItemElement);
-class AccountItem {
-  constructor(state) {
-    this.id = state.account.id;
-    this.element = document.createElement("account-item");
-    this.element.state = state;
+customElements.define("asset-item", AssetItemElement);
+class AssetItem {
+  constructor(asset, fiat) {
+    this.asset = asset;
+    this.fiat = fiat;
+    this.element =
+      document.querySelector(`asset-item[id="${this.asset.id}"]`) ||
+      document.createElement("asset-item");
+    this.element.asset = asset;
+    this.element.fiat = fiat;
+  }
+  update() {
+    this.element.update();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AccountItem);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AssetItem);
 
 
 /***/ }),
@@ -7906,7 +8011,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_route__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/route */ "./src/javascript/utils/route.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
 
 
@@ -7914,6 +8019,9 @@ __webpack_require__.r(__webpack_exports__);
 class BillItemElement extends HTMLElement {
   constructor() {
     super();
+  }
+  set id(val) {
+    this.setAttribute("id", val);
   }
   connectedCallback() {
     this.classList = ["bill-item"];
@@ -7931,7 +8039,7 @@ class BillItemElement extends HTMLElement {
         </div>
         <div class="bill-item__suffix">
             <div class="bill-item__amount">${this.bill.formattedAmount(
-              this.state.account
+              this.asset
             )}</div>
             <div class="bill-item__time">${this.bill.dateTime}</div>
         </div>
@@ -7945,10 +8053,22 @@ class BillItemElement extends HTMLElement {
     `;
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
-    this.addEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.addEventListener("click", (_) =>
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("bill", this.bill)
+    );
+    this.id = this.bill.id;
+  }
+  update() {
+    if (this.status !== this.bill.status.toLowerCase())
+      this.status = this.bill.status.toLowerCase();
+    // this.children[0].children[2].children[1].textContent = this.bill.dateTime;
+    this.children[1].children[0].textContent = this.bill.status;
+    this.children[1].children[1].children[0].style.width = this.bill.progress;
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => (0,_utils_route__WEBPACK_IMPORTED_MODULE_0__.default)(this.state));
+    this.removeEventListener("click", (_) =>
+      _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("bill", this.bill)
+    );
   }
   static get observedAttributes() {
     return ["pending", "confirming", "complete"];
@@ -7967,13 +8087,19 @@ class BillItemElement extends HTMLElement {
 
 customElements.define("bill-item", BillItemElement);
 class BillItem {
-  constructor(state) {
-    this.element = document.createElement("bill-item");
-    this.element.state = state;
-    this.element.bill = state.bill;
+  constructor(asset, bill) {
+    this.bill = bill;
+    this.element =
+      document.querySelector(`bill-item[id="${this.bill.id}"]`) ||
+      document.createElement("bill-item");
+    this.element.asset = asset;
+    this.element.bill = bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    this.element.update();
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BillItem);
@@ -7992,6 +8118,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
+
+
 class BottomNavigatorItemElement extends HTMLElement {
   constructor() {
     super();
@@ -8001,22 +8130,20 @@ class BottomNavigatorItemElement extends HTMLElement {
     this.innerHTML = `
         <div class="bottom-navigator__icon"><i class="fas fa-${this.icon}"></i></div>
     `;
-    this.addEventListener("click", () => this.onPressed(this.state));
+    this.addEventListener("click", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", () => this.onPressed(this.state));
+    this.removeEventListener("click", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
 }
 
 customElements.define("bottom-navigator-item", BottomNavigatorItemElement);
 
 class BottomNavigatorItem {
-  constructor(state, item, onPressed) {
+  constructor(item) {
     this.element = document.createElement("bottom-navigator-item");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.onPressed = onPressed;
     this.element.icon = item.icon;
-    this.element.state.screen = item.screen;
+    this.element.screen = item.screen;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -8126,185 +8253,6 @@ class Button {
 
 /***/ }),
 
-/***/ "./src/javascript/widget/input.js":
-/*!****************************************!*\
-  !*** ./src/javascript/widget/input.js ***!
-  \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
-
-
-class InputElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  static get observedAttributes() {
-    return ["focus", "has-value", "error"];
-  }
-  handleInput(e) {
-    if (e.target.value !== "") {
-      this.hasValue = true;
-    } else {
-      this.hasValue = false;
-    }
-    let checked;
-    if (this.validator !== undefined) {
-      checked = e.target.value === "" || this.validator(e.target.value);
-    }
-    if (checked !== undefined) {
-      this.error = !checked;
-    }
-    // ++
-    // https://stackoverflow.com/questions/8808590/number-input-type-that-takes-only-integers
-    if (e.target.pattern === "d*") {
-      //   this.value = this.value.replace(/[^0-9.]/g, '');
-      //   this.value = this.value.replace(/(\..*)\./g, '$1');
-    }
-    this.inputValue = e.target.value;
-  }
-  connectedCallback() {
-    this.className = "input__controller";
-    this.id = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(6);
-    this.innerHTML = `
-    <div class="input__field">
-        <label class="input__label" for=${this.id}><p></p></label>
-        <div class="input__content">
-            <input type="text" class="input__input" id=${this.id}>
-            <div class="input__action"></i></div>
-        </div>
-    </div>
-    <div class="input__error-message"></div>
-    `;
-    this.children[0].children[1].children[0].addEventListener(
-      "focus",
-      (e) => (this.focus = true)
-    );
-    this.children[0].children[1].children[0].addEventListener(
-      "focusout",
-      (e) => (this.focus = false)
-    );
-    // this.children[0].children[1].children[0].addEventListener("change", (e) => {
-    this.children[0].children[1].children[0].addEventListener("input", (e) =>
-      this.handleInput(e)
-    );
-    this.children[0].children[1].children[1].style.display = "none";
-  }
-  get hasValue() {
-    return this.hasAttribute("has-value");
-  }
-  set focus(val) {
-    if (val) {
-      Array.from(document.querySelectorAll("input__controller")).forEach(
-        (controller) => (controller.focus = false)
-      );
-      this.setAttribute("focus", "");
-    } else {
-      this.removeAttribute("focus");
-    }
-  }
-  set hasValue(val) {
-    if (val) {
-      this.setAttribute("has-value", "");
-    } else {
-      this.removeAttribute("has-value");
-    }
-  }
-  set error(val) {
-    if (val) {
-      this.setAttribute("error", "");
-    } else {
-      this.removeAttribute("error");
-    }
-  }
-  set inputType(val) {
-    this.children[0].children[1].children[0].type = val;
-  }
-  set pattern(val) {
-    this.children[0].children[1].children[0].pattern = val;
-  }
-  set label(val) {
-    this.children[0].children[0].children[0].textContent = val;
-  }
-  set action(obj) {
-    this.children[0].children[1].children[1].style.display = "inline-block";
-    this.children[0].children[1].children[1].insertAdjacentHTML(
-      "afterbegin",
-      `<i class="far fa-${obj.icon}"></i>`
-    );
-    this.children[0].children[1].children[1].addEventListener("click", (e) =>
-      obj.onPressed()
-    );
-  }
-  set validation(val) {
-    this.validator = val;
-  }
-  set errorMessage(val) {
-    if (val === undefined) this.children[1].style.display = "none";
-    this.children[1].textContent = val;
-  }
-  disconnectedCallback() {
-    // target.removeEventListener('');
-    this.children[0].children[1].children[0].removeEventListener(
-      "focus",
-      (e) => (this.focus = true)
-    );
-    this.children[0].children[1].children[0].removeEventListener(
-      "focusout",
-      (e) => (this.focus = false)
-    );
-    this.children[0].children[1].children[0].removeEventListener("input", (e) =>
-      handleInput(e)
-    );
-    this.children[0].children[1].children[1].removeEventListener("click", (e) =>
-      obj.onPressed()
-    );
-  }
-}
-
-customElements.define("input-controller", InputElement);
-
-class Input {
-  constructor({
-    inputType = "text",
-    label,
-    errorMessage = "",
-    validation,
-    action,
-    pattern,
-  }) {
-    this.inputType = inputType;
-    this.label = label;
-    this.errorMessage = errorMessage;
-    this.validation = validation;
-    if (action !== undefined) this.action = action;
-    this.pattern = pattern;
-  }
-  render(parentElement) {
-    this.element = document.createElement("input-controller");
-    parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.inputType = this.inputType;
-    this.element.label = this.label;
-    this.element.errorMessage = this.errorMessage;
-    this.element.validation = this.validation;
-    if (this.action !== undefined) this.element.action = this.action;
-    if (this.pattern !== undefined) this.element.pattern = this.pattern;
-  }
-  get inputValue() {
-    return this.element.inputValue;
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Input);
-
-
-/***/ }),
-
 /***/ "./src/javascript/widget/pop_over.js":
 /*!*******************************************!*\
   !*** ./src/javascript/widget/pop_over.js ***!
@@ -8316,9 +8264,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-
-
 class PopoverElement extends HTMLElement {
   constructor() {
     super();
@@ -8461,18 +8406,24 @@ class Popover {
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
-  // errorPopup(text) {
-  //   this.element.errorPopup(text);
-  // }
-  // successPopup(text) {
-  //   this.element.successPopup(text);
-  // }
-  // loadingPopup(text) {
-  //   this.element.loadingPopup(text);
-  // }
-  // confirmPopup(text, onConfirm) {
-  //   this.element.confirmPopup(text, onConfirm);
-  // }
+  errorPopup(text) {
+    this.element.errorPopup(text);
+  }
+  successPopup(text) {
+    this.element.successPopup(text);
+  }
+  loadingPopup(text) {
+    this.element.loadingPopup(text);
+  }
+  confirmPopup(text, onConfirm) {
+    this.element.confirmPopup(text, onConfirm);
+  }
+  /**
+   * @param {Boolean} value
+   */
+  set open (value){
+    this.element.open = value;
+  }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Popover);
 
@@ -8562,6 +8513,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
+
 class TabBarItemElement extends HTMLElement {
   constructor() {
     super();
@@ -8570,25 +8523,24 @@ class TabBarItemElement extends HTMLElement {
     this.className = "tab-bar__button";
     this.innerHTML = `
         <div class="tab-bar__icon"></div>
-        <div class="tab-bar__text"></div>
+        <div class="tab-bar__screen"></div>
     `;
     this.setAttribute(this.action, "");
     this.children[1].textContent = this.text;
-    this.addEventListener("click", () => this.onPressed(this.state));
+    this.addEventListener("click", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", () => this.onPressed(this.state));
+    this.removeEventListener("click", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(this.screen));
   }
 }
 customElements.define("tab-bar-item", TabBarItemElement);
 
 class TabBarItem {
-  constructor(state, title, type, onPressed) {
+  constructor(item) {
     this.element = document.createElement("tab-bar-item");
-    this.element.state = state;
-    this.element.text = title;
-    this.element.action = type;
-    this.element.onPressed = onPressed;
+    this.element.text = item.title;
+    this.element.screen = item.screen;
+    this.element.action = item.title.toLowerCase();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
@@ -8620,8 +8572,7 @@ class TabBarElement extends HTMLElement {
     Array.from(document.querySelectorAll("tab-bar > *")).forEach((el) =>
       el.removeAttribute("focus")
     );
-    if (e.target.className === "button") e.target.setAttribute("focus", "");
-    else e.target.parentElement.setAttribute("focus", "");
+    e.target.closest("tab-bar > *").setAttribute("focus", "");
   }
   connectedCallback() {
     this.className = "tab-bar";
@@ -8678,7 +8629,8 @@ class TabBar {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ "./src/scss/main.scss");
-/* harmony import */ var _javascript_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/index */ "./src/javascript/index.js");
+/* harmony import */ var _javascript_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/ui */ "./src/javascript/ui.js");
+
 
 
 
@@ -8766,7 +8718,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("3b5547ab545917ff80e4")
+/******/ 		__webpack_require__.h = () => ("596c34af272607f9775f")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

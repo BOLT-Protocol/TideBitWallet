@@ -6,7 +6,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.className = "third-party-signin";
     this.innerHTML = `
     <div class="third-party-signin__logo"></div>
-    <div class="third-party-signin__logo-text">${this.state.walletConfig.version}</div>
+    <div class="third-party-signin__logo-text">${this.version}</div>
     <div class="third-party-signin__action">
         <div id="googleid-signin" class="third-party-signin__button">
             <div class="third-party-signin__icon">
@@ -30,13 +30,13 @@ class ThirdPartySigninContainerElement extends HTMLElement {
 
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
-  constructor(state, colorMode, googleSignin, appleSigin) {
-    this.state = JSON.parse(JSON.stringify(state));
+  constructor(version, colorMode, googleSignin, appleSigin) {
+    this.version = version;
     this.element = document.createElement("third-party-signin");
-    this.element.state = this.state;
     this.element.googleSignin = googleSignin;
     this.element.appleSigin = appleSigin;
     this.element.colorMode = colorMode;
+    this.element.version = version;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);

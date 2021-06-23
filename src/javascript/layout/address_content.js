@@ -6,6 +6,9 @@ class AddressContentElement extends HTMLElement {
   constructor() {
     super();
   }
+  set id(val) {
+    this.setAttribute("id", val);
+  }
   connectedCallback() {
     this.className = "address";
     this.innerHTML = `
@@ -17,14 +20,14 @@ class AddressContentElement extends HTMLElement {
           <div class="address__text"></div>
           <div class="address__button"></div>
           `;
-    this.renderAddress();
+    this.id = this.asset.id;
     this.setCoinbase();
   }
   /**
    * ETH || BTC
    */
   setCoinbase() {
-    this.setAttribute(this.state.account.symbol, "");
+    this.setAttribute(this.asset.symbol, "");
   }
   renderAddress = () => {
     QRCode.toCanvas(
@@ -60,10 +63,15 @@ class AddressContentElement extends HTMLElement {
 customElements.define("address-content", AddressContentElement);
 
 class AddressContent {
-  constructor(state, address) {
+  constructor(asset) {
+    this.asset = asset;
     this.element = document.createElement("address-content");
-    this.element.state = state;
+    this.element.asset = asset;
+  }
+  update(address) {
+    this.element = document.querySelector(`address-content[id="${this.asset.id}"]`);
     this.element.address = address;
+    this.element.renderAddress();
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);

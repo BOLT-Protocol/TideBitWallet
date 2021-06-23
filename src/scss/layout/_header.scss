@@ -3,7 +3,7 @@
   color: white;
   font-size: $default-font-size;
 
-  &--account,
+  &--asset,
   &--overview {
     //   min-height: $header-height;
     display: flex;
@@ -12,10 +12,9 @@
     align-items: center;
     justify-self: center;
   }
-  &--account{
+  &--asset {
     // padding: 2rem 2rem 4rem;
     padding: 2rem;
-
   }
 
   &--default {
@@ -24,7 +23,7 @@
     font-weight: 400;
     padding: 2rem;
   }
-  &--default &__leading{
+  &--default &__leading {
     & > i {
       font-weight: 400;
     }
@@ -56,14 +55,14 @@
     font-weight: 400;
   }
 
-  &--account &__leading {
+  &--asset &__leading {
     width: 100%;
     text-align: left;
     & > i {
       font-weight: 400;
     }
   }
-  &--account &__icon {
+  &--asset &__icon {
     width: 6rem;
     height: 6rem;
     background-color: $color-white;
@@ -75,24 +74,24 @@
     }
   }
 
-  &--account &__icon-title {
+  &--asset &__icon-title {
     font-size: $default-font-size * 0.8;
   }
 
-  &--account &__title {
+  &--asset &__title {
     font-size: $default-font-size * 1.25;
     font-weight: 400;
   }
 
-  &--account .almost-equal-to,
-  &--account .balance,
-  &--account .currency-unit {
+  &--asset .almost-equal-to,
+  &--asset .balance,
+  &--asset .currency-unit {
     font-size: $default-font-size * 0.8;
     font-weight: 400;
   }
 
-  &--account .balance {
+  &--asset .balance {
   }
-  &--account .currency-unit {
+  &--asset .currency-unit {
   }
 }

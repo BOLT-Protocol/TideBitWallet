@@ -1,29 +1,36 @@
 # TideBitWallet
 Chrome Extension for TideWallet3
-
 ### setup
-1. Open the Extension Management page in Chrome
+1. 基本的folder架構
 ```
-chrome://extensions
+.
+├── build                   # 最終放在chrome extension 上的東西
+│   ├── css         
+│   │   └── main.css        # 彈出視窗的畫面的css放在popup.html裡面
+│   ├── image         
+│   │   └── ...
+│   └── javascript          # 畫彈出視窗的畫面的script,直接放在popup.html裡面的body tag
+│   │   └── bundle.js       # 使用webpack生成  
+│   ├──manifest.json        # chrome extension的進入點
+│   ├──popup.html           # chrome extension 彈出視窗的畫面
+│   ├──background.js        # (我還沒用到,待補充)
+│   │   
+│   │   
+├── src                     # 實際開發的地方
+│   ├── image               # Load and stress tests
+│   │   └── ...
+│   ├── javascript         
+│   │   ├── ...
+│   │   ├── ui.js           # webpack轉錄前實際用來畫畫面的js
+│   │   └── index.js        # (我計劃讓後端與前端相遇的地方,待補充)
+│   ├── scss                
+│   │   ├── ...
+│   │   └── main.scss       # 使用scss
+│   └── main.js             # webpack 讀取的進入點
+│   │   
+│   │   
+└── package.json            # 放npm library 只有開發的時候需要使用
+└── webpack.config.js       
+
 ```
 
-2. Enable Developer Mode & Click on LOAD UNPACKED
-
-3. Find the Extension Box for successful installation
-
-
-
-report errtor
-```
-Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: "script-src 'self'".
-```
-Took me a few hours but what you probably want to do is change the style of source mapping webpack uses. By default it uses eval.
-
-[the way to solve](https://webpack.js.org/configuration/devtool/)
-
-I added this to my webpack.config.js: 
-devtool: 'cheap-module-source-map'
-
-The trick to this was figuring out why webpack --mode development has the error and webpack --mode production didn't.
-
-[where I find it](https://stackoverflow.com/questions/48047150/chrome-extension-compiled-by-webpack-throws-unsafe-eval-error)

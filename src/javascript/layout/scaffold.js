@@ -28,20 +28,11 @@ class ScaffoldElement extends HTMLElement {
     this.popover = new Popover();
     this.popover.render(this);
   }
-  updateHeader(newHeader) {
-    this.header = newHeader;
-    this.children[0].replaceChildren();
-    this.header.render(this.children[0]);
+  set view(name) {
+    this.setAttribute("view", name);
   }
-  updateBody(newBody) {
-    this.body = newBody;
-    this.children[1].replaceChildren();
-    this.body.render(this.children[1]);
-  }
-  updateFooter(newFooter) {
-    this.footer = newFooter;
-    this.children[2].replaceChildren();
-    this.footer.render(this.children[2]);
+  set id(val) {
+    this.setAttribute("id", val);
   }
 }
 
@@ -56,57 +47,47 @@ class Scaffold {
     document.body.replaceChildren();
     document.body.insertAdjacentElement("beforeend", this.element);
   }
-
   /**
-   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
-   * @param {String: show on the dialog} text
-   * @param {function} onConfirm
-   * @param {default true} cancellable
+   * @param {string} id
    */
-  static openPopover(type, text, onConfirm, cancellable = true) {
-    const popover = document.querySelector("pop-over");
-    popover.open = true;
+  set id(id) {
+    this.element.id = id;
+  }
+  /**
+   * @param {string} name
+   */
+  set view(name) {
+    this.element.view = name;
+  }
+  openPopover = (type, text, onConfirm, cancellable = true) => {
+    this.element.popover.open = true;
     if (cancellable) {
-      popover.cancellable = cancellable;
+      this.element.popover.cancellable = cancellable;
     }
     switch (type) {
       case "error":
-        popover.errorPopup(text);
+        this.element.popover.errorPopup(text);
         break;
       case "success":
-        popover.successPopup(text);
+        this.element.popover.successPopup(text);
         break;
       case "loading":
-        popover.loadingPopup(text);
+        this.element.popover.loadingPopup(text);
         break;
       case "confirm":
-        popover.confirmPopup(text, onConfirm);
+        this.element.popover.confirmPopup(text, onConfirm);
         break;
     }
-  }
-  static closePopover(timeout) {
-    const popover = document.querySelector("pop-over");
+  };
+  closePopover = (timeout) => {
     if (timeout !== undefined) {
       setTimeout(() => {
-        popover.open = false;
+        this.element.popover.open = false;
       }, timeout);
     } else {
-      popover.open = false;
+      this.element.popover.open = false;
     }
-  }
-  // render(parentElement) {
-  //   parentElement.replaceChildren();
-  //   parentElement.insertAdjacentElement("afterbegin", this.element);
-  // }
-  // updateHeader(newHeader) {
-  //   this.element.updateHeader(newHeader);
-  // }
-  // updateBody(newBody) {
-  //   this.element.updateBody(newBody);
-  // }
-  // updateFooter(newFooter) {
-  //   this.element.updateFooter(newFooter);
-  // }
+  };
 }
 
 export default Scaffold;

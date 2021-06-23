@@ -100,13 +100,13 @@ body {
   background-image: linear-gradient(to right, #4ECDC4, #446CB3);
   color: white;
   font-size: 1.6rem; }
-  .header--account, .header--overview {
+  .header--asset, .header--overview {
     display: flex;
     flex-direction: column;
     padding: 4rem 0;
     align-items: center;
     justify-self: center; }
-  .header--account {
+  .header--asset {
     padding: 2rem; }
   .header--default {
     display: flex;
@@ -133,44 +133,54 @@ body {
   .header--overview .currency-unit {
     font-size: 1.36rem;
     font-weight: 400; }
-  .header--account .header__leading {
+  .header--asset .header__leading {
     width: 100%;
     text-align: left; }
-    .header--account .header__leading > i {
+    .header--asset .header__leading > i {
       font-weight: 400; }
-  .header--account .header__icon {
+  .header--asset .header__icon {
     width: 6rem;
     height: 6rem;
     background-color: #fff;
     border-radius: 100%;
     position: relative; }
-    .header--account .header__icon img {
+    .header--asset .header__icon img {
       width: 50%;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%); }
-  .header--account .header__icon-title {
+  .header--asset .header__icon-title {
     font-size: 1.28rem; }
-  .header--account .header__title {
+  .header--asset .header__title {
     font-size: 2rem;
     font-weight: 400; }
-  .header--account .almost-equal-to,
-  .header--account .balance,
-  .header--account .currency-unit {
+  .header--asset .almost-equal-to,
+  .header--asset .balance,
+  .header--asset .currency-unit {
     font-size: 1.28rem;
     font-weight: 400; }
 
-.account-list {
+.asset-list {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
-  gap: 5px; }
-  .account-list > * {
+  gap: 5px;
+  height: 400px;
+  overflow: scroll; }
+  .asset-list > * {
     cursor: pointer; }
-  .account-list > *:hover {
+  .asset-list > *:hover {
     background-color: #fafbfb;
     transition: all 0.2s; }
+
+.loading__text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.6rem;
+  color: #555; }
 
 .bill-list {
   height: 349px;
@@ -400,6 +410,16 @@ body {
   .third-party-signin #appleid-signin {
     display: none; }
 
+.slides-container {
+  height: 100%;
+  display: flex;
+  flex-direction: row; }
+  .slides-container .slides {
+    position: relative;
+    flex: auto;
+    height: 100%;
+    display: none; }
+
 .bill {
   display: flex;
   flex-direction: column;
@@ -502,7 +522,7 @@ body {
     align-self: stretch;
     margin: 1rem 2rem; }
 
-.account-item {
+.asset-item {
   display: flex;
   flex-direction: column;
   background-color: #fff;
@@ -510,11 +530,11 @@ body {
   padding: 1rem;
   color: #9B9B9B;
   font-size: 0.96rem; }
-  .account-item[publish] {
+  .asset-item[publish] {
     color: #555; }
-  .account-item__icon {
+  .asset-item__icon {
     width: 3rem; }
-    .account-item__icon img {
+    .asset-item__icon img {
       width: 100%; }
 
 .bill-item {
@@ -573,7 +593,8 @@ body {
       display: block;
       border-radius: 3px;
       height: 100%;
-      background-color: #4ECDC4; }
+      background-color: #4ECDC4;
+      transition: width ease 0.2s; }
   .bill-item__status {
     text-align: right;
     font-size: 0.96rem;

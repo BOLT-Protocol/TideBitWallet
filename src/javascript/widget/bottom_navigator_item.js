@@ -1,3 +1,5 @@
+import viewController from "../controller/view";
+
 class BottomNavigatorItemElement extends HTMLElement {
   constructor() {
     super();
@@ -7,22 +9,20 @@ class BottomNavigatorItemElement extends HTMLElement {
     this.innerHTML = `
         <div class="bottom-navigator__icon"><i class="fas fa-${this.icon}"></i></div>
     `;
-    this.addEventListener("click", () => this.onPressed(this.state));
+    this.addEventListener("click", () => viewController.route(this.screen));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", () => this.onPressed(this.state));
+    this.removeEventListener("click", () => viewController.route(this.screen));
   }
 }
 
 customElements.define("bottom-navigator-item", BottomNavigatorItemElement);
 
 class BottomNavigatorItem {
-  constructor(state, item, onPressed) {
+  constructor(item) {
     this.element = document.createElement("bottom-navigator-item");
-    this.element.state = JSON.parse(JSON.stringify(state));
-    this.element.onPressed = onPressed;
     this.element.icon = item.icon;
-    this.element.state.screen = item.screen;
+    this.element.screen = item.screen;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);

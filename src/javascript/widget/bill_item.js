@@ -1,9 +1,12 @@
-import route from "../utils/route";
+import viewController from "../controller/view";
 import { addressFormatter } from "../utils/utils";
 
 class BillItemElement extends HTMLElement {
   constructor() {
     super();
+  }
+  set id(val) {
+    this.setAttribute("id", val);
   }
   connectedCallback() {
     this.classList = ["bill-item"];
@@ -21,7 +24,7 @@ class BillItemElement extends HTMLElement {
         </div>
         <div class="bill-item__suffix">
             <div class="bill-item__amount">${this.bill.formattedAmount(
-              this.state.account
+              this.asset
             )}</div>
             <div class="bill-item__time">${this.bill.dateTime}</div>
         </div>
@@ -35,10 +38,22 @@ class BillItemElement extends HTMLElement {
     `;
     this.status = this.bill.status.toLowerCase();
     this.action = this.bill.action.toLowerCase();
-    this.addEventListener("click", (e) => route(this.state));
+    this.addEventListener("click", (_) =>
+      viewController.route("bill", this.bill)
+    );
+    this.id = this.bill.id;
+  }
+  update() {
+    if (this.status !== this.bill.status.toLowerCase())
+      this.status = this.bill.status.toLowerCase();
+    // this.children[0].children[2].children[1].textContent = this.bill.dateTime;
+    this.children[1].children[0].textContent = this.bill.status;
+    this.children[1].children[1].children[0].style.width = this.bill.progress;
   }
   disconnectedCallback() {
-    this.removeEventListener("click", (e) => route(this.state));
+    this.removeEventListener("click", (_) =>
+      viewController.route("bill", this.bill)
+    );
   }
   static get observedAttributes() {
     return ["pending", "confirming", "complete"];
@@ -57,13 +72,19 @@ class BillItemElement extends HTMLElement {
 
 customElements.define("bill-item", BillItemElement);
 class BillItem {
-  constructor(state) {
-    this.element = document.createElement("bill-item");
-    this.element.state = state;
-    this.element.bill = state.bill;
+  constructor(asset, bill) {
+    this.bill = bill;
+    this.element =
+      document.querySelector(`bill-item[id="${this.bill.id}"]`) ||
+      document.createElement("bill-item");
+    this.element.asset = asset;
+    this.element.bill = bill;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  update() {
+    this.element.update();
   }
 }
 export default BillItem;

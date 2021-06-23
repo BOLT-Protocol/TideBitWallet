@@ -84,12 +84,12 @@ class Bill {
         return "Unknown";
     }
   }
-  formattedAmount(account) {
+  formattedAmount(asset) {
     switch (this._direction) {
       case "receive":
-        return this.sign + " " + this.amount + " " + account.symbol;
+        return this.sign + " " + this.amount + " " + asset.symbol;
       case "send":
-        return this.sign + " " + this.amount + " " + account.symbol;
+        return this.sign + " " + this.amount + " " + asset.symbol;
       default:
         return "Unknown";
     }

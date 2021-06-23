@@ -1,6 +1,6 @@
 import SettingColumn from "../widget/setting_column";
 
-const getSettings = (state) => [
+const getSettings = (fiat) => [
   {
     title: "Security center",
     items: [
@@ -17,7 +17,7 @@ const getSettings = (state) => [
     items: [
       {
         name: "Fiat currency unit",
-        label: state.walletConfig.fiat.symbol,
+        label: fiat,
         onPressed: () => {
           console.log("Popup options of fiat currency");
         },
@@ -50,7 +50,7 @@ class SettingListElement extends HTMLElement {
     this.className = "setting";
     this.innerHTML = `
     <div class="setting__list"></div>
-    <div class="setting__text">${this.state.walletConfig.version}</div>
+    <div class="setting__text">${this.version}</div>
     `;
     this.settings.forEach((setting) => setting.render(this.children[0]));
   }
@@ -58,10 +58,11 @@ class SettingListElement extends HTMLElement {
 
 customElements.define("setting-list", SettingListElement);
 class SettingList {
-  constructor(state) {
+  constructor(fiat, version) {
+    const settings = getSettings(fiat);
     this.element = document.createElement("setting-list");
-    const settings = getSettings(state);
-    this.element.state = JSON.parse(JSON.stringify(state));
+    this.element.version = version;
+    this.element.fiat = fiat;
     this.element.settings = settings.map(
       (setting) => new SettingColumn(setting)
     );
