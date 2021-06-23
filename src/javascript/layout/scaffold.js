@@ -56,9 +56,38 @@ class Scaffold {
   /**
    * @param {string} name
    */
-   set view(name) {
+  set view(name) {
     this.element.view = name;
   }
+  openPopover = (type, text, onConfirm, cancellable = true) => {
+    this.element.popover.open = true;
+    if (cancellable) {
+      this.element.popover.cancellable = cancellable;
+    }
+    switch (type) {
+      case "error":
+        this.element.popover.errorPopup(text);
+        break;
+      case "success":
+        this.element.popover.successPopup(text);
+        break;
+      case "loading":
+        this.element.popover.loadingPopup(text);
+        break;
+      case "confirm":
+        this.element.popover.confirmPopup(text, onConfirm);
+        break;
+    }
+  };
+  closePopover = (timeout) => {
+    if (timeout !== undefined) {
+      setTimeout(() => {
+        this.element.popover.open = false;
+      }, timeout);
+    } else {
+      this.element.popover.open = false;
+    }
+  };
 }
 
 export default Scaffold;

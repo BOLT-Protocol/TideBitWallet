@@ -1,5 +1,3 @@
-import Scaffold from "../layout/scaffold";
-
 class PopoverElement extends HTMLElement {
   constructor() {
     super();
@@ -142,17 +140,23 @@ class Popover {
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
-  // errorPopup(text) {
-  //   this.element.errorPopup(text);
-  // }
-  // successPopup(text) {
-  //   this.element.successPopup(text);
-  // }
-  // loadingPopup(text) {
-  //   this.element.loadingPopup(text);
-  // }
-  // confirmPopup(text, onConfirm) {
-  //   this.element.confirmPopup(text, onConfirm);
-  // }
+  errorPopup(text) {
+    this.element.errorPopup(text);
+  }
+  successPopup(text) {
+    this.element.successPopup(text);
+  }
+  loadingPopup(text) {
+    this.element.loadingPopup(text);
+  }
+  confirmPopup(text, onConfirm) {
+    this.element.confirmPopup(text, onConfirm);
+  }
+  /**
+   * @param {Boolean} value
+   */
+  set open (value){
+    this.element.open = value;
+  }
 }
 export default Popover;

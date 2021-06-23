@@ -187,7 +187,7 @@ const startApp = () => {
       bills = getAssetDetail(user.assets[3].id)?.map((obj) => new Bill(obj));
       window.bills = bills;
       viewController.updateBills(user.assets[3], bills);
-      const interval = setInterval(() => {});
+      
     }, 5000);
     // -- test
 

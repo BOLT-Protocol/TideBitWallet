@@ -17,6 +17,9 @@ class Overview {
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.scaffold.view = screen;
     this.screen = screen;
+    if (assets) {
+      this.scaffold.openPopover("loading", "loading...");
+    }
   }
   render(screen, fiat, version, { totalAsset, assets } = {}) {
     const view = currentView();
@@ -41,6 +44,7 @@ class Overview {
    * @param {fiat} String
    */
   updateAssets(totalAsset, fiat, assets) {
+    this.scaffold.closePopover();
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
   }

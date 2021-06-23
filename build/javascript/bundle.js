@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624439768668
+      // 1624440692656
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6833,9 +6833,38 @@ class Scaffold {
   /**
    * @param {string} name
    */
-   set view(name) {
+  set view(name) {
     this.element.view = name;
   }
+  openPopover = (type, text, onConfirm, cancellable = true) => {
+    this.element.popover.open = true;
+    if (cancellable) {
+      this.element.popover.cancellable = cancellable;
+    }
+    switch (type) {
+      case "error":
+        this.element.popover.errorPopup(text);
+        break;
+      case "success":
+        this.element.popover.successPopup(text);
+        break;
+      case "loading":
+        this.element.popover.loadingPopup(text);
+        break;
+      case "confirm":
+        this.element.popover.confirmPopup(text, onConfirm);
+        break;
+    }
+  };
+  closePopover = (timeout) => {
+    if (timeout !== undefined) {
+      setTimeout(() => {
+        this.element.popover.open = false;
+      }, timeout);
+    } else {
+      this.element.popover.open = false;
+    }
+  };
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Scaffold);
@@ -7330,6 +7359,9 @@ class Asset {
     this.scaffold.id = asset.id;
     this.scaffold.view = screen;
     this.screen = screen;
+    if (asset.bills) {
+      this.scaffold.openPopover("loading", "loading...");
+    }
   }
   render(screen, asset, fiat) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
@@ -7340,6 +7372,7 @@ class Asset {
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });
     this.billList.updateBills(bills);
+    this.scaffold.closePopover();
   }
   updateBill(asset, billIndex, bill) {
     this.header.update(this.screen, { asset });
@@ -7485,6 +7518,9 @@ class Overview {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
     this.scaffold.view = screen;
     this.screen = screen;
+    if (assets) {
+      this.scaffold.openPopover("loading", "loading...");
+    }
   }
   render(screen, fiat, version, { totalAsset, assets } = {}) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_6__.currentView)();
@@ -7511,6 +7547,7 @@ class Overview {
   updateAssets(totalAsset, fiat, assets) {
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
+    this.scaffold.closePopover();
   }
   updateAsset(index, totalAsset, asset) {
     this.header.update(this.screen, { totalAsset });
@@ -8241,9 +8278,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
-
-
 class PopoverElement extends HTMLElement {
   constructor() {
     super();
@@ -8386,18 +8420,24 @@ class Popover {
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
-  // errorPopup(text) {
-  //   this.element.errorPopup(text);
-  // }
-  // successPopup(text) {
-  //   this.element.successPopup(text);
-  // }
-  // loadingPopup(text) {
-  //   this.element.loadingPopup(text);
-  // }
-  // confirmPopup(text, onConfirm) {
-  //   this.element.confirmPopup(text, onConfirm);
-  // }
+  errorPopup(text) {
+    this.element.errorPopup(text);
+  }
+  successPopup(text) {
+    this.element.successPopup(text);
+  }
+  loadingPopup(text) {
+    this.element.loadingPopup(text);
+  }
+  confirmPopup(text, onConfirm) {
+    this.element.confirmPopup(text, onConfirm);
+  }
+  /**
+   * @param {Boolean} value
+   */
+  set open (value){
+    this.element.open = value;
+  }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Popover);
 
@@ -8692,7 +8732,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("128a8e02e2dd837b088f")
+/******/ 		__webpack_require__.h = () => ("f944849509dd105d2b4b")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -7,8 +7,8 @@ import { currentView } from "../utils/utils";
 class Asset {
   constructor() {}
   initialize(screen, asset, fiat) {
-    // ++
-    // ui.getAssetDetail(user.assets[3].id)
+    // ++ tidewallet is ready
+    // tidewallet.getAssetDetail(user.assets[3].id)
     //   .then((objs) => objs?.map((obj) => new Bill(obj)))
     //   .then((bills) => {
     //     this.updateBills(bills);
@@ -24,6 +24,9 @@ class Asset {
     this.scaffold.id = asset.id;
     this.scaffold.view = screen;
     this.screen = screen;
+    if (asset.bills) {
+      this.scaffold.openPopover("loading", "loading...");
+    }
   }
   render(screen, asset, fiat) {
     const view = currentView();
@@ -34,6 +37,7 @@ class Asset {
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });
     this.billList.updateBills(bills);
+    this.scaffold.closePopover();
   }
   updateBill(asset, billIndex, bill) {
     this.header.update(this.screen, { asset });
