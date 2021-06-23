@@ -6,7 +6,7 @@ import BillList from "../layout/bill_list";
 import { currentView } from "../utils/utils";
 class Asset {
   constructor() {}
-  initialize(screen, asset) {
+  initialize(screen, asset, fiat) {
     // ++
     // ui.getAssetDetail(user.assets[3].id)
     //   .then((objs) => objs?.map((obj) => new Bill(obj)))
@@ -14,7 +14,7 @@ class Asset {
     //     this.updateBills(bills);
     //   });
     //
-    this.header = new Header(screen, { asset });
+    this.header = new Header(screen, { asset, fiat });
     this.tarBarNavigator = new TarBarNavigator();
     this.billList = new BillList(asset, asset.bills);
     this.scaffold = new Scaffold(this.header, [
@@ -25,10 +25,10 @@ class Asset {
     this.scaffold.view = screen;
     this.screen = screen;
   }
-  render(screen, asset) {
+  render(screen, asset, fiat) {
     const view = currentView();
     if (!view || view !== "asset" || !this.scaffold) {
-      this.initialize(screen, asset);
+      this.initialize(screen, asset, fiat);
     }
   }
   updateBills(asset, bills) {

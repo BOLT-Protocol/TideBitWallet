@@ -66,8 +66,11 @@ class BillElement extends HTMLElement {
     if (this.status !== this.bill.status.toLowerCase())
       this.status = this.bill.status.toLowerCase();
     // this.children[2].children[1].textContent = this.bill.dateTime;
-    this.children[1].children[1].children[0].textContent = this.bill.status;
-    this.children[1].children[1].children[1].textContent = `(${this.bill.confirmations} confirmation)`;
+    this.children[1].children[1].innerHTML = `
+    <span class="bill__status">${this.bill.status}</span>
+    <span class="bill__status bill__confirmations">(${this.bill.confirmations} confirmation)</span>
+    <span class="bill__status-icon"></span>
+    `;
   }
   set action(val) {
     this.setAttribute(val, "");

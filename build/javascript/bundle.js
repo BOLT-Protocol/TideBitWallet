@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624438885002
+      // 1624439768668
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6445,8 +6445,11 @@ class BillElement extends HTMLElement {
     if (this.status !== this.bill.status.toLowerCase())
       this.status = this.bill.status.toLowerCase();
     // this.children[2].children[1].textContent = this.bill.dateTime;
-    this.children[1].children[1].children[0].textContent = this.bill.status;
-    this.children[1].children[1].children[1].textContent = `(${this.bill.confirmations} confirmation)`;
+    this.children[1].children[1].innerHTML = `
+    <span class="bill__status">${this.bill.status}</span>
+    <span class="bill__status bill__confirmations">(${this.bill.confirmations} confirmation)</span>
+    <span class="bill__status-icon"></span>
+    `;
   }
   set action(val) {
     this.setAttribute(val, "");
@@ -7309,7 +7312,7 @@ __webpack_require__.r(__webpack_exports__);
 
 class Asset {
   constructor() {}
-  initialize(screen, asset) {
+  initialize(screen, asset, fiat) {
     // ++
     // ui.getAssetDetail(user.assets[3].id)
     //   .then((objs) => objs?.map((obj) => new Bill(obj)))
@@ -7317,7 +7320,7 @@ class Asset {
     //     this.updateBills(bills);
     //   });
     //
-    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { asset });
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { asset, fiat });
     this.tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default();
     this.billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(asset, asset.bills);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, [
@@ -7328,10 +7331,10 @@ class Asset {
     this.scaffold.view = screen;
     this.screen = screen;
   }
-  render(screen, asset) {
+  render(screen, asset, fiat) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
     if (!view || view !== "asset" || !this.scaffold) {
-      this.initialize(screen, asset);
+      this.initialize(screen, asset, fiat);
     }
   }
   updateBills(asset, bills) {
@@ -8689,7 +8692,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("e1957c7c6948dfcc345a")
+/******/ 		__webpack_require__.h = () => ("128a8e02e2dd837b088f")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

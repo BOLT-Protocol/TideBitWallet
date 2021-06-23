@@ -18,10 +18,9 @@
     transition: all 0.2s;
   }
 }
-asset-list {
-  .loading__text {
-    @include absCenter;
-    font-size: $default-font-size;
-    color: $color-grey-dark-2;
-  }
+
+.loading__text {
+  @include absCenter;
+  font-size: $default-font-size;
+  color: $color-grey-dark-2;
 }
