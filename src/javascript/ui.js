@@ -22,6 +22,10 @@ const createTestAsset = (id) => {
 const getUserDetail = () => {
   return {
     userBalanceInFiat: 52.29,
+    // totalValue: {
+    //   amount: 52.29,
+    //   uint: "USD",
+    // },
     assets: [
       {
         id: randomHex(32),

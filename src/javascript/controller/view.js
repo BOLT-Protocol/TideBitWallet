@@ -4,6 +4,7 @@ import Landing from "../screen/landing";
 import Overview from "../screen/overview";
 import BillScreen from "../screen/bill";
 import AddressScreen from "../screen/address";
+import Transaction from "../screen/transaction";
 
 class ViewController {
   initialize(config, user) {
@@ -16,7 +17,7 @@ class ViewController {
     this.updateUser(user);
   }
   updateUser(user) {
-    this.userBalanceInFiat = user?.userBalanceInFiat;
+    this.userBalanceInFiat = user?.totalValue?.amount;
     this.userAssets = user?.assets;
     if (this.userAssets) {
       this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
@@ -113,6 +114,9 @@ class ViewController {
           this.currentAsset = data; //Asset
         }
         AssetScreen.render(screen, this.currentAsset, this.walletFiat);
+        break;
+      case "transaction":
+        Transaction.render(screen, this.currentAsset, this.walletFiat);
         break;
       case "bill":
         this.currentBill = data; //Bill

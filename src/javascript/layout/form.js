@@ -41,7 +41,7 @@ class FormElement extends HTMLElement {
     });
     this.gasPriceInput = new Input({
       inputType: "number",
-      label: `Custom Gas Price (${this.state?.account?.symbol || "ETH"})`, //test
+      label: `Custom Gas Price (${this.asset?.symbol || "ETH"})`, //test
       pattern: `\d*.?\d*`,
     });
     this.gasInput = new Input({
@@ -86,9 +86,9 @@ class FormElement extends HTMLElement {
     this.amountInput.render(this.children[0]);
     this.tabBar.render(this.children[5]);
     this.estimateTime = "10 ~ 30 minutes";
-    this.availableAmount = this.state.account;
+    this.availableAmount = this.asset;
     this.action.render(this.children[8]);
-    if (this.state.account.symbol === "ETH") {
+    if (this.asset.symbol === "ETH") {
       // -- test
       this.toggle = true;
       this.toggleButton = document.querySelector(
@@ -135,12 +135,12 @@ class FormElement extends HTMLElement {
   get onAdvanced() {
     return this.hasAttribute("on");
   }
-  set availableAmount(account) {
+  set availableAmount(asset) {
     this.children[1].children[1].textContent =
-      account.balance + " " + account.symbol;
+      asset.balance + " " + asset.symbol;
   }
   set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + account.symbol;
+    this.children[6].children[1].textContent = fee + " " + this.asset.symbol;
   }
   set estimateTime(time) {
     this.children[3].children[1].textContent = time;
@@ -169,14 +169,13 @@ class FormElement extends HTMLElement {
 customElements.define("transaction-form", FormElement);
 
 class Form {
-  constructor(state, callback) {
-    this.state = JSON.parse(JSON.stringify(state));
-    this.callback = callback;
+  constructor(asset, fiat, callback) {
+    this.element = document.createElement("transaction-form");
+    this.element.asset = asset;
+    this.element.fiat = fiat;
+    this.element.callback = callback;
   }
   render(parentElement) {
-    this.element = document.createElement("transaction-form");
-    this.element.state = this.state;
-    this.element.callback = this.callback;
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
 }
