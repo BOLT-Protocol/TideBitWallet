@@ -14,7 +14,7 @@ class PopoverElement extends HTMLElement {
     this.innerHTML = `
     <div class="pop-over__content">
         <div class="pop-over__container">
-            <div class="pop-over__icon"></div>
+            <div class="pop-over__icon"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>
             <div class="pop-over__text"></div>
         </div>
         <div class="pop-over__button-box">
@@ -155,7 +155,7 @@ class Popover {
   /**
    * @param {Boolean} value
    */
-  set open (value){
+  set open(value) {
     this.element.open = value;
   }
 }

@@ -11,6 +11,7 @@ class Address {
     this.header = new Header(screen);
     this.addressContent = new AddressContent(asset);
     this.scaffold = new Scaffold(this.header, this.addressContent);
+    this.scaffold.openPopover("loading", "loading...");
   }
   render(screen, asset) {
     const view = currentView();
@@ -19,6 +20,7 @@ class Address {
     }
     // -- test
     setTimeout(() => {
+      this.scaffold.closePopover();
       const address = "0xd885833741f554a0e64ffd1141887d65e0dded01";
       this.update(address);
     }, 1000);

@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624447449685
+      // 1624501591361
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7297,6 +7297,7 @@ class Address {
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen);
     this.addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_3__.default(asset);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.addressContent);
+    this.scaffold.openPopover("loading", "loading...");
   }
   render(screen, asset) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
@@ -7305,6 +7306,7 @@ class Address {
     }
     // -- test
     setTimeout(() => {
+      this.scaffold.closePopover();
       const address = "0xd885833741f554a0e64ffd1141887d65e0dded01";
       this.update(address);
     }, 1000);
@@ -7364,8 +7366,8 @@ class Asset {
     this.scaffold.id = asset.id;
     this.scaffold.view = screen;
     this.screen = screen;
-    if (asset.bills) {
-      // this.scaffold.openPopover("loading", "loading...");
+    if (!asset?.bills) {
+      this.scaffold.openPopover("loading");
     }
   }
   render(screen, asset, fiat) {
@@ -7377,7 +7379,7 @@ class Asset {
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });
     this.billList.updateBills(bills);
-    // this.scaffold.closePopover();
+    this.scaffold.closePopover();
   }
   updateBill(asset, billIndex, bill) {
     this.header.update(this.screen, { asset });
@@ -7523,8 +7525,8 @@ class Overview {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
     this.scaffold.view = screen;
     this.screen = screen;
-    if (assets) {
-      // this.scaffold.openPopover("loading", "loading...");
+    if (!assets) {
+      this.scaffold.openPopover("loading");
     }
   }
   render(screen, fiat, version, { totalAsset, assets } = {}) {
@@ -7550,7 +7552,7 @@ class Overview {
    * @param {fiat} String
    */
   updateAssets(totalAsset, fiat, assets) {
-    // this.scaffold.closePopover();
+    this.scaffold.closePopover();
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
   }
@@ -8280,7 +8282,7 @@ class PopoverElement extends HTMLElement {
     this.innerHTML = `
     <div class="pop-over__content">
         <div class="pop-over__container">
-            <div class="pop-over__icon"></div>
+            <div class="pop-over__icon"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>
             <div class="pop-over__text"></div>
         </div>
         <div class="pop-over__button-box">
@@ -8421,7 +8423,7 @@ class Popover {
   /**
    * @param {Boolean} value
    */
-  set open (value){
+  set open(value) {
     this.element.open = value;
   }
 }
@@ -8718,7 +8720,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("596c34af272607f9775f")
+/******/ 		__webpack_require__.h = () => ("f4d58c96f18f6850b676")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
