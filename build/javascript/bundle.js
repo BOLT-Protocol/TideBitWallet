@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624523239808
+      // 1624611891110
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7707,8 +7707,39 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const googleSignin = async (screen) => {
-  // await;
-  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
+  // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
+  const api = {
+    apiURL: "https://service.tidewallet.io/api/v1",
+    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+    apiSecret: "9e37d67450dc906042fde75113ecb78c",
+  };
+  const user = {};
+  chrome.identity.getAuthToken({ interactive: true }, function (token) {
+    console.log(token);
+    let init = {
+      method: "GET",
+      async: true,
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      contentType: "json",
+    };
+    fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", init)
+      .then((response) => response.json())
+      .then(function (data) {
+        // get oauthID
+        user.OAuthID = data.id;
+        // get install ID
+        chrome.storage.sync.get(["InstallID"], function (result) {
+          user.InstallID = result.InstallID;
+          console.log(OAuthID, InstallID);
+          // ++ TideWalletJS
+          // tidewallet.init({ user, api });
+          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
+        });
+      });
+  });
 };
 
 class Landing {
@@ -8099,7 +8130,7 @@ const startApp = () => {
     user = getUserDetail();
     user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_1__.default(asset));
     _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateUser(user);
-    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("assets");
+    // viewController.route("assets");
   }, 2000);
   // --
 
@@ -8123,7 +8154,7 @@ const startApp = () => {
   setTimeout(() => {
     bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
     window.bills = bills;
-    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
+    // viewController.route("asset", user.assets[3]);
     setTimeout(() => {
       _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(user.assets[3], bills);
       const updateBill = (bill = user.assets[3].bills[0]) => {
@@ -8132,7 +8163,7 @@ const startApp = () => {
         // eth ropsten 1st transaction
         _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBill(user.assets[3], bills[0]);
         if (bill.confirmations === 4) {
-          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("bill", bills[0]);
+          // viewController.route("bill", bills[0]);
         }
         if (bill.confirmations > 7) {
           _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
@@ -9292,7 +9323,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("70d07739cb2c8d27e626")
+/******/ 		__webpack_require__.h = () => ("593774c7640ecfbd5501")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

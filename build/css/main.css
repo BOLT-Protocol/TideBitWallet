@@ -413,7 +413,8 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #fff; }
+    background-color: #fff;
+    cursor: pointer; }
   .third-party-signin #appleid-signin {
     display: none; }
 
