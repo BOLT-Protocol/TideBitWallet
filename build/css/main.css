@@ -400,12 +400,12 @@ body {
   .third-party-signin__icon {
     width: 4rem;
     height: 4rem;
-    margin-right: 1rem; }
+    margin-right: 2rem; }
     .third-party-signin__icon > img {
       width: 100%; }
   .third-party-signin__text {
     color: #555;
-    font-size: 1.6rem; }
+    font-size: 1.28rem; }
   .third-party-signin__button {
     width: 210px;
     height: fit-content;
@@ -414,7 +414,8 @@ body {
     flex-direction: row;
     align-items: center;
     background-color: #fff;
-    cursor: pointer; }
+    cursor: pointer;
+    margin-bottom: 2rem; }
   .third-party-signin #appleid-signin {
     display: none; }
 

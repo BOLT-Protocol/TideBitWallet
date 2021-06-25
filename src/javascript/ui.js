@@ -212,7 +212,7 @@ const startApp = () => {
           // viewController.route("bill", bills[0]);
         }
         if (bill.confirmations > 7) {
-          viewController.route("asset", user.assets[3]);
+          // viewController.route("asset", user.assets[3]);
           clearInterval(interval);
         }
       };

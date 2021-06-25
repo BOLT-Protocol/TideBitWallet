@@ -34,7 +34,7 @@
   &__icon {
     width: 4rem;
     height: 4rem;
-    margin-right: 1rem;
+    margin-right: 2rem;
     //   background-image: url(../image/btn_google_light_normal_ios.svg);
     & > img {
       width: 100%;
@@ -43,7 +43,7 @@
 
   &__text {
     color: $color-grey-dark-2;
-    font-size: $default-font-size;
+    font-size: $default-font-size * 0.8;
   }
   &__button {
     width: 210px;
@@ -54,7 +54,7 @@
     align-items: center;
     background-color: $color-white;
     cursor: pointer;
-    // margin-bottom: 2rem;
+    margin-bottom: 2rem;
   }
   //   &__button:not(:last-child) {
   //     margin-bottom: 2rem;

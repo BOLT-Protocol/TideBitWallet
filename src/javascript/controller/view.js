@@ -5,6 +5,7 @@ import Overview from "../screen/overview";
 import BillScreen from "../screen/bill";
 import AddressScreen from "../screen/address";
 import Transaction from "../screen/transaction";
+import MnemonicScreen from "../screen/mnemonic";
 
 class ViewController {
   initialize(config, user) {
@@ -124,6 +125,8 @@ class ViewController {
         break;
       case "address":
         AddressScreen.render(screen, this.currentAsset);
+      case "mnemonic":
+        MnemonicScreen.render(screen);
       default:
         break;
     }

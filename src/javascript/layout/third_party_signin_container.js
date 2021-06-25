@@ -1,3 +1,4 @@
+import Button from "../widget/button";
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
     super();
@@ -21,8 +22,16 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.appleSignInButton = this.children[2].children[1];
     this.googleSignInButton.addEventListener("click", this.googleSignin);
     this.appleSignInButton.addEventListener("click", this.appleSignin);
+    this.mnemonicButton = new Button(
+      "Recover Wallet",
+      () => viewController.route("mnemonic"),
+      {
+        style: ["round", "fill-primary"],
+      }
+    );
+    this.mnemonicButton.render(this.children[2])
   }
-  disconnectedCallback(){
+  disconnectedCallback() {
     this.googleSignInButton.removeEventListener("click", this.googleSignin);
     this.appleSignInButton.removeEventListener("click", this.appleSignin);
   }

@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624611891110
+      // 1624613859103
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6063,6 +6063,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
 /* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
 /* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../screen/mnemonic */ "./src/javascript/screen/mnemonic.js");
+
 
 
 
@@ -6189,6 +6191,8 @@ class ViewController {
         break;
       case "address":
         _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset);
+      case "mnemonic":
+        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen);
       default:
         break;
     }
@@ -6821,6 +6825,8 @@ const getHeaderInfo = (screen) => {
       return { screenTitle: "Transaction Detail" };
     case "address":
       return { screenTitle: "My Wallet" };
+    case "mnemonic":
+      return { screenTitle: "" };
   }
 };
 
@@ -6910,10 +6916,14 @@ class HeaderElement extends HTMLElement {
         this.headerLeading = new BackButton("assets");
         this.headerLeading.render(this);
         break;
+
       default:
         this.classList = ["header header--default"];
         this.innerHTML = this.defaultHeader(this.screen);
-        this.headerLeading = new BackButton("asset");
+        this.headerLeading =
+          this.screen === "mnemonic"
+            ? new BackButton("landing")
+            : new BackButton("asset");
         this.headerLeading.render(this);
         break;
     }
@@ -7272,6 +7282,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
     super();
@@ -7295,8 +7307,16 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.appleSignInButton = this.children[2].children[1];
     this.googleSignInButton.addEventListener("click", this.googleSignin);
     this.appleSignInButton.addEventListener("click", this.appleSignin);
+    this.mnemonicButton = new _widget_button__WEBPACK_IMPORTED_MODULE_0__.default(
+      "Recover Wallet",
+      () => viewController.route("mnemonic"),
+      {
+        style: ["round", "fill-primary"],
+      }
+    );
+    this.mnemonicButton.render(this.children[2])
   }
-  disconnectedCallback(){
+  disconnectedCallback() {
     this.googleSignInButton.removeEventListener("click", this.googleSignin);
     this.appleSignInButton.removeEventListener("click", this.appleSignin);
   }
@@ -7762,6 +7782,55 @@ const landing = new Landing();
 
 /***/ }),
 
+/***/ "./src/javascript/screen/mnemonic.js":
+/*!*******************************************!*\
+  !*** ./src/javascript/screen/mnemonic.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+
+
+
+
+
+
+class Mnemonic {
+  constructor() {
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default("mnemonic");
+    this.body = [
+      new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
+        inputType: "text",
+        label: "passphrase",
+      }),
+      new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
+        inputType: "text",
+        label: "retype passphrase",
+      }),
+      new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("confirm", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("screen"), {style: ["round", "fill"]}),
+    ];
+  }
+
+  render() {
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default(this.header, this.body);
+  }
+}
+
+const MnemonicScreen = new Mnemonic();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MnemonicScreen);
+
+
+/***/ }),
+
 /***/ "./src/javascript/screen/overview.js":
 /*!*******************************************!*\
   !*** ./src/javascript/screen/overview.js ***!
@@ -8166,7 +8235,7 @@ const startApp = () => {
           // viewController.route("bill", bills[0]);
         }
         if (bill.confirmations > 7) {
-          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
+          // viewController.route("asset", user.assets[3]);
           clearInterval(interval);
         }
       };
@@ -9323,7 +9392,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("593774c7640ecfbd5501")
+/******/ 		__webpack_require__.h = () => ("2f23635159605d84262a")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
