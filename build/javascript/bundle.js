@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624613859103
+      // 1624674225246
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6165,6 +6165,7 @@ class ViewController {
     }
   };
   route = (screen, data) => {
+    console.log(screen);
     switch (screen) {
       case "landing":
         _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion);
@@ -6191,8 +6192,10 @@ class ViewController {
         break;
       case "address":
         _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset);
+        break;
       case "mnemonic":
         _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen);
+        break;
       default:
         break;
     }
@@ -7749,11 +7752,12 @@ const googleSignin = async (screen) => {
       .then((response) => response.json())
       .then(function (data) {
         // get oauthID
+        console.log(data);
         user.OAuthID = data.id;
         // get install ID
         chrome.storage.sync.get(["InstallID"], function (result) {
           user.InstallID = result.InstallID;
-          console.log(OAuthID, InstallID);
+          console.log(user.OAuthID, user.InstallID);
           // ++ TideWalletJS
           // tidewallet.init({ user, api });
           _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
@@ -7803,29 +7807,77 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+class MnemonicFormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "mnemonic-form";
+    this.innerHTML = `
+        <div class="mnemonic-form__text">Please use spaces to separate different mnemonic words</div>
+        <div class="mnemonic-form__text-area">
+            <div class="mnemonic-form__label">Enter mnemonic</div>
+            <textarea rows="5"></textarea>
+        </div>
+        <div class="mnemonic-form__input"></div>
+        <div class="mnemonic-form__input"></div>
+        <div class="mnemonic-form__button"></div>
+        `;
+    this.passphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
+      inputType: "text",
+      label: "passphrase",
+    });
+    this.retypePassphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
+      inputType: "text",
+      label: "retype passphrase",
+    });
+    this.confirmButton = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default(
+      "confirm",
+      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("screen"),
+      {
+        style: ["round", "fill-primary"],
+      }
+    );
+    // this.children[4].children[0].disabled = true;x
+    this.confirmButton.disabled = true;
+    this.passphraseInput.render(this.children[2]);
+    this.retypePassphraseInput.render(this.children[3]);
+    this.confirmButton.render(this.children[4]);
+    this.children[1].children[1].addEventListener("input", (e) => {
+      if (e.target.value) {
+        // this.children[4].children[0].disabled = false;
+        this.confirmButton.disabled = false;
+      }else{
+        // this.children[4].children[0].disabled = true;
+        this.confirmButton.disabled = true;
+      }
+    });
+  }
+}
+
+customElements.define("mnemonic-form", MnemonicFormElement);
+
+class MnemonicForm {
+  constructor() {
+    this.element = document.createElement("mnemonic-form");
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
 
 class Mnemonic {
   constructor() {
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default("mnemonic");
-    this.body = [
-      new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
-        inputType: "text",
-        label: "passphrase",
-      }),
-      new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
-        inputType: "text",
-        label: "retype passphrase",
-      }),
-      new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("confirm", () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("screen"), {style: ["round", "fill"]}),
-    ];
+    this.body = new MnemonicForm();
   }
-
   render() {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default(this.header, this.body);
   }
 }
 
 const MnemonicScreen = new Mnemonic();
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MnemonicScreen);
 
 
@@ -8665,6 +8717,7 @@ class ButtonElement extends HTMLElement {
     super();
   }
   connectedCallback() {
+    this.hasPopup = false;
     this.className = "button";
     this.innerHTML = `
         <div class="button__icon--leading button__icon"></div>
@@ -8672,7 +8725,22 @@ class ButtonElement extends HTMLElement {
         <div class="button__icon--suffix button__icon"></div>
         <span class="button__popup"></span>
         `;
-    this.hasPopup = false;
+    this.children[1].textContent = this.text;
+    if (this.styleTag) {
+      if (Array.isArray(this.styleTag)) {
+        this.styleTag.forEach((v) => this.setAttribute(v, ""));
+      } else {
+        this.setAttribute(this.styleTag, "");
+      }
+    }
+    if (this.leading)
+      this.children[0].innerHTML = `<i class="far fa-${this.leading}"></i>`;
+    if (this.suffix)
+      this.children[2].innerHTML = `<i class="far fa-${this.suffix}"></i>`;
+    if(this.popup){
+      this.hasPopup = true;
+      this.hint = hint; 
+    }
     this.addEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
@@ -8695,51 +8763,45 @@ class ButtonElement extends HTMLElement {
       }, 400);
     }
   };
-  set style(val) {
-    if (Array.isArray(val)) {
-      val.forEach((v) => this.setAttribute(v, ""));
-    } else {
-      this.setAttribute(v, "");
-    }
-  }
-  set text(str) {
-    this.children[1].textContent = str;
-  }
   /**
-   * @param {any} icon: To reference font awesome icon, you only need to know it's name
+   * @param {Boolean} val
    */
-  set leading(icon) {
-    this.children[0].innerHTML = `<i class="far fa-${icon}"></i>`;
-  }
-  set suffix(icon) {
-    this.children[2].innerHTML = `<i class="far fa-${icon}"></i>`;
-    // this.children[2].insertAdjacentHTML("beforeend", `<i class="far fa-${icon}"></i>`);
-  }
-  set popup(hint) {
-    this.hasPopup = true;
-    this.hint = hint; // async
+  set disabled(val) {
+    if (val) {
+      this.setAttribute("disabled", "");
+    } else {
+      this.removeAttribute("disabled");
+    }
   }
 }
 customElements.define("default-button", ButtonElement);
 
 class Button {
+  /**
+   * @param {String} title
+   * @param {Function} onPressed
+   * @param {String[]} style
+   * @param {String} leading - fontawsome icon name  ex.<i class="far fa-${name}"></i>
+   * @param {String} suffix - fontawsome icon name
+   * @param {Function} popup - return popup text
+   */
   constructor(title, onPressed, { style, leading, suffix, popup }) {
-    this.title = title;
-    this.onPressed = onPressed;
-    this.style = style;
-    this.popup = popup;
-    this.leading = leading;
-    this.suffix = suffix;
+    this.element = document.createElement("default-button");
+    this.element.text = title;
+    this.element.onPressed = onPressed;
+    if (style) this.element.styleTag = style;
+    if (popup) this.element.popup = popup;
+    if (leading) this.element.leading = leading;
+    if (suffix) this.element.suffix = suffix;
   }
   render(parentElement) {
-    this.element = document.createElement("default-button");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.text = this.title;
-    this.element.onPressed = this.onPressed;
-    if (this.style) this.element.style = this.style;
-    if (this.popup) this.element.popup = this.popup;
-    if (this.leading) this.element.leading = this.leading;
-    if (this.suffix) this.element.suffix = this.suffix;
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set disabled(val) {
+    this.element.disabled = val;
   }
 }
 
@@ -9392,7 +9454,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("2f23635159605d84262a")
+/******/ 		__webpack_require__.h = () => ("93b6434259a081f68293")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

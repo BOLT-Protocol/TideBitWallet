@@ -36,6 +36,12 @@ li {
   list-style-type: none;
 }
 
+textarea {
+  overflow: auto;
+  resize: none;
+  outline: none;
+}
+
 a,
 a:hover,
 a:visited {

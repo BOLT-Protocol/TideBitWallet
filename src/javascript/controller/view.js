@@ -99,6 +99,7 @@ class ViewController {
     }
   };
   route = (screen, data) => {
+    console.log(screen);
     switch (screen) {
       case "landing":
         Landing.render(screen, this.walletVersion);
@@ -125,8 +126,10 @@ class ViewController {
         break;
       case "address":
         AddressScreen.render(screen, this.currentAsset);
+        break;
       case "mnemonic":
         MnemonicScreen.render(screen);
+        break;
       default:
         break;
     }

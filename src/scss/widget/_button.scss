@@ -72,7 +72,11 @@
     background-color: $color-primary !important;
     border: 1px solid $color-primary !important;
   }
-
+  &[disabled] {
+    color: $color-grey-dark-1 !important;
+    background-color: $color-grey-light-3 !important;
+    border: 1px solid $color-grey-light-3 !important;
+  }
   &[grey] {
     color: $color-grey-dark-1;
     background-color: $color-grey-light-3;
