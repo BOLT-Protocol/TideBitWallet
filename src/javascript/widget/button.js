@@ -3,7 +3,6 @@ class ButtonElement extends HTMLElement {
     super();
   }
   connectedCallback() {
-    this.hasPopup = false;
     this.className = "button";
     this.innerHTML = `
         <div class="button__icon--leading button__icon"></div>
@@ -23,10 +22,6 @@ class ButtonElement extends HTMLElement {
       this.children[0].innerHTML = `<i class="far fa-${this.leading}"></i>`;
     if (this.suffix)
       this.children[2].innerHTML = `<i class="far fa-${this.suffix}"></i>`;
-    if(this.popup){
-      this.hasPopup = true;
-      this.hint = hint; 
-    }
     this.addEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
@@ -39,9 +34,9 @@ class ButtonElement extends HTMLElement {
     });
   }
   handlePopup = async () => {
-    if (this.hasPopup) {
-      if (this.popup) this.removeAttribute("popup");
-      const result = await this.hint();
+    if (this.popup) {
+      this.removeAttribute("popup");
+      const result = await this.popup();
       this.children[3].textContent = result;
       this.setAttribute("popup", "");
       setTimeout(() => {

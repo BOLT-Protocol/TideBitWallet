@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624674225246
+      // 1624674985629
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -8717,7 +8717,6 @@ class ButtonElement extends HTMLElement {
     super();
   }
   connectedCallback() {
-    this.hasPopup = false;
     this.className = "button";
     this.innerHTML = `
         <div class="button__icon--leading button__icon"></div>
@@ -8737,10 +8736,6 @@ class ButtonElement extends HTMLElement {
       this.children[0].innerHTML = `<i class="far fa-${this.leading}"></i>`;
     if (this.suffix)
       this.children[2].innerHTML = `<i class="far fa-${this.suffix}"></i>`;
-    if(this.popup){
-      this.hasPopup = true;
-      this.hint = hint; 
-    }
     this.addEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
@@ -8753,9 +8748,9 @@ class ButtonElement extends HTMLElement {
     });
   }
   handlePopup = async () => {
-    if (this.hasPopup) {
-      if (this.popup) this.removeAttribute("popup");
-      const result = await this.hint();
+    if (this.popup) {
+      this.removeAttribute("popup");
+      const result = await this.popup();
       this.children[3].textContent = result;
       this.setAttribute("popup", "");
       setTimeout(() => {
@@ -9454,7 +9449,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("93b6434259a081f68293")
+/******/ 		__webpack_require__.h = () => ("0029a8e401d6b8905f8a")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
