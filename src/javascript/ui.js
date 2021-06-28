@@ -22,6 +22,10 @@ const createTestAsset = (id) => {
 const getUserDetail = () => {
   return {
     userBalanceInFiat: 52.29,
+    // totalValue: {
+    //   amount: 52.29,
+    //   uint: "USD",
+    // },
     assets: [
       {
         id: randomHex(32),
@@ -172,7 +176,7 @@ const startApp = () => {
     user = getUserDetail();
     user.assets = user.assets.map((asset) => new Asset(asset));
     viewController.updateUser(user);
-    viewController.route("assets");
+    // viewController.route("assets");
   }, 2000);
   // --
 
@@ -196,7 +200,7 @@ const startApp = () => {
   setTimeout(() => {
     bills = getAssetDetail(user.assets[3].id)?.map((obj) => new Bill(obj));
     window.bills = bills;
-    viewController.route("asset", user.assets[3]);
+    // viewController.route("asset", user.assets[3]);
     setTimeout(() => {
       viewController.updateBills(user.assets[3], bills);
       const updateBill = (bill = user.assets[3].bills[0]) => {
@@ -205,7 +209,7 @@ const startApp = () => {
         // eth ropsten 1st transaction
         viewController.updateBill(user.assets[3], bills[0]);
         if (bill.confirmations === 4) {
-          viewController.route("bill", bills[0]);
+          // viewController.route("bill", bills[0]);
         }
         if (bill.confirmations > 7) {
           viewController.route("asset", user.assets[3]);

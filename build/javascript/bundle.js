@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624447449685
+      // 1624611891110
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6062,6 +6062,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/overview */ "./src/javascript/screen/overview.js");
 /* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
 /* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+
 
 
 
@@ -6080,7 +6082,7 @@ class ViewController {
     this.updateUser(user);
   }
   updateUser(user) {
-    this.userBalanceInFiat = user?.userBalanceInFiat;
+    this.userBalanceInFiat = user?.totalValue?.amount;
     this.userAssets = user?.assets;
     if (this.userAssets) {
       this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
@@ -6177,6 +6179,9 @@ class ViewController {
           this.currentAsset = data; //Asset
         }
         _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.render(screen, this.currentAsset, this.walletFiat);
+        break;
+      case "transaction":
+        _screen_transaction__WEBPACK_IMPORTED_MODULE_6__.default.render(screen, this.currentAsset, this.walletFiat);
         break;
       case "bill":
         this.currentBill = data; //Bill
@@ -6586,6 +6591,208 @@ class BottomNavigator {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BottomNavigator);
+
+
+/***/ }),
+
+/***/ "./src/javascript/layout/form.js":
+/*!***************************************!*\
+  !*** ./src/javascript/layout/form.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _model_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/transaction */ "./src/javascript/model/transaction.js");
+
+
+
+
+
+class FormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  disconnectedCallback() {
+    if (this.toggle) {
+      this.toggleButton.removeEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    }
+  }
+  connectedCallback() {
+    this.className = "form";
+    this.addressInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "text",
+      label: "Send to",
+      errorMessage: "Invalid Address",
+      validation: (value) => {
+        return value.startsWith("0x");
+      },
+      action: {
+        icon: "qrcode",
+        onPressed: () => {
+          console.log("action on pressed!");
+        },
+      },
+    });
+    this.amountInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Amount",
+      errorMessage: "Invalid Amount",
+      validation: (value) => {
+        return parseFloat(value) > 0;
+      },
+      pattern: `\d*.?\d*`,
+    });
+    this.gasPriceInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: `Custom Gas Price (${this.asset?.symbol || "ETH"})`, //test
+      pattern: `\d*.?\d*`,
+    });
+    this.gasInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "number",
+      label: "Custom Gas (unit)",
+      pattern: `\d*`,
+    });
+    this.buttons = ["Slow", "Standard", "Fast"].map(
+      (str) => new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default(str, () => {}, { style: ["round", "grey"] })
+    );
+    this.tabBar = new _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__.default(this.buttons, { defaultFocus: 1 });
+    this.action = new _widget_button__WEBPACK_IMPORTED_MODULE_2__.default("Next", () => {}, { style: ["round", "outline"] });
+    this.innerHTML = `
+    <div class="form__input"></div>
+    <p class="form__secondary-text form__align-end">
+      <span>Balance:</span>
+      <span class="account-balance"></span>
+    </p>
+    <p class="form__primary-text form__align-start">Transaction Fee</p>
+    <p class="form__secondary-text form__align-start estimate-time">
+        <span>Processing time</span>
+        <span></span>
+    </p>
+    <p class="form__tertiary-text form__align-start">Higher fees, faster transaction</p>
+    <div class="form__toggle-content"></div>
+    <p class="form__column">
+      <span class="form__tertiary-text">Estimated:</span>
+      <span class="form__secondary-text estimate-fee">loading...</span>
+    </p>
+    <div class="form__toggle">
+      <div class="form__toggle-controller">
+        <p class="form__tertiary-text form__align-end">Advanced Settings</p>
+        <div class="form__toggle-button">
+          <input type="checkbox" name="toggle-button" id="toggle-button">
+          <label for="toggle-button"></label>
+        </div>
+      </div>
+    </div>
+    <div class="form__button"></div>
+    `;
+    this.addressInput.render(this.children[0]);
+    this.amountInput.render(this.children[0]);
+    this.tabBar.render(this.children[5]);
+    this.estimateTime = "10 ~ 30 minutes";
+    this.availableAmount = this.asset;
+    this.action.render(this.children[8]);
+    if (this.asset.symbol === "ETH") {
+      // -- test
+      this.toggle = true;
+      this.toggleButton = document.querySelector(
+        ".form input[type='checkbox']"
+      );
+      this.toggleButton.addEventListener("change", (e) => {
+        this.handleToggle(this.toggleContent);
+      });
+    } else {
+      this.toggle = false;
+    }
+    this.transactionButton = this.children[this.childElementCount - 1];
+    this.transactionButton.addEventListener("click", () => {
+      const to = this.addressInput.inputValue;
+      const amount = this.amountInput.inputValue;
+      let gasPrice, gas, priority;
+      if (this.onAdvanced) {
+        gasPrice = this.gasPrice.inputValue;
+        gas = this.gas.inputValue;
+        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, gasPrice, gas }));
+      } else {
+        priority = this.tabBar.selected;
+        this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, priority }));
+      }
+    });
+  }
+
+  /**
+   *
+   * @param {Boolean} val
+   *
+   */
+  handleToggle(toggleContent) {
+    toggleContent.replaceChildren();
+    if (this.toggleButton.checked) {
+      this.gasPriceInput.render(toggleContent);
+      this.gasInput.render(toggleContent);
+      this.setAttribute("on", "");
+    } else {
+      this.tabBar.render(toggleContent);
+      this.removeAttribute("on");
+    }
+  }
+  get onAdvanced() {
+    return this.hasAttribute("on");
+  }
+  set availableAmount(asset) {
+    this.children[1].children[1].textContent =
+      asset.balance + " " + asset.symbol;
+  }
+  set estimateFee(fee) {
+    this.children[6].children[1].textContent = fee + " " + this.asset.symbol;
+  }
+  set estimateTime(time) {
+    this.children[3].children[1].textContent = time;
+  }
+  /**
+   * @param {Array<Object>} HTMLElement
+   */
+  get toggleContent() {
+    return this.children[5];
+  }
+  set onSubmit(element) {
+    element.render(this.lastElementChild);
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set toggle(val) {
+    if (val) {
+      this.removeAttribute("disabled-toggle");
+    } else {
+      this.setAttribute("disabled-toggle", "");
+    }
+  }
+}
+
+customElements.define("transaction-form", FormElement);
+
+class Form {
+  constructor(asset, fiat, callback) {
+    this.element = document.createElement("transaction-form");
+    this.element.asset = asset;
+    this.element.fiat = fiat;
+    this.element.callback = callback;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Form);
 
 
 /***/ }),
@@ -7269,6 +7476,42 @@ class Bill {
 
 /***/ }),
 
+/***/ "./src/javascript/model/transaction.js":
+/*!*********************************************!*\
+  !*** ./src/javascript/model/transaction.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class Transaction {
+  constructor({ publish, to, amount, priority, gasPrice, gasLimit, message }) {
+    this.publish = publish;
+    this.to = to;
+    this.amount = amount;
+    this.priority = priority;
+    this.gasPrice = gasPrice;
+    this.gasLimit = gasLimit;
+    this.message = message;
+  }
+  // BTC
+  // constructor({
+  //     publish,
+  //     to,
+  //     amount,
+  //     priority,
+  //     message,
+  // })
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Transaction);
+
+
+/***/ }),
+
 /***/ "./src/javascript/screen/address.js":
 /*!******************************************!*\
   !*** ./src/javascript/screen/address.js ***!
@@ -7297,6 +7540,7 @@ class Address {
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen);
     this.addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_3__.default(asset);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.addressContent);
+    this.scaffold.openPopover("loading", "loading...");
   }
   render(screen, asset) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
@@ -7305,6 +7549,7 @@ class Address {
     }
     // -- test
     setTimeout(() => {
+      this.scaffold.closePopover();
       const address = "0xd885833741f554a0e64ffd1141887d65e0dded01";
       this.update(address);
     }, 1000);
@@ -7364,8 +7609,8 @@ class Asset {
     this.scaffold.id = asset.id;
     this.scaffold.view = screen;
     this.screen = screen;
-    if (asset.bills) {
-      // this.scaffold.openPopover("loading", "loading...");
+    if (!asset?.bills) {
+      this.scaffold.openPopover("loading");
     }
   }
   render(screen, asset, fiat) {
@@ -7377,7 +7622,7 @@ class Asset {
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });
     this.billList.updateBills(bills);
-    // this.scaffold.closePopover();
+    this.scaffold.closePopover();
   }
   updateBill(asset, billIndex, bill) {
     this.header.update(this.screen, { asset });
@@ -7462,8 +7707,39 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const googleSignin = async (screen) => {
-  // await;
-  _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
+  // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
+  const api = {
+    apiURL: "https://service.tidewallet.io/api/v1",
+    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+    apiSecret: "9e37d67450dc906042fde75113ecb78c",
+  };
+  const user = {};
+  chrome.identity.getAuthToken({ interactive: true }, function (token) {
+    console.log(token);
+    let init = {
+      method: "GET",
+      async: true,
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      contentType: "json",
+    };
+    fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", init)
+      .then((response) => response.json())
+      .then(function (data) {
+        // get oauthID
+        user.OAuthID = data.id;
+        // get install ID
+        chrome.storage.sync.get(["InstallID"], function (result) {
+          user.InstallID = result.InstallID;
+          console.log(OAuthID, InstallID);
+          // ++ TideWalletJS
+          // tidewallet.init({ user, api });
+          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
+        });
+      });
+  });
 };
 
 class Landing {
@@ -7523,8 +7799,8 @@ class Overview {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
     this.scaffold.view = screen;
     this.screen = screen;
-    if (assets) {
-      // this.scaffold.openPopover("loading", "loading...");
+    if (!assets) {
+      this.scaffold.openPopover("loading");
     }
   }
   render(screen, fiat, version, { totalAsset, assets } = {}) {
@@ -7550,7 +7826,7 @@ class Overview {
    * @param {fiat} String
    */
   updateAssets(totalAsset, fiat, assets) {
-    // this.scaffold.closePopover();
+    this.scaffold.closePopover();
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
   }
@@ -7567,6 +7843,99 @@ class Overview {
 const overview = new Overview();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (overview);
+
+
+/***/ }),
+
+/***/ "./src/javascript/screen/transaction.js":
+/*!**********************************************!*\
+  !*** ./src/javascript/screen/transaction.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/javascript/layout/form.js");
+/* harmony import */ var _utils_popup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/popup */ "./src/javascript/utils/popup.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+
+
+
+
+/**
+ * let fee = ui.getTransactionFee({ blockchainID, from, to, amount, data });
+ * let transaction = ui.prepareTransaction({ to, amount, data, speed });
+ * ui.sendTransaction(transaction);
+ */
+
+class Transaction {
+  constructor() {}
+  sendTransaction = (transaction) => {
+    console.log("to", transaction.to);
+    console.log("amount", transaction.amount);
+    console.log("priority", transaction.priority);
+    console.log("gasPrice", transaction.gasPrice);
+    console.log("gas", transaction.gas);
+    this.scaffold.openPopover("success", "Success!");
+  };
+  initialize(screen, asset, fiat) {
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
+    this.form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(asset, fiat, (val) =>
+      this.scaffold.openPopover(
+        "confirm",
+        "Are you sure to make this transaction?",
+        () => this.sendTransaction(val),
+        false
+      )
+    );
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.form);
+  }
+  render(screen, asset, fiat) {
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
+    if (!view || view !== "transaction" || !this.scaffold) {
+      this.initialize(screen, asset, fiat);
+    }
+  }
+}
+
+const transaction = new Transaction();
+
+/**
+ * getEstimateTime().then((timeString) => {
+ *    const estimateTimeEl = document.querySelector('.estimate-time');
+ *    estimateTimeEl.textContent = timeString;
+ * }).catch((error) => {
+ *    estimateTimeEl.textContent = "would take longer than you can expected";
+ * })
+ */
+/**
+ * feeObj = {
+ *    gasPrice: {
+ *        fast: '',
+ *        standard: '',
+ *        slow: '',
+ *    },
+ *    gasLimit: 21000
+ * }
+ */
+/**
+ * getTransactionFee().then((feeObj) => {
+ *    const estimateFeeEl = document.querySelector('.estimate-fee');
+ *    ++ get Setected tab index
+ *    estimateFeeEl.textContent = `${parseFloat(feeObj.gasPrice[1]) * gasLimit}`;
+ * }).catch((error) => {
+ *    estimateTimeEl.textContent = "would surprise you!";
+ * })
+ */
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
 
 
 /***/ }),
@@ -7607,6 +7976,10 @@ const createTestAsset = (id) => {
 const getUserDetail = () => {
   return {
     userBalanceInFiat: 52.29,
+    // totalValue: {
+    //   amount: 52.29,
+    //   uint: "USD",
+    // },
     assets: [
       {
         id: (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.randomHex)(32),
@@ -7757,7 +8130,7 @@ const startApp = () => {
     user = getUserDetail();
     user.assets = user.assets.map((asset) => new _model_asset__WEBPACK_IMPORTED_MODULE_1__.default(asset));
     _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateUser(user);
-    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("assets");
+    // viewController.route("assets");
   }, 2000);
   // --
 
@@ -7781,7 +8154,7 @@ const startApp = () => {
   setTimeout(() => {
     bills = getAssetDetail(user.assets[3].id)?.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_0__.default(obj));
     window.bills = bills;
-    _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
+    // viewController.route("asset", user.assets[3]);
     setTimeout(() => {
       _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(user.assets[3], bills);
       const updateBill = (bill = user.assets[3].bills[0]) => {
@@ -7790,7 +8163,7 @@ const startApp = () => {
         // eth ropsten 1st transaction
         _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBill(user.assets[3], bills[0]);
         if (bill.confirmations === 4) {
-          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("bill", bills[0]);
+          // viewController.route("bill", bills[0]);
         }
         if (bill.confirmations > 7) {
           _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
@@ -7808,6 +8181,59 @@ window.viewController = _controller_view__WEBPACK_IMPORTED_MODULE_2__.default;
 window.getUserDetail = getUserDetail;
 window.getWalletConfig = getWalletConfig;
 window.createTestAsset = createTestAsset;
+
+
+/***/ }),
+
+/***/ "./src/javascript/utils/popup.js":
+/*!***************************************!*\
+  !*** ./src/javascript/utils/popup.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "open": () => (/* binding */ open),
+/* harmony export */   "close": () => (/* binding */ close)
+/* harmony export */ });
+/**
+   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
+   * @param {String: show on the dialog} text
+   * @param {function} onConfirm
+   * @param {default true} cancellable
+   */
+const open = (type, text, onConfirm, cancellable = true) => {
+  const popover = document.querySelector("pop-over");
+  popover.open = true;
+  if (cancellable) {
+    popover.cancellable = cancellable;
+  }
+  switch (type) {
+    case "error":
+      popover.errorPopup(text);
+      break;
+    case "success":
+      popover.successPopup(text);
+      break;
+    case "loading":
+      popover.loadingPopup(text);
+      break;
+    case "confirm":
+      popover.confirmPopup(text, onConfirm);
+      break;
+  }
+};
+const close = (timeout) => {
+  const popover = document.querySelector("pop-over");
+  if (timeout !== undefined) {
+    setTimeout(() => {
+      popover.open = false;
+    }, timeout);
+  } else {
+    popover.open = false;
+  }
+};
 
 
 /***/ }),
@@ -8253,6 +8679,185 @@ class Button {
 
 /***/ }),
 
+/***/ "./src/javascript/widget/input.js":
+/*!****************************************!*\
+  !*** ./src/javascript/widget/input.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/javascript/utils/utils.js");
+
+
+class InputElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  static get observedAttributes() {
+    return ["focus", "has-value", "error"];
+  }
+  handleInput(e) {
+    if (e.target.value !== "") {
+      this.hasValue = true;
+    } else {
+      this.hasValue = false;
+    }
+    let checked;
+    if (this.validator !== undefined) {
+      checked = e.target.value === "" || this.validator(e.target.value);
+    }
+    if (checked !== undefined) {
+      this.error = !checked;
+    }
+    // ++
+    // https://stackoverflow.com/questions/8808590/number-input-type-that-takes-only-integers
+    if (e.target.pattern === "d*") {
+      //   this.value = this.value.replace(/[^0-9.]/g, '');
+      //   this.value = this.value.replace(/(\..*)\./g, '$1');
+    }
+    this.inputValue = e.target.value;
+  }
+  connectedCallback() {
+    this.className = "input__controller";
+    this.id = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(6);
+    this.innerHTML = `
+    <div class="input__field">
+        <label class="input__label" for=${this.id}><p></p></label>
+        <div class="input__content">
+            <input type="text" class="input__input" id=${this.id}>
+            <div class="input__action"></i></div>
+        </div>
+    </div>
+    <div class="input__error-message"></div>
+    `;
+    this.children[0].children[1].children[0].addEventListener(
+      "focus",
+      (e) => (this.focus = true)
+    );
+    this.children[0].children[1].children[0].addEventListener(
+      "focusout",
+      (e) => (this.focus = false)
+    );
+    // this.children[0].children[1].children[0].addEventListener("change", (e) => {
+    this.children[0].children[1].children[0].addEventListener("input", (e) =>
+      this.handleInput(e)
+    );
+    this.children[0].children[1].children[1].style.display = "none";
+  }
+  get hasValue() {
+    return this.hasAttribute("has-value");
+  }
+  set focus(val) {
+    if (val) {
+      Array.from(document.querySelectorAll("input__controller")).forEach(
+        (controller) => (controller.focus = false)
+      );
+      this.setAttribute("focus", "");
+    } else {
+      this.removeAttribute("focus");
+    }
+  }
+  set hasValue(val) {
+    if (val) {
+      this.setAttribute("has-value", "");
+    } else {
+      this.removeAttribute("has-value");
+    }
+  }
+  set error(val) {
+    if (val) {
+      this.setAttribute("error", "");
+    } else {
+      this.removeAttribute("error");
+    }
+  }
+  set inputType(val) {
+    this.children[0].children[1].children[0].type = val;
+  }
+  set pattern(val) {
+    this.children[0].children[1].children[0].pattern = val;
+  }
+  set label(val) {
+    this.children[0].children[0].children[0].textContent = val;
+  }
+  set action(obj) {
+    this.children[0].children[1].children[1].style.display = "inline-block";
+    this.children[0].children[1].children[1].insertAdjacentHTML(
+      "afterbegin",
+      `<i class="far fa-${obj.icon}"></i>`
+    );
+    this.children[0].children[1].children[1].addEventListener("click", (e) =>
+      obj.onPressed()
+    );
+  }
+  set validation(val) {
+    this.validator = val;
+  }
+  set errorMessage(val) {
+    if (val === undefined) this.children[1].style.display = "none";
+    this.children[1].textContent = val;
+  }
+  disconnectedCallback() {
+    // target.removeEventListener('');
+    this.children[0].children[1].children[0].removeEventListener(
+      "focus",
+      (e) => (this.focus = true)
+    );
+    this.children[0].children[1].children[0].removeEventListener(
+      "focusout",
+      (e) => (this.focus = false)
+    );
+    this.children[0].children[1].children[0].removeEventListener("input", (e) =>
+      handleInput(e)
+    );
+    this.children[0].children[1].children[1].removeEventListener("click", (e) =>
+      obj.onPressed()
+    );
+  }
+}
+
+customElements.define("input-controller", InputElement);
+
+class Input {
+  constructor({
+    inputType = "text",
+    label,
+    errorMessage = "",
+    validation,
+    action,
+    pattern,
+  }) {
+    this.inputType = inputType;
+    this.label = label;
+    this.errorMessage = errorMessage;
+    this.validation = validation;
+    if (action !== undefined) this.action = action;
+    this.pattern = pattern;
+  }
+  render(parentElement) {
+    this.element = document.createElement("input-controller");
+    parentElement.insertAdjacentElement("beforeend", this.element);
+    this.element.inputType = this.inputType;
+    this.element.label = this.label;
+    this.element.errorMessage = this.errorMessage;
+    this.element.validation = this.validation;
+    if (this.action !== undefined) this.element.action = this.action;
+    if (this.pattern !== undefined) this.element.pattern = this.pattern;
+  }
+  get inputValue() {
+    return this.element.inputValue;
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Input);
+
+
+/***/ }),
+
 /***/ "./src/javascript/widget/pop_over.js":
 /*!*******************************************!*\
   !*** ./src/javascript/widget/pop_over.js ***!
@@ -8280,7 +8885,7 @@ class PopoverElement extends HTMLElement {
     this.innerHTML = `
     <div class="pop-over__content">
         <div class="pop-over__container">
-            <div class="pop-over__icon"></div>
+            <div class="pop-over__icon"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>
             <div class="pop-over__text"></div>
         </div>
         <div class="pop-over__button-box">
@@ -8421,7 +9026,7 @@ class Popover {
   /**
    * @param {Boolean} value
    */
-  set open (value){
+  set open(value) {
     this.element.open = value;
   }
 }
@@ -8718,7 +9323,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("596c34af272607f9775f")
+/******/ 		__webpack_require__.h = () => ("593774c7640ecfbd5501")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
