@@ -25,11 +25,12 @@ const googleSignin = async (screen) => {
       .then((response) => response.json())
       .then(function (data) {
         // get oauthID
+        console.log(data);
         user.OAuthID = data.id;
         // get install ID
         chrome.storage.sync.get(["InstallID"], function (result) {
           user.InstallID = result.InstallID;
-          console.log(OAuthID, InstallID);
+          console.log(user.OAuthID, user.InstallID);
           // ++ TideWalletJS
           // tidewallet.init({ user, api });
           viewController.route(screen);

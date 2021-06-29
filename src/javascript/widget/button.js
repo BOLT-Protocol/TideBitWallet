@@ -10,7 +10,18 @@ class ButtonElement extends HTMLElement {
         <div class="button__icon--suffix button__icon"></div>
         <span class="button__popup"></span>
         `;
-    this.hasPopup = false;
+    this.children[1].textContent = this.text;
+    if (this.styleTag) {
+      if (Array.isArray(this.styleTag)) {
+        this.styleTag.forEach((v) => this.setAttribute(v, ""));
+      } else {
+        this.setAttribute(this.styleTag, "");
+      }
+    }
+    if (this.leading)
+      this.children[0].innerHTML = `<i class="far fa-${this.leading}"></i>`;
+    if (this.suffix)
+      this.children[2].innerHTML = `<i class="far fa-${this.suffix}"></i>`;
     this.addEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
@@ -23,9 +34,9 @@ class ButtonElement extends HTMLElement {
     });
   }
   handlePopup = async () => {
-    if (this.hasPopup) {
-      if (this.popup) this.removeAttribute("popup");
-      const result = await this.hint();
+    if (this.popup) {
+      this.removeAttribute("popup");
+      const result = await this.popup();
       this.children[3].textContent = result;
       this.setAttribute("popup", "");
       setTimeout(() => {
@@ -33,51 +44,45 @@ class ButtonElement extends HTMLElement {
       }, 400);
     }
   };
-  set style(val) {
-    if (Array.isArray(val)) {
-      val.forEach((v) => this.setAttribute(v, ""));
-    } else {
-      this.setAttribute(v, "");
-    }
-  }
-  set text(str) {
-    this.children[1].textContent = str;
-  }
   /**
-   * @param {any} icon: To reference font awesome icon, you only need to know it's name
+   * @param {Boolean} val
    */
-  set leading(icon) {
-    this.children[0].innerHTML = `<i class="far fa-${icon}"></i>`;
-  }
-  set suffix(icon) {
-    this.children[2].innerHTML = `<i class="far fa-${icon}"></i>`;
-    // this.children[2].insertAdjacentHTML("beforeend", `<i class="far fa-${icon}"></i>`);
-  }
-  set popup(hint) {
-    this.hasPopup = true;
-    this.hint = hint; // async
+  set disabled(val) {
+    if (val) {
+      this.setAttribute("disabled", "");
+    } else {
+      this.removeAttribute("disabled");
+    }
   }
 }
 customElements.define("default-button", ButtonElement);
 
 class Button {
+  /**
+   * @param {String} title
+   * @param {Function} onPressed
+   * @param {String[]} style
+   * @param {String} leading - fontawsome icon name  ex.<i class="far fa-${name}"></i>
+   * @param {String} suffix - fontawsome icon name
+   * @param {Function} popup - return popup text
+   */
   constructor(title, onPressed, { style, leading, suffix, popup }) {
-    this.title = title;
-    this.onPressed = onPressed;
-    this.style = style;
-    this.popup = popup;
-    this.leading = leading;
-    this.suffix = suffix;
+    this.element = document.createElement("default-button");
+    this.element.text = title;
+    this.element.onPressed = onPressed;
+    if (style) this.element.styleTag = style;
+    if (popup) this.element.popup = popup;
+    if (leading) this.element.leading = leading;
+    if (suffix) this.element.suffix = suffix;
   }
   render(parentElement) {
-    this.element = document.createElement("default-button");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.text = this.title;
-    this.element.onPressed = this.onPressed;
-    if (this.style) this.element.style = this.style;
-    if (this.popup) this.element.popup = this.popup;
-    if (this.leading) this.element.leading = this.leading;
-    if (this.suffix) this.element.suffix = this.suffix;
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set disabled(val) {
+    this.element.disabled = val;
   }
 }
 

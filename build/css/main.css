@@ -67,6 +67,11 @@ ul {
 li {
   list-style-type: none; }
 
+textarea {
+  overflow: auto;
+  resize: none;
+  outline: none; }
+
 a,
 a:hover,
 a:visited {
@@ -284,6 +289,38 @@ body {
   .form__button {
     margin: 1rem 2rem; }
 
+.mnemonic-form {
+  flex: auto;
+  background-color: #fff;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%; }
+  .mnemonic-form__text {
+    font-size: 1.2rem;
+    color: #555;
+    padding: 1rem;
+    background-color: rgba(90, 226, 217, 0.5);
+    margin-bottom: 1rem; }
+  .mnemonic-form__label {
+    color: #446CB3;
+    font-size: 1.2rem; }
+  .mnemonic-form__text-area {
+    width: 100%;
+    margin-bottom: 1rem;
+    border: 1px solid #4ECDC4;
+    padding: 0 1rem; }
+    .mnemonic-form__text-area > textarea {
+      width: 100%;
+      border: none;
+      color: #446CB3; }
+  .mnemonic-form__button {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin: 3rem 4rem; }
+
 .pop-over {
   background-color: rgba(85, 85, 85, 0.3);
   width: 357px;
@@ -386,7 +423,8 @@ body {
     flex: auto;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; }
+    justify-content: flex-end;
+    width: calc(100% - 8rem); }
   .third-party-signin__logo {
     width: 10rem;
     height: 8rem;
@@ -398,23 +436,23 @@ body {
     color: #fff;
     font-size: 1.6rem; }
   .third-party-signin__icon {
-    width: 4rem;
-    height: 4rem;
-    margin-right: 1rem; }
+    width: 3.5rem;
+    height: 3.5rem; }
     .third-party-signin__icon > img {
       width: 100%; }
   .third-party-signin__text {
     color: #555;
-    font-size: 1.6rem; }
+    font-size: 1.28rem; }
   .third-party-signin__button {
-    width: 210px;
+    justify-content: center;
     height: fit-content;
     border-radius: 3px;
     display: flex;
     flex-direction: row;
     align-items: center;
     background-color: #fff;
-    cursor: pointer; }
+    cursor: pointer;
+    margin-bottom: 2rem; }
   .third-party-signin #appleid-signin {
     display: none; }
 
@@ -699,6 +737,10 @@ body {
     color: #fff !important;
     background-color: #4ECDC4 !important;
     border: 1px solid #4ECDC4 !important; }
+  .button[disabled] {
+    color: #9B9B9B !important;
+    background-color: #ECECEC !important;
+    border: 1px solid #ECECEC !important; }
   .button[grey] {
     color: #9B9B9B;
     background-color: #ECECEC;

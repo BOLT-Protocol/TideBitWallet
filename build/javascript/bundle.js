@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624611891110
+      // 1624936843177
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6063,6 +6063,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/javascript/screen/bill.js");
 /* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/javascript/screen/address.js");
 /* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../screen/transaction */ "./src/javascript/screen/transaction.js");
+/* harmony import */ var _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../screen/mnemonic */ "./src/javascript/screen/mnemonic.js");
+
 
 
 
@@ -6163,6 +6165,7 @@ class ViewController {
     }
   };
   route = (screen, data) => {
+    console.log(screen);
     switch (screen) {
       case "landing":
         _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion);
@@ -6189,6 +6192,10 @@ class ViewController {
         break;
       case "address":
         _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset);
+        break;
+      case "mnemonic":
+        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen);
+        break;
       default:
         break;
     }
@@ -6821,6 +6828,8 @@ const getHeaderInfo = (screen) => {
       return { screenTitle: "Transaction Detail" };
     case "address":
       return { screenTitle: "My Wallet" };
+    case "mnemonic":
+      return { screenTitle: "" };
   }
 };
 
@@ -6910,10 +6919,14 @@ class HeaderElement extends HTMLElement {
         this.headerLeading = new BackButton("assets");
         this.headerLeading.render(this);
         break;
+
       default:
         this.classList = ["header header--default"];
         this.innerHTML = this.defaultHeader(this.screen);
-        this.headerLeading = new BackButton("asset");
+        this.headerLeading =
+          this.screen === "mnemonic"
+            ? new BackButton("landing")
+            : new BackButton("asset");
         this.headerLeading.render(this);
         break;
     }
@@ -7272,6 +7285,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
     super();
@@ -7295,8 +7310,16 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.appleSignInButton = this.children[2].children[1];
     this.googleSignInButton.addEventListener("click", this.googleSignin);
     this.appleSignInButton.addEventListener("click", this.appleSignin);
+    this.mnemonicButton = new _widget_button__WEBPACK_IMPORTED_MODULE_0__.default(
+      "Recover Wallet",
+      () => viewController.route("mnemonic"),
+      {
+        style: ["round", "fill-primary"],
+      }
+    );
+    this.mnemonicButton.render(this.children[2])
   }
-  disconnectedCallback(){
+  disconnectedCallback() {
     this.googleSignInButton.removeEventListener("click", this.googleSignin);
     this.appleSignInButton.removeEventListener("click", this.appleSignin);
   }
@@ -7729,11 +7752,12 @@ const googleSignin = async (screen) => {
       .then((response) => response.json())
       .then(function (data) {
         // get oauthID
+        console.log(data);
         user.OAuthID = data.id;
         // get install ID
         chrome.storage.sync.get(["InstallID"], function (result) {
           user.InstallID = result.InstallID;
-          console.log(OAuthID, InstallID);
+          console.log(user.OAuthID, user.InstallID);
           // ++ TideWalletJS
           // tidewallet.init({ user, api });
           _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
@@ -7758,6 +7782,103 @@ class Landing {
 
 const landing = new Landing();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (landing);
+
+
+/***/ }),
+
+/***/ "./src/javascript/screen/mnemonic.js":
+/*!*******************************************!*\
+  !*** ./src/javascript/screen/mnemonic.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/javascript/controller/view.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/javascript/layout/header.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./src/javascript/layout/scaffold.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./src/javascript/widget/button.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/input */ "./src/javascript/widget/input.js");
+
+
+
+
+
+class MnemonicFormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "mnemonic-form";
+    this.innerHTML = `
+        <div class="mnemonic-form__text">Please use spaces to separate different mnemonic words</div>
+        <div class="mnemonic-form__text-area">
+            <div class="mnemonic-form__label">Enter mnemonic</div>
+            <textarea rows="5"></textarea>
+        </div>
+        <div class="mnemonic-form__input"></div>
+        <div class="mnemonic-form__input"></div>
+        <div class="mnemonic-form__button"></div>
+        `;
+    this.passphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
+      inputType: "text",
+      label: "passphrase",
+    });
+    this.retypePassphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
+      inputType: "text",
+      label: "retype passphrase",
+    });
+    this.confirmButton = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default(
+      "confirm",
+      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("screen"),
+      {
+        style: ["round", "fill-primary"],
+      }
+    );
+    // this.children[4].children[0].disabled = true;x
+    this.confirmButton.disabled = true;
+    this.passphraseInput.render(this.children[2]);
+    this.retypePassphraseInput.render(this.children[3]);
+    this.confirmButton.render(this.children[4]);
+    this.children[1].children[1].addEventListener("input", (e) => {
+      if (e.target.value) {
+        // this.children[4].children[0].disabled = false;
+        this.confirmButton.disabled = false;
+      }else{
+        // this.children[4].children[0].disabled = true;
+        this.confirmButton.disabled = true;
+      }
+    });
+  }
+}
+
+customElements.define("mnemonic-form", MnemonicFormElement);
+
+class MnemonicForm {
+  constructor() {
+    this.element = document.createElement("mnemonic-form");
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+class Mnemonic {
+  constructor() {
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default("mnemonic");
+    this.body = new MnemonicForm();
+  }
+  render() {
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default(this.header, this.body);
+  }
+}
+
+const MnemonicScreen = new Mnemonic();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MnemonicScreen);
 
 
 /***/ }),
@@ -8166,7 +8287,7 @@ const startApp = () => {
           // viewController.route("bill", bills[0]);
         }
         if (bill.confirmations > 7) {
-          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("asset", user.assets[3]);
+          // viewController.route("asset", user.assets[3]);
           clearInterval(interval);
         }
       };
@@ -8603,7 +8724,18 @@ class ButtonElement extends HTMLElement {
         <div class="button__icon--suffix button__icon"></div>
         <span class="button__popup"></span>
         `;
-    this.hasPopup = false;
+    this.children[1].textContent = this.text;
+    if (this.styleTag) {
+      if (Array.isArray(this.styleTag)) {
+        this.styleTag.forEach((v) => this.setAttribute(v, ""));
+      } else {
+        this.setAttribute(this.styleTag, "");
+      }
+    }
+    if (this.leading)
+      this.children[0].innerHTML = `<i class="far fa-${this.leading}"></i>`;
+    if (this.suffix)
+      this.children[2].innerHTML = `<i class="far fa-${this.suffix}"></i>`;
     this.addEventListener("click", async (e) => {
       this.onPressed();
       this.handlePopup();
@@ -8616,9 +8748,9 @@ class ButtonElement extends HTMLElement {
     });
   }
   handlePopup = async () => {
-    if (this.hasPopup) {
-      if (this.popup) this.removeAttribute("popup");
-      const result = await this.hint();
+    if (this.popup) {
+      this.removeAttribute("popup");
+      const result = await this.popup();
       this.children[3].textContent = result;
       this.setAttribute("popup", "");
       setTimeout(() => {
@@ -8626,51 +8758,45 @@ class ButtonElement extends HTMLElement {
       }, 400);
     }
   };
-  set style(val) {
-    if (Array.isArray(val)) {
-      val.forEach((v) => this.setAttribute(v, ""));
-    } else {
-      this.setAttribute(v, "");
-    }
-  }
-  set text(str) {
-    this.children[1].textContent = str;
-  }
   /**
-   * @param {any} icon: To reference font awesome icon, you only need to know it's name
+   * @param {Boolean} val
    */
-  set leading(icon) {
-    this.children[0].innerHTML = `<i class="far fa-${icon}"></i>`;
-  }
-  set suffix(icon) {
-    this.children[2].innerHTML = `<i class="far fa-${icon}"></i>`;
-    // this.children[2].insertAdjacentHTML("beforeend", `<i class="far fa-${icon}"></i>`);
-  }
-  set popup(hint) {
-    this.hasPopup = true;
-    this.hint = hint; // async
+  set disabled(val) {
+    if (val) {
+      this.setAttribute("disabled", "");
+    } else {
+      this.removeAttribute("disabled");
+    }
   }
 }
 customElements.define("default-button", ButtonElement);
 
 class Button {
+  /**
+   * @param {String} title
+   * @param {Function} onPressed
+   * @param {String[]} style
+   * @param {String} leading - fontawsome icon name  ex.<i class="far fa-${name}"></i>
+   * @param {String} suffix - fontawsome icon name
+   * @param {Function} popup - return popup text
+   */
   constructor(title, onPressed, { style, leading, suffix, popup }) {
-    this.title = title;
-    this.onPressed = onPressed;
-    this.style = style;
-    this.popup = popup;
-    this.leading = leading;
-    this.suffix = suffix;
+    this.element = document.createElement("default-button");
+    this.element.text = title;
+    this.element.onPressed = onPressed;
+    if (style) this.element.styleTag = style;
+    if (popup) this.element.popup = popup;
+    if (leading) this.element.leading = leading;
+    if (suffix) this.element.suffix = suffix;
   }
   render(parentElement) {
-    this.element = document.createElement("default-button");
     parentElement.insertAdjacentElement("beforeend", this.element);
-    this.element.text = this.title;
-    this.element.onPressed = this.onPressed;
-    if (this.style) this.element.style = this.style;
-    if (this.popup) this.element.popup = this.popup;
-    if (this.leading) this.element.leading = this.leading;
-    if (this.suffix) this.element.suffix = this.suffix;
+  }
+  /**
+   * @param {Boolean} val
+   */
+  set disabled(val) {
+    this.element.disabled = val;
   }
 }
 
@@ -9323,7 +9449,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("593774c7640ecfbd5501")
+/******/ 		__webpack_require__.h = () => ("d4807d82ca276c6a4704")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
