@@ -59,4 +59,30 @@ const frontend = {
   devtool: "cheap-module-source-map",
 };
 
-module.exports = [frontend];
+const background = {
+  mode: "development",
+  entry: path.resolve(__dirname, "src/background.js"),
+  output: {
+    path: path.resolve(__dirname, "build"),
+    filename: "background.js",
+    chunkFilename: "[id].js",
+  },
+  devServer: {
+    watchOptions: {
+      poll: true,
+    },
+    contentBase: path.join(__dirname, "build/"),
+    compress: true,
+    port: 9000,
+  },
+  devtool: "cheap-module-source-map",
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+}
+
+module.exports = [frontend, background];
