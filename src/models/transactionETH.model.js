@@ -1,11 +1,11 @@
-const {
+import {
   Transaction,
   TRANSACTION_DIRECTION,
   TRANSACTION_STATUS,
   Signature,
-} = require("./tranasction.model");
-const { encodeToRlp } = require("../helpers/ethereumUtils");
-const BigNumber = require('bignumber.js');
+} from "./tranasction.model";
+import { encodeToRlp } from "../helpers/ethereumUtils";
+import BigNumber from "bignumber.js";
 
 class ETHTransaction extends Transaction {
   nonce;
@@ -56,4 +56,4 @@ class ETHTransaction extends Transaction {
   }
 }
 
-module.exports = ETHTransaction;
+export default ETHTransaction;

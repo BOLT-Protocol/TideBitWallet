@@ -65,4 +65,4 @@ class AccountService {
   synchro() {}
 }
 
-module.exports = AccountService;
+export default AccountService;

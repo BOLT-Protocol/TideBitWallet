@@ -41,4 +41,4 @@ class rlp {
   }
 }
 
-module.exports = rlp 
+export default rlp 

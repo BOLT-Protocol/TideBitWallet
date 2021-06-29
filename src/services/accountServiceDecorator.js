@@ -1,4 +1,4 @@
-const AccountService = require("./accountService");
+import AccountService from "./accountService";
 
 /**
  @abstract
@@ -15,4 +15,4 @@ class AccountServiceDecorator extends AccountService {
   }
 }
 
-module.exports = AccountServiceDecorator;
+export default AccountServiceDecorator;

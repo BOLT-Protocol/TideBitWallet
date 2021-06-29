@@ -26,4 +26,4 @@ class TransactionService {
   prepareTransaction() {}
 }
 
-module.exports = TransactionService;
+export default TransactionService;

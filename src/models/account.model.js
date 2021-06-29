@@ -1,4 +1,4 @@
-const ACCOUNT_EVT = {
+export const ACCOUNT_EVT = {
   OnUpdateAccount: "OnUpdateAccount",
   OnUpdateCurrency: "OnUpdateCurrency",
   OnUpdateTransactions: "OnUpdateTransactions",
@@ -7,13 +7,8 @@ const ACCOUNT_EVT = {
   ToggleDisplayCurrency: "ToggleDisplayCurrency",
 };
 
-const ACCOUNT = {
+export const ACCOUNT = {
   ETH: 'ETH',
   BTC: 'BTC',
   CFC: 'CFC'
 }
-
-module.exports = {
-  ACCOUNT_EVT,
-  ACCOUNT
-};

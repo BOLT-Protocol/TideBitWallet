@@ -14,7 +14,7 @@
  * @property {BigNumber} gasPrice           The gas price
  * @property {BigNumber} gasUsed            The gase used/limit
  */
-class Transaction {
+export class Transaction {
   id;
   direction;
   amount;
@@ -39,20 +39,20 @@ class Transaction {
   static createTransaction() {}
 }
 
-const TRANSACTION_STATUS = {
+export const TRANSACTION_STATUS = {
   success: "success",
   fail: "fail",
   pending: "pending",
 };
 
-const TRANSACTION_DIRECTION = {
+export const TRANSACTION_DIRECTION = {
   sent: "sent",
   received: "received",
   moved: "moved",
   unknown: "unknown",
 };
 
-const TRANSACTION_PRIORITY = {
+export const TRANSACTION_PRIORITY = {
   slow: "slow",
   standard: "standard",
   fast: "fast",
@@ -63,18 +63,10 @@ const TRANSACTION_PRIORITY = {
  * @property {BigNumber} r
  * @property {BigNumber} s
  */
-class Signature {
+export class Signature {
   constructor({ v, r, s }) {
     this.v = v;
     this.r = r;
     this.s = s;
   }
 }
-
-module.exports = {
-  Transaction,
-  TRANSACTION_STATUS,
-  TRANSACTION_DIRECTION,
-  TRANSACTION_PRIORITY,
-  Signature,
-};

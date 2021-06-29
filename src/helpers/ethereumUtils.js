@@ -1,4 +1,4 @@
-const rlp = require("rlp");
+import { encode } from "rlp";
 
 /**
  * Checks if the given string is an address
@@ -48,7 +48,7 @@ var isChecksumAddress = function (address) {
   return true;
 };
 
-function verifyEthereumAddress(address) {
+export function verifyEthereumAddress(address) {
   if (address.contains(":")) {
     address = address.split(":")[1];
   }
@@ -62,7 +62,7 @@ function verifyEthereumAddress(address) {
  * @param {ETHTransaction} transaction The ETHTransaction
  * @returns {Buffer} rlp
  */
-function encodeToRlp(transaction) {
+export function encodeToRlp(transaction) {
   const list = [
     Buffer.from(transaction.nonce.toString(16)),
     transaction.gasPrice.toString(16),
@@ -89,15 +89,9 @@ function encodeToRlp(transaction) {
     list.push(transaction.signature.s.toNumber());
   }
 
-  return rlp.encode(list);
+  return encode(list);
 }
 
-function getEthereumAddressBytes(address) {
+export function getEthereumAddressBytes(address) {
   return Buffer.from(address, "hex");
 }
-
-module.exports = {
-  encodeToRlp,
-  verifyEthereumAddress,
-  getEthereumAddressBytes,
-};

@@ -1,20 +1,18 @@
-const emitter=require('events').EventEmitter;
-const BigNumber = require('bignumber.js');
+import { EventEmitter as emitter } from "events";
+import BigNumber from "bignumber.js";
 
-const TideWalletCommunicator = require('./TideWalletCommunicator');
-const User = require('./User')
-const config = require('./../constants/config');
-const DBOperator = require('./../database/dbOperator');
-
+import TideWalletCommunicator from "./TideWalletCommunicator";
+import User from "./User";
+import DBOperator from "./../database/dbOperator";
 
 class UI {
   constructor() {
     this.em = new emitter();
     this.eventList = {
-      ready: 'ready',
-      update: 'update',
-      exception: 'exception'
-    }
+      ready: "ready",
+      update: "update",
+      exception: "exception",
+    };
 
     this._user = null;
     this._communicator = null;
@@ -31,13 +29,20 @@ class UI {
   async init({ user, api }) {
     // user = { OAuthID: 'myAppleID', TideWalletID: 'myTideWalletID', InstallID: 'myInstallID' };
     // api = { url: 'https://service.tidewallet.io' };
-    if (!user || !api) throw new Error('invalid input');
-    this._communicator = new TideWalletCommunicator({ apiURL: api.url, apiKey: api.apiKey, apiSecret: api.apiSecret });
-    
+    if (!user || !api) throw new Error("invalid input");
+    this._communicator = new TideWalletCommunicator({
+      apiURL: api.url,
+      apiKey: api.apiKey,
+      apiSecret: api.apiSecret,
+    });
+
     const db = new DBOperator();
     await db.init();
-    this._user = new User({ TideWalletCommunicator: this._communicator, DBOperator: db });
-    const userCheck = await this._user.checkUser()
+    this._user = new User({
+      TideWalletCommunicator: this._communicator,
+      DBOperator: db,
+    });
+    const userCheck = await this._user.checkUser();
     if (!userCheck) {
       const res = await this._createUser(user.OAuthID, user.InstallID);
     }
@@ -60,25 +65,28 @@ class UI {
   }
 
   async getReceiveAddress({ accountID }) {
-    const res = await this._communicator.AccountReceive(accountID)
+    const res = await this._communicator.AccountReceive(accountID);
     return res;
   }
 
   async getTransactionFee({ blockchainID, from, to, amount, data }) {
     let gasLimit = 1;
     if (
-      blockchainID === '8000003C'
-      || blockchainID === 'F000003C'
-      || blockchainID === '80000CFC'
-      || blockchainID === '80001F51'
+      blockchainID === "8000003C" ||
+      blockchainID === "F000003C" ||
+      blockchainID === "80000CFC" ||
+      blockchainID === "80001F51"
     ) {
       const body = {
         fromAddress: from,
         toAddress: to,
         value: amount,
-        data
-      }
-      const resGasLimit = await this._communicator.GetGasLimit(blockchainID, body);
+        data,
+      };
+      const resGasLimit = await this._communicator.GetGasLimit(
+        blockchainID,
+        body
+      );
       gasLimit = resGasLimit.gasLimit;
     }
     const bnGasLimit = new BigNumber(gasLimit);
@@ -90,20 +98,34 @@ class UI {
     const res = {
       slow: bnGasLimit.multipliedBy(bnFeeSlow).toFixed(),
       standard: bnGasLimit.multipliedBy(bnFeeStand).toFixed(),
-      fast: bnGasLimit.multipliedBy(bnFeeFast).toFixed()
-    }
+      fast: bnGasLimit.multipliedBy(bnFeeFast).toFixed(),
+    };
     return res;
   }
 
-  async _createUser(userIdentifier, _installId = '') {
-    const installId = config.installId || _installId
-    const { userId, userSecret } = await await this._communicator.oathRegister(userIdentifier);
-    const timestamp = Math.floor(new Date() / 1000)
-    const credentialData = this._user._generateCredentialData({ userIdentifier, userId, userSecret, installId, timestamp })
-    const wallet = await PaperWallet.createWallet(credentialData.key, credentialData.password);
-    const privateKey = PaperWallet.recoverFromJson(JSON.stringify(wallet), credentialData.password)
+  async _createUser(userIdentifier, _installId = "") {
+    const installId = _installId;
+    const { userId, userSecret } = await await this._communicator.oathRegister(
+      userIdentifier
+    );
+    const timestamp = Math.floor(new Date() / 1000);
+    const credentialData = this._user._generateCredentialData({
+      userIdentifier,
+      userId,
+      userSecret,
+      installId,
+      timestamp,
+    });
+    const wallet = await PaperWallet.createWallet(
+      credentialData.key,
+      credentialData.password
+    );
+    const privateKey = PaperWallet.recoverFromJson(
+      JSON.stringify(wallet),
+      credentialData.password
+    );
     const seed = await PaperWallet.magicSeed(privateKey);
-    const _seed = Buffer.from(seed)
+    const _seed = Buffer.from(seed);
     const extPK = PaperWallet.getExtendedPublicKey(_seed);
 
     const res = await this._communicator.register(installId, installId, extPK);
@@ -112,4 +134,4 @@ class UI {
   }
 }
 
-module.exports = UI;
+export default UI;

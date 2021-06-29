@@ -1,7 +1,7 @@
-const keyStore = require('key-store');
-const bitcoin = require("bitcoinjs-lib");
+import { createStore } from 'key-store';
+import { bip32, ECPair } from "bitcoinjs-lib";
 
-const Cryptor = require('../helpers/Cryptor');
+import Cryptor from '../helpers/Cryptor';
 
 class PaperWallet {
   static EXT_PATH = "m/84'/3324'/0'";
@@ -28,7 +28,7 @@ class PaperWallet {
   static async createWallet(privateKey, password) {
     try {
       let storage = {}
-      const keystore = keyStore.createStore((data) => {storage = data});
+      const keystore = createStore((data) => {storage = data});
       await keystore.saveKey(PaperWallet.KEYSTOREID, password, privateKey);
 
       return storage;
@@ -47,7 +47,7 @@ class PaperWallet {
     try {
       const keyObject = PaperWallet.jsonToWallet(keyObjectJson);
       let storage = {}
-      const keystore = keyStore.createStore((data) => {storage = data}, keyObject);
+      const keystore = createStore((data) => {storage = data}, keyObject);
 
       const pk = keystore.getPrivateKeyData(PaperWallet.KEYSTOREID, password);
       return pk;
@@ -94,10 +94,10 @@ class PaperWallet {
   static getPubKey(seed, chainIndex, keyIndex, options = {}) {
     const {path = PaperWallet.EXT_PATH, compressed = true } = options;
     const dPath = `${path}/${chainIndex}/${keyIndex}`;
-    const root = bitcoin.bip32.fromSeed(seed);
+    const root = bip32.fromSeed(seed);
     const child = root.derivePath(dPath);
     if (!compressed) {
-      return bitcoin.ECPair.fromPublicKey(child.publicKey, { compressed: false }).publicKey.toString('hex');
+      return ECPair.fromPublicKey(child.publicKey, { compressed: false }).publicKey.toString('hex');
     }
     return child.publicKey.toString('hex');
   }
@@ -114,7 +114,7 @@ class PaperWallet {
   static getPriKey(seed, chainIndex, keyIndex, options = {}) {
     const {path = PaperWallet.EXT_PATH } = options;
     const dPath = `${path}/${chainIndex}/${keyIndex}`;
-    const root = bitcoin.bip32.fromSeed(seed);
+    const root = bip32.fromSeed(seed);
     const child = root.derivePath(dPath);
     return child.privateKey.toString('hex');
   }
@@ -125,7 +125,7 @@ class PaperWallet {
    * @returns {string}
    */
   static getExtendedPublicKey(seed) {
-    let root = bitcoin.bip32.fromSeed(seed);
+    let root = bip32.fromSeed(seed);
     root = root.derivePath(PaperWallet.EXT_PATH);
 
     const xPub = root.neutered().toBase58();
@@ -152,4 +152,4 @@ class PaperWallet {
   }
 }
 
-module.exports = PaperWallet;
+export default PaperWallet;

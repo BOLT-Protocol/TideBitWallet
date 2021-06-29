@@ -1,5 +1,5 @@
-const IndexedDB = require("./indexedDB");
-const { isBrowser } = require("../helpers/env");
+import IndexedDB from "./indexedDB";
+import { isBrowser } from "../helpers/env";
 
 class DBOperator {
   static instance;
@@ -64,4 +64,4 @@ class DBOperator {
   }
 }
 
-module.exports = DBOperator;
+export default DBOperator;

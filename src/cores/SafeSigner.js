@@ -8,4 +8,4 @@ class SafeSigner {
   }
 }
 
-module.exports = SafeSigner;
+export default SafeSigner;

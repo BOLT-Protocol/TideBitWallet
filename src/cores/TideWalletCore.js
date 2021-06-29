@@ -1,8 +1,8 @@
-const PaperWallet = require('./PaperWallet');
-const Signer = require('./Signer');
-const SafeSigner = require('./SafeSigner');
-const Cryptor = require('../helpers/Cryptor');
-const rlp = require("../helpers/rlp");
+import PaperWallet from "./PaperWallet";
+import SafeSigner from "./SafeSigner";
+import Signer from "./Signer";
+import Cryptor from "../helpers/Cryptor";
+import rlp from "../helpers/rlp";
 
 class TideWalletCore {
   static instance;
@@ -24,11 +24,11 @@ class TideWalletCore {
    * @param {String} userInfo.installId
    * @param {Number} userInfo.timestamp
    * @param {string} userInfo.keystore
-   * @returns 
+   * @returns
    */
-   setUserInfo(userInfo) {
+  setUserInfo(userInfo) {
     this._userInfo = userInfo;
-    console.log(userInfo)
+    console.log(userInfo);
   }
 
   /**
@@ -36,7 +36,7 @@ class TideWalletCore {
    * @param {String} userIdentifier
    * @returns {String}
    */
-   _getNonce(userIdentifier) {
+  _getNonce(userIdentifier) {
     const cafeca = 0xcafeca;
     let nonce = cafeca;
 
@@ -67,7 +67,7 @@ class TideWalletCore {
    * @param {Number} userInfo.timestamp
    * @returns {String} password
    */
-   _getPassword({ userIdentifier, userId, installId, timestamp }) {
+  _getPassword({ userIdentifier, userId, installId, timestamp }) {
     const userIdentifierBuff = Buffer.from(userIdentifier, "utf8").toString(
       "hex"
     );
@@ -83,7 +83,9 @@ class TideWalletCore {
                   1
                 )
               ),
-              Buffer.from(Cryptor.keccak256round(userId || this._userInfo.id, 1)),
+              Buffer.from(
+                Cryptor.keccak256round(userId || this._userInfo.id, 1)
+              ),
             ]).toString()
           )
         ),
@@ -92,8 +94,7 @@ class TideWalletCore {
             Buffer.concat([
               Buffer.from(
                 Cryptor.keccak256round(
-                  rlp
-                    .toBuffer(
+                  rlp.toBuffer(
                       rlp.toBuffer(timestamp).toString("hex").slice(3, 6)
                     )
                     .toString("hex"),
@@ -101,7 +102,10 @@ class TideWalletCore {
                 )
               ),
               Buffer.from(
-                Cryptor.keccak256round(installIdBuff || this._userInfo.installId, 1)
+                Cryptor.keccak256round(
+                  installIdBuff || this._userInfo.installId,
+                  1
+                )
               ),
             ]).toString()
           )
@@ -112,11 +116,7 @@ class TideWalletCore {
     return password;
   }
 
-  _generateUserSeed({
-    userIdentifier,
-    userId,
-    userSecret,
-  }) {
+  _generateUserSeed({ userIdentifier, userId, userSecret }) {
     const nonce = this._getNonce(userIdentifier);
 
     const userIdentifierBuff = Buffer.from(userIdentifier, "utf8").toString(
@@ -154,7 +154,7 @@ class TideWalletCore {
         ),
       ]).toString()
     );
-    return {seed, _extend};
+    return { seed, _extend };
   }
 
   /**
@@ -177,7 +177,11 @@ class TideWalletCore {
     installId,
     timestamp,
   }) {
-    const {seed, _extend} = this._generateUserSeed({ userIdentifier, userId, userSecret });
+    const { seed, _extend } = this._generateUserSeed({
+      userIdentifier,
+      userId,
+      userSecret,
+    });
 
     const key = Cryptor.keccak256round(seed);
     const password = this._getPassword({
@@ -227,7 +231,7 @@ class TideWalletCore {
     const seed = await PaperWallet.magicSeed(privateKey);
     const _seed = Buffer.from(seed);
     const extendPublicKey = PaperWallet.getExtendedPublicKey(_seed);
-    return { wallet, extendPublicKey }
+    return { wallet, extendPublicKey };
   }
 
   /**
@@ -255,13 +259,10 @@ class TideWalletCore {
       installId,
       timestamp,
     });
-    const wallet = await PaperWallet.createWallet(
-      seed,
-      password
-    );
+    const wallet = await PaperWallet.createWallet(seed, password);
     const _seed = Buffer.from(seed);
     const extendPublicKey = PaperWallet.getExtendedPublicKey(_seed);
-    return { wallet, extendPublicKey }
+    return { wallet, extendPublicKey };
   }
 
   /**
@@ -273,14 +274,14 @@ class TideWalletCore {
       userIdentifier: this._userInfo.thirdPartyId,
       userId: this._userInfo.id,
       installId: this._userInfo.installId,
-      timestamp: this._userInfo.timestamp
-    })
+      timestamp: this._userInfo.timestamp,
+    });
     const keystore = this._userInfo.keystore;
     const pk = PaperWallet.recoverFromJson(keystore, password);
     const seed = PaperWallet.magicSeed(pk);
     return seed;
   }
-  
+
   /**
    * getExtendedPublicKey
    * @returns {string} extPK
@@ -300,30 +301,35 @@ class TideWalletCore {
   //////////////////////////////////////////////////////////////////////
 
   // /**
-  //  * 
+  //  *
   //  * @param {object} param
   //  * @param {object} param.keyPath
   //  * @param {number} param.keyPath.chainIndex
   //  * @param {number} param.keyPath.keyIndex
   //  * @param {Buffer} param.buffer -  hash data buffer
-  //  * @returns 
+  //  * @returns
   //  */
   // async sign({ keyPath, buffer }) {
   //   return this._signer.sign(buffer, keyPath.chainIndex, keyPath.keyIndex);
   // }
 
   /**
-   * 
+   *
    * @param {object} param
    * @param {string} param.keyPath
    * @param {Buffer} param.data -  hash data buffer
-   * @returns 
+   * @returns
    */
   async signBuffer({ keyPath, data }) {
-    const {chainIndex, keyIndex, options} = Cryptor.pathParse(keyPath);
+    const { chainIndex, keyIndex, options } = Cryptor.pathParse(keyPath);
     const seed = await this._getSeedByKeyStore();
-    const privateKey = PaperWallet.getPriKey(Buffer.from(seed, 'hex'), chainIndex, keyIndex, options);
-    return Signer._sign(data, Buffer.from(privateKey, 'hex'));
+    const privateKey = PaperWallet.getPriKey(
+      Buffer.from(seed, "hex"),
+      chainIndex,
+      keyIndex,
+      options
+    );
+    return Signer._sign(data, Buffer.from(privateKey, "hex"));
   }
 
   async signData({ keyPath, jsonData }) {
@@ -335,4 +341,4 @@ class TideWalletCore {
   }
 }
 
-module.exports = TideWalletCore;
+export default TideWalletCore;

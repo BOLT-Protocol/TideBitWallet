@@ -1,12 +1,12 @@
-const axios = require("axios");
-const { url } = require("../constants/config");
+import { create } from "axios";
+import { url } from "../constants/config";
 class HTTPAgent {
   static instance;
 
   constructor({ apiURL = '' } = {}) {
     this.url = apiURL || url
     if (!HTTPAgent.instance) {
-      this.axios = axios.create({
+      this.axios = create({
         baseURL: this.url,
       });
       HTTPAgent.instance = this;
@@ -69,4 +69,4 @@ class HTTPAgent {
   }
 }
 
-module.exports = HTTPAgent;
+export default HTTPAgent;

@@ -1,4 +1,4 @@
-const BigNumber = require('bignumber.js');
+import BigNumber from 'bignumber.js';
 
 class Trader {
   static syncInterval = 24 * 60 * 60 * 1000;
@@ -167,4 +167,4 @@ class Trader {
   }
 }
 
-module.exports = Trader;
+export default Trader;

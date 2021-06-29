@@ -1,4 +1,4 @@
-const TransactionService = require("./transactionService");
+import TransactionService from "./transactionService";
 
 class TransactionServiceBase extends TransactionService {
   /**
@@ -21,4 +21,4 @@ class TransactionServiceBase extends TransactionService {
   }
 }
 
-module.exports = TransactionServiceBase;
+export default TransactionServiceBase;

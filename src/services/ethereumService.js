@@ -1,5 +1,5 @@
-const AccountServiceDecorator = require("./accountServiceDecorator");
-const { ACCOUNT, ACCOUNT_EVT } = require("../models/account.model");
+import AccountServiceDecorator from "./accountServiceDecorator";
+import { ACCOUNT, ACCOUNT_EVT } from "../models/account.model";
 
 class EthereumService extends AccountServiceDecorator {
   constructor(service, TideWalletCommunicator, DBOperator) {
@@ -290,4 +290,4 @@ class EthereumService extends AccountServiceDecorator {
   }
 }
 
-module.exports = EthereumService;
+export default EthereumService;

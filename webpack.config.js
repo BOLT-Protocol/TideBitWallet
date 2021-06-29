@@ -87,21 +87,28 @@ const background = {
     new CleanWebpackPlugin({
       cleanStaleWebpackAssets: false,
       cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, "./dist")],
-    })
+    }),
   ],
-  externals: [nodeExternals()],
-  module: {
-    rules: [
-      {
-        test: /\.(js)$/,
-        exclude: /node_modules/,
-        use: "babel-loader",
-      },
-    ],
-  },
+  // externals: [nodeExternals()],
+  // module: {
+  //   rules: [
+  //     {
+  //       test: /\.(js)$/,
+  //       exclude: /node_modules/,
+  //       use: "babel-loader",
+  //     },
+  //   ],
+  // },
+  // resolve: {
+  //   extensions: [".tsx", ".ts", ".js"],
+  // },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    fallback: {
+      http: require.resolve("stream-http"),
+      https: require.resolve("https-browserify"),
+      crypto: require.resolve("crypto-browserify"),
+    },
   },
-}
+};
 
 module.exports = [frontend, background];

@@ -1,5 +1,5 @@
-const { ACCOUNT_EVT } = require("../models/account.model");
-const AccountService = require("./accountService");
+import { ACCOUNT_EVT } from "../models/account.model";
+import AccountService from "./accountService";
 class AccountServiceBase extends AccountService {
   constructor(AccountCore) {
     super();
@@ -344,4 +344,4 @@ class AccountServiceBase extends AccountService {
   }
 }
 
-module.exports = AccountServiceBase;
+export default AccountServiceBase;

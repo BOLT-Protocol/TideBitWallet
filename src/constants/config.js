@@ -1,18 +1,13 @@
 // const env = 'production';
-const env = 'development';
-const apiVersion = '/api/v1';
-const apiKey = 'yourKey';
-const apiSecret = 'yourSecret';
+const env = "development";
+const apiVersion = "/api/v1";
+export const apiKey = "yourKey";
+export const apiSecret = "yourSecret";
 
-const url = env === 'production' ? 'https://service.tidewallet.io' : 'https://staging.tidewallet.io';
+export const url =
+  (env === "production"
+    ? "https://service.tidewallet.io"
+    : "https://staging.tidewallet.io") + apiVersion;
 
-const network_publish = false;
+export const network_publish = false;
 // const network_publish = true;
-
-module.exports = {
-    url: url + apiVersion,
-    apiKey,
-    apiSecret,
-    installId: '',
-    network_publish
-}

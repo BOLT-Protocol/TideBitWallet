@@ -1,4 +1,4 @@
-const bip39 = require("bip39");
+import { validateMnemonic, mnemonicToSeedSync } from "bip39";
 
 class Mnemonic {
   /**
@@ -7,7 +7,7 @@ class Mnemonic {
    * @returns {boolean} valid
    */
   checkMnemonicVaildity(mnemonic) {
-    return bip39.validateMnemonic(mnemonic);
+    return validateMnemonic(mnemonic);
   }
 
   /**
@@ -17,9 +17,9 @@ class Mnemonic {
    * @returns {Buffer} seed
    */
   mnemonicToSeed(mnemonic, password) {
-    const seed = bip39.mnemonicToSeedSync(mnemonic, password);
+    const seed = mnemonicToSeedSync(mnemonic, password);
     return seed;
   }
 }
 
-module.exports = Mnemonic;
+export default Mnemonic;

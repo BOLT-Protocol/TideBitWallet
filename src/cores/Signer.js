@@ -1,5 +1,8 @@
-const EthUtils = require('ethereumjs-util');
-const { BN, ecsign } = EthUtils;
+// import EthUtils from 'ethereumjs-util';
+// const { ecsign } = EthUtils;
+
+
+import BN from "bn.js";
 
 const ZERO32 = Buffer.alloc(32, 0);
 const EC_GROUP_ORDER = Buffer.from('fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141', 'hex');
@@ -59,4 +62,4 @@ class Signer {
   }
 }
 
-module.exports = Signer;
+export default Signer;

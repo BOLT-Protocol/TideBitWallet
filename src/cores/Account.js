@@ -1,11 +1,11 @@
-const { Subject } = require("rxjs");
-const { ACCOUNT } = require("../models/account.model");
-const AccountServiceBase = require("../services/accountServiceBase");
-const EthereumService = require("../services/ethereumService");
-const { network_publish } = require("../constants/config");
-const TransactionBase = require("../services/transactionService");
-const ETHTransaction = require("../services/transactionServiceETH");
-const BigNumber = require("bignumber.js");
+import { Subject } from "rxjs";
+import { ACCOUNT } from "../models/account.model";
+import AccountServiceBase from "../services/accountServiceBase";
+import EthereumService from "../services/ethereumService";
+import { network_publish } from "../constants/config";
+import TransactionBase from "../services/transactionService";
+import ETHTransaction from "../services/transactionServiceETH";
+import BigNumber from "bignumber.js";
 
 class AccountCore {
   static instance;
@@ -257,7 +257,7 @@ class AccountCore {
    * @method getAllCurrencies
    * @returns {Array} The currency list
    */
-  getAllCurrencies() {
+  getAllCurrencies () {
     return Object.values(this._currencies).reduce(
       (list, curr) => list.concat(curr),
       []
@@ -345,4 +345,4 @@ class AccountCore {
   }
 }
 
-module.exports = AccountCore;
+export default AccountCore;

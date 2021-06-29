@@ -1,13 +1,13 @@
-const TransactionDecorator = require("./accountServiceDecorator");
-const { ACCOUNT } = require("../models/account.model");
-const Cryptor = require("../helpers/Cryptor");
-const {
+import TransactionDecorator from "./accountServiceDecorator";
+import { ACCOUNT } from "../models/account.model";
+import Cryptor from "../helpers/Cryptor";
+import {
   encodeToRlp,
   verifyEthereumAddress,
   getEthereumAddressBytes,
-} = require("../helpers/ethereumUtils");
-const EthereumTransaction = require("../models/transactionETH.model");
-const { Signature } = require("../models/tranasction.model");
+} from "../helpers/ethereumUtils";
+import EthereumTransaction from "../models/transactionETH.model";
+import { Signature } from "../models/tranasction.model";
 
 class TransactionServiceETH extends TransactionDecorator {
   service = null;
@@ -68,7 +68,7 @@ class TransactionServiceETH extends TransactionDecorator {
    * @param {stringm} param.message
    * @param {number} param.chainId
    * @param {number} param.nonce
-   * @returns {ETHTransaction} transaction 
+   * @returns {ETHTransaction} transaction
    */
   prepareTransaction({
     to,
@@ -94,4 +94,4 @@ class TransactionServiceETH extends TransactionDecorator {
   }
 }
 
-module.exports = TransactionServiceETH;
+export default TransactionServiceETH;
