@@ -1,10 +1,12 @@
 const webpack = require("webpack");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const nodeExternals = require("webpack-node-externals");
 
 const frontend = {
   mode: "development",
-  entry: path.resolve(__dirname, "src/main.js"),
+  entry: path.resolve(__dirname, "ui/main.js"),
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "javascript/bundle.js",
@@ -82,7 +84,24 @@ const background = {
     }),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin({
+      cleanStaleWebpackAssets: false,
+      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, "./dist")],
+    })
   ],
+  externals: [nodeExternals()],
+  module: {
+    rules: [
+      {
+        test: /\.(js)$/,
+        exclude: /node_modules/,
+        use: "babel-loader",
+      },
+    ],
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
 }
 
 module.exports = [frontend, background];

@@ -1,6 +1,6 @@
-import { randomHex } from "./javascript/utils/utils";
+import { randomHex } from "../ui/javascript/utils/utils";
+import "./index";
 
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.set({ InstallID: randomHex(32) });
-  });
-  
+  chrome.storage.sync.set({ InstallID: randomHex(32) });
+});
