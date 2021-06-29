@@ -4,7 +4,7 @@
   "description": "A Crypto Wallet in your Browser",
   "main": "bin/main.js",
   "scripts": {
-    "test": "webpack --mode=development"
+    "build": "webpack --mode=development"
   },
   "repository": {
     "type": "git",
