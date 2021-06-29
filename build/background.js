@@ -48168,7 +48168,9 @@ module.exports = JSON.parse('{"name":"tidebitwallet","version":"0.1.0","descript
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index */ "./src/index.js");
+/* harmony import */ var _helpers_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/helper */ "./src/helpers/helper.js");
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index */ "./src/index.js");
+
 
 
 // import Signer from "./cores/Signer";
@@ -48178,58 +48180,57 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ InstallID: randomHex(32) });
+  chrome.storage.sync.set({ InstallID: (0,_helpers_helper__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32) });
 });
 console.log("hi");
 
 (async () => {
-  async () => {
-    const tw = new _index__WEBPACK_IMPORTED_MODULE_0__.default();
-    const api = {
-      apiURL: "https://service.tidewallet.io/api/v1",
-      apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
-      apiSecret: "9e37d67450dc906042fde75113ecb78c",
-    };
-    const user1 = {
-      OAuthID: "test2ejknkjdniednwjq",
-      InstallID:
-        "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
-      mnemonic:
-        "cry hub inmate cliff sun program public else atom absurd release inherit funny edge assault",
-      password: "12345",
-    };
-    const user2 = {
-      OAuthID: "test2ejknkjdniednwjq",
-      InstallID:
-        "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
-    };
-    await tw.init({ user: user2, api });
-    // test
-    console.log("overview:", await tw.overview());
-    console.log(
-      "getAssetDetail:",
-      await tw.getAssetDetail({
-        assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-      })
-    );
-    console.log(
-      "getTransactionDetail:",
-      await tw.getTransactionDetail({
-        assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-        transactionID: "",
-      })
-    );
-    console.log(
-      "getReceivingAddress:",
-      await tw.getReceivingAddress({
-        accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-      })
-    );
-    console.log("getWalletConfig:", await tw.getWalletConfig());
-    await tw.sync();
-    console.log("backup:", await tw.backup());
-    await tw.close();
+  const tw = new _index__WEBPACK_IMPORTED_MODULE_1__.default();
+  console.log("hi");
+  const api = {
+    apiURL: "https://service.tidewallet.io/api/v1",
+    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+    apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
+  const user1 = {
+    OAuthID: "test2ejknkjdniednwjq",
+    InstallID:
+      "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
+    mnemonic:
+      "cry hub inmate cliff sun program public else atom absurd release inherit funny edge assault",
+    password: "12345",
+  };
+  const user2 = {
+    OAuthID: "test2ejknkjdniednwjq",
+    InstallID:
+      "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
+  };
+  await tw.init({ user: user2, api });
+  // test
+  console.log("overview:", await tw.overview());
+  console.log(
+    "getAssetDetail:",
+    await tw.getAssetDetail({
+      assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
+    })
+  );
+  console.log(
+    "getTransactionDetail:",
+    await tw.getTransactionDetail({
+      assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
+      transactionID: "",
+    })
+  );
+  console.log(
+    "getReceivingAddress:",
+    await tw.getReceivingAddress({
+      accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
+    })
+  );
+  console.log("getWalletConfig:", await tw.getWalletConfig());
+  await tw.sync();
+  console.log("backup:", await tw.backup());
+  await tw.close();
 })();
 
 console.log("hi");
@@ -51469,22 +51470,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helper */ "./src/helpers/helper.js");
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
+
+
 const { Keccak } = __webpack_require__(/*! sha3 */ "./node_modules/sha3/index.js");
 const hash = new Keccak(256);
 
-const randomHex = (n) => {
-  var ID = "";
-  var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  n = parseInt(n);
-  if (!(n > 0)) {
-    n = 8;
-  }
-  while (ID.length < n) {
-    ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
-  }
-  return ID;
-};
 class Cryptor {
   static keccak256round(str, round = 2) {
     let result = str.replace("0x", "");
@@ -51500,7 +51492,7 @@ class Cryptor {
   static randomBytes(length) {
     let hexStr = "";
     if (length > 0) {
-      hexStr = randomHex(length);
+      hexStr = (0,_helper__WEBPACK_IMPORTED_MODULE_0__.randomHex)(length);
     }
     return Buffer.from(hexStr, "hex");
   }
@@ -51700,6 +51692,33 @@ function encodeToRlp(transaction) {
 function getEthereumAddressBytes(address) {
   return Buffer.from(address, "hex");
 }
+
+
+/***/ }),
+
+/***/ "./src/helpers/helper.js":
+/*!*******************************!*\
+  !*** ./src/helpers/helper.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "randomHex": () => (/* binding */ randomHex)
+/* harmony export */ });
+const randomHex = (n) => {
+  var ID = "";
+  var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  n = parseInt(n);
+  if (!(n > 0)) {
+    n = 8;
+  }
+  while (ID.length < n) {
+    ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
+  }
+  return ID;
+};
 
 
 /***/ }),
@@ -53381,7 +53400,7 @@ class TransactionServiceETH extends _accountServiceDecorator__WEBPACK_IMPORTED_M
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d94a31abf279a795f579")
+/******/ 		__webpack_require__.h = () => ("b5a235a7db831e8fa098")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

@@ -1,18 +1,8 @@
+import { randomHex } from "./helper";
+
 const { Keccak } = require("sha3");
 const hash = new Keccak(256);
 
-const randomHex = (n) => {
-  var ID = "";
-  var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  n = parseInt(n);
-  if (!(n > 0)) {
-    n = 8;
-  }
-  while (ID.length < n) {
-    ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
-  }
-  return ID;
-};
 class Cryptor {
   static keccak256round(str, round = 2) {
     let result = str.replace("0x", "");
