@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1624980256109
+      // 1625025181825
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -8372,7 +8372,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "to": () => (/* binding */ to),
 /* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter),
 /* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter),
-/* harmony export */   "currentView": () => (/* binding */ currentView)
+/* harmony export */   "currentView": () => (/* binding */ currentView),
+/* harmony export */   "getInstallID": () => (/* binding */ getInstallID)
 /* harmony export */ });
 const randomHex = (n) => {
   var ID = "";
@@ -8451,6 +8452,22 @@ const currentView = () => {
   const scaffold = document.querySelector("scaffold-widget");
   const view = scaffold?.attributes?.view?.value;
   return view;
+};
+const getInstallID = () => {
+  const key = "InstallID";
+  let InstallID;
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get([key], (result) => {
+      console.log(result);
+      if (result[key] === undefined) {
+        InstallID = randomHex(32);
+        chrome.storage.sync.set({ InstallID });
+      } else {
+        InstallID = result[key];
+      }
+      resolve(InstallID);
+    });
+  });
 };
 
 
@@ -9449,7 +9466,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("a5a009afeca43db98e16")
+/******/ 		__webpack_require__.h = () => ("2849c818c9c4fa11e665")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

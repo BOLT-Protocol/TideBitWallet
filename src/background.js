@@ -1,12 +1,6 @@
 import { randomHex } from "./helpers/helper";
 import TideWallet from "./index";
 
-// import Signer from "./cores/Signer";
-/**
- * import EthUtils from 'ethereumjs-util';
- * const { ecsign } = EthUtils;
- */
-
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ InstallID: randomHex(32) });
 });

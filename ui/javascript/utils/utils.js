@@ -76,3 +76,19 @@ export const currentView = () => {
   const view = scaffold?.attributes?.view?.value;
   return view;
 };
+export const getInstallID = () => {
+  const key = "InstallID";
+  let InstallID;
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get([key], (result) => {
+      console.log(result);
+      if (result[key] === undefined) {
+        InstallID = randomHex(32);
+        chrome.storage.sync.set({ InstallID });
+      } else {
+        InstallID = result[key];
+      }
+      resolve(InstallID);
+    });
+  });
+};

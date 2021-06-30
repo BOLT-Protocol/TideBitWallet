@@ -90,24 +90,44 @@ const background = {
     }),
   ],
   // externals: [nodeExternals()],
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.(js)$/,
-  //       exclude: /node_modules/,
-  //       use: "babel-loader",
-  //     },
-  //   ],
-  // },
-  // resolve: {
-  //   extensions: [".tsx", ".ts", ".js"],
-  // },
+  module: {
+    rules: [
+      // {
+      //   test: /\.(js)$/,
+      //   exclude: /node_modules/,
+      //   use: "babel-loader",
+      // },
+    ],
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   resolve: {
     fallback: {
       http: require.resolve("stream-http"),
       https: require.resolve("https-browserify"),
       crypto: require.resolve("crypto-browserify"),
     },
+  },
+};
+
+const ethereumUtils = {
+  entry: path.resolve(__dirname, "ethereumUtils/signature.ts"),
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  output: {
+    filename: "ethereum_utils.js",
+    path: path.resolve(__dirname, "src/helpers"),
   },
 };
 

@@ -27520,6 +27520,121 @@ Emitter.prototype.hasListeners = function(event){
 
 /***/ }),
 
+/***/ "./node_modules/ethereum-cryptography/random.js":
+/*!******************************************************!*\
+  !*** ./node_modules/ethereum-cryptography/random.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var randombytes = __webpack_require__(/*! randombytes */ "./node_modules/randombytes/browser.js");
+function getRandomBytes(bytes) {
+    return new Promise(function (resolve, reject) {
+        randombytes(bytes, function (err, resp) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(resp);
+        });
+    });
+}
+exports.getRandomBytes = getRandomBytes;
+function getRandomBytesSync(bytes) {
+    return randombytes(bytes);
+}
+exports.getRandomBytesSync = getRandomBytesSync;
+//# sourceMappingURL=random.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ethereum-cryptography/secp256k1.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/ethereum-cryptography/secp256k1.js ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var secp256k1_1 = __webpack_require__(/*! secp256k1 */ "./node_modules/secp256k1/elliptic.js");
+var random_1 = __webpack_require__(/*! ./random */ "./node_modules/ethereum-cryptography/random.js");
+var SECP256K1_PRIVATE_KEY_SIZE = 32;
+function createPrivateKey() {
+    return __awaiter(this, void 0, void 0, function () {
+        var pk;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (false) {}
+                    return [4 /*yield*/, random_1.getRandomBytes(SECP256K1_PRIVATE_KEY_SIZE)];
+                case 1:
+                    pk = _a.sent();
+                    if (secp256k1_1.privateKeyVerify(pk)) {
+                        return [2 /*return*/, pk];
+                    }
+                    return [3 /*break*/, 0];
+                case 2: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.createPrivateKey = createPrivateKey;
+function createPrivateKeySync() {
+    while (true) {
+        var pk = random_1.getRandomBytesSync(SECP256K1_PRIVATE_KEY_SIZE);
+        if (secp256k1_1.privateKeyVerify(pk)) {
+            return pk;
+        }
+    }
+}
+exports.createPrivateKeySync = createPrivateKeySync;
+__export(__webpack_require__(/*! secp256k1 */ "./node_modules/secp256k1/elliptic.js"));
+//# sourceMappingURL=secp256k1.js.map
+
+/***/ }),
+
 /***/ "./node_modules/events/events.js":
 /*!***************************************!*\
   !*** ./node_modules/events/events.js ***!
@@ -41686,6 +41801,775 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 /***/ }),
 
+/***/ "./node_modules/secp256k1/elliptic.js":
+/*!********************************************!*\
+  !*** ./node_modules/secp256k1/elliptic.js ***!
+  \********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = __webpack_require__(/*! ./lib */ "./node_modules/secp256k1/lib/index.js")(__webpack_require__(/*! ./lib/elliptic */ "./node_modules/secp256k1/lib/elliptic.js"))
+
+
+/***/ }),
+
+/***/ "./node_modules/secp256k1/lib/elliptic.js":
+/*!************************************************!*\
+  !*** ./node_modules/secp256k1/lib/elliptic.js ***!
+  \************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EC = __webpack_require__(/*! elliptic */ "./node_modules/elliptic/lib/elliptic.js").ec
+
+const ec = new EC('secp256k1')
+const ecparams = ec.curve
+
+// Hack, we can not use bn.js@5, while elliptic uses bn.js@4
+// See https://github.com/indutny/elliptic/issues/191#issuecomment-569888758
+const BN = ecparams.n.constructor
+
+function loadCompressedPublicKey (first, xbuf) {
+  let x = new BN(xbuf)
+
+  // overflow
+  if (x.cmp(ecparams.p) >= 0) return null
+  x = x.toRed(ecparams.red)
+
+  // compute corresponding Y
+  let y = x.redSqr().redIMul(x).redIAdd(ecparams.b).redSqrt()
+  if ((first === 0x03) !== y.isOdd()) y = y.redNeg()
+
+  return ec.keyPair({ pub: { x: x, y: y } })
+}
+
+function loadUncompressedPublicKey (first, xbuf, ybuf) {
+  let x = new BN(xbuf)
+  let y = new BN(ybuf)
+
+  // overflow
+  if (x.cmp(ecparams.p) >= 0 || y.cmp(ecparams.p) >= 0) return null
+
+  x = x.toRed(ecparams.red)
+  y = y.toRed(ecparams.red)
+
+  // is odd flag
+  if ((first === 0x06 || first === 0x07) && y.isOdd() !== (first === 0x07)) return null
+
+  // x*x*x + b = y*y
+  const x3 = x.redSqr().redIMul(x)
+  if (!y.redSqr().redISub(x3.redIAdd(ecparams.b)).isZero()) return null
+
+  return ec.keyPair({ pub: { x: x, y: y } })
+}
+
+function loadPublicKey (pubkey) {
+  // length should be validated in interface
+  const first = pubkey[0]
+  switch (first) {
+    case 0x02:
+    case 0x03:
+      if (pubkey.length !== 33) return null
+      return loadCompressedPublicKey(first, pubkey.subarray(1, 33))
+    case 0x04:
+    case 0x06:
+    case 0x07:
+      if (pubkey.length !== 65) return null
+      return loadUncompressedPublicKey(first, pubkey.subarray(1, 33), pubkey.subarray(33, 65))
+    default:
+      return null
+  }
+}
+
+function savePublicKey (output, point) {
+  const pubkey = point.encode(null, output.length === 33)
+  // Loop should be faster because we do not need create extra Uint8Array
+  // output.set(new Uint8Array(pubkey))
+  for (let i = 0; i < output.length; ++i) output[i] = pubkey[i]
+}
+
+module.exports = {
+  contextRandomize () {
+    return 0
+  },
+
+  privateKeyVerify (seckey) {
+    const bn = new BN(seckey)
+    return bn.cmp(ecparams.n) < 0 && !bn.isZero() ? 0 : 1
+  },
+
+  privateKeyNegate (seckey) {
+    const bn = new BN(seckey)
+    const negate = ecparams.n.sub(bn).umod(ecparams.n).toArrayLike(Uint8Array, 'be', 32)
+    seckey.set(negate)
+    return 0
+  },
+
+  privateKeyTweakAdd (seckey, tweak) {
+    const bn = new BN(tweak)
+    if (bn.cmp(ecparams.n) >= 0) return 1
+
+    bn.iadd(new BN(seckey))
+    if (bn.cmp(ecparams.n) >= 0) bn.isub(ecparams.n)
+    if (bn.isZero()) return 1
+
+    const tweaked = bn.toArrayLike(Uint8Array, 'be', 32)
+    seckey.set(tweaked)
+
+    return 0
+  },
+
+  privateKeyTweakMul (seckey, tweak) {
+    let bn = new BN(tweak)
+    if (bn.cmp(ecparams.n) >= 0 || bn.isZero()) return 1
+
+    bn.imul(new BN(seckey))
+    if (bn.cmp(ecparams.n) >= 0) bn = bn.umod(ecparams.n)
+
+    const tweaked = bn.toArrayLike(Uint8Array, 'be', 32)
+    seckey.set(tweaked)
+
+    return 0
+  },
+
+  publicKeyVerify (pubkey) {
+    const pair = loadPublicKey(pubkey)
+    return pair === null ? 1 : 0
+  },
+
+  publicKeyCreate (output, seckey) {
+    const bn = new BN(seckey)
+    if (bn.cmp(ecparams.n) >= 0 || bn.isZero()) return 1
+
+    const point = ec.keyFromPrivate(seckey).getPublic()
+    savePublicKey(output, point)
+
+    return 0
+  },
+
+  publicKeyConvert (output, pubkey) {
+    const pair = loadPublicKey(pubkey)
+    if (pair === null) return 1
+
+    const point = pair.getPublic()
+    savePublicKey(output, point)
+
+    return 0
+  },
+
+  publicKeyNegate (output, pubkey) {
+    const pair = loadPublicKey(pubkey)
+    if (pair === null) return 1
+
+    const point = pair.getPublic()
+    point.y = point.y.redNeg()
+    savePublicKey(output, point)
+
+    return 0
+  },
+
+  publicKeyCombine (output, pubkeys) {
+    const pairs = new Array(pubkeys.length)
+    for (let i = 0; i < pubkeys.length; ++i) {
+      pairs[i] = loadPublicKey(pubkeys[i])
+      if (pairs[i] === null) return 1
+    }
+
+    let point = pairs[0].getPublic()
+    for (let i = 1; i < pairs.length; ++i) point = point.add(pairs[i].pub)
+    if (point.isInfinity()) return 2
+
+    savePublicKey(output, point)
+
+    return 0
+  },
+
+  publicKeyTweakAdd (output, pubkey, tweak) {
+    const pair = loadPublicKey(pubkey)
+    if (pair === null) return 1
+
+    tweak = new BN(tweak)
+    if (tweak.cmp(ecparams.n) >= 0) return 2
+
+    const point = pair.getPublic().add(ecparams.g.mul(tweak))
+    if (point.isInfinity()) return 2
+
+    savePublicKey(output, point)
+
+    return 0
+  },
+
+  publicKeyTweakMul (output, pubkey, tweak) {
+    const pair = loadPublicKey(pubkey)
+    if (pair === null) return 1
+
+    tweak = new BN(tweak)
+    if (tweak.cmp(ecparams.n) >= 0 || tweak.isZero()) return 2
+
+    const point = pair.getPublic().mul(tweak)
+    savePublicKey(output, point)
+
+    return 0
+  },
+
+  signatureNormalize (sig) {
+    const r = new BN(sig.subarray(0, 32))
+    const s = new BN(sig.subarray(32, 64))
+    if (r.cmp(ecparams.n) >= 0 || s.cmp(ecparams.n) >= 0) return 1
+
+    if (s.cmp(ec.nh) === 1) {
+      sig.set(ecparams.n.sub(s).toArrayLike(Uint8Array, 'be', 32), 32)
+    }
+
+    return 0
+  },
+
+  // Copied 1-to-1 from https://github.com/bitcoinjs/bip66/blob/master/index.js
+  // Adapted for Uint8Array instead Buffer
+  signatureExport (obj, sig) {
+    const sigR = sig.subarray(0, 32)
+    const sigS = sig.subarray(32, 64)
+    if (new BN(sigR).cmp(ecparams.n) >= 0) return 1
+    if (new BN(sigS).cmp(ecparams.n) >= 0) return 1
+
+    const { output } = obj
+
+    // Prepare R
+    let r = output.subarray(4, 4 + 33)
+    r[0] = 0x00
+    r.set(sigR, 1)
+
+    let lenR = 33
+    let posR = 0
+    for (; lenR > 1 && r[posR] === 0x00 && !(r[posR + 1] & 0x80); --lenR, ++posR);
+
+    r = r.subarray(posR)
+    if (r[0] & 0x80) return 1
+    if (lenR > 1 && (r[0] === 0x00) && !(r[1] & 0x80)) return 1
+
+    // Prepare S
+    let s = output.subarray(6 + 33, 6 + 33 + 33)
+    s[0] = 0x00
+    s.set(sigS, 1)
+
+    let lenS = 33
+    let posS = 0
+    for (; lenS > 1 && s[posS] === 0x00 && !(s[posS + 1] & 0x80); --lenS, ++posS);
+
+    s = s.subarray(posS)
+    if (s[0] & 0x80) return 1
+    if (lenS > 1 && (s[0] === 0x00) && !(s[1] & 0x80)) return 1
+
+    // Set output length for return
+    obj.outputlen = 6 + lenR + lenS
+
+    // Output in specified format
+    // 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
+    output[0] = 0x30
+    output[1] = obj.outputlen - 2
+    output[2] = 0x02
+    output[3] = r.length
+    output.set(r, 4)
+    output[4 + lenR] = 0x02
+    output[5 + lenR] = s.length
+    output.set(s, 6 + lenR)
+
+    return 0
+  },
+
+  // Copied 1-to-1 from https://github.com/bitcoinjs/bip66/blob/master/index.js
+  // Adapted for Uint8Array instead Buffer
+  signatureImport (output, sig) {
+    if (sig.length < 8) return 1
+    if (sig.length > 72) return 1
+    if (sig[0] !== 0x30) return 1
+    if (sig[1] !== sig.length - 2) return 1
+    if (sig[2] !== 0x02) return 1
+
+    const lenR = sig[3]
+    if (lenR === 0) return 1
+    if (5 + lenR >= sig.length) return 1
+    if (sig[4 + lenR] !== 0x02) return 1
+
+    const lenS = sig[5 + lenR]
+    if (lenS === 0) return 1
+    if ((6 + lenR + lenS) !== sig.length) return 1
+
+    if (sig[4] & 0x80) return 1
+    if (lenR > 1 && (sig[4] === 0x00) && !(sig[5] & 0x80)) return 1
+
+    if (sig[lenR + 6] & 0x80) return 1
+    if (lenS > 1 && (sig[lenR + 6] === 0x00) && !(sig[lenR + 7] & 0x80)) return 1
+
+    let sigR = sig.subarray(4, 4 + lenR)
+    if (sigR.length === 33 && sigR[0] === 0x00) sigR = sigR.subarray(1)
+    if (sigR.length > 32) return 1
+
+    let sigS = sig.subarray(6 + lenR)
+    if (sigS.length === 33 && sigS[0] === 0x00) sigS = sigS.slice(1)
+    if (sigS.length > 32) throw new Error('S length is too long')
+
+    let r = new BN(sigR)
+    if (r.cmp(ecparams.n) >= 0) r = new BN(0)
+
+    let s = new BN(sig.subarray(6 + lenR))
+    if (s.cmp(ecparams.n) >= 0) s = new BN(0)
+
+    output.set(r.toArrayLike(Uint8Array, 'be', 32), 0)
+    output.set(s.toArrayLike(Uint8Array, 'be', 32), 32)
+
+    return 0
+  },
+
+  ecdsaSign (obj, message, seckey, data, noncefn) {
+    if (noncefn) {
+      const _noncefn = noncefn
+      noncefn = (counter) => {
+        const nonce = _noncefn(message, seckey, null, data, counter)
+
+        const isValid = nonce instanceof Uint8Array && nonce.length === 32
+        if (!isValid) throw new Error('This is the way')
+
+        return new BN(nonce)
+      }
+    }
+
+    const d = new BN(seckey)
+    if (d.cmp(ecparams.n) >= 0 || d.isZero()) return 1
+
+    let sig
+    try {
+      sig = ec.sign(message, seckey, { canonical: true, k: noncefn, pers: data })
+    } catch (err) {
+      return 1
+    }
+
+    obj.signature.set(sig.r.toArrayLike(Uint8Array, 'be', 32), 0)
+    obj.signature.set(sig.s.toArrayLike(Uint8Array, 'be', 32), 32)
+    obj.recid = sig.recoveryParam
+
+    return 0
+  },
+
+  ecdsaVerify (sig, msg32, pubkey) {
+    const sigObj = { r: sig.subarray(0, 32), s: sig.subarray(32, 64) }
+
+    const sigr = new BN(sigObj.r)
+    const sigs = new BN(sigObj.s)
+    if (sigr.cmp(ecparams.n) >= 0 || sigs.cmp(ecparams.n) >= 0) return 1
+    if (sigs.cmp(ec.nh) === 1 || sigr.isZero() || sigs.isZero()) return 3
+
+    const pair = loadPublicKey(pubkey)
+    if (pair === null) return 2
+
+    const point = pair.getPublic()
+    const isValid = ec.verify(msg32, sigObj, point)
+    return isValid ? 0 : 3
+  },
+
+  ecdsaRecover (output, sig, recid, msg32) {
+    const sigObj = { r: sig.slice(0, 32), s: sig.slice(32, 64) }
+
+    const sigr = new BN(sigObj.r)
+    const sigs = new BN(sigObj.s)
+    if (sigr.cmp(ecparams.n) >= 0 || sigs.cmp(ecparams.n) >= 0) return 1
+
+    if (sigr.isZero() || sigs.isZero()) return 2
+
+    // Can throw `throw new Error('Unable to find sencond key candinate');`
+    let point
+    try {
+      point = ec.recoverPubKey(msg32, sigObj, recid)
+    } catch (err) {
+      return 2
+    }
+
+    savePublicKey(output, point)
+
+    return 0
+  },
+
+  ecdh (output, pubkey, seckey, data, hashfn, xbuf, ybuf) {
+    const pair = loadPublicKey(pubkey)
+    if (pair === null) return 1
+
+    const scalar = new BN(seckey)
+    if (scalar.cmp(ecparams.n) >= 0 || scalar.isZero()) return 2
+
+    const point = pair.getPublic().mul(scalar)
+
+    if (hashfn === undefined) {
+      const data = point.encode(null, true)
+      const sha256 = ec.hash().update(data).digest()
+      for (let i = 0; i < 32; ++i) output[i] = sha256[i]
+    } else {
+      if (!xbuf) xbuf = new Uint8Array(32)
+      const x = point.getX().toArray('be', 32)
+      for (let i = 0; i < 32; ++i) xbuf[i] = x[i]
+
+      if (!ybuf) ybuf = new Uint8Array(32)
+      const y = point.getY().toArray('be', 32)
+      for (let i = 0; i < 32; ++i) ybuf[i] = y[i]
+
+      const hash = hashfn(xbuf, ybuf, data)
+
+      const isValid = hash instanceof Uint8Array && hash.length === output.length
+      if (!isValid) return 2
+
+      output.set(hash)
+    }
+
+    return 0
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/secp256k1/lib/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/secp256k1/lib/index.js ***!
+  \*********************************************/
+/***/ ((module) => {
+
+const errors = {
+  IMPOSSIBLE_CASE: 'Impossible case. Please create issue.',
+  TWEAK_ADD:
+    'The tweak was out of range or the resulted private key is invalid',
+  TWEAK_MUL: 'The tweak was out of range or equal to zero',
+  CONTEXT_RANDOMIZE_UNKNOW: 'Unknow error on context randomization',
+  SECKEY_INVALID: 'Private Key is invalid',
+  PUBKEY_PARSE: 'Public Key could not be parsed',
+  PUBKEY_SERIALIZE: 'Public Key serialization error',
+  PUBKEY_COMBINE: 'The sum of the public keys is not valid',
+  SIG_PARSE: 'Signature could not be parsed',
+  SIGN: 'The nonce generation function failed, or the private key was invalid',
+  RECOVER: 'Public key could not be recover',
+  ECDH: 'Scalar was invalid (zero or overflow)'
+}
+
+function assert (cond, msg) {
+  if (!cond) throw new Error(msg)
+}
+
+function isUint8Array (name, value, length) {
+  assert(value instanceof Uint8Array, `Expected ${name} to be an Uint8Array`)
+
+  if (length !== undefined) {
+    if (Array.isArray(length)) {
+      const numbers = length.join(', ')
+      const msg = `Expected ${name} to be an Uint8Array with length [${numbers}]`
+      assert(length.includes(value.length), msg)
+    } else {
+      const msg = `Expected ${name} to be an Uint8Array with length ${length}`
+      assert(value.length === length, msg)
+    }
+  }
+}
+
+function isCompressed (value) {
+  assert(toTypeString(value) === 'Boolean', 'Expected compressed to be a Boolean')
+}
+
+function getAssertedOutput (output = (len) => new Uint8Array(len), length) {
+  if (typeof output === 'function') output = output(length)
+  isUint8Array('output', output, length)
+  return output
+}
+
+function toTypeString (value) {
+  return Object.prototype.toString.call(value).slice(8, -1)
+}
+
+module.exports = (secp256k1) => {
+  return {
+    contextRandomize (seed) {
+      assert(
+        seed === null || seed instanceof Uint8Array,
+        'Expected seed to be an Uint8Array or null'
+      )
+      if (seed !== null) isUint8Array('seed', seed, 32)
+
+      switch (secp256k1.contextRandomize(seed)) {
+        case 1:
+          throw new Error(errors.CONTEXT_RANDOMIZE_UNKNOW)
+      }
+    },
+
+    privateKeyVerify (seckey) {
+      isUint8Array('private key', seckey, 32)
+
+      return secp256k1.privateKeyVerify(seckey) === 0
+    },
+
+    privateKeyNegate (seckey) {
+      isUint8Array('private key', seckey, 32)
+
+      switch (secp256k1.privateKeyNegate(seckey)) {
+        case 0:
+          return seckey
+        case 1:
+          throw new Error(errors.IMPOSSIBLE_CASE)
+      }
+    },
+
+    privateKeyTweakAdd (seckey, tweak) {
+      isUint8Array('private key', seckey, 32)
+      isUint8Array('tweak', tweak, 32)
+
+      switch (secp256k1.privateKeyTweakAdd(seckey, tweak)) {
+        case 0:
+          return seckey
+        case 1:
+          throw new Error(errors.TWEAK_ADD)
+      }
+    },
+
+    privateKeyTweakMul (seckey, tweak) {
+      isUint8Array('private key', seckey, 32)
+      isUint8Array('tweak', tweak, 32)
+
+      switch (secp256k1.privateKeyTweakMul(seckey, tweak)) {
+        case 0:
+          return seckey
+        case 1:
+          throw new Error(errors.TWEAK_MUL)
+      }
+    },
+
+    publicKeyVerify (pubkey) {
+      isUint8Array('public key', pubkey, [33, 65])
+
+      return secp256k1.publicKeyVerify(pubkey) === 0
+    },
+
+    publicKeyCreate (seckey, compressed = true, output) {
+      isUint8Array('private key', seckey, 32)
+      isCompressed(compressed)
+      output = getAssertedOutput(output, compressed ? 33 : 65)
+
+      switch (secp256k1.publicKeyCreate(output, seckey)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.SECKEY_INVALID)
+        case 2:
+          throw new Error(errors.PUBKEY_SERIALIZE)
+      }
+    },
+
+    publicKeyConvert (pubkey, compressed = true, output) {
+      isUint8Array('public key', pubkey, [33, 65])
+      isCompressed(compressed)
+      output = getAssertedOutput(output, compressed ? 33 : 65)
+
+      switch (secp256k1.publicKeyConvert(output, pubkey)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.PUBKEY_PARSE)
+        case 2:
+          throw new Error(errors.PUBKEY_SERIALIZE)
+      }
+    },
+
+    publicKeyNegate (pubkey, compressed = true, output) {
+      isUint8Array('public key', pubkey, [33, 65])
+      isCompressed(compressed)
+      output = getAssertedOutput(output, compressed ? 33 : 65)
+
+      switch (secp256k1.publicKeyNegate(output, pubkey)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.PUBKEY_PARSE)
+        case 2:
+          throw new Error(errors.IMPOSSIBLE_CASE)
+        case 3:
+          throw new Error(errors.PUBKEY_SERIALIZE)
+      }
+    },
+
+    publicKeyCombine (pubkeys, compressed = true, output) {
+      assert(Array.isArray(pubkeys), 'Expected public keys to be an Array')
+      assert(pubkeys.length > 0, 'Expected public keys array will have more than zero items')
+      for (const pubkey of pubkeys) {
+        isUint8Array('public key', pubkey, [33, 65])
+      }
+      isCompressed(compressed)
+      output = getAssertedOutput(output, compressed ? 33 : 65)
+
+      switch (secp256k1.publicKeyCombine(output, pubkeys)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.PUBKEY_PARSE)
+        case 2:
+          throw new Error(errors.PUBKEY_COMBINE)
+        case 3:
+          throw new Error(errors.PUBKEY_SERIALIZE)
+      }
+    },
+
+    publicKeyTweakAdd (pubkey, tweak, compressed = true, output) {
+      isUint8Array('public key', pubkey, [33, 65])
+      isUint8Array('tweak', tweak, 32)
+      isCompressed(compressed)
+      output = getAssertedOutput(output, compressed ? 33 : 65)
+
+      switch (secp256k1.publicKeyTweakAdd(output, pubkey, tweak)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.PUBKEY_PARSE)
+        case 2:
+          throw new Error(errors.TWEAK_ADD)
+      }
+    },
+
+    publicKeyTweakMul (pubkey, tweak, compressed = true, output) {
+      isUint8Array('public key', pubkey, [33, 65])
+      isUint8Array('tweak', tweak, 32)
+      isCompressed(compressed)
+      output = getAssertedOutput(output, compressed ? 33 : 65)
+
+      switch (secp256k1.publicKeyTweakMul(output, pubkey, tweak)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.PUBKEY_PARSE)
+        case 2:
+          throw new Error(errors.TWEAK_MUL)
+      }
+    },
+
+    signatureNormalize (sig) {
+      isUint8Array('signature', sig, 64)
+
+      switch (secp256k1.signatureNormalize(sig)) {
+        case 0:
+          return sig
+        case 1:
+          throw new Error(errors.SIG_PARSE)
+      }
+    },
+
+    signatureExport (sig, output) {
+      isUint8Array('signature', sig, 64)
+      output = getAssertedOutput(output, 72)
+
+      const obj = { output, outputlen: 72 }
+      switch (secp256k1.signatureExport(obj, sig)) {
+        case 0:
+          return output.slice(0, obj.outputlen)
+        case 1:
+          throw new Error(errors.SIG_PARSE)
+        case 2:
+          throw new Error(errors.IMPOSSIBLE_CASE)
+      }
+    },
+
+    signatureImport (sig, output) {
+      isUint8Array('signature', sig)
+      output = getAssertedOutput(output, 64)
+
+      switch (secp256k1.signatureImport(output, sig)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.SIG_PARSE)
+        case 2:
+          throw new Error(errors.IMPOSSIBLE_CASE)
+      }
+    },
+
+    ecdsaSign (msg32, seckey, options = {}, output) {
+      isUint8Array('message', msg32, 32)
+      isUint8Array('private key', seckey, 32)
+      assert(toTypeString(options) === 'Object', 'Expected options to be an Object')
+      if (options.data !== undefined) isUint8Array('options.data', options.data)
+      if (options.noncefn !== undefined) assert(toTypeString(options.noncefn) === 'Function', 'Expected options.noncefn to be a Function')
+      output = getAssertedOutput(output, 64)
+
+      const obj = { signature: output, recid: null }
+      switch (secp256k1.ecdsaSign(obj, msg32, seckey, options.data, options.noncefn)) {
+        case 0:
+          return obj
+        case 1:
+          throw new Error(errors.SIGN)
+        case 2:
+          throw new Error(errors.IMPOSSIBLE_CASE)
+      }
+    },
+
+    ecdsaVerify (sig, msg32, pubkey) {
+      isUint8Array('signature', sig, 64)
+      isUint8Array('message', msg32, 32)
+      isUint8Array('public key', pubkey, [33, 65])
+
+      switch (secp256k1.ecdsaVerify(sig, msg32, pubkey)) {
+        case 0:
+          return true
+        case 3:
+          return false
+        case 1:
+          throw new Error(errors.SIG_PARSE)
+        case 2:
+          throw new Error(errors.PUBKEY_PARSE)
+      }
+    },
+
+    ecdsaRecover (sig, recid, msg32, compressed = true, output) {
+      isUint8Array('signature', sig, 64)
+      assert(
+        toTypeString(recid) === 'Number' &&
+          recid >= 0 &&
+          recid <= 3,
+        'Expected recovery id to be a Number within interval [0, 3]'
+      )
+      isUint8Array('message', msg32, 32)
+      isCompressed(compressed)
+      output = getAssertedOutput(output, compressed ? 33 : 65)
+
+      switch (secp256k1.ecdsaRecover(output, sig, recid, msg32)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.SIG_PARSE)
+        case 2:
+          throw new Error(errors.RECOVER)
+        case 3:
+          throw new Error(errors.IMPOSSIBLE_CASE)
+      }
+    },
+
+    ecdh (pubkey, seckey, options = {}, output) {
+      isUint8Array('public key', pubkey, [33, 65])
+      isUint8Array('private key', seckey, 32)
+      assert(toTypeString(options) === 'Object', 'Expected options to be an Object')
+      if (options.data !== undefined) isUint8Array('options.data', options.data)
+      if (options.hashfn !== undefined) {
+        assert(toTypeString(options.hashfn) === 'Function', 'Expected options.hashfn to be a Function')
+        if (options.xbuf !== undefined) isUint8Array('options.xbuf', options.xbuf, 32)
+        if (options.ybuf !== undefined) isUint8Array('options.ybuf', options.ybuf, 32)
+        isUint8Array('output', output)
+      } else {
+        output = getAssertedOutput(output, 32)
+      }
+
+      switch (secp256k1.ecdh(output, pubkey, seckey, options.data, options.hashfn, options.xbuf, options.ybuf)) {
+        case 0:
+          return output
+        case 1:
+          throw new Error(errors.PUBKEY_PARSE)
+        case 2:
+          throw new Error(errors.ECDH)
+      }
+    }
+  }
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/sha.js/hash.js":
 /*!*************************************!*\
   !*** ./node_modules/sha.js/hash.js ***!
@@ -48156,7 +49040,7 @@ module.exports = {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"tidebitwallet","version":"0.1.0","description":"A Crypto Wallet in your Browser","main":"bin/main.js","scripts":{"build":"webpack --mode=development"},"repository":{"type":"git","url":"git+https://github.com/BOLT-Protocol/TideBitWallet.git"},"keywords":["Bitcoin","Ethereum","Wallet","Chrome Extension"],"author":"Boltchain","license":"GPLv3","bugs":{"url":"https://github.com/BOLT-Protocol/TideBitWallet/issues"},"homepage":"https://github.com/BOLT-Protocol/TideBitWallet#readme","devDependencies":{"@babel/core":"^7.14.3","@babel/plugin-transform-runtime":"^7.14.3","@babel/preset-env":"^7.14.4","assert":"^2.0.0","babel-loader":"^8.2.2","buffer":"^6.0.3","clean-webpack-plugin":"^4.0.0-alpha.0","css-loader":"^5.2.6","cssnano":"^5.0.5","file-loader":"^6.2.0","jest":"^27.0.4","mini-css-extract-plugin":"^1.6.0","node-sass":"^6.0.0","os":"^0.1.1","postcss-loader":"^5.3.0","sass-loader":"^12.0.0","stream":"0.0.2","svg-inline-loader":"^0.8.2","url":"^0.11.0","url-loader":"^4.1.1","webpack":"^5.38.1","webpack-cli":"^4.7.2","webpack-node-externals":"^3.0.0"},"dependencies":{"@babel/runtime":"^7.14.0","axios":"^0.21.1","bignumber.js":"^9.0.1","bip39":"^3.0.4","bitcoinjs-lib":"^5.2.0","bn.js":"^5.2.0","crypto-browserify":"^3.12.0","https-browserify":"^1.0.0","key-store":"^1.2.0","qrcode":"^1.4.4","rlp":"^2.2.6","rxjs":"^7.1.0","sha3":"^2.1.4","stream-http":"^3.2.0","web3":"^1.3.6"}}');
+module.exports = JSON.parse('{"name":"tidebitwallet","version":"0.1.0","description":"A Crypto Wallet in your Browser","main":"bin/main.js","scripts":{"build":"webpack --mode=development"},"repository":{"type":"git","url":"git+https://github.com/BOLT-Protocol/TideBitWallet.git"},"keywords":["Bitcoin","Ethereum","Wallet","Chrome Extension"],"author":"Boltchain","license":"GPLv3","bugs":{"url":"https://github.com/BOLT-Protocol/TideBitWallet/issues"},"homepage":"https://github.com/BOLT-Protocol/TideBitWallet#readme","devDependencies":{"@babel/core":"^7.14.3","@babel/plugin-transform-runtime":"^7.14.3","@babel/preset-env":"^7.14.4","assert":"^2.0.0","babel-loader":"^8.2.2","buffer":"^6.0.3","clean-webpack-plugin":"^4.0.0-alpha.0","css-loader":"^5.2.6","cssnano":"^5.0.5","file-loader":"^6.2.0","jest":"^27.0.4","mini-css-extract-plugin":"^1.6.0","node-sass":"^6.0.0","os":"^0.1.1","postcss-loader":"^5.3.0","sass-loader":"^12.0.0","stream":"0.0.2","svg-inline-loader":"^0.8.2","ts-loader":"^9.2.3","typescript":"^4.3.4","url":"^0.11.0","url-loader":"^4.1.1","webpack":"^5.38.1","webpack-cli":"^4.7.2","webpack-node-externals":"^3.0.0"},"dependencies":{"@babel/runtime":"^7.14.0","@types/bn.js":"^5.1.0","axios":"^0.21.1","bignumber.js":"^9.0.1","bip39":"^3.0.4","bitcoinjs-lib":"^5.2.0","bn.js":"^5.2.0","create-hash":"^1.2.0","crypto-browserify":"^3.12.0","ethereum-cryptography":"^0.1.3","ethjs-util":"^0.1.6","https-browserify":"^1.0.0","key-store":"^1.2.0","qrcode":"^1.4.4","rlp":"^2.2.6","rxjs":"^7.1.0","sha3":"^2.1.4","stream-http":"^3.2.0"}}');
 
 /***/ }),
 
@@ -48172,12 +49056,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index */ "./src/index.js");
 
 
-
-// import Signer from "./cores/Signer";
-/**
- * import EthUtils from 'ethereumjs-util';
- * const { ecsign } = EthUtils;
- */
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ InstallID: (0,_helpers_helper__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32) });
@@ -48903,6 +49781,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var bn_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bn.js */ "./node_modules/bn.js/lib/bn.js");
 /* harmony import */ var bn_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bn_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ethereum-cryptography/secp256k1 */ "./node_modules/ethereum-cryptography/secp256k1.js");
+/* harmony import */ var ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1__);
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
 // import EthUtils from 'ethereumjs-util';
 // const { ecsign } = EthUtils;
@@ -48911,10 +49791,41 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const ZERO32 = Buffer.alloc(32, 0);
-const EC_GROUP_ORDER = Buffer.from('fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141', 'hex');
+const EC_GROUP_ORDER = Buffer.from(
+  "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141",
+  "hex"
+);
 
-const THROW_BAD_HASH = 'Expected Hash';
-const THROW_BAD_PRIVATE = 'Expected Private';
+const THROW_BAD_HASH = "Expected Hash";
+const THROW_BAD_PRIVATE = "Expected Private";
+
+/**
+ * RLP encode ETH Transation
+ * @method ecsign
+ * @param {msgHash} Buffer
+ * @param {privateKey} Buffer
+ * @param {chainId} number
+ * @returns {ECDSASignature} Returns the ECDSA signature of a message hash.
+ */
+function ecsign(msgHash, privateKey, chainId) {
+  const { signature, recid: recovery } = (0,ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1__.ecdsaSign)(msgHash, privateKey);
+  const r = Buffer.from(signature.slice(0, 32));
+  const s = Buffer.from(signature.slice(32, 64));
+
+  if (!chainId || typeof chainId === "number") {
+    // return legacy type ECDSASignature (deprecated in favor of ECDSASignatureBuffer to handle large chainIds)
+    if (chainId && !Number.isSafeInteger(chainId)) {
+      throw new Error(
+        "The provided number is greater than MAX_SAFE_INTEGER (please use an alternative input type)"
+      );
+    }
+    const v = chainId ? recovery + (chainId * 2 + 35) : recovery + 27;
+    return { r, s, v };
+  }
+  const chainIdBN = toType(chainId, TypeOutput.BN);
+  const v = chainIdBN.muln(2).addn(35).addn(recovery).toArrayLike(Buffer);
+  return { r, s, v };
+}
 
 class Signer {
   static instance;
@@ -48930,8 +49841,8 @@ class Signer {
 
   /**
    * init
-   * @param {TideWalletcore} TideWalletcore 
-   * @returns 
+   * @param {TideWalletcore} TideWalletcore
+   * @returns
    */
   init(TideWalletcore) {
     this._TideWalletcore = TideWalletcore;
@@ -48951,20 +49862,24 @@ class Signer {
 
   static _isPrivate(x) {
     if (!Signer._isScalar(x)) return false;
-    return Signer._compare(x, ZERO32) > 0 && // > 0
-        Signer._compare(x, EC_GROUP_ORDER) < 0; // < G
+    return (
+      Signer._compare(x, ZERO32) > 0 && // > 0
+      Signer._compare(x, EC_GROUP_ORDER) < 0
+    ); // < G
   }
 
   static _sign(hashData, privateKey) {
-    if(!Buffer.isBuffer(hashData) || !Signer._isScalar(hashData)) throw new Error(THROW_BAD_HASH);
-    if(!Buffer.isBuffer(privateKey) || !Signer._isPrivate(privateKey)) throw new Error(THROW_BAD_PRIVATE);
+    if (!Buffer.isBuffer(hashData) || !Signer._isScalar(hashData))
+      throw new Error(THROW_BAD_HASH);
+    if (!Buffer.isBuffer(privateKey) || !Signer._isPrivate(privateKey))
+      throw new Error(THROW_BAD_PRIVATE);
 
     const sig = ecsign(hashData, privateKey);
     return sig;
   }
 
   async sign({ keyPath, data }) {
-    return this._TideWalletcore.signBuffer({ keyPath, data })
+    return this._TideWalletcore.signBuffer({ keyPath, data });
   }
 }
 
@@ -53400,7 +54315,7 @@ class TransactionServiceETH extends _accountServiceDecorator__WEBPACK_IMPORTED_M
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("b5a235a7db831e8fa098")
+/******/ 		__webpack_require__.h = () => ("bae58de1af06eb227ff7")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
