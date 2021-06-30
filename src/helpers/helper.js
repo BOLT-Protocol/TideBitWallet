@@ -1,4 +1,4 @@
-export const randomHex = (n) => {
+const randomHex = (n) => {
   var ID = "";
   var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   n = parseInt(n);
@@ -9,4 +9,8 @@ export const randomHex = (n) => {
     ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
   }
   return ID;
+};
+
+module.exports = {
+  randomHex,
 };

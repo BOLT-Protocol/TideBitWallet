@@ -1,5 +1,4 @@
-import { randomHex } from "./helper";
-
+const { randomHex } = require("./helper");
 const { Keccak } = require("sha3");
 const hash = new Keccak(256);
 
@@ -8,7 +7,8 @@ class Cryptor {
     let result = str.replace("0x", "");
 
     if (round > 0) {
-      result = hash.update(result).digest("hex");
+      hash.reset();
+      result = "0x" + hash.update(result, "hex").digest("hex");
       return Cryptor.keccak256round(result, round - 1);
     }
 
@@ -38,4 +38,4 @@ class Cryptor {
   }
 }
 
-export default Cryptor;
+module.exports = Cryptor;

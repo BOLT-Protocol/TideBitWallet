@@ -49040,7 +49040,7 @@ module.exports = {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"tidebitwallet","version":"0.1.0","description":"A Crypto Wallet in your Browser","main":"bin/main.js","scripts":{"build":"webpack --mode=development"},"repository":{"type":"git","url":"git+https://github.com/BOLT-Protocol/TideBitWallet.git"},"keywords":["Bitcoin","Ethereum","Wallet","Chrome Extension"],"author":"Boltchain","license":"GPLv3","bugs":{"url":"https://github.com/BOLT-Protocol/TideBitWallet/issues"},"homepage":"https://github.com/BOLT-Protocol/TideBitWallet#readme","devDependencies":{"@babel/core":"^7.14.3","@babel/plugin-transform-runtime":"^7.14.3","@babel/preset-env":"^7.14.4","assert":"^2.0.0","babel-loader":"^8.2.2","buffer":"^6.0.3","clean-webpack-plugin":"^4.0.0-alpha.0","css-loader":"^5.2.6","cssnano":"^5.0.5","file-loader":"^6.2.0","jest":"^27.0.4","mini-css-extract-plugin":"^1.6.0","node-sass":"^6.0.0","os":"^0.1.1","postcss-loader":"^5.3.0","sass-loader":"^12.0.0","stream":"0.0.2","svg-inline-loader":"^0.8.2","ts-loader":"^9.2.3","typescript":"^4.3.4","url":"^0.11.0","url-loader":"^4.1.1","webpack":"^5.38.1","webpack-cli":"^4.7.2","webpack-node-externals":"^3.0.0"},"dependencies":{"@babel/runtime":"^7.14.0","@types/bn.js":"^5.1.0","axios":"^0.21.1","bignumber.js":"^9.0.1","bip39":"^3.0.4","bitcoinjs-lib":"^5.2.0","bn.js":"^5.2.0","create-hash":"^1.2.0","crypto-browserify":"^3.12.0","ethereum-cryptography":"^0.1.3","ethjs-util":"^0.1.6","https-browserify":"^1.0.0","key-store":"^1.2.0","qrcode":"^1.4.4","rlp":"^2.2.6","rxjs":"^7.1.0","sha3":"^2.1.4","stream-http":"^3.2.0"}}');
+module.exports = JSON.parse('{"name":"tidebitwallet","version":"0.1.0","description":"A Crypto Wallet in your Browser","main":"bin/main.js","scripts":{"test":"jest","build":"webpack --mode=development"},"repository":{"type":"git","url":"git+https://github.com/BOLT-Protocol/TideBitWallet.git"},"keywords":["Bitcoin","Ethereum","Wallet","Chrome Extension"],"author":"Boltchain","license":"GPLv3","bugs":{"url":"https://github.com/BOLT-Protocol/TideBitWallet/issues"},"homepage":"https://github.com/BOLT-Protocol/TideBitWallet#readme","devDependencies":{"@babel/core":"^7.14.3","@babel/plugin-transform-runtime":"^7.14.3","@babel/preset-env":"^7.14.4","assert":"^2.0.0","babel-loader":"^8.2.2","buffer":"^6.0.3","clean-webpack-plugin":"^4.0.0-alpha.0","css-loader":"^5.2.6","cssnano":"^5.0.5","file-loader":"^6.2.0","jest":"^27.0.4","mini-css-extract-plugin":"^1.6.0","node-sass":"^6.0.0","os":"^0.1.1","postcss-loader":"^5.3.0","sass-loader":"^12.0.0","stream":"0.0.2","svg-inline-loader":"^0.8.2","ts-loader":"^9.2.3","typescript":"^4.3.4","url":"^0.11.0","url-loader":"^4.1.1","web3":"^1.3.6","webpack":"^5.38.1","webpack-cli":"^4.7.2","webpack-node-externals":"^3.0.0"},"dependencies":{"@babel/runtime":"^7.14.0","@types/bn.js":"^5.1.0","axios":"^0.21.1","bignumber.js":"^9.0.1","bip39":"^3.0.4","bitcoinjs-lib":"^5.2.0","bn.js":"^5.2.0","create-hash":"^1.2.0","crypto-browserify":"^3.12.0","ethereum-cryptography":"^0.1.3","ethjs-util":"^0.1.6","https-browserify":"^1.0.0","key-store":"^1.2.0","qrcode":"^1.4.4","rlp":"^2.2.6","rxjs":"^7.1.0","sha3":"^2.1.4","stream-http":"^3.2.0"}}');
 
 /***/ }),
 
@@ -49053,6 +49053,7 @@ module.exports = JSON.parse('{"name":"tidebitwallet","version":"0.1.0","descript
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/helper */ "./src/helpers/helper.js");
+/* harmony import */ var _helpers_helper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_helpers_helper__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index */ "./src/index.js");
 
 
@@ -49584,6 +49585,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var key_store__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(key_store__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var bitcoinjs_lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bitcoinjs-lib */ "./node_modules/bitcoinjs-lib/src/index.js");
 /* harmony import */ var _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helpers/Cryptor */ "./src/helpers/Cryptor.js");
+/* harmony import */ var _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2__);
 
 
 
@@ -49662,7 +49664,7 @@ class PaperWallet {
    */
   static magicSeed(pk) {
     if (pk.length < 128) {
-      return _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2__.default.keccak256round(pk, 2)
+      return _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2___default().keccak256round(pk, 2)
     }
     return pk;
   }
@@ -49772,20 +49774,12 @@ class SafeSigner {
 /*!*****************************!*\
   !*** ./src/cores/Signer.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var bn_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bn.js */ "./node_modules/bn.js/lib/bn.js");
-/* harmony import */ var bn_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bn_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ethereum-cryptography/secp256k1 */ "./node_modules/ethereum-cryptography/secp256k1.js");
-/* harmony import */ var ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1__);
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
-
-
+const BN = __webpack_require__(/*! bn.js */ "./node_modules/bn.js/lib/bn.js");
+const cryptography = __webpack_require__(/*! ethereum-cryptography/secp256k1 */ "./node_modules/ethereum-cryptography/secp256k1.js");
+const { ecdsaSign } = cryptography;
 
 const ZERO32 = Buffer.alloc(32, 0);
 const EC_GROUP_ORDER = Buffer.from(
@@ -49795,7 +49789,6 @@ const EC_GROUP_ORDER = Buffer.from(
 
 const THROW_BAD_HASH = "Expected Hash";
 const THROW_BAD_PRIVATE = "Expected Private";
-
 
 /**
  * Type output options
@@ -49816,7 +49809,7 @@ const TypeOutput = Object.freeze({
  * @returns {ECDSASignature} Returns the ECDSA signature of a message hash.
  */
 function ecsign(msgHash, privateKey, chainId) {
-  const { signature, recid: recovery } = (0,ethereum_cryptography_secp256k1__WEBPACK_IMPORTED_MODULE_1__.ecdsaSign)(msgHash, privateKey);
+  const { signature, recid: recovery } = ecdsaSign(msgHash, privateKey);
   const r = Buffer.from(signature.slice(0, 32));
   const s = Buffer.from(signature.slice(32, 64));
 
@@ -49866,7 +49859,7 @@ const toBuffer = function (v) {
     return intToBuffer(v);
   }
 
-  if (bn_js__WEBPACK_IMPORTED_MODULE_0___default().isBN(v)) {
+  if (BN.isBN(v)) {
     return v.toArrayLike(Buffer);
   }
 
@@ -49903,10 +49896,10 @@ const toType = function (input, outputType) {
   if (outputType === TypeOutput.Buffer) {
     return input;
   } else if (outputType === TypeOutput.BN) {
-    return new (bn_js__WEBPACK_IMPORTED_MODULE_0___default())(input);
+    return new BN(input);
   } else if (outputType === TypeOutput.Number) {
-    const bn = new (bn_js__WEBPACK_IMPORTED_MODULE_0___default())(input);
-    const max = new (bn_js__WEBPACK_IMPORTED_MODULE_0___default())(Number.MAX_SAFE_INTEGER.toString());
+    const bn = new BN(input);
+    const max = new BN(Number.MAX_SAFE_INTEGER.toString());
     if (bn.gt(max)) {
       throw new Error(
         "The provided number is greater than MAX_SAFE_INTEGER (please use an alternative output type)"
@@ -49944,8 +49937,8 @@ class Signer {
   }
 
   static _compare(a, b) {
-    const aa = new (bn_js__WEBPACK_IMPORTED_MODULE_0___default())(a);
-    const bb = new (bn_js__WEBPACK_IMPORTED_MODULE_0___default())(b);
+    const aa = new BN(a);
+    const bb = new BN(b);
     if (aa.eq(bb)) return 0;
     if (aa.gt(bb)) return 1;
     return -1;
@@ -49974,7 +49967,7 @@ class Signer {
   }
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Signer);
+module.exports = Signer;
 
 
 /***/ }),
@@ -50788,7 +50781,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _PaperWallet__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PaperWallet */ "./src/cores/PaperWallet.js");
 /* harmony import */ var _SafeSigner__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SafeSigner */ "./src/cores/SafeSigner.js");
 /* harmony import */ var _Signer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Signer */ "./src/cores/Signer.js");
+/* harmony import */ var _Signer__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_Signer__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../helpers/Cryptor */ "./src/helpers/Cryptor.js");
+/* harmony import */ var _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _helpers_rlp__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../helpers/rlp */ "./src/helpers/rlp.js");
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
 
@@ -50834,7 +50829,7 @@ class TideWalletCore {
     let nonce = cafeca;
 
     const getString = (nonce) =>
-      _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+      _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
         Buffer.concat([
           Buffer.from(userIdentifier, "utf8"),
           _helpers_rlp__WEBPACK_IMPORTED_MODULE_4__.default.toBuffer(nonce),
@@ -50865,28 +50860,28 @@ class TideWalletCore {
       "hex"
     );
     const installIdBuff = Buffer.from(installId).toString("hex");
-    const pwseed = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+    const pwseed = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
       Buffer.concat([
         Buffer.from(
-          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
             Buffer.concat([
               Buffer.from(
-                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
                   userIdentifierBuff || this._userInfo.thirdPartyId,
                   1
                 )
               ),
               Buffer.from(
-                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(userId || this._userInfo.id, 1)
+                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(userId || this._userInfo.id, 1)
               ),
             ]).toString()
           )
         ),
         Buffer.from(
-          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
             Buffer.concat([
               Buffer.from(
-                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
                   _helpers_rlp__WEBPACK_IMPORTED_MODULE_4__.default.toBuffer(
                       _helpers_rlp__WEBPACK_IMPORTED_MODULE_4__.default.toBuffer(timestamp).toString("hex").slice(3, 6)
                     )
@@ -50895,7 +50890,7 @@ class TideWalletCore {
                 )
               ),
               Buffer.from(
-                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+                _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
                   installIdBuff || this._userInfo.installId,
                   1
                 )
@@ -50905,7 +50900,7 @@ class TideWalletCore {
         ),
       ]).toString()
     );
-    const password = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(pwseed);
+    const password = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(pwseed);
     return password;
   }
 
@@ -50922,26 +50917,26 @@ class TideWalletCore {
       .toString()
       .slice(0, 16);
 
-    const _extend = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+    const _extend = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
       _helpers_rlp__WEBPACK_IMPORTED_MODULE_4__.default.toBuffer(nonce).toString("hex"),
       1
     ).slice(0, 8);
 
-    const seed = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+    const seed = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
       Buffer.concat([
         Buffer.from(
-          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
             Buffer.concat([
-              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(_main, 1)),
-              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(_extend, 1)),
+              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(_main, 1)),
+              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(_extend, 1)),
             ]).toString()
           )
         ),
         Buffer.from(
-          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(
+          _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(
             Buffer.concat([
-              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(userId, 1)),
-              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(userSecret, 1)),
+              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(userId, 1)),
+              Buffer.from(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(userSecret, 1)),
             ]).toString()
           )
         ),
@@ -50976,7 +50971,7 @@ class TideWalletCore {
       userSecret,
     });
 
-    const key = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.keccak256round(seed);
+    const key = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().keccak256round(seed);
     const password = this._getPassword({
       userIdentifier,
       userId,
@@ -51114,7 +51109,7 @@ class TideWalletCore {
    * @returns
    */
   async signBuffer({ keyPath, data }) {
-    const { chainIndex, keyIndex, options } = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3__.default.pathParse(keyPath);
+    const { chainIndex, keyIndex, options } = _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_3___default().pathParse(keyPath);
     const seed = await this._getSeedByKeyStore();
     const privateKey = _PaperWallet__WEBPACK_IMPORTED_MODULE_0__.default.getPriKey(
       Buffer.from(seed, "hex"),
@@ -51122,7 +51117,7 @@ class TideWalletCore {
       keyIndex,
       options
     );
-    return _Signer__WEBPACK_IMPORTED_MODULE_2__.default._sign(data, Buffer.from(privateKey, "hex"));
+    return _Signer__WEBPACK_IMPORTED_MODULE_2___default()._sign(data, Buffer.from(privateKey, "hex"));
   }
 
   async signData({ keyPath, jsonData }) {
@@ -52469,17 +52464,10 @@ module.exports = IndexedDB;
 /*!********************************!*\
   !*** ./src/helpers/Cryptor.js ***!
   \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helper */ "./src/helpers/helper.js");
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
-
-
+const { randomHex } = __webpack_require__(/*! ./helper */ "./src/helpers/helper.js");
 const { Keccak } = __webpack_require__(/*! sha3 */ "./node_modules/sha3/index.js");
 const hash = new Keccak(256);
 
@@ -52488,7 +52476,8 @@ class Cryptor {
     let result = str.replace("0x", "");
 
     if (round > 0) {
-      result = hash.update(result).digest("hex");
+      hash.reset();
+      result = "0x" + hash.update(result, "hex").digest("hex");
       return Cryptor.keccak256round(result, round - 1);
     }
 
@@ -52498,7 +52487,7 @@ class Cryptor {
   static randomBytes(length) {
     let hexStr = "";
     if (length > 0) {
-      hexStr = (0,_helper__WEBPACK_IMPORTED_MODULE_0__.randomHex)(length);
+      hexStr = randomHex(length);
     }
     return Buffer.from(hexStr, "hex");
   }
@@ -52518,7 +52507,7 @@ class Cryptor {
   }
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Cryptor);
+module.exports = Cryptor;
 
 
 /***/ }),
@@ -52706,13 +52695,8 @@ function getEthereumAddressBytes(address) {
 /*!*******************************!*\
   !*** ./src/helpers/helper.js ***!
   \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((module) => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "randomHex": () => (/* binding */ randomHex)
-/* harmony export */ });
 const randomHex = (n) => {
   var ID = "";
   var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -52724,6 +52708,10 @@ const randomHex = (n) => {
     ID = ID.concat(text.charAt(parseInt(Math.random() * text.length)));
   }
   return ID;
+};
+
+module.exports = {
+  randomHex,
 };
 
 
@@ -54127,6 +54115,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _accountServiceDecorator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./accountServiceDecorator */ "./src/services/accountServiceDecorator.js");
 /* harmony import */ var _models_account_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/account.model */ "./src/models/account.model.js");
 /* harmony import */ var _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helpers/Cryptor */ "./src/helpers/Cryptor.js");
+/* harmony import */ var _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _helpers_ethereumUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../helpers/ethereumUtils */ "./src/helpers/ethereumUtils.js");
 /* harmony import */ var _models_transactionETH_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../models/transactionETH.model */ "./src/models/transactionETH.model.js");
 /* harmony import */ var _models_tranasction_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../models/tranasction.model */ "./src/models/tranasction.model.js");
@@ -54151,7 +54140,7 @@ class TransactionServiceETH extends _accountServiceDecorator__WEBPACK_IMPORTED_M
   _signTransaction(transaction) {
     const payload = (0,_helpers_ethereumUtils__WEBPACK_IMPORTED_MODULE_3__.encodeToRlp)(transaction);
     const rawDataHash = Buffer.from(
-      _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2__.default.keccak256round(payload.toString("hex"), 1),
+      _helpers_Cryptor__WEBPACK_IMPORTED_MODULE_2___default().keccak256round(payload.toString("hex"), 1),
       "hex"
     );
     const signature = this.signer.sign({ data: rawDataHash });
@@ -54406,7 +54395,7 @@ class TransactionServiceETH extends _accountServiceDecorator__WEBPACK_IMPORTED_M
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("acd9d198c9ce57718029")
+/******/ 		__webpack_require__.h = () => ("8c10fa97e56ba47fc2e4")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

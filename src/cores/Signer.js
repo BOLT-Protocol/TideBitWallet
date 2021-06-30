@@ -1,5 +1,6 @@
-import BN from "bn.js";
-import { ecdsaSign } from "ethereum-cryptography/secp256k1";
+const BN = require("bn.js");
+const cryptography = require("ethereum-cryptography/secp256k1");
+const { ecdsaSign } = cryptography;
 
 const ZERO32 = Buffer.alloc(32, 0);
 const EC_GROUP_ORDER = Buffer.from(
@@ -9,7 +10,6 @@ const EC_GROUP_ORDER = Buffer.from(
 
 const THROW_BAD_HASH = "Expected Hash";
 const THROW_BAD_PRIVATE = "Expected Private";
-
 
 /**
  * Type output options
@@ -188,4 +188,4 @@ class Signer {
   }
 }
 
-export default Signer;
+module.exports = Signer;
