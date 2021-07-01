@@ -103,7 +103,7 @@ class ViewController {
     console.log(screen);
     switch (screen) {
       case "landing":
-        Landing.render(screen, this.walletVersion);
+        Landing.render(screen, this.walletVersion, data);
         break;
       case "assets":
       case "settings":

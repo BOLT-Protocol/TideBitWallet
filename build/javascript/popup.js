@@ -5873,7 +5873,7 @@ class ViewController {
     console.log(screen);
     switch (screen) {
       case "landing":
-        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion);
+        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion, data);
         break;
       case "assets":
       case "settings":
@@ -7283,16 +7283,10 @@ __webpack_require__.r(__webpack_exports__);
 
 class Landing {
   constructor() {}
-  render(screen, version) {
+  render(screen, version, callback) {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
       this.header,
-      new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", async () => {
-        const OAuthID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.googleSignin)("assets");
-        const InstallID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.getInstallID)("assets");
-        console.log(OAuthID, InstallID);
-        
-       
-      }),
+      new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", callback),
       this.footer
     );
     this.scaffold.view = screen;
@@ -8701,11 +8695,8 @@ const getUserInfo = async (tidewallet) => {
     viewController.route("assets");
   }
 };
-console.log(TideWallet);
-console.log(window.TideWallet);
+
 const tidewallet = new window.TideWallet();
-console.log( new TideWallet());
-console.log( tidewallet);
 const viewController = new _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default(tidewallet.getVersion());
 
 tidewallet.on("ready", () => {
@@ -8805,7 +8796,7 @@ viewController.route("landing", () => getUserInfo(tidewallet));
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("4fe2c745896ecca1e107")
+/******/ 		__webpack_require__.h = () => ("c623385543d005559ee1")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

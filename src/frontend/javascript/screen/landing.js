@@ -5,16 +5,10 @@ import { getInstallID, googleSignin } from "../utils/utils";
 
 class Landing {
   constructor() {}
-  render(screen, version) {
+  render(screen, version, callback) {
     this.scaffold = new Scaffold(
       this.header,
-      new ThirdPartySigninContainer(version, "white", async () => {
-        const OAuthID = await googleSignin("assets");
-        const InstallID = await getInstallID("assets");
-        console.log(OAuthID, InstallID);
-        
-       
-      }),
+      new ThirdPartySigninContainer(version, "white", callback),
       this.footer
     );
     this.scaffold.view = screen;
