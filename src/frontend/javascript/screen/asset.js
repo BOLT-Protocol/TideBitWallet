@@ -8,6 +8,7 @@ class Asset {
   constructor() {}
   initialize(screen, asset, fiat, wallet) {
     // ++ if tidewallet is ready
+    console.log("wallet getAssetDetail");
     wallet
       .getAssetDetail({ assetID: asset.id })
       .then((objs) =>
@@ -17,7 +18,7 @@ class Asset {
         })
       )
       .then((bills) => {
-        this.updateBills(bills);
+        this.updateBills(bills || []);
       });
 
     this.header = new Header(screen, { asset, fiat });

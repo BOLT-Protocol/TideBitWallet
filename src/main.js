@@ -24,7 +24,7 @@ const getUserInfo = async (tidewallet) => {
 };
 
 const tidewallet = new window.TideWallet();
-viewController.updateConfig(tidewallet.getVersion());
+viewController.updateConfig(tidewallet, tidewallet.getVersion());
 
 tidewallet.on("ready", (data) => {
   console.log("TideWallet is Ready", data);

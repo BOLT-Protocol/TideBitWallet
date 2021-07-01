@@ -5783,7 +5783,8 @@ class ViewController {
     this.currentBill;
     this.currentScreen;
   }
-  updateConfig(version, mode) {
+  updateConfig(wallet, version, mode) {
+    this.wallet = wallet;
     this.walletVersion = version;
     this.walletMode = mode || "development";
   }
@@ -5813,7 +5814,7 @@ class ViewController {
   };
   updateAsset = (asset, userBalanceInFiat) => {
     const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
-    this.userBalanceInFiat = userBalanceInFiat;
+    this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     switch (view) {
       case "assets":
@@ -5888,10 +5889,20 @@ class ViewController {
         if (data) {
           this.currentAsset = data; //Asset
         }
-        _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.render(screen, this.currentAsset, this.walletFiat);
+        _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.render(
+          screen,
+          this.currentAsset,
+          this.walletFiat,
+          this.wallet
+        );
         break;
       case "transaction":
-        _screen_transaction__WEBPACK_IMPORTED_MODULE_6__.default.render(screen, this.currentAsset, this.walletFiat);
+        _screen_transaction__WEBPACK_IMPORTED_MODULE_6__.default.render(
+          screen,
+          this.currentAsset,
+          this.walletFiat,
+          this.wallet
+        );
         break;
       case "bill":
         this.currentBill = data; //Bill
@@ -6441,6 +6452,7 @@ class FormElement extends HTMLElement {
         this.callback(new _model_transaction__WEBPACK_IMPORTED_MODULE_3__.default({ to, amount, priority }));
       }
     });
+    this.wallet.getTransactionFee();
   }
 
   /**
@@ -6496,8 +6508,9 @@ class FormElement extends HTMLElement {
 customElements.define("transaction-form", FormElement);
 
 class Form {
-  constructor(asset, fiat, callback) {
+  constructor(wallet, asset, fiat, callback) {
     this.element = document.createElement("transaction-form");
+    this.element.wallet = wallet;
     this.element.asset = asset;
     this.element.fiat = fiat;
     this.element.callback = callback;
@@ -7177,14 +7190,21 @@ __webpack_require__.r(__webpack_exports__);
 
 class Asset {
   constructor() {}
-  initialize(screen, asset, fiat) {
+  initialize(screen, asset, fiat, wallet) {
     // ++ if tidewallet is ready
-    // tidewallet.getAssetDetail(user.assets[3].id)
-    //   .then((objs) => objs?.map((obj) => new Bill(obj)))
-    //   .then((bills) => {
-    //     this.updateBills(bills);
-    //   });
-    //
+    console.log("wallet getAssetDetail");
+    wallet
+      .getAssetDetail({ assetID: asset.id })
+      .then((objs) =>
+        objs?.map((obj) => {
+          console.log(obj);
+          return new Bill(obj);
+        })
+      )
+      .then((bills) => {
+        this.updateBills(bills || []);
+      });
+
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { asset, fiat });
     this.tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default();
     this.billList = new _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__.default(asset, asset.bills);
@@ -7199,10 +7219,10 @@ class Asset {
       this.scaffold.openPopover("loading");
     }
   }
-  render(screen, asset, fiat) {
+  render(screen, asset, fiat, wallet) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
     if (!view || view !== "asset" || !this.scaffold) {
-      this.initialize(screen, asset, fiat);
+      this.initialize(screen, asset, fiat, wallet);
     }
   }
   updateBills(asset, bills) {
@@ -7526,9 +7546,10 @@ class Transaction {
     console.log("gas", transaction.gas);
     this.scaffold.openPopover("success", "Success!");
   };
-  initialize(screen, asset, fiat) {
+  initialize(screen, asset, fiat, wallet) {
+    this.wallet = wallet;
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
-    this.form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(asset, fiat, (val) =>
+    this.form = new _layout_form__WEBPACK_IMPORTED_MODULE_2__.default(wallet, asset, fiat, (val) =>
       this.scaffold.openPopover(
         "confirm",
         "Are you sure to make this transaction?",
@@ -7538,10 +7559,10 @@ class Transaction {
     );
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.form);
   }
-  render(screen, asset, fiat) {
+  render(screen, asset, fiat, wallet) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
     if (!view || view !== "transaction" || !this.scaffold) {
-      this.initialize(screen, asset, fiat);
+      this.initialize(screen, asset, fiat, wallet);
     }
   }
 }
@@ -8323,7 +8344,7 @@ class PopoverElement extends HTMLElement {
     this.click = 0;
     this.addEventListener("click", (_) => {
       this.click += 1;
-      if ((this.success || this.error) && this.click > 1) {
+      if ((this.success || this.error || this.loading) && this.click > 1) {
         this.closePopover();
       }
     });
@@ -8698,6 +8719,9 @@ const getUserInfo = async (tidewallet) => {
   const result = await tidewallet.init({ user: { OAuthID, InstallID }, api });
   console.log(result);
   if (result) {
+    const fiat = await tidewallet.getFiat();
+    console.log(fiat);
+    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateFiat(fiat);
     _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("assets");
     const user = await tidewallet.overview();
     console.log(user);
@@ -8706,7 +8730,7 @@ const getUserInfo = async (tidewallet) => {
 };
 
 const tidewallet = new window.TideWallet();
-_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateConfig(tidewallet.getVersion());
+_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateConfig(tidewallet, tidewallet.getVersion());
 
 tidewallet.on("ready", (data) => {
   console.log("TideWallet is Ready", data);
@@ -8805,7 +8829,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("fce0983e716fc97b4ea6")
+/******/ 		__webpack_require__.h = () => ("e6fcb408754c4cd4566d")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
