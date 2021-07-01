@@ -2,7 +2,6 @@ const webpack = require("webpack");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
 
 const frontend = {
   mode: "development",
@@ -99,27 +98,4 @@ const background = {
   ],
 };
 
-const contentScript = {
-  entry: path.resolve(__dirname, "src/contentScript.js"),
-  output: {
-    path: path.resolve(__dirname, "build"),
-    filename: "contentScript.js",
-    chunkFilename: "[id].js",
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
-  },
-  plugins: [
-    new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"],
-    }),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin({
-      cleanStaleWebpackAssets: false,
-      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, "./dist")],
-    }),
-  ],
-};
-
-module.exports = [frontend, background, contentScript];
+module.exports = [frontend, background];
