@@ -20,9 +20,10 @@ class Transaction {
     console.log("gas", transaction.gas);
     this.scaffold.openPopover("success", "Success!");
   };
-  initialize(screen, asset, fiat) {
+  initialize(screen, asset, fiat, wallet) {
+    this.wallet = wallet;
     this.header = new Header(screen);
-    this.form = new Form(asset, fiat, (val) =>
+    this.form = new Form(wallet, asset, fiat, (val) =>
       this.scaffold.openPopover(
         "confirm",
         "Are you sure to make this transaction?",
@@ -32,10 +33,10 @@ class Transaction {
     );
     this.scaffold = new Scaffold(this.header, this.form);
   }
-  render(screen, asset, fiat) {
+  render(screen, asset, fiat, wallet) {
     const view = currentView();
     if (!view || view !== "transaction" || !this.scaffold) {
-      this.initialize(screen, asset, fiat);
+      this.initialize(screen, asset, fiat, wallet);
     }
   }
 }

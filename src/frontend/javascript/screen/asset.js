@@ -6,14 +6,20 @@ import BillList from "../layout/bill_list";
 import { currentView } from "../utils/utils";
 class Asset {
   constructor() {}
-  initialize(screen, asset, fiat) {
+  initialize(screen, asset, fiat, wallet) {
     // ++ if tidewallet is ready
-    // tidewallet.getAssetDetail(user.assets[3].id)
-    //   .then((objs) => objs?.map((obj) => new Bill(obj)))
-    //   .then((bills) => {
-    //     this.updateBills(bills);
-    //   });
-    //
+    wallet
+      .getAssetDetail({ assetID: asset.id })
+      .then((objs) =>
+        objs?.map((obj) => {
+          console.log(obj);
+          return new Bill(obj);
+        })
+      )
+      .then((bills) => {
+        this.updateBills(bills);
+      });
+
     this.header = new Header(screen, { asset, fiat });
     this.tarBarNavigator = new TarBarNavigator();
     this.billList = new BillList(asset, asset.bills);
@@ -28,10 +34,10 @@ class Asset {
       this.scaffold.openPopover("loading");
     }
   }
-  render(screen, asset, fiat) {
+  render(screen, asset, fiat, wallet) {
     const view = currentView();
     if (!view || view !== "asset" || !this.scaffold) {
-      this.initialize(screen, asset, fiat);
+      this.initialize(screen, asset, fiat, wallet);
     }
   }
   updateBills(asset, bills) {

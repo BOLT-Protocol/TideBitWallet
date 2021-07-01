@@ -114,6 +114,7 @@ class FormElement extends HTMLElement {
         this.callback(new Transaction({ to, amount, priority }));
       }
     });
+    this.wallet.getTransactionFee();
   }
 
   /**
@@ -169,8 +170,9 @@ class FormElement extends HTMLElement {
 customElements.define("transaction-form", FormElement);
 
 class Form {
-  constructor(asset, fiat, callback) {
+  constructor(wallet, asset, fiat, callback) {
     this.element = document.createElement("transaction-form");
+    this.element.wallet = wallet;
     this.element.asset = asset;
     this.element.fiat = fiat;
     this.element.callback = callback;

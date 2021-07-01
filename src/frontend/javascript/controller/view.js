@@ -13,7 +13,8 @@ class ViewController {
     this.currentBill;
     this.currentScreen;
   }
-  updateConfig(version, mode) {
+  updateConfig(wallet, version, mode) {
+    this.wallet = wallet;
     this.walletVersion = version;
     this.walletMode = mode || "development";
   }
@@ -43,7 +44,7 @@ class ViewController {
   };
   updateAsset = (asset, userBalanceInFiat) => {
     const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
-    this.userBalanceInFiat = userBalanceInFiat;
+    this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
     const view = currentView();
     switch (view) {
       case "assets":
@@ -118,10 +119,20 @@ class ViewController {
         if (data) {
           this.currentAsset = data; //Asset
         }
-        AssetScreen.render(screen, this.currentAsset, this.walletFiat);
+        AssetScreen.render(
+          screen,
+          this.currentAsset,
+          this.walletFiat,
+          this.wallet
+        );
         break;
       case "transaction":
-        Transaction.render(screen, this.currentAsset, this.walletFiat);
+        Transaction.render(
+          screen,
+          this.currentAsset,
+          this.walletFiat,
+          this.wallet
+        );
         break;
       case "bill":
         this.currentBill = data; //Bill
