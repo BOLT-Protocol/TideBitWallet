@@ -8,18 +8,19 @@ import Transaction from "../screen/transaction";
 import MnemonicScreen from "../screen/mnemonic";
 
 class ViewController {
-  initialize(config, user) {
+  constructor(version, mode) {
     this.currentAsset;
     this.currentBill;
     this.currentScreen;
-    this.walletFiat = config.fiat;
-    this.walletVersion = config.version;
-    this.walletMode = config.mode;
-    this.updateUser(user);
+    this.walletVersion = version;
+    this.walletMode = mode || "development";
+  }
+  updateFiat(fiat) {
+    this.walletFiat = fiat;
   }
   updateUser(user) {
-    this.userBalanceInFiat = user?.totalValue?.amount;
-    this.userAssets = user?.assets;
+    this.userBalanceInFiat = user?.balance;
+    this.userAssets = user?.currencies;
     if (this.userAssets) {
       this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
     }
@@ -135,6 +136,5 @@ class ViewController {
     }
   };
 }
-const viewController = new ViewController();
 
-export default viewController;
+export default ViewController;
