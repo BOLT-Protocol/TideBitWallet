@@ -3,7 +3,7 @@ import Bill from "./model/bill";
 import Asset from "./model/asset";
 import viewController from "./controller/view";
 import { randomHex } from "./utils/utils";
-import TideWallet from "../../cores/tidewallet";
+
 
 // test
 const createTestAsset = (id) => {

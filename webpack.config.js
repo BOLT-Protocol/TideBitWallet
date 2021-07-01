@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const frontend = {
   mode: "development",
-  entry: path.resolve(__dirname, "src/frontend/main.js"),
+  entry: path.resolve(__dirname, "src/main.js"),
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "javascript/popup.js",
