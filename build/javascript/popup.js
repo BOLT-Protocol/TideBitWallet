@@ -8689,8 +8689,10 @@ const getUserInfo = async (tidewallet) => {
   const InstallID = await (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_1__.getInstallID)();
   console.log(OAuthID, InstallID);
   const result = await tidewallet.init({ user: { OAuthID, InstallID }, api });
+  console.log(result);
   if (result) {
     const user = await tidewallet.overview();
+    console.log(user);
     viewController.updateUser(user);
     viewController.route("assets");
   }
@@ -8796,7 +8798,7 @@ viewController.route("landing", () => getUserInfo(tidewallet));
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("c623385543d005559ee1")
+/******/ 		__webpack_require__.h = () => ("8a056f7898b519c87bf2")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

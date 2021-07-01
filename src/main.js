@@ -11,8 +11,10 @@ const getUserInfo = async (tidewallet) => {
   const InstallID = await getInstallID();
   console.log(OAuthID, InstallID);
   const result = await tidewallet.init({ user: { OAuthID, InstallID }, api });
+  console.log(result);
   if (result) {
     const user = await tidewallet.overview();
+    console.log(user);
     viewController.updateUser(user);
     viewController.route("assets");
   }
