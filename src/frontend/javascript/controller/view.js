@@ -8,10 +8,12 @@ import Transaction from "../screen/transaction";
 import MnemonicScreen from "../screen/mnemonic";
 
 class ViewController {
-  constructor(version, mode) {
+  constructor() {
     this.currentAsset;
     this.currentBill;
     this.currentScreen;
+  }
+  updateConfig(version, mode) {
     this.walletVersion = version;
     this.walletMode = mode || "development";
   }
@@ -137,4 +139,6 @@ class ViewController {
   };
 }
 
-export default ViewController;
+const viewController = new ViewController();
+
+export default viewController;

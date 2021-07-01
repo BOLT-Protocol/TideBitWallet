@@ -5778,10 +5778,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ViewController {
-  constructor(version, mode) {
+  constructor() {
     this.currentAsset;
     this.currentBill;
     this.currentScreen;
+  }
+  updateConfig(version, mode) {
     this.walletVersion = version;
     this.walletMode = mode || "development";
   }
@@ -5907,7 +5909,9 @@ class ViewController {
   };
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ViewController);
+const viewController = new ViewController();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (viewController);
 
 
 /***/ }),
@@ -6989,7 +6993,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
+
 
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
@@ -7012,34 +7018,41 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     `;
     this.googleSignInButton = this.children[2].children[0];
     this.appleSignInButton = this.children[2].children[1];
-    this.googleSignInButton.addEventListener("click", this.googleSignin);
-    this.appleSignInButton.addEventListener("click", this.appleSignin);
-    this.mnemonicButton = new _widget_button__WEBPACK_IMPORTED_MODULE_0__.default(
+    this.googleSignInButton.addEventListener("click", () => {
+      this.parent?.openPopover("loading");
+      this.callback();
+    });
+    this.mnemonicButton = new _widget_button__WEBPACK_IMPORTED_MODULE_1__.default(
       "Recover Wallet",
-      () => viewController.route("mnemonic"),
+      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("mnemonic"),
       {
         style: ["round", "fill-primary"],
       }
     );
-    this.mnemonicButton.render(this.children[2])
+    this.mnemonicButton.render(this.children[2]);
   }
   disconnectedCallback() {
-    this.googleSignInButton.removeEventListener("click", this.googleSignin);
-    this.appleSignInButton.removeEventListener("click", this.appleSignin);
+    this.googleSignInButton.removeEventListener("click", () => {
+      this.parent?.openPopover("loading");
+      this.callback();
+    });
   }
 }
 
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
-  constructor(version, colorMode, googleSignin, appleSigin) {
+  constructor(version, colorMode, callback) {
     this.version = version;
     this.element = document.createElement("third-party-signin");
-    this.element.googleSignin = googleSignin;
-    this.element.appleSigin = appleSigin;
     this.element.colorMode = colorMode;
     this.element.version = version;
+    this.element.callback = callback;
+  }
+  set parent(element) {
+    this.element.parent = element;
   }
   render(parentElement) {
+    this.parentElement = parentElement;
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
 }
@@ -7274,21 +7287,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/frontend/javascript/layout/third_party_signin_container.js");
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
-
-
 
 
 
 class Landing {
   constructor() {}
   render(screen, version, callback) {
-    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
-      this.header,
-      new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", callback),
-      this.footer
-    );
+    this.body = new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", callback);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
+    this.body.parent = this.scaffold;
     this.scaffold.view = screen;
   }
 }
@@ -8691,27 +8698,27 @@ const getUserInfo = async (tidewallet) => {
   const result = await tidewallet.init({ user: { OAuthID, InstallID }, api });
   console.log(result);
   if (result) {
+    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("assets");
     const user = await tidewallet.overview();
     console.log(user);
-    viewController.updateUser(user);
-    viewController.route("assets");
+    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateUser(user);
   }
 };
 
 const tidewallet = new window.TideWallet();
-const viewController = new _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default(tidewallet.getVersion());
+_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateConfig(tidewallet.getVersion());
 
-tidewallet.on("ready", () => {
-  console.log("TideWallet is Ready");
+tidewallet.on("ready", (data) => {
+  console.log("TideWallet is Ready", data);
 });
-tidewallet.on("update", () => {
-  console.log("TideWallet Data Updated");
+tidewallet.on("update", (data) => {
+  console.log("TideWallet Data Updated", data);
 });
-tidewallet.on("notice", () => {
-  console.log("TideWallet Say Hello");
+tidewallet.on("notice", (data) => {
+  console.log("TideWallet Say Hello", data);
 });
 
-viewController.route("landing", () => getUserInfo(tidewallet));
+_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("landing", () => getUserInfo(tidewallet));
 
 
 /***/ })
@@ -8798,7 +8805,7 @@ viewController.route("landing", () => getUserInfo(tidewallet));
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("8a056f7898b519c87bf2")
+/******/ 		__webpack_require__.h = () => ("fce0983e716fc97b4ea6")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

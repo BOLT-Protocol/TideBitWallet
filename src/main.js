@@ -1,4 +1,4 @@
-import ViewController from "./frontend/javascript/controller/view";
+import viewController from "./frontend/javascript/controller/view";
 import { googleSignin, getInstallID } from "./frontend/javascript/utils/utils";
 
 const getUserInfo = async (tidewallet) => {
@@ -13,24 +13,24 @@ const getUserInfo = async (tidewallet) => {
   const result = await tidewallet.init({ user: { OAuthID, InstallID }, api });
   console.log(result);
   if (result) {
+    viewController.route("assets");
     const user = await tidewallet.overview();
     console.log(user);
     viewController.updateUser(user);
-    viewController.route("assets");
   }
 };
 
 const tidewallet = new window.TideWallet();
-const viewController = new ViewController(tidewallet.getVersion());
+viewController.updateConfig(tidewallet.getVersion());
 
-tidewallet.on("ready", () => {
-  console.log("TideWallet is Ready");
+tidewallet.on("ready", (data) => {
+  console.log("TideWallet is Ready", data);
 });
-tidewallet.on("update", () => {
-  console.log("TideWallet Data Updated");
+tidewallet.on("update", (data) => {
+  console.log("TideWallet Data Updated", data);
 });
-tidewallet.on("notice", () => {
-  console.log("TideWallet Say Hello");
+tidewallet.on("notice", (data) => {
+  console.log("TideWallet Say Hello", data);
 });
 
 viewController.route("landing", () => getUserInfo(tidewallet));

@@ -1,3 +1,4 @@
+import viewController from "../controller/view";
 import Button from "../widget/button";
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
@@ -20,8 +21,10 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     `;
     this.googleSignInButton = this.children[2].children[0];
     this.appleSignInButton = this.children[2].children[1];
-    this.googleSignInButton.addEventListener("click", this.googleSignin);
-    this.appleSignInButton.addEventListener("click", this.appleSignin);
+    this.googleSignInButton.addEventListener("click", () => {
+      this.parent?.openPopover("loading");
+      this.callback();
+    });
     this.mnemonicButton = new Button(
       "Recover Wallet",
       () => viewController.route("mnemonic"),
@@ -29,25 +32,30 @@ class ThirdPartySigninContainerElement extends HTMLElement {
         style: ["round", "fill-primary"],
       }
     );
-    this.mnemonicButton.render(this.children[2])
+    this.mnemonicButton.render(this.children[2]);
   }
   disconnectedCallback() {
-    this.googleSignInButton.removeEventListener("click", this.googleSignin);
-    this.appleSignInButton.removeEventListener("click", this.appleSignin);
+    this.googleSignInButton.removeEventListener("click", () => {
+      this.parent?.openPopover("loading");
+      this.callback();
+    });
   }
 }
 
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
-  constructor(version, colorMode, googleSignin, appleSigin) {
+  constructor(version, colorMode, callback) {
     this.version = version;
     this.element = document.createElement("third-party-signin");
-    this.element.googleSignin = googleSignin;
-    this.element.appleSigin = appleSigin;
     this.element.colorMode = colorMode;
     this.element.version = version;
+    this.element.callback = callback;
+  }
+  set parent(element) {
+    this.element.parent = element;
   }
   render(parentElement) {
+    this.parentElement = parentElement;
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
 }
