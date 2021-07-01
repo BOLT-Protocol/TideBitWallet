@@ -7195,12 +7195,13 @@ class Asset {
     console.log("wallet getAssetDetail");
     wallet
       .getAssetDetail({ assetID: asset.id })
-      .then((objs) =>
-        objs?.map((obj) => {
+      .then((objs) => {
+        console.log(objs);
+        return objs?.map((obj) => {
           console.log(obj);
           return new Bill(obj);
-        })
-      )
+        });
+      })
       .then((bills) => {
         this.updateBills(bills || []);
       });
@@ -8829,7 +8830,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("e6fcb408754c4cd4566d")
+/******/ 		__webpack_require__.h = () => ("d9067d80fe4ff5411826")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

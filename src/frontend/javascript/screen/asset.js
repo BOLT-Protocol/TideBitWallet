@@ -11,12 +11,13 @@ class Asset {
     console.log("wallet getAssetDetail");
     wallet
       .getAssetDetail({ assetID: asset.id })
-      .then((objs) =>
-        objs?.map((obj) => {
+      .then((objs) => {
+        console.log(objs);
+        return objs?.map((obj) => {
           console.log(obj);
           return new Bill(obj);
-        })
-      )
+        });
+      })
       .then((bills) => {
         this.updateBills(bills || []);
       });
