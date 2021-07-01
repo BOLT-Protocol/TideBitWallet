@@ -709,10 +709,10 @@ module.exports = function (urlString) {
 
 /***/ }),
 
-/***/ "./ui/scss/main.scss":
-/*!***************************!*\
-  !*** ./ui/scss/main.scss ***!
-  \***************************/
+/***/ "./src/frontend/scss/main.scss":
+/*!*************************************!*\
+  !*** ./src/frontend/scss/main.scss ***!
+  \*************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1625041470476
+      // 1625110036162
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -5992,10 +5992,10 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 
-/***/ "./ui/javascript/constant/bottom_navigator_data.js":
-/*!*********************************************************!*\
-  !*** ./ui/javascript/constant/bottom_navigator_data.js ***!
-  \*********************************************************/
+/***/ "./src/frontend/javascript/constant/bottom_navigator_data.js":
+/*!*******************************************************************!*\
+  !*** ./src/frontend/javascript/constant/bottom_navigator_data.js ***!
+  \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6019,10 +6019,10 @@ const navigatorItemsData = [
 
 /***/ }),
 
-/***/ "./ui/javascript/constant/tab_bar_data.js":
-/*!************************************************!*\
-  !*** ./ui/javascript/constant/tab_bar_data.js ***!
-  \************************************************/
+/***/ "./src/frontend/javascript/constant/tab_bar_data.js":
+/*!**********************************************************!*\
+  !*** ./src/frontend/javascript/constant/tab_bar_data.js ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6045,10 +6045,10 @@ const tabBarItemData = [
 
 /***/ }),
 
-/***/ "./ui/javascript/controller/view.js":
-/*!******************************************!*\
-  !*** ./ui/javascript/controller/view.js ***!
-  \******************************************/
+/***/ "./src/frontend/javascript/controller/view.js":
+/*!****************************************************!*\
+  !*** ./src/frontend/javascript/controller/view.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6056,14 +6056,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
-/* harmony import */ var _screen_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/asset */ "./ui/javascript/screen/asset.js");
-/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/landing */ "./ui/javascript/screen/landing.js");
-/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/overview */ "./ui/javascript/screen/overview.js");
-/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./ui/javascript/screen/bill.js");
-/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./ui/javascript/screen/address.js");
-/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../screen/transaction */ "./ui/javascript/screen/transaction.js");
-/* harmony import */ var _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../screen/mnemonic */ "./ui/javascript/screen/mnemonic.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
+/* harmony import */ var _screen_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../screen/asset */ "./src/frontend/javascript/screen/asset.js");
+/* harmony import */ var _screen_landing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../screen/landing */ "./src/frontend/javascript/screen/landing.js");
+/* harmony import */ var _screen_overview__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../screen/overview */ "./src/frontend/javascript/screen/overview.js");
+/* harmony import */ var _screen_bill__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../screen/bill */ "./src/frontend/javascript/screen/bill.js");
+/* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/frontend/javascript/screen/address.js");
+/* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../screen/transaction */ "./src/frontend/javascript/screen/transaction.js");
+/* harmony import */ var _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../screen/mnemonic */ "./src/frontend/javascript/screen/mnemonic.js");
 
 
 
@@ -6208,10 +6208,10 @@ const viewController = new ViewController();
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/address_content.js":
-/*!*************************************************!*\
-  !*** ./ui/javascript/layout/address_content.js ***!
-  \*************************************************/
+/***/ "./src/frontend/javascript/layout/address_content.js":
+/*!***********************************************************!*\
+  !*** ./src/frontend/javascript/layout/address_content.js ***!
+  \***********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6220,8 +6220,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var qrcode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! qrcode */ "./node_modules/qrcode/lib/browser.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/button */ "./ui/javascript/widget/button.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
@@ -6307,10 +6307,10 @@ class AddressContent {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/asset_list.js":
-/*!********************************************!*\
-  !*** ./ui/javascript/layout/asset_list.js ***!
-  \********************************************/
+/***/ "./src/frontend/javascript/layout/asset_list.js":
+/*!******************************************************!*\
+  !*** ./src/frontend/javascript/layout/asset_list.js ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6318,7 +6318,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_asset_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/asset_item */ "./ui/javascript/widget/asset_item.js");
+/* harmony import */ var _widget_asset_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/asset_item */ "./src/frontend/javascript/widget/asset_item.js");
 
 
 class AssetListElement extends HTMLElement {
@@ -6375,10 +6375,10 @@ class AssetList {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/bill_content.js":
-/*!**********************************************!*\
-  !*** ./ui/javascript/layout/bill_content.js ***!
-  \**********************************************/
+/***/ "./src/frontend/javascript/layout/bill_content.js":
+/*!********************************************************!*\
+  !*** ./src/frontend/javascript/layout/bill_content.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6386,7 +6386,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 class BillElement extends HTMLElement {
@@ -6497,10 +6497,10 @@ class BillContent {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/bill_list.js":
-/*!*******************************************!*\
-  !*** ./ui/javascript/layout/bill_list.js ***!
-  \*******************************************/
+/***/ "./src/frontend/javascript/layout/bill_list.js":
+/*!*****************************************************!*\
+  !*** ./src/frontend/javascript/layout/bill_list.js ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6508,7 +6508,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bill_item */ "./ui/javascript/widget/bill_item.js");
+/* harmony import */ var _widget_bill_item__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/bill_item */ "./src/frontend/javascript/widget/bill_item.js");
 
 
 class BillListElement extends HTMLElement {
@@ -6566,10 +6566,10 @@ class BillList {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/bottom_navigator.js":
-/*!**************************************************!*\
-  !*** ./ui/javascript/layout/bottom_navigator.js ***!
-  \**************************************************/
+/***/ "./src/frontend/javascript/layout/bottom_navigator.js":
+/*!************************************************************!*\
+  !*** ./src/frontend/javascript/layout/bottom_navigator.js ***!
+  \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6577,9 +6577,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./ui/javascript/constant/bottom_navigator_data.js");
-/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./ui/javascript/widget/tar-bar.js");
-/* harmony import */ var _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/bottom_navigator_item */ "./ui/javascript/widget/bottom_navigator_item.js");
+/* harmony import */ var _constant_bottom_navigator_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/bottom_navigator_data */ "./src/frontend/javascript/constant/bottom_navigator_data.js");
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/frontend/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_bottom_navigator_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/bottom_navigator_item */ "./src/frontend/javascript/widget/bottom_navigator_item.js");
 
 
 
@@ -6602,10 +6602,10 @@ class BottomNavigator {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/form.js":
-/*!**************************************!*\
-  !*** ./ui/javascript/layout/form.js ***!
-  \**************************************/
+/***/ "./src/frontend/javascript/layout/form.js":
+/*!************************************************!*\
+  !*** ./src/frontend/javascript/layout/form.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6613,10 +6613,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./ui/javascript/widget/tar-bar.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./ui/javascript/widget/input.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./ui/javascript/widget/button.js");
-/* harmony import */ var _model_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/transaction */ "./ui/javascript/model/transaction.js");
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/frontend/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/frontend/javascript/widget/input.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
+/* harmony import */ var _model_transaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/transaction */ "./src/frontend/javascript/model/transaction.js");
 
 
 
@@ -6804,10 +6804,10 @@ class Form {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/header.js":
-/*!****************************************!*\
-  !*** ./ui/javascript/layout/header.js ***!
-  \****************************************/
+/***/ "./src/frontend/javascript/layout/header.js":
+/*!**************************************************!*\
+  !*** ./src/frontend/javascript/layout/header.js ***!
+  \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6815,7 +6815,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./ui/javascript/controller/view.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
 // https://unicode-table.com/cn/2248/
 
 
@@ -6981,10 +6981,10 @@ class Header {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/scaffold.js":
-/*!******************************************!*\
-  !*** ./ui/javascript/layout/scaffold.js ***!
-  \******************************************/
+/***/ "./src/frontend/javascript/layout/scaffold.js":
+/*!****************************************************!*\
+  !*** ./src/frontend/javascript/layout/scaffold.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6992,7 +6992,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/pop_over */ "./ui/javascript/widget/pop_over.js");
+/* harmony import */ var _widget_pop_over__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/pop_over */ "./src/frontend/javascript/widget/pop_over.js");
 
 
 // https://developers.google.com/web/fundamentals/web-components/customelements
@@ -7090,10 +7090,10 @@ class Scaffold {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/setting_list.js":
-/*!**********************************************!*\
-  !*** ./ui/javascript/layout/setting_list.js ***!
-  \**********************************************/
+/***/ "./src/frontend/javascript/layout/setting_list.js":
+/*!********************************************************!*\
+  !*** ./src/frontend/javascript/layout/setting_list.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7101,7 +7101,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/setting_column */ "./ui/javascript/widget/setting_column.js");
+/* harmony import */ var _widget_setting_column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/setting_column */ "./src/frontend/javascript/widget/setting_column.js");
 
 
 const getSettings = (fiat) => [
@@ -7181,10 +7181,10 @@ class SettingList {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/slider_container.js":
-/*!**************************************************!*\
-  !*** ./ui/javascript/layout/slider_container.js ***!
-  \**************************************************/
+/***/ "./src/frontend/javascript/layout/slider_container.js":
+/*!************************************************************!*\
+  !*** ./src/frontend/javascript/layout/slider_container.js ***!
+  \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7239,10 +7239,10 @@ class SlidesContainer {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/tab_bar_navigator.js":
-/*!***************************************************!*\
-  !*** ./ui/javascript/layout/tab_bar_navigator.js ***!
-  \***************************************************/
+/***/ "./src/frontend/javascript/layout/tab_bar_navigator.js":
+/*!*************************************************************!*\
+  !*** ./src/frontend/javascript/layout/tab_bar_navigator.js ***!
+  \*************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7250,9 +7250,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./ui/javascript/constant/tab_bar_data.js");
-/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./ui/javascript/widget/tar-bar.js");
-/* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./ui/javascript/widget/tab_bar_item.js");
+/* harmony import */ var _constant_tab_bar_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constant/tab_bar_data */ "./src/frontend/javascript/constant/tab_bar_data.js");
+/* harmony import */ var _widget_tar_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/tar-bar */ "./src/frontend/javascript/widget/tar-bar.js");
+/* harmony import */ var _widget_tab_bar_item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../widget/tab_bar_item */ "./src/frontend/javascript/widget/tab_bar_item.js");
 
 
 
@@ -7274,10 +7274,10 @@ class TarBarNavigator {
 
 /***/ }),
 
-/***/ "./ui/javascript/layout/third_party_signin_container.js":
-/*!**************************************************************!*\
-  !*** ./ui/javascript/layout/third_party_signin_container.js ***!
-  \**************************************************************/
+/***/ "./src/frontend/javascript/layout/third_party_signin_container.js":
+/*!************************************************************************!*\
+  !*** ./src/frontend/javascript/layout/third_party_signin_container.js ***!
+  \************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7285,7 +7285,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./ui/javascript/widget/button.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
 
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
@@ -7345,10 +7345,10 @@ class ThirdPartySigninContainer {
 
 /***/ }),
 
-/***/ "./ui/javascript/model/asset.js":
-/*!**************************************!*\
-  !*** ./ui/javascript/model/asset.js ***!
-  \**************************************/
+/***/ "./src/frontend/javascript/model/asset.js":
+/*!************************************************!*\
+  !*** ./src/frontend/javascript/model/asset.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7384,10 +7384,10 @@ class Asset {
 
 /***/ }),
 
-/***/ "./ui/javascript/model/bill.js":
-/*!*************************************!*\
-  !*** ./ui/javascript/model/bill.js ***!
-  \*************************************/
+/***/ "./src/frontend/javascript/model/bill.js":
+/*!***********************************************!*\
+  !*** ./src/frontend/javascript/model/bill.js ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7395,7 +7395,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 class Bill {
@@ -7499,10 +7499,10 @@ class Bill {
 
 /***/ }),
 
-/***/ "./ui/javascript/model/transaction.js":
-/*!********************************************!*\
-  !*** ./ui/javascript/model/transaction.js ***!
-  \********************************************/
+/***/ "./src/frontend/javascript/model/transaction.js":
+/*!******************************************************!*\
+  !*** ./src/frontend/javascript/model/transaction.js ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7535,10 +7535,10 @@ class Transaction {
 
 /***/ }),
 
-/***/ "./ui/javascript/screen/address.js":
-/*!*****************************************!*\
-  !*** ./ui/javascript/screen/address.js ***!
-  \*****************************************/
+/***/ "./src/frontend/javascript/screen/address.js":
+/*!***************************************************!*\
+  !*** ./src/frontend/javascript/screen/address.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7546,10 +7546,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./ui/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./ui/javascript/layout/header.js");
-/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/address_content */ "./ui/javascript/layout/address_content.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
+/* harmony import */ var _layout_address_content__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/address_content */ "./src/frontend/javascript/layout/address_content.js");
 
 
 
@@ -7590,10 +7590,10 @@ const address = new Address();
 
 /***/ }),
 
-/***/ "./ui/javascript/screen/asset.js":
-/*!***************************************!*\
-  !*** ./ui/javascript/screen/asset.js ***!
-  \***************************************/
+/***/ "./src/frontend/javascript/screen/asset.js":
+/*!*************************************************!*\
+  !*** ./src/frontend/javascript/screen/asset.js ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7601,11 +7601,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./ui/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./ui/javascript/layout/header.js");
-/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./ui/javascript/layout/tab_bar_navigator.js");
-/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/bill_list */ "./ui/javascript/layout/bill_list.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
+/* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/frontend/javascript/layout/tab_bar_navigator.js");
+/* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/bill_list */ "./src/frontend/javascript/layout/bill_list.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 // import Bill from "./model/bill";
 
 
@@ -7664,10 +7664,10 @@ const asset = new Asset();
 
 /***/ }),
 
-/***/ "./ui/javascript/screen/bill.js":
-/*!**************************************!*\
-  !*** ./ui/javascript/screen/bill.js ***!
-  \**************************************/
+/***/ "./src/frontend/javascript/screen/bill.js":
+/*!************************************************!*\
+  !*** ./src/frontend/javascript/screen/bill.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7675,10 +7675,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./ui/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./ui/javascript/layout/header.js");
-/* harmony import */ var _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bill_content */ "./ui/javascript/layout/bill_content.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
+/* harmony import */ var _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/bill_content */ "./src/frontend/javascript/layout/bill_content.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
@@ -7711,10 +7711,10 @@ const bill = new Bill();
 
 /***/ }),
 
-/***/ "./ui/javascript/screen/landing.js":
-/*!*****************************************!*\
-  !*** ./ui/javascript/screen/landing.js ***!
-  \*****************************************/
+/***/ "./src/frontend/javascript/screen/landing.js":
+/*!***************************************************!*\
+  !*** ./src/frontend/javascript/screen/landing.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7722,9 +7722,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./ui/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./ui/javascript/layout/third_party_signin_container.js");
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controller/view */ "./ui/javascript/controller/view.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/frontend/javascript/layout/third_party_signin_container.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
 
 
 
@@ -7786,10 +7786,10 @@ const landing = new Landing();
 
 /***/ }),
 
-/***/ "./ui/javascript/screen/mnemonic.js":
-/*!******************************************!*\
-  !*** ./ui/javascript/screen/mnemonic.js ***!
-  \******************************************/
+/***/ "./src/frontend/javascript/screen/mnemonic.js":
+/*!****************************************************!*\
+  !*** ./src/frontend/javascript/screen/mnemonic.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7797,11 +7797,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./ui/javascript/controller/view.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./ui/javascript/layout/header.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./ui/javascript/layout/scaffold.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./ui/javascript/widget/button.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/input */ "./ui/javascript/widget/input.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/input */ "./src/frontend/javascript/widget/input.js");
 
 
 
@@ -7883,10 +7883,10 @@ const MnemonicScreen = new Mnemonic();
 
 /***/ }),
 
-/***/ "./ui/javascript/screen/overview.js":
-/*!******************************************!*\
-  !*** ./ui/javascript/screen/overview.js ***!
-  \******************************************/
+/***/ "./src/frontend/javascript/screen/overview.js":
+/*!****************************************************!*\
+  !*** ./src/frontend/javascript/screen/overview.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7894,13 +7894,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./ui/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./ui/javascript/layout/header.js");
-/* harmony import */ var _layout_asset_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/asset_list */ "./ui/javascript/layout/asset_list.js");
-/* harmony import */ var _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/setting_list */ "./ui/javascript/layout/setting_list.js");
-/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./ui/javascript/layout/bottom_navigator.js");
-/* harmony import */ var _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../layout/slider_container */ "./ui/javascript/layout/slider_container.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
+/* harmony import */ var _layout_asset_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/asset_list */ "./src/frontend/javascript/layout/asset_list.js");
+/* harmony import */ var _layout_setting_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/setting_list */ "./src/frontend/javascript/layout/setting_list.js");
+/* harmony import */ var _layout_bottom_navigator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/bottom_navigator */ "./src/frontend/javascript/layout/bottom_navigator.js");
+/* harmony import */ var _layout_slider_container__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../layout/slider_container */ "./src/frontend/javascript/layout/slider_container.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
@@ -7968,10 +7968,10 @@ const overview = new Overview();
 
 /***/ }),
 
-/***/ "./ui/javascript/screen/transaction.js":
-/*!*********************************************!*\
-  !*** ./ui/javascript/screen/transaction.js ***!
-  \*********************************************/
+/***/ "./src/frontend/javascript/screen/transaction.js":
+/*!*******************************************************!*\
+  !*** ./src/frontend/javascript/screen/transaction.js ***!
+  \*******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7979,11 +7979,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./ui/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./ui/javascript/layout/header.js");
-/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./ui/javascript/layout/form.js");
-/* harmony import */ var _utils_popup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/popup */ "./ui/javascript/utils/popup.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
+/* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/frontend/javascript/layout/form.js");
+/* harmony import */ var _utils_popup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/popup */ "./src/frontend/javascript/utils/popup.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
@@ -8061,18 +8061,18 @@ const transaction = new Transaction();
 
 /***/ }),
 
-/***/ "./ui/javascript/ui.js":
-/*!*****************************!*\
-  !*** ./ui/javascript/ui.js ***!
-  \*****************************/
+/***/ "./src/frontend/javascript/ui.js":
+/*!***************************************!*\
+  !*** ./src/frontend/javascript/ui.js ***!
+  \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model/bill */ "./ui/javascript/model/bill.js");
-/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./model/asset */ "./ui/javascript/model/asset.js");
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./controller/view */ "./ui/javascript/controller/view.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model/bill */ "./src/frontend/javascript/model/bill.js");
+/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./model/asset */ "./src/frontend/javascript/model/asset.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/utils */ "./src/frontend/javascript/utils/utils.js");
 // MVC: View
 
 
@@ -8306,10 +8306,10 @@ window.createTestAsset = createTestAsset;
 
 /***/ }),
 
-/***/ "./ui/javascript/utils/popup.js":
-/*!**************************************!*\
-  !*** ./ui/javascript/utils/popup.js ***!
-  \**************************************/
+/***/ "./src/frontend/javascript/utils/popup.js":
+/*!************************************************!*\
+  !*** ./src/frontend/javascript/utils/popup.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8359,10 +8359,10 @@ const close = (timeout) => {
 
 /***/ }),
 
-/***/ "./ui/javascript/utils/utils.js":
-/*!**************************************!*\
-  !*** ./ui/javascript/utils/utils.js ***!
-  \**************************************/
+/***/ "./src/frontend/javascript/utils/utils.js":
+/*!************************************************!*\
+  !*** ./src/frontend/javascript/utils/utils.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8473,10 +8473,10 @@ const getInstallID = () => {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/asset_item.js":
-/*!********************************************!*\
-  !*** ./ui/javascript/widget/asset_item.js ***!
-  \********************************************/
+/***/ "./src/frontend/javascript/widget/asset_item.js":
+/*!******************************************************!*\
+  !*** ./src/frontend/javascript/widget/asset_item.js ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8484,7 +8484,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./ui/javascript/controller/view.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
 
 class AssetItemElement extends HTMLElement {
   constructor() {
@@ -8564,10 +8564,10 @@ class AssetItem {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/bill_item.js":
-/*!*******************************************!*\
-  !*** ./ui/javascript/widget/bill_item.js ***!
-  \*******************************************/
+/***/ "./src/frontend/javascript/widget/bill_item.js":
+/*!*****************************************************!*\
+  !*** ./src/frontend/javascript/widget/bill_item.js ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8575,8 +8575,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./ui/javascript/controller/view.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
@@ -8671,10 +8671,10 @@ class BillItem {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/bottom_navigator_item.js":
-/*!*******************************************************!*\
-  !*** ./ui/javascript/widget/bottom_navigator_item.js ***!
-  \*******************************************************/
+/***/ "./src/frontend/javascript/widget/bottom_navigator_item.js":
+/*!*****************************************************************!*\
+  !*** ./src/frontend/javascript/widget/bottom_navigator_item.js ***!
+  \*****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8682,7 +8682,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./ui/javascript/controller/view.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
 
 
 class BottomNavigatorItemElement extends HTMLElement {
@@ -8718,10 +8718,10 @@ class BottomNavigatorItem {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/button.js":
-/*!****************************************!*\
-  !*** ./ui/javascript/widget/button.js ***!
-  \****************************************/
+/***/ "./src/frontend/javascript/widget/button.js":
+/*!**************************************************!*\
+  !*** ./src/frontend/javascript/widget/button.js ***!
+  \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8822,10 +8822,10 @@ class Button {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/input.js":
-/*!***************************************!*\
-  !*** ./ui/javascript/widget/input.js ***!
-  \***************************************/
+/***/ "./src/frontend/javascript/widget/input.js":
+/*!*************************************************!*\
+  !*** ./src/frontend/javascript/widget/input.js ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8833,7 +8833,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./ui/javascript/utils/utils.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 class InputElement extends HTMLElement {
@@ -9001,10 +9001,10 @@ class Input {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/pop_over.js":
-/*!******************************************!*\
-  !*** ./ui/javascript/widget/pop_over.js ***!
-  \******************************************/
+/***/ "./src/frontend/javascript/widget/pop_over.js":
+/*!****************************************************!*\
+  !*** ./src/frontend/javascript/widget/pop_over.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9178,10 +9178,10 @@ class Popover {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/setting_column.js":
-/*!************************************************!*\
-  !*** ./ui/javascript/widget/setting_column.js ***!
-  \************************************************/
+/***/ "./src/frontend/javascript/widget/setting_column.js":
+/*!**********************************************************!*\
+  !*** ./src/frontend/javascript/widget/setting_column.js ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9250,10 +9250,10 @@ class SettingColumn {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/tab_bar_item.js":
-/*!**********************************************!*\
-  !*** ./ui/javascript/widget/tab_bar_item.js ***!
-  \**********************************************/
+/***/ "./src/frontend/javascript/widget/tab_bar_item.js":
+/*!********************************************************!*\
+  !*** ./src/frontend/javascript/widget/tab_bar_item.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9261,7 +9261,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./ui/javascript/controller/view.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
 
 class TabBarItemElement extends HTMLElement {
   constructor() {
@@ -9300,10 +9300,10 @@ class TabBarItem {
 
 /***/ }),
 
-/***/ "./ui/javascript/widget/tar-bar.js":
-/*!*****************************************!*\
-  !*** ./ui/javascript/widget/tar-bar.js ***!
-  \*****************************************/
+/***/ "./src/frontend/javascript/widget/tar-bar.js":
+/*!***************************************************!*\
+  !*** ./src/frontend/javascript/widget/tar-bar.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9368,16 +9368,16 @@ class TabBar {
 
 /***/ }),
 
-/***/ "./ui/main.js":
-/*!********************!*\
-  !*** ./ui/main.js ***!
-  \********************/
+/***/ "./src/frontend/main.js":
+/*!******************************!*\
+  !*** ./src/frontend/main.js ***!
+  \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ "./ui/scss/main.scss");
-/* harmony import */ var _javascript_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/ui */ "./ui/javascript/ui.js");
+/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/main.scss */ "./src/frontend/scss/main.scss");
+/* harmony import */ var _javascript_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./javascript/ui */ "./src/frontend/javascript/ui.js");
 
 
 
@@ -9466,7 +9466,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("cd53e971c6af8fa3ad65")
+/******/ 		__webpack_require__.h = () => ("ff3f3234fa5f21ded82b")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -10538,8 +10538,8 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__("./ui/main.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/frontend/main.js");
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=bundle.js.map
+//# sourceMappingURL=popup.js.map

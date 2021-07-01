@@ -6,10 +6,10 @@ const nodeExternals = require("webpack-node-externals");
 
 const frontend = {
   mode: "development",
-  entry: path.resolve(__dirname, "ui/main.js"),
+  entry: path.resolve(__dirname, "src/frontend/main.js"),
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "javascript/bundle.js",
+    filename: "javascript/popup.js",
     chunkFilename: "[id].js",
   },
   devServer: {
