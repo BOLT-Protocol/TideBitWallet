@@ -76,6 +76,7 @@ export const currentView = () => {
   const view = scaffold?.attributes?.view?.value;
   return view;
 };
+
 export const getInstallID = () => {
   const key = "InstallID";
   let InstallID;
@@ -91,4 +92,32 @@ export const getInstallID = () => {
       resolve(InstallID);
     });
   });
+};
+
+const getAuthToken = () =>
+  new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      console.log(token);
+      resolve(token);
+    });
+  });
+
+export const googleSignin = async () => {
+  // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
+  const token = await getAuthToken();
+  const init = {
+    method: "GET",
+    async: true,
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    contentType: "json",
+  };
+  const data = await fetch(
+    "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+    init
+  ).then((respose) => respose.json());
+  console.log(data);
+  return data.id;
 };

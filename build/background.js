@@ -49054,115 +49054,85 @@ module.exports = JSON.parse('{"name":"tidebitwallet","version":"0.1.0","descript
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/helper */ "./src/helpers/helper.js");
 /* harmony import */ var _helpers_helper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_helpers_helper__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index */ "./src/index.js");
+/* harmony import */ var _cores_tidewallet__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cores/tidewallet */ "./src/cores/tidewallet.js");
 
 
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ InstallID: (0,_helpers_helper__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32) });
 });
-console.log("hi");
-
-(async () => {
-  const tw = new _index__WEBPACK_IMPORTED_MODULE_1__.default();
-  console.log("hi");
-  const api = {
-    apiURL: "https://service.tidewallet.io/api/v1",
-    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
-    apiSecret: "9e37d67450dc906042fde75113ecb78c",
-  };
-  const user1 = {
-    OAuthID: "test2ejknkjdniednwjq",
-    InstallID:
-      "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
-    mnemonic:
-      "cry hub inmate cliff sun program public else atom absurd release inherit funny edge assault",
-    password: "12345",
-  };
-  const user2 = {
-    OAuthID: "test2ejknkjdniednwjq",
-    InstallID:
-      "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
-  };
-  await tw.init({ user: user2, api });
-  // test
-  console.log("overview:", await tw.overview());
-  console.log(
-    "getAssetDetail:",
-    await tw.getAssetDetail({
-      assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-    })
-  );
-  console.log(
-    "getTransactionDetail:",
-    await tw.getTransactionDetail({
-      assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-      transactionID: "",
-    })
-  );
-  console.log(
-    "getReceivingAddress:",
-    await tw.getReceivingAddress({
-      accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-    })
-  );
-  console.log("getWalletConfig:", await tw.getWalletConfig());
-  await tw.sync();
-  console.log("backup:", await tw.backup());
-  await tw.close();
-})();
-
-console.log("hi");
 
 // chrome.action.onClicked.addListener((tab) => {
-//   async () => {
-//     const tw = new TideWallet();
-//     const api = {
-//       apiURL: "https://service.tidewallet.io/api/v1",
-//       apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
-//       apiSecret: "9e37d67450dc906042fde75113ecb78c",
-//     };
-//     const user1 = {
-//       OAuthID: "test2ejknkjdniednwjq",
-//       InstallID:
-//         "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
-//       mnemonic:
-//         "cry hub inmate cliff sun program public else atom absurd release inherit funny edge assault",
-//       password: "12345",
-//     };
-//     const user2 = {
-//       OAuthID: "test2ejknkjdniednwjq",
-//       InstallID:
-//         "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
-//     };
-//     await tw.init({ user: user2, api });
-//     // test
-//     console.log("overview:", await tw.overview());
-//     console.log(
-//       "getAssetDetail:",
-//       await tw.getAssetDetail({
-//         assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-//       })
-//     );
-//     console.log(
-//       "getTransactionDetail:",
-//       await tw.getTransactionDetail({
-//         assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-//         transactionID: "",
-//       })
-//     );
-//     console.log(
-//       "getReceivingAddress:",
-//       await tw.getReceivingAddress({
-//         accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
-//       })
-//     );
-//     console.log("getWalletConfig:", await tw.getWalletConfig());
-//     await tw.sync();
-//     console.log("backup:", await tw.backup());
-//     await tw.close();
-//   };
+//   chrome.scripting.executeScript({
+//     target: { tabId: tab.id },
+//     files: ['content-script.js']
+//   });
 // });
+chrome.tabs.query(
+  { active: true, currentWindow: true },
+  function (tabs) {
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { greeting: "hello" },
+      function (response) {
+        console.log(response.farewell);
+      }
+    );
+  }
+);
+
+
+
+
+// (async () => {
+//   const tw = new TideWallet();
+//   console.log("hi");
+//   const api = {
+//     apiURL: "https://service.tidewallet.io/api/v1",
+//     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+//     apiSecret: "9e37d67450dc906042fde75113ecb78c",
+//   };
+//   const user1 = {
+//     OAuthID: "test2ejknkjdniednwjq",
+//     InstallID:
+//       "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
+//     mnemonic:
+//       "cry hub inmate cliff sun program public else atom absurd release inherit funny edge assault",
+//     password: "12345",
+//   };
+//   const user2 = {
+//     OAuthID: "test2ejknkjdniednwjq",
+//     InstallID:
+//       "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
+//   };
+//   await tw.init({ user: user2, api });
+//   // test
+//   console.log("overview:", await tw.overview());
+//   console.log(
+//     "getAssetDetail:",
+//     await tw.getAssetDetail({
+//       assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
+//     })
+//   );
+//   console.log(
+//     "getTransactionDetail:",
+//     await tw.getTransactionDetail({
+//       assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
+//       transactionID: "",
+//     })
+//   );
+//   console.log(
+//     "getReceivingAddress:",
+//     await tw.getReceivingAddress({
+//       accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
+//     })
+//   );
+//   console.log("getWalletConfig:", await tw.getWalletConfig());
+//   await tw.sync();
+//   console.log("backup:", await tw.backup());
+//   await tw.close();
+// })();
+
 
 
 /***/ }),
@@ -51697,6 +51667,211 @@ class User {
 
 /***/ }),
 
+/***/ "./src/cores/tidewallet.js":
+/*!*********************************!*\
+  !*** ./src/cores/tidewallet.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bignumber.js */ "./node_modules/bignumber.js/bignumber.js");
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bignumber_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Account */ "./src/cores/Account.js");
+/* harmony import */ var _Trader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Trader */ "./src/cores/Trader.js");
+/* harmony import */ var _User__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./User */ "./src/cores/User.js");
+/* harmony import */ var _database_dbOperator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../database/dbOperator */ "./src/database/dbOperator.js");
+/* harmony import */ var _TideWalletCommunicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./TideWalletCommunicator */ "./src/cores/TideWalletCommunicator.js");
+/* harmony import */ var _TideWalletCore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./TideWalletCore */ "./src/cores/TideWalletCore.js");
+/* harmony import */ var _package_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../package.json */ "./package.json");
+
+
+
+
+
+
+
+
+
+class TideWallet {
+  // eventType: ready, update, notice
+  // notifier: { eventName: string, callback: function }
+  notifiers = [];
+
+  static Core = _TideWalletCore__WEBPACK_IMPORTED_MODULE_6__.default;
+
+  constructor() {
+    return this;
+  }
+
+  async init({ user, api }) {
+    const communicator = new _TideWalletCommunicator__WEBPACK_IMPORTED_MODULE_5__.default(api);
+    const db = new _database_dbOperator__WEBPACK_IMPORTED_MODULE_4__.default();
+    await db.init();
+    const initObj = { TideWalletCommunicator: communicator, DBOperator: db };
+
+    this.user = new _User__WEBPACK_IMPORTED_MODULE_3__.default(initObj);
+
+    const exist = await this.user.checkUser();
+    if (!exist) {
+      if (user.mnemonic && user.password) {
+        this.core = await this.user.createUserWithSeed(
+          user.OAuthID,
+          seed,
+          user.InstallID
+        );
+      } else {
+        this.core = await this.user.createUser(user.OAuthID, user.InstallID);
+      }
+    }
+
+    initObj.TideWalletCore = this.core;
+    this.account = new _Account__WEBPACK_IMPORTED_MODULE_1__.default(initObj);
+    this.account.setMessenger();
+    await this.account.init();
+
+    this.trader = new _Trader__WEBPACK_IMPORTED_MODULE_2__.default(initObj);
+    await this.trader.getFiatList();
+
+    const listener = this.account.messenger.subscribe((v) => {
+      this.notice(v, "update");
+    });
+    return true;
+  }
+
+  on(eventName = "", callback) {
+    if (typeof callback !== "function") return;
+    const en = eventName.toLocaleLowerCase();
+    let notifier = { callback };
+    switch (en) {
+      case "ready":
+      case "update":
+      case "notice":
+        notifier.eventName = en;
+        break;
+    }
+    return this.notifiers.push(notifier);
+  }
+
+  removeNotifier(notifierId) {
+    delete this.notifiers[notifierId];
+    return true;
+  }
+
+  async getWalletConfig() {
+    const fiat = await this.trader.getSelectedFiat();
+    const version = _package_json__WEBPACK_IMPORTED_MODULE_7__.version;
+    return { fiat, version };
+  }
+
+  async overview() {
+    const currencies = await this.account.getAllCurrencies();
+    const fiat = await this.trader.getSelectedFiat();
+    const bnRate = fiat.exchangeRate;
+    const balance = currencies.reduce((rs, curr) => {
+      const bnBalance = new (bignumber_js__WEBPACK_IMPORTED_MODULE_0___default())(curr.balance);
+      const bnRs = new (bignumber_js__WEBPACK_IMPORTED_MODULE_0___default())(rs);
+      return bnRs
+        .plus(
+          this.trader.calculateToUSD({
+            currencyId: curr.currencyId,
+            amount: bnBalance,
+          })
+        )
+        .toFixed();
+    }, 0);
+    const bnBalance = new (bignumber_js__WEBPACK_IMPORTED_MODULE_0___default())(balance);
+    const balanceFiat = bnBalance.multipliedBy(bnRate).toFixed();
+
+    const dashboard = {
+      balance: balanceFiat,
+      currencies,
+    };
+    return dashboard;
+  }
+
+  /**
+   *
+   * @param {object} accountInfo
+   * @param {string} accountInfo.assetID
+   */
+  async getAssetDetail({ assetID }) {
+    const asset = await this.account.getCurrencies(assetID);
+    const transactions = await this.account.getTransactions(assetID);
+
+    return { asset, transactions };
+  }
+
+  async getTransactionDetail({ assetID, transactionID }) {
+    const txs = await this.account.getTransactions(assetID);
+    const tx = txs.find((r) => r.txId === transactionID);
+    return tx;
+  }
+
+  async getReceivingAddress({ accountID }) {
+    const address = await this.account.getReceiveAddress(accountID);
+
+    return address;
+  }
+
+  // ++ need help
+  async getTransactionFee({ accountID, blockchainID, from, to, amount, data }) {
+    const svc = this.account.getService(accountID);
+    const fees = svc.getTransactionFee(blockchainID);
+
+    return fees;
+  }
+
+  // need help
+  async prepareTransaction() {}
+
+  async sendTransaction({ accountID, blockchainID, transaction }) {
+    const svc = this.account.getService(accountID);
+    const res = svc.publishTransaction(blockchainID, transaction);
+
+    return res;
+  }
+
+  async sync() {
+    this.account.sync();
+    return true;
+  }
+
+  async backup() {
+    return this.user.getKeystore();
+  }
+
+  async close() {
+    // release all resources
+    this.account.close();
+    for (const index in this.notifiers) {
+      this.removeNotifier(index);
+    }
+    delete this.user;
+    delete this.account;
+    delete this.trader;
+    return true;
+  }
+
+  notice(data, eventName = "") {
+    const ev = eventName.toLocaleLowerCase();
+    this.notifiers.forEach((notifier) => {
+      if (!notifier) return;
+      if (notifier.eventName !== ev) return;
+      if (typeof notifier.callback !== "function") return;
+      notifier.callback(data);
+    });
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TideWallet);
+
+
+/***/ }),
+
 /***/ "./src/database/dbOperator.js":
 /*!************************************!*\
   !*** ./src/database/dbOperator.js ***!
@@ -52863,211 +53038,6 @@ class rlp {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (rlp); 
-
-
-/***/ }),
-
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bignumber.js */ "./node_modules/bignumber.js/bignumber.js");
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bignumber_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _cores_Account__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cores/Account */ "./src/cores/Account.js");
-/* harmony import */ var _cores_Trader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./cores/Trader */ "./src/cores/Trader.js");
-/* harmony import */ var _cores_User__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./cores/User */ "./src/cores/User.js");
-/* harmony import */ var _database_dbOperator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./database/dbOperator */ "./src/database/dbOperator.js");
-/* harmony import */ var _cores_TideWalletCommunicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./cores/TideWalletCommunicator */ "./src/cores/TideWalletCommunicator.js");
-/* harmony import */ var _cores_TideWalletCore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./cores/TideWalletCore */ "./src/cores/TideWalletCore.js");
-/* harmony import */ var _package_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../package.json */ "./package.json");
-
-
-
-
-
-
-
-
-
-class TideWallet {
-  // eventType: ready, update, notice
-  // notifier: { eventName: string, callback: function }
-  notifiers = [];
-
-  static Core = _cores_TideWalletCore__WEBPACK_IMPORTED_MODULE_6__.default;
-
-  constructor() {
-    return this;
-  }
-
-  async init({ user, api }) {
-    const communicator = new _cores_TideWalletCommunicator__WEBPACK_IMPORTED_MODULE_5__.default(api);
-    const db = new _database_dbOperator__WEBPACK_IMPORTED_MODULE_4__.default();
-    await db.init();
-    const initObj = { TideWalletCommunicator: communicator, DBOperator: db };
-
-    this.user = new _cores_User__WEBPACK_IMPORTED_MODULE_3__.default(initObj);
-
-    const exist = await this.user.checkUser();
-    if (!exist) {
-      if (user.mnemonic && user.password) {
-        this.core = await this.user.createUserWithSeed(
-          user.OAuthID,
-          seed,
-          user.InstallID
-        );
-      } else {
-        this.core = await this.user.createUser(user.OAuthID, user.InstallID);
-      }
-    }
-
-    initObj.TideWalletCore = this.core;
-    this.account = new _cores_Account__WEBPACK_IMPORTED_MODULE_1__.default(initObj);
-    this.account.setMessenger();
-    await this.account.init();
-
-    this.trader = new _cores_Trader__WEBPACK_IMPORTED_MODULE_2__.default(initObj);
-    await this.trader.getFiatList();
-
-    const listener = this.account.messenger.subscribe((v) => {
-      this.notice(v, "update");
-    });
-    return true;
-  }
-
-  on(eventName = "", callback) {
-    if (typeof callback !== "function") return;
-    const en = eventName.toLocaleLowerCase();
-    let notifier = { callback };
-    switch (en) {
-      case "ready":
-      case "update":
-      case "notice":
-        notifier.eventName = en;
-        break;
-    }
-    return this.notifiers.push(notifier);
-  }
-
-  removeNotifier(notifierId) {
-    delete this.notifiers[notifierId];
-    return true;
-  }
-
-  async getWalletConfig() {
-    const fiat = await this.trader.getSelectedFiat();
-    const version = _package_json__WEBPACK_IMPORTED_MODULE_7__.version;
-    return { fiat, version };
-  }
-
-  async overview() {
-    const currencies = await this.account.getAllCurrencies();
-    const fiat = await this.trader.getSelectedFiat();
-    const bnRate = fiat.exchangeRate;
-    const balance = currencies.reduce((rs, curr) => {
-      const bnBalance = new (bignumber_js__WEBPACK_IMPORTED_MODULE_0___default())(curr.balance);
-      const bnRs = new (bignumber_js__WEBPACK_IMPORTED_MODULE_0___default())(rs);
-      return bnRs
-        .plus(
-          this.trader.calculateToUSD({
-            currencyId: curr.currencyId,
-            amount: bnBalance,
-          })
-        )
-        .toFixed();
-    }, 0);
-    const bnBalance = new (bignumber_js__WEBPACK_IMPORTED_MODULE_0___default())(balance);
-    const balanceFiat = bnBalance.multipliedBy(bnRate).toFixed();
-
-    const dashboard = {
-      balance: balanceFiat,
-      currencies,
-    };
-    return dashboard;
-  }
-
-  /**
-   *
-   * @param {object} accountInfo
-   * @param {string} accountInfo.assetID
-   */
-  async getAssetDetail({ assetID }) {
-    const asset = await this.account.getCurrencies(assetID);
-    const transactions = await this.account.getTransactions(assetID);
-
-    return { asset, transactions };
-  }
-
-  async getTransactionDetail({ assetID, transactionID }) {
-    const txs = await this.account.getTransactions(assetID);
-    const tx = txs.find((r) => r.txId === transactionID);
-    return tx;
-  }
-
-  async getReceivingAddress({ accountID }) {
-    const address = await this.account.getReceiveAddress(accountID);
-
-    return address;
-  }
-
-  // ++ need help
-  async getTransactionFee({ accountID, blockchainID, from, to, amount, data }) {
-    const svc = this.account.getService(accountID);
-    const fees = svc.getTransactionFee(blockchainID);
-
-    return fees;
-  }
-
-  // need help
-  async prepareTransaction() {}
-
-  async sendTransaction({ accountID, blockchainID, transaction }) {
-    const svc = this.account.getService(accountID);
-    const res = svc.publishTransaction(blockchainID, transaction);
-
-    return res;
-  }
-
-  async sync() {
-    this.account.sync();
-    return true;
-  }
-
-  async backup() {
-    return this.user.getKeystore();
-  }
-
-  async close() {
-    // release all resources
-    this.account.close();
-    for (const index in this.notifiers) {
-      this.removeNotifier(index);
-    }
-    delete this.user;
-    delete this.account;
-    delete this.trader;
-    return true;
-  }
-
-  notice(data, eventName = "") {
-    const ev = eventName.toLocaleLowerCase();
-    this.notifiers.forEach((notifier) => {
-      if (!notifier) return;
-      if (notifier.eventName !== ev) return;
-      if (typeof notifier.callback !== "function") return;
-      notifier.callback(data);
-    });
-  }
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TideWallet);
 
 
 /***/ }),
@@ -54395,7 +54365,7 @@ class TransactionServiceETH extends _accountServiceDecorator__WEBPACK_IMPORTED_M
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("8c10fa97e56ba47fc2e4")
+/******/ 		__webpack_require__.h = () => ("6da65f01a70dc560b3a2")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

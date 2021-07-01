@@ -78,6 +78,14 @@ const background = {
     port: 9000,
   },
   devtool: "cheap-module-source-map",
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+    fallback: {
+      http: require.resolve("stream-http"),
+      https: require.resolve("https-browserify"),
+      crypto: require.resolve("crypto-browserify"),
+    },
+  },
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
@@ -89,46 +97,29 @@ const background = {
       cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, "./dist")],
     }),
   ],
-  // externals: [nodeExternals()],
-  module: {
-    rules: [
-      // {
-      //   test: /\.(js)$/,
-      //   exclude: /node_modules/,
-      //   use: "babel-loader",
-      // },
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
-  },
-  resolve: {
-    fallback: {
-      http: require.resolve("stream-http"),
-      https: require.resolve("https-browserify"),
-      crypto: require.resolve("crypto-browserify"),
-    },
-  },
 };
 
-const ethereumUtils = {
-  entry: path.resolve(__dirname, "ethereumUtils/signature.ts"),
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
-      },
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
-  },
+const contentScript = {
+  entry: path.resolve(__dirname, "src/contentScript.js"),
   output: {
-    filename: "ethereum_utils.js",
-    path: path.resolve(__dirname, "src/helpers"),
+    path: path.resolve(__dirname, "build"),
+    filename: "contentScript.js",
+    chunkFilename: "[id].js",
   },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin({
+      cleanStaleWebpackAssets: false,
+      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, "./dist")],
+    }),
+  ],
 };
 
-module.exports = [frontend, background];
+module.exports = [frontend, background, contentScript];

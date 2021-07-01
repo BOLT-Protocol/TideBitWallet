@@ -3,6 +3,7 @@ import Bill from "./model/bill";
 import Asset from "./model/asset";
 import viewController from "./controller/view";
 import { randomHex } from "./utils/utils";
+import TideWallet from "../../cores/tidewallet";
 
 // test
 const createTestAsset = (id) => {
@@ -158,18 +159,25 @@ const getWalletConfig = () => {
     fiat: "USD",
   };
 };
-//-- test
+
+const api = {
+  apiURL: "https://service.tidewallet.io/api/v1",
+  apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+  apiSecret: "9e37d67450dc906042fde75113ecb78c",
+};
 
 const startApp = () => {
   let user, wallet, bills;
   // initialize
   wallet = getWalletConfig();
-  // -- test
-  window.wallet = wallet;
-  // --
+  const tw = new TideWallet();
   viewController.initialize(wallet);
   viewController.route("landing");
+};
 
+startApp();
+
+() => {
   // onReady
   // -- test
   setTimeout(() => {
@@ -220,10 +228,3 @@ const startApp = () => {
     }, 1000);
   }, 6000);
 };
-
-startApp();
-
-window.viewController = viewController;
-window.getUserDetail = getUserDetail;
-window.getWalletConfig = getWalletConfig;
-window.createTestAsset = createTestAsset;

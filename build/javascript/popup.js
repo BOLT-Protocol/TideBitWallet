@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1625110036162
+      // 1625120544151
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7725,55 +7725,43 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/frontend/javascript/layout/third_party_signin_container.js");
 /* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
 
-const googleSignin = async (screen) => {
-  // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
-  const api = {
-    apiURL: "https://service.tidewallet.io/api/v1",
-    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
-    apiSecret: "9e37d67450dc906042fde75113ecb78c",
-  };
-  const user = {};
-  chrome.identity.getAuthToken({ interactive: true }, function (token) {
-    console.log(token);
-    let init = {
-      method: "GET",
-      async: true,
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-      contentType: "json",
-    };
-    fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", init)
-      .then((response) => response.json())
-      .then(function (data) {
-        // get oauthID
-        console.log(data);
-        user.OAuthID = data.id;
-        // get install ID
-        chrome.storage.sync.get(["InstallID"], function (result) {
-          user.InstallID = result.InstallID;
-          console.log(user.OAuthID, user.InstallID);
-          // ++ TideWalletJS
-          // tidewallet.init({ user, api });
-          _controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(screen);
-        });
-      });
-  });
-};
 
 class Landing {
   constructor() {}
   render(screen, version) {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(
       this.header,
-      new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", () =>
-        googleSignin("assets")
-      ),
+      new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", async () => {
+        const OAuthID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.googleSignin)("assets");
+        const InstallID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.getInstallID)("assets");
+        console.log(OAuthID, InstallID);
+        // chrome.tabs.query(
+        //   { active: true, currentWindow: true },
+        //   function (tabs) {
+        //     console.log(tabs);
+        //     chrome.tabs.sendMessage(
+        //       tabs[0].id,
+        //       { action: "init", data: [OAuthID, InstallID] },
+        //       function (response) {
+        //         viewController.route("assets");
+        //       }
+        //     );
+        //   }
+        // );
+        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+          console.log(
+            sender.tab
+              ? "from a content script:" + sender.tab.url
+              : "from the extension"
+          );
+          if (request.greeting === "hello") sendResponse({ farewell: "goodbye" });
+        });
+      }),
       this.footer
     );
     this.scaffold.view = screen;
@@ -8373,7 +8361,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter),
 /* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter),
 /* harmony export */   "currentView": () => (/* binding */ currentView),
-/* harmony export */   "getInstallID": () => (/* binding */ getInstallID)
+/* harmony export */   "getInstallID": () => (/* binding */ getInstallID),
+/* harmony export */   "googleSignin": () => (/* binding */ googleSignin)
 /* harmony export */ });
 const randomHex = (n) => {
   var ID = "";
@@ -8453,6 +8442,7 @@ const currentView = () => {
   const view = scaffold?.attributes?.view?.value;
   return view;
 };
+
 const getInstallID = () => {
   const key = "InstallID";
   let InstallID;
@@ -8468,6 +8458,34 @@ const getInstallID = () => {
       resolve(InstallID);
     });
   });
+};
+
+const getAuthToken = () =>
+  new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      console.log(token);
+      resolve(token);
+    });
+  });
+
+const googleSignin = async () => {
+  // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
+  const token = await getAuthToken();
+  const init = {
+    method: "GET",
+    async: true,
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    contentType: "json",
+  };
+  const data = await fetch(
+    "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+    init
+  ).then((respose) => respose.json());
+  console.log(data);
+  return data.id;
 };
 
 
@@ -9466,7 +9484,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("ff3f3234fa5f21ded82b")
+/******/ 		__webpack_require__.h = () => ("cd47369f69dabe1a6e73")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

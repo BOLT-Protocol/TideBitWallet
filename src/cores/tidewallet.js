@@ -1,11 +1,11 @@
 import BigNumber from "bignumber.js";
-import Account from "./cores/Account";
-import Trader from "./cores/Trader";
-import User from "./cores/User";
-import DBOperator from "./database/dbOperator";
-import TideWalletCommunicator from "./cores/TideWalletCommunicator";
-import TideWalletCore from "./cores/TideWalletCore";
-import packageInfo from "../package.json";
+import Account from "./Account";
+import Trader from "./Trader";
+import User from "./User";
+import DBOperator from "../database/dbOperator";
+import TideWalletCommunicator from "./TideWalletCommunicator";
+import TideWalletCore from "./TideWalletCore";
+import packageInfo from "../../package.json";
 
 class TideWallet {
   // eventType: ready, update, notice
