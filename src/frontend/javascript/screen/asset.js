@@ -9,20 +9,13 @@ class Asset {
   constructor() {}
   initialize(screen, asset, fiat, wallet) {
     console.log("wallet getAssetDetail"); // -- test
-    wallet
-      .getAssetDetail({ assetID: asset.id })
-      .then((data) => {
-        console.log(data); // -- test
-        const asset = new AssetModel(data.asset);
-        const bills = data.transactions.map((obj) => new Bill(obj));
-        return {
-          asset,
-          bills,
-        };
-      })
-      .then((obj) => {
-        this.updateBills(obj.asset, obj.bills);
-      });
+    wallet.getAssetDetail({ assetID: asset.id }).then((data) => {
+      console.log(data); // -- test
+      const asset = new AssetModel(data.asset[0]);
+      console.log(asset); // -- test
+      const bills = data.transactions.map((obj) => new Bill(obj));
+      this.updateBills(asset, bills);
+    });
 
     this.header = new Header(screen, { asset, fiat });
     this.tarBarNavigator = new TarBarNavigator();

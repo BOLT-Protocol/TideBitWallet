@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1625221579933
+      // 1625223188057
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7591,7 +7591,7 @@ __webpack_require__.r(__webpack_exports__);
 class Address {
   constructor() {}
   initialize(screen, asset, wallet) {
-    console.log("wallet getReceivingAddress"); // -- test
+    console.log("wallet getReceivingAddress", wallet); // -- test
     wallet.getReceivingAddress({ asset: asset.id }).then((data) => {
       this.scaffold.closePopover();
       console.log(data); // -- test
@@ -7650,20 +7650,13 @@ class Asset {
   constructor() {}
   initialize(screen, asset, fiat, wallet) {
     console.log("wallet getAssetDetail"); // -- test
-    wallet
-      .getAssetDetail({ assetID: asset.id })
-      .then((data) => {
-        console.log(data); // -- test
-        const asset = new _model_asset__WEBPACK_IMPORTED_MODULE_6__.default(data.asset);
-        const bills = data.transactions.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_5__.default(obj));
-        return {
-          asset,
-          bills,
-        };
-      })
-      .then((obj) => {
-        this.updateBills(obj.asset, obj.bills);
-      });
+    wallet.getAssetDetail({ assetID: asset.id }).then((data) => {
+      console.log(data); // -- test
+      const asset = new _model_asset__WEBPACK_IMPORTED_MODULE_6__.default(data.asset[0]);
+      console.log(asset); // -- test
+      const bills = data.transactions.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_5__.default(obj));
+      this.updateBills(asset, bills);
+    });
 
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { asset, fiat });
     this.tarBarNavigator = new _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__.default();
@@ -9374,7 +9367,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("f72412d8ae9e28919208")
+/******/ 		__webpack_require__.h = () => ("f5bd8d3c9feb61dc8544")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
