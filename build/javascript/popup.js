@@ -5768,6 +5768,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/frontend/javascript/screen/address.js");
 /* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../screen/transaction */ "./src/frontend/javascript/screen/transaction.js");
 /* harmony import */ var _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../screen/mnemonic */ "./src/frontend/javascript/screen/mnemonic.js");
+/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../model/asset */ "./src/frontend/javascript/model/asset.js");
+
 
 
 
@@ -5789,18 +5791,19 @@ class ViewController {
     this.walletMode = mode || "development";
   }
   updateFiat(fiat) {
-    this.walletFiat = fiat;
+    this.fiatObj = fiat;
+    this.walletFiat = fiat.name;
   }
   updateUser(user) {
     this.userBalanceInFiat = user?.balance;
-    this.userAssets = user?.currencies;
+    this.userAssets = user?.assets;
     if (this.userAssets) {
       this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
     }
   }
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
-    this.userBalanceInFiat = userBalanceInFiat;
+    this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
     if (fiat) this.walletFiat = fiat;
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     switch (view) {
@@ -7075,6 +7078,45 @@ class ThirdPartySigninContainer {
 
 /***/ }),
 
+/***/ "./src/frontend/javascript/model/asset.js":
+/*!************************************************!*\
+  !*** ./src/frontend/javascript/model/asset.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class Asset {
+  constructor({
+    id,
+    // name,
+    symbol,
+    network,
+    // decimals,
+    publish,
+    image,
+    balance,
+    inFiat,
+  }) {
+    this.id = id;
+    // this.name = name;
+    this.symbol = symbol;
+    this.network = network;
+    // this.decimals = decimals;
+    this.publish = publish;
+    this.image = image;
+    this.balance = balance;
+    this.inFiat = inFiat;
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Asset);
+
+
+/***/ }),
+
 /***/ "./src/frontend/javascript/model/transaction.js":
 /*!******************************************************!*\
   !*** ./src/frontend/javascript/model/transaction.js ***!
@@ -7198,6 +7240,7 @@ class Asset {
       .then((data) => {
         const asset = data.asset;
         const bills = data.transactions.map((obj) => new Bill(obj));
+        console.log(data);
         return {
           asset,
           bills,
@@ -7524,9 +7567,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
 /* harmony import */ var _layout_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/form */ "./src/frontend/javascript/layout/form.js");
-/* harmony import */ var _utils_popup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/popup */ "./src/frontend/javascript/utils/popup.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
-
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
@@ -7562,7 +7603,7 @@ class Transaction {
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.form);
   }
   render(screen, asset, fiat, wallet) {
-    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.currentView)();
+    const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.currentView)();
     if (!view || view !== "transaction" || !this.scaffold) {
       this.initialize(screen, asset, fiat, wallet);
     }
@@ -7600,59 +7641,6 @@ const transaction = new Transaction();
  */
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (transaction);
-
-
-/***/ }),
-
-/***/ "./src/frontend/javascript/utils/popup.js":
-/*!************************************************!*\
-  !*** ./src/frontend/javascript/utils/popup.js ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "open": () => (/* binding */ open),
-/* harmony export */   "close": () => (/* binding */ close)
-/* harmony export */ });
-/**
-   * @param {String only 4 type: "error", "success", "loading", "confirm"} type
-   * @param {String: show on the dialog} text
-   * @param {function} onConfirm
-   * @param {default true} cancellable
-   */
-const open = (type, text, onConfirm, cancellable = true) => {
-  const popover = document.querySelector("pop-over");
-  popover.open = true;
-  if (cancellable) {
-    popover.cancellable = cancellable;
-  }
-  switch (type) {
-    case "error":
-      popover.errorPopup(text);
-      break;
-    case "success":
-      popover.successPopup(text);
-      break;
-    case "loading":
-      popover.loadingPopup(text);
-      break;
-    case "confirm":
-      popover.confirmPopup(text, onConfirm);
-      break;
-  }
-};
-const close = (timeout) => {
-  const popover = document.querySelector("pop-over");
-  if (timeout !== undefined) {
-    setTimeout(() => {
-      popover.open = false;
-    }, timeout);
-  } else {
-    popover.open = false;
-  }
-};
 
 
 /***/ }),
@@ -8725,9 +8713,26 @@ const getUserInfo = async (tidewallet) => {
     console.log(fiat);
     _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateFiat(fiat);
     _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("assets");
-    const user = await tidewallet.overview();
-    console.log(user);
-    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateUser(user);
+    const dashboard = await tidewallet.overview();
+    console.log(dashboard);
+    const balance = dashboard?.balance;
+    const assets = dashboard?.currencies?.map(
+      (currency) =>
+        new Asset({
+          id: currency.accountcurrencyId,
+          symbol: currency.symbol,
+          network: "Did not provide", //++ ropsten, mainnet, testnet
+          publish: true, //++ Boolean "Did not provide",
+          image: currency.image,
+          balance: currency.balance,
+          inFiat: "0", //++ string "Did not provide",
+        })
+    );
+    console.log(balance, assets);
+    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateUser({
+      balance,
+      assets,
+    });
   }
 };
 
@@ -8739,6 +8744,45 @@ tidewallet.on("ready", (data) => {
 });
 tidewallet.on("update", (data) => {
   console.log("TideWallet Data Updated", data);
+  switch (data.evt) {
+    case "OnUpdateCurrency":
+      if (Array.isArray(data.value)) {
+        const currencies = data.value;
+        const assets = currencies.map(
+          (currency) =>
+            new Asset({
+              id: currency.accountcurrencyId,
+              symbol: currency.symbol,
+              network: "Did not provide", //++ ropsten, mainnet, testnet
+              publish: true, //++ Boolean "Did not provide",
+              image: currency.image,
+              balance: currency.balance,
+              inFiat: "0", //++ string "Did not provide",
+            })
+        );
+        if (data.value.length === 1) {
+          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateAsset(assets[0]);
+        } else {
+          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateAssets(assets);
+        }
+      }
+      break;
+    case "OnUpdateTransactions":
+      const currency = data.value.currency;
+      const asset = new Asset({
+        id: currency.accountcurrencyId,
+        symbol: currency.symbol,
+        network: "Did not provide", //++ ropsten, mainnet, testnet
+        publish: true, //++ Boolean "Did not provide",
+        image: currency.image,
+        balance: currency.balance,
+        inFiat: "0", //++ string "Did not provide",
+      });
+      const transactions = data.value.transactions;
+      const bills = transactions.map((transaction) => new Bill(transaction));
+      _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateBills(asset, bills);
+      break;
+  }
 });
 tidewallet.on("notice", (data) => {
   console.log("TideWallet Say Hello", data);
@@ -8831,7 +8875,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("ad52c2b20616ef06a6b9")
+/******/ 		__webpack_require__.h = () => ("5fbea95222863d179c02")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
