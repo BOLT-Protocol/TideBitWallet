@@ -1,4 +1,6 @@
 import viewController from "./frontend/javascript/controller/view";
+import Asset from "./frontend/javascript/model/asset";
+import Bill from "./frontend/javascript/model/bill";
 import { googleSignin, getInstallID } from "./frontend/javascript/utils/utils";
 
 const getUserInfo = async (tidewallet) => {

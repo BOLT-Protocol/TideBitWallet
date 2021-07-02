@@ -7117,6 +7117,121 @@ class Asset {
 
 /***/ }),
 
+/***/ "./src/frontend/javascript/model/bill.js":
+/*!***********************************************!*\
+  !*** ./src/frontend/javascript/model/bill.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
+
+
+class Bill {
+  constructor({
+    id,
+    txid,
+    amount,
+    fee,
+    message,
+    timestamp,
+    direction,
+    from,
+    to,
+    confirmations,
+  }) {
+    this.id = id;
+    this.txid = txid;
+    this.amount = amount;
+    this.fee = fee;
+    this.message = message;
+    this.timestamp = timestamp;
+    this._direction = direction;
+    this.from = from;
+    this.to = to;
+    this.confirmations = confirmations;
+  }
+
+  get dateTime() {
+    return _utils_utils__WEBPACK_IMPORTED_MODULE_0__.dateFormatter(this.timestamp);
+  }
+
+  get status() {
+    if (this.confirmations === 0) {
+      return "Pending";
+    } else if (this.confirmations > 0 && this.confirmations <= 6) {
+      return "Confirming";
+    } else if (this.confirmations > 6) {
+      return "Completed";
+    } else {
+      return "Failed";
+    }
+  }
+  get action() {
+    switch (this._direction) {
+      case "receive":
+        return "Receive";
+      case "send":
+        return "Send";
+      default:
+        return "Unknown";
+    }
+  }
+  get direction() {
+    switch (this._direction) {
+      case "receive":
+        return "Receive from";
+      case "send":
+        return "Transfer to";
+      default:
+        return "Unknown";
+    }
+  }
+  get address() {
+    switch (this._direction) {
+      case "receive":
+        return this.from;
+      case "send":
+        return this.to;
+      default:
+        return "Unknown";
+    }
+  }
+  get progress() {
+    if (this.confirmations > 6) return "100%";
+    return ((this.confirmations / 6) * 100).toString() + "%";
+  }
+  get sign() {
+    switch (this._direction) {
+      case "receive":
+        return "+";
+      case "send":
+        return "-";
+      default:
+        return "Unknown";
+    }
+  }
+  formattedAmount(asset) {
+    switch (this._direction) {
+      case "receive":
+        return this.sign + " " + this.amount + " " + asset.symbol;
+      case "send":
+        return this.sign + " " + this.amount + " " + asset.symbol;
+      default:
+        return "Unknown";
+    }
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Bill);
+
+
+/***/ }),
+
 /***/ "./src/frontend/javascript/model/transaction.js":
 /*!******************************************************!*\
   !*** ./src/frontend/javascript/model/transaction.js ***!
@@ -8693,7 +8808,11 @@ class TabBar {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frontend/javascript/controller/view */ "./src/frontend/javascript/controller/view.js");
-/* harmony import */ var _frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./frontend/javascript/utils/utils */ "./src/frontend/javascript/utils/utils.js");
+/* harmony import */ var _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./frontend/javascript/model/asset */ "./src/frontend/javascript/model/asset.js");
+/* harmony import */ var _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend/javascript/model/bill */ "./src/frontend/javascript/model/bill.js");
+/* harmony import */ var _frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frontend/javascript/utils/utils */ "./src/frontend/javascript/utils/utils.js");
+
+
 
 
 
@@ -8703,8 +8822,8 @@ const getUserInfo = async (tidewallet) => {
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
-  const OAuthID = await (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_1__.googleSignin)();
-  const InstallID = await (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_1__.getInstallID)();
+  const OAuthID = await (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_3__.googleSignin)();
+  const InstallID = await (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_3__.getInstallID)();
   console.log(OAuthID, InstallID);
   const result = await tidewallet.init({ user: { OAuthID, InstallID }, api });
   console.log(result);
@@ -8718,7 +8837,7 @@ const getUserInfo = async (tidewallet) => {
     const balance = dashboard?.balance;
     const assets = dashboard?.currencies?.map(
       (currency) =>
-        new Asset({
+        new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default({
           id: currency.accountcurrencyId,
           symbol: currency.symbol,
           network: "Did not provide", //++ ropsten, mainnet, testnet
@@ -8750,7 +8869,7 @@ tidewallet.on("update", (data) => {
         const currencies = data.value;
         const assets = currencies.map(
           (currency) =>
-            new Asset({
+            new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default({
               id: currency.accountcurrencyId,
               symbol: currency.symbol,
               network: "Did not provide", //++ ropsten, mainnet, testnet
@@ -8769,7 +8888,7 @@ tidewallet.on("update", (data) => {
       break;
     case "OnUpdateTransactions":
       const currency = data.value.currency;
-      const asset = new Asset({
+      const asset = new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default({
         id: currency.accountcurrencyId,
         symbol: currency.symbol,
         network: "Did not provide", //++ ropsten, mainnet, testnet
@@ -8779,7 +8898,7 @@ tidewallet.on("update", (data) => {
         inFiat: "0", //++ string "Did not provide",
       });
       const transactions = data.value.transactions;
-      const bills = transactions.map((transaction) => new Bill(transaction));
+      const bills = transactions.map((transaction) => new _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_2__.default(transaction));
       _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateBills(asset, bills);
       break;
   }
@@ -8875,7 +8994,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("5fbea95222863d179c02")
+/******/ 		__webpack_require__.h = () => ("73922c3470a672f42b89")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
