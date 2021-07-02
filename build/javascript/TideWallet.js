@@ -17952,8 +17952,13 @@ function defaultLocktimeSetter(locktime, txBuf) {
 }
 exports.defaultLocktimeSetter = defaultLocktimeSetter;
 
+<<<<<<< HEAD
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"./converter":103}],123:[function(require,module,exports){
+=======
 }).call(this)}).call(this,{"isBuffer":require("../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
 },{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"./converter":103}],123:[function(require,module,exports){
+>>>>>>> develop
 (function (Buffer){(function (){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -42964,8 +42969,13 @@ check.toJSON = () => {
   return 'scriptHash input';
 };
 
+<<<<<<< HEAD
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"../../script":159,"../multisig":162,"../pubkey":166,"../pubkeyhash":169,"../witnesspubkeyhash/output":179,"../witnessscripthash/output":182}],174:[function(require,module,exports){
+=======
 }).call(this)}).call(this,{"isBuffer":require("../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
 },{"../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"../../script":159,"../multisig":162,"../pubkey":166,"../pubkeyhash":169,"../witnesspubkeyhash/output":179,"../witnessscripthash/output":182}],174:[function(require,module,exports){
+>>>>>>> develop
 'use strict';
 // OP_HASH160 {scriptHash} OP_EQUAL
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43115,8 +43125,13 @@ check.toJSON = () => {
   return 'witnessScriptHash input';
 };
 
+<<<<<<< HEAD
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"../../script":159,"../multisig":162,"../pubkey":166,"../pubkeyhash":169,"typeforce":569}],182:[function(require,module,exports){
+=======
 }).call(this)}).call(this,{"isBuffer":require("../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
 },{"../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"../../script":159,"../multisig":162,"../pubkey":166,"../pubkeyhash":169,"typeforce":569}],182:[function(require,module,exports){
+>>>>>>> develop
 'use strict';
 // OP_0 {scriptHash}
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -57403,7 +57418,11 @@ module.exports={
   "_args": [
     [
       "elliptic@6.5.4",
+<<<<<<< HEAD
+      "/Users/emilyliang/Workspace/BoltProtocal/TideWalletJS"
+=======
       "/Users/luphia/Workspace/TideWalletJS"
+>>>>>>> develop
     ]
   ],
   "_from": "elliptic@6.5.4",
@@ -57435,7 +57454,11 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz",
   "_spec": "6.5.4",
+<<<<<<< HEAD
+  "_where": "/Users/emilyliang/Workspace/BoltProtocal/TideWalletJS",
+=======
   "_where": "/Users/luphia/Workspace/TideWalletJS",
+>>>>>>> develop
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -92033,8 +92056,13 @@ for (var typeName in types) {
 
 module.exports = types
 
+<<<<<<< HEAD
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"./errors":567,"./native":570}],569:[function(require,module,exports){
+=======
 }).call(this)}).call(this,{"isBuffer":require("../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
 },{"../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"./errors":567,"./native":570}],569:[function(require,module,exports){
+>>>>>>> develop
 var ERRORS = require('./errors')
 var NATIVE = require('./native')
 
@@ -105337,8 +105365,13 @@ module.exports = {
     sha3Raw: sha3Raw
 };
 
+<<<<<<< HEAD
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"bn.js":631,"eth-lib/lib/hash":632,"ethereum-bloom-filters":277,"number-to-bn":379,"underscore":571,"utf8":573}],631:[function(require,module,exports){
+=======
 }).call(this)}).call(this,{"isBuffer":require("../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
 },{"../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":828,"bn.js":631,"eth-lib/lib/hash":632,"ethereum-bloom-filters":277,"number-to-bn":379,"underscore":571,"utf8":573}],631:[function(require,module,exports){
+>>>>>>> develop
 arguments[4][23][0].apply(exports,arguments)
 },{"buffer":"buffer","dup":23}],632:[function(require,module,exports){
 arguments[4][600][0].apply(exports,arguments)
@@ -105415,7 +105448,11 @@ module.exports={
   "_args": [
     [
       "web3@1.3.6",
+<<<<<<< HEAD
+      "/Users/emilyliang/Workspace/BoltProtocal/TideWalletJS"
+=======
       "/Users/luphia/Workspace/TideWalletJS"
+>>>>>>> develop
     ]
   ],
   "_from": "web3@1.3.6",
@@ -105439,7 +105476,11 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/web3/-/web3-1.3.6.tgz",
   "_spec": "1.3.6",
+<<<<<<< HEAD
+  "_where": "/Users/emilyliang/Workspace/BoltProtocal/TideWalletJS",
+=======
   "_where": "/Users/luphia/Workspace/TideWalletJS",
+>>>>>>> develop
   "author": {
     "name": "ethereum.org"
   },
@@ -105578,7 +105619,11 @@ module.exports={
   "_args": [
     [
       "websocket@1.0.34",
+<<<<<<< HEAD
+      "/Users/emilyliang/Workspace/BoltProtocal/TideWalletJS"
+=======
       "/Users/luphia/Workspace/TideWalletJS"
+>>>>>>> develop
     ]
   ],
   "_from": "websocket@1.0.34",
@@ -105602,7 +105647,11 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/websocket/-/websocket-1.0.34.tgz",
   "_spec": "1.0.34",
+<<<<<<< HEAD
+  "_where": "/Users/emilyliang/Workspace/BoltProtocal/TideWalletJS",
+=======
   "_where": "/Users/luphia/Workspace/TideWalletJS",
+>>>>>>> develop
   "author": {
     "name": "Brian McKelvey",
     "email": "theturtle32@gmail.com",
@@ -106942,14 +106991,32 @@ class AccountCore {
     this._addAccount(accounts);
   }
 
+<<<<<<< HEAD
+  /**
+   * close all services
+   * @method close
+   */
+  async sync() {
+    if (this._isInit) {
+      this._services.forEach((svc) => {
+        svc.synchro(true);
+=======
   async sync() {
     if (this._isInit) {
       this._services.forEach((svc) => {
         svc.synchro();
+>>>>>>> develop
       });
     }
   }
 
+<<<<<<< HEAD
+  /**
+   * close all services
+   * @method close
+   */
+=======
+>>>>>>> develop
   close() {
     this._isInit = false;
     this._services.forEach((svc) => {
@@ -107662,7 +107729,11 @@ class TideWalletCommunicator {
    */
   async TokenList(blockchainID) {
     try {
+<<<<<<< HEAD
+      const res = await this.httpAgent.get(this.apiURL + '/blockchain/' + blockchainID + '/token?type=TideWallet');
+=======
       const res = await this.httpAgent.get(this.apiURL + '/blockchain/' + blockchainID + '/token');
+>>>>>>> develop
       if (res.success) {
         return res.data;
       }
@@ -108203,7 +108274,11 @@ class TideWalletCore {
       nonce = Number(nonce) + 1;
     }
 
+<<<<<<< HEAD
+    return rlp.toBuffer(nonce).toString('hex');
+=======
     return nonce;
+>>>>>>> develop
   }
 
   /**
@@ -108216,6 +108291,28 @@ class TideWalletCore {
    * @returns {String} password
    */
    _getPassword({ userIdentifier, userId, installId, timestamp }) {
+<<<<<<< HEAD
+    const userIdentifierBuff = Buffer.from(userIdentifier || this._userInfo.thirdPartyId, "utf8").toString(
+      "hex"
+    );
+    const installIdBuff = Buffer.from(installId  || this._userInfo.installId).toString("hex");
+    const pwseed = Cryptor.keccak256round(
+      Cryptor.keccak256round(
+          Cryptor.keccak256round(userIdentifierBuff, 1) + 
+          Cryptor.keccak256round(userId || this._userInfo.id, 1),
+      ) +
+      Cryptor.keccak256round(
+        Cryptor.keccak256round(
+          rlp
+            .toBuffer(
+              rlp.toBuffer(timestamp).toString("hex").slice(3, 6)
+            )
+            .toString("hex"),
+          1
+        ) +
+        Cryptor.keccak256round(installIdBuff, 1)
+      )
+=======
     const userIdentifierBuff = Buffer.from(userIdentifier, "utf8").toString(
       "hex"
     );
@@ -108255,6 +108352,7 @@ class TideWalletCore {
           )
         ),
       ]).toString()
+>>>>>>> develop
     );
     const password = Cryptor.keccak256round(pwseed);
     return password;
@@ -108270,6 +108368,21 @@ class TideWalletCore {
     const userIdentifierBuff = Buffer.from(userIdentifier, "utf8").toString(
       "hex"
     );
+<<<<<<< HEAD
+    const _main = (userIdentifierBuff + nonce).slice(0, 16);
+
+    const _extend = Cryptor.keccak256round(nonce, 1).slice(0, 8);
+
+    const seed = Cryptor.keccak256round(
+      Cryptor.keccak256round(
+        Cryptor.keccak256round(_main, 1) +
+        Cryptor.keccak256round(_extend, 1)
+      ) +
+      Cryptor.keccak256round(
+        Cryptor.keccak256round(userId, 1) +
+        Cryptor.keccak256round(userSecret, 1)
+      )
+=======
     const _main = Buffer.concat([
       Buffer.from(userIdentifierBuff, "utf8"),
       rlp.toBuffer(nonce),
@@ -108301,6 +108414,7 @@ class TideWalletCore {
           )
         ),
       ]).toString()
+>>>>>>> develop
     );
     return {seed, _extend};
   }
@@ -108373,7 +108487,11 @@ class TideWalletCore {
       credentialData.password
     );
     const seed = await PaperWallet.magicSeed(privateKey);
+<<<<<<< HEAD
+    const _seed = Buffer.from(seed, 'hex');
+=======
     const _seed = Buffer.from(seed);
+>>>>>>> develop
     const extendPublicKey = PaperWallet.getExtendedPublicKey(_seed);
     return { wallet, extendPublicKey }
   }
@@ -108407,7 +108525,11 @@ class TideWalletCore {
       seed,
       password
     );
+<<<<<<< HEAD
+    const _seed = Buffer.from(seed, 'hex');
+=======
     const _seed = Buffer.from(seed);
+>>>>>>> develop
     const extendPublicKey = PaperWallet.getExtendedPublicKey(_seed);
     return { wallet, extendPublicKey }
   }
@@ -108435,7 +108557,11 @@ class TideWalletCore {
    */
   async getExtendedPublicKey() {
     const seed = await this._getSeedByKeyStore();
+<<<<<<< HEAD
+    const extPK = PaperWallet.getExtendedPublicKey(Buffer.from(seed, 'hex'));
+=======
     const extPK = PaperWallet.getExtendedPublicKey(Buffer.from(seed));
+>>>>>>> develop
     return extPK;
   }
 
@@ -109579,7 +109705,11 @@ class TransactionDao extends DAO {
     source_addresses,
     destination_addresses,
     gas_price,
+<<<<<<< HEAD
+    gas_used,
+=======
     gas_limit,
+>>>>>>> develop
     note,
     fee,
     status,
@@ -109595,7 +109725,11 @@ class TransactionDao extends DAO {
       sourceAddress: source_addresses,
       destinctionAddress: destination_addresses,
       gasPrice: gas_price,
+<<<<<<< HEAD
+      gasUsed: gas_used,
+=======
       gasUsed: gas_limit,
+>>>>>>> develop
       note,
       fee,
       status,
@@ -109632,6 +109766,11 @@ class AccountCurrencyDao extends DAO {
     last_sync_time,
     token_id,
     account_token_id,
+<<<<<<< HEAD
+    image,
+    symbol
+=======
+>>>>>>> develop
   }) {
     return {
       accountcurrencyId: account_token_id ?? account_id,
@@ -109641,6 +109780,11 @@ class AccountCurrencyDao extends DAO {
       numberOfUsedExternalKey: number_of_used_external_key,
       numberOfUsedInternalKey: number_of_used_internal_key,
       lastSyncTime: last_sync_time,
+<<<<<<< HEAD
+      image,
+      symbol
+=======
+>>>>>>> develop
     };
   }
   constructor(db, name) {
@@ -110065,7 +110209,11 @@ module.exports = rlp
 
 }).call(this)}).call(this,require("buffer").Buffer)
 },{"buffer":"buffer"}],669:[function(require,module,exports){
+<<<<<<< HEAD
+const BigNumber = require("bignumber.js");
+=======
 const BigNumber = require('bignumber.js');
+>>>>>>> develop
 const config = require("./constants/config");
 const PaperWallet = require("./cores/PaperWallet");
 const Account = require("./cores/Account");
@@ -110083,7 +110231,10 @@ class TideWallet {
   notifiers = [];
 
   static Core = TideWalletCore;
+<<<<<<< HEAD
+=======
   static version = packageInfo;
+>>>>>>> develop
 
   constructor() {
     return this;
@@ -110099,26 +110250,56 @@ class TideWallet {
 
     const exist = await this.user.checkUser();
     if (!exist) {
+<<<<<<< HEAD
+      if (user.mnemonic && user.password) {
+        this.core = await this.user.createUserWithSeed(
+          user.OAuthID,
+          seed,
+          user.InstallID
+        );
+=======
       if(user.mnemonic && user.password) {
         this.core = await this.user.createUserWithSeed(user.OAuthID, seed, user.InstallID);
+>>>>>>> develop
       } else {
         this.core = await this.user.createUser(user.OAuthID, user.InstallID);
       }
     }
+<<<<<<< HEAD
+
+=======
   
+>>>>>>> develop
     initObj.TideWalletCore = this.core;
     this.account = new Account(initObj);
     this.account.setMessenger();
     await this.account.init();
 
     this.trader = new Trader(initObj);
+<<<<<<< HEAD
+    await this.trader.getFiatList();
+
+    const listener = this.account.messenger.subscribe((v) => {
+      this.notice(v, "update");
+=======
   
     const listener = this.account.messenger.subscribe((v) => {
       this.notice(v, 'update');
+>>>>>>> develop
     });
     return true;
   }
 
+<<<<<<< HEAD
+  on(eventName = "", callback) {
+    if (typeof callback !== "function") return;
+    const en = eventName.toLocaleLowerCase();
+    let notifier = { callback };
+    switch (en) {
+      case "ready":
+      case "update":
+      case "notice":
+=======
   on(eventName = '', callback) {
     if(typeof callback !== 'function') return;
     const en = eventName.toLocaleLowerCase();
@@ -110127,6 +110308,7 @@ class TideWallet {
       case 'ready':
       case 'update':
       case 'notice':
+>>>>>>> develop
         notifier.eventName = en;
         break;
     }
@@ -110138,6 +110320,29 @@ class TideWallet {
     return true;
   }
 
+<<<<<<< HEAD
+  async getFiat() {
+    return await this.trader.getSelectedFiat();
+  }
+  getVersion() {
+    return packageInfo.version;
+  }
+
+  async overview() {
+    const currencies = await this.account.getAllCurrencies();
+    const fiat = await this.trader.getSelectedFiat();
+    const bnRate = fiat.exchangeRate;
+    const balance = currencies.reduce((rs, curr) => {
+      const bnBalance = new BigNumber(curr.balance);
+      const bnRs = new BigNumber(rs);
+      return bnRs
+        .plus(
+          this.trader.calculateToUSD({
+            currencyId: curr.currencyId,
+            amount: bnBalance,
+          })
+        )
+=======
   async overview() {
     const currencies = await this.account.getAllCurrencies();
     const fiat = await this.trader.getSelectedFiat();
@@ -110147,6 +110352,7 @@ class TideWallet {
       const bnRs = new BigNumber(rs);
       return bnRs.plus(
         this.trader.calculateToUSD({ currencyId: curr.currencyId, amount: bnBalance }))
+>>>>>>> develop
         .toFixed();
     }, 0);
     const bnBalance = new BigNumber(balance);
@@ -110154,26 +110360,42 @@ class TideWallet {
 
     const dashboard = {
       balance: balanceFiat,
+<<<<<<< HEAD
+      currencies,
+=======
       currencies
+>>>>>>> develop
     };
     return dashboard;
   }
 
   /**
+<<<<<<< HEAD
+   *
+=======
    * 
+>>>>>>> develop
    * @param {object} accountInfo
    * @param {string} accountInfo.assetID
    */
   async getAssetDetail({ assetID }) {
     const asset = await this.account.getCurrencies(assetID);
     const transactions = await this.account.getTransactions(assetID);
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> develop
     return { asset, transactions };
   }
 
   async getTransactionDetail({ assetID, transactionID }) {
     const txs = await this.account.getTransactions(assetID);
+<<<<<<< HEAD
+    const tx = txs.find((r) => r.txId === transactionID);
+=======
     const tx = txs.find((r) => r.txId === transactionID );
+>>>>>>> develop
     return tx;
   }
 
@@ -110192,6 +110414,15 @@ class TideWallet {
   }
 
   // need help
+<<<<<<< HEAD
+  async prepareTransaction() {}
+
+  async sendTransaction({ accountID, blockchainID, transaction }) {
+    const svc = this.account.getService(accountID);
+    const res = svc.publishTransaction(blockchainID, transaction);
+
+    return res;
+=======
   async prepareTransaction() {
 
   }
@@ -110201,6 +110432,7 @@ class TideWallet {
       const res = svc.publishTransaction(blockchainID, transaction);
 
       return res;
+>>>>>>> develop
   }
 
   async sync() {
@@ -110215,6 +110447,23 @@ class TideWallet {
   async close() {
     // release all resources
     this.account.close();
+<<<<<<< HEAD
+    for (const index in this.notifiers) {
+      this.removeNotifier(index);
+    }
+    delete this.user;
+    delete this.account;
+    delete this.trader;
+    return true;
+  }
+
+  notice(data, eventName = "") {
+    const ev = eventName.toLocaleLowerCase();
+    this.notifiers.forEach((notifier) => {
+      if (!notifier) return;
+      if (notifier.eventName !== ev) return;
+      if (typeof notifier.callback !== "function") return;
+=======
     return true;
   }
 
@@ -110224,6 +110473,7 @@ class TideWallet {
       if(!notifier) return;
       if(notifier.eventName !== ev) return;
       if(typeof notifier.callback !== 'function') return;
+>>>>>>> develop
       notifier.callback(data);
     });
   }
@@ -110234,6 +110484,39 @@ if (isBrowser()) {
   window.TideWallet = TideWallet;
 
   /** test case */
+<<<<<<< HEAD
+  window.test = async () => {
+    const tw = new TideWallet();
+    const api = {
+      apiURL: "https://service.tidewallet.io/api/v1",
+      apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+      apiSecret: "9e37d67450dc906042fde75113ecb78c",
+    };
+    const user1 = {
+      OAuthID: "test2ejknkjdniednwjq",
+      InstallID:
+        "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
+      mnemonic:
+        "cry hub inmate cliff sun program public else atom absurd release inherit funny edge assault",
+      password: "12345",
+    };
+    const user2 = {
+      OAuthID: "test2ejknkjdniednwjq",
+      InstallID:
+        "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
+    };
+    await tw.init({ user: user2, api });
+    //test
+    // console.log('overview:', await tw.overview());
+    // console.log('getAssetDetail:', await tw.getAssetDetail({ assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6" }));
+    // console.log('getTransactionDetail:', await tw.getTransactionDetail({ assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6", transactionID:"" }));
+    // console.log('getReceivingAddress:', await tw.getReceivingAddress({ accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6" }));
+    // console.log('getWalletConfig:', await tw.getWalletConfig());
+    // await tw.sync();
+    // console.log('backup:', await tw.backup());
+    // await tw.close();
+  };
+=======
   window.test = async() => {
     const tw = new TideWallet();
     const api = {
@@ -110258,6 +110541,7 @@ if (isBrowser()) {
     console.log('getReceivingAddress:', await tw.getReceivingAddress({ accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6" }));
 
   }
+>>>>>>> develop
 }
 
 module.exports = TideWallet;
@@ -110827,6 +111111,18 @@ class AccountServiceBase extends AccountService {
 
     if (now - this._lastSyncTimestamp > this._syncInterval || force) {
       const currs = await this._getData();
+<<<<<<< HEAD
+      const v = currs.map((c) => this._DBOperator.accountCurrencyDao.entity({
+        ...c,
+        accountcurrency_id: c['account_id'] ?? c['account_token_id'],
+        account_id: this._accountId,
+        last_sync_time: now,
+        image: c['icon']
+      }));
+
+      await this._DBOperator.accountCurrencyDao.insertCurrencies(v);
+      this._lastSyncTimestamp = now;
+=======
       const v = currs.map((c) =>
         this._DBOperator.accountCurrencyDao.entity({
           ...c,
@@ -110837,6 +111133,7 @@ class AccountServiceBase extends AccountService {
       );
 
       await this._DBOperator.accountCurrencyDao.insertCurrencies(v);
+>>>>>>> develop
     }
 
     await this._pushResult();
@@ -111037,8 +111334,13 @@ class EthereumService extends AccountServiceDecorator {
   /**
    * @override
    **/
+<<<<<<< HEAD
+  synchro(force = false) {
+    this.service.synchro(force);
+=======
   synchro() {
     this.service.synchro();
+>>>>>>> develop
   }
 
   /**

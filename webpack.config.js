@@ -1,13 +1,14 @@
 const webpack = require("webpack");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const frontend = {
   mode: "development",
   entry: path.resolve(__dirname, "src/main.js"),
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "javascript/bundle.js",
+    filename: "javascript/popup.js",
     chunkFilename: "[id].js",
   },
   devServer: {
@@ -76,13 +77,25 @@ const background = {
     port: 9000,
   },
   devtool: "cheap-module-source-map",
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+    fallback: {
+      http: require.resolve("stream-http"),
+      https: require.resolve("https-browserify"),
+      crypto: require.resolve("crypto-browserify"),
+    },
+  },
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
     }),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin({
+      cleanStaleWebpackAssets: false,
+      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, "./dist")],
+    }),
   ],
-}
+};
 
 module.exports = [frontend, background];

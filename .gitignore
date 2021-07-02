@@ -36,6 +36,11 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+build/*
+!build/popup.html
+!build/mainfest.json
+!build/javascript/TideWallet.js
+!build/image/
 
 # Dependency directories
 node_modules/

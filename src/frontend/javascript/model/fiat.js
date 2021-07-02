@@ -1,0 +1,9 @@
+class Fiat {
+  constructor({ name, exchangeRate, currency }) {
+    this.id = currency;
+    this.name = name;
+    this.exchangeRate = exchangeRate;
+  }
+}
+
+export default Fiat;
