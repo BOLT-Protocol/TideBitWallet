@@ -27,7 +27,7 @@ class AddressContentElement extends HTMLElement {
    * ETH || BTC
    */
   setCoinbase() {
-    this.setAttribute(this.asset.symbol, "");
+    this.setAttribute(this.asset.accountType, "");
   }
   renderAddress = () => {
     QRCode.toCanvas(
@@ -69,7 +69,9 @@ class AddressContent {
     this.element.asset = asset;
   }
   update(address) {
-    this.element = document.querySelector(`address-content[id="${this.asset.id}"]`);
+    this.element = document.querySelector(
+      `address-content[id="${this.asset.id}"]`
+    );
     this.element.address = address;
     this.element.renderAddress();
   }

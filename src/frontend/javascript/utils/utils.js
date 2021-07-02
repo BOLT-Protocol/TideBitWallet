@@ -1,3 +1,7 @@
+import viewController from "../controller/view";
+import Asset from "../model/asset";
+import Fiat from "../model/fiat";
+
 export const randomHex = (n) => {
   var ID = "";
   var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -102,7 +106,7 @@ const getAuthToken = () =>
     });
   });
 
-export const googleSignin = async () => {
+export const googleSignIn = async () => {
   // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
   const token = await getAuthToken();
   const init = {
@@ -120,4 +124,42 @@ export const googleSignin = async () => {
   ).then((respose) => respose.json());
   console.log(data);
   return data.id;
+};
+
+export const getUserInfo = async (tidewallet) => {
+  const _fiat = await tidewallet.getFiat();
+  const fiat = new Fiat(_fiat);
+  const dashboard = await tidewallet.overview();
+  console.log(dashboard); // -- test
+  const balance = dashboard?.balance;
+  const assets = dashboard?.currencies?.map((currency) => new Asset(currency));
+  console.log(balance, assets); // -- test
+  viewController.updateAssets(assets, balance, fiat);
+};
+
+export const initUser = async (tidewallet, data = {}) => {
+  const api = {
+    apiURL: "https://service.tidewallet.io/api/v1",
+    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+    apiSecret: "9e37d67450dc906042fde75113ecb78c",
+  };
+  const OAuthID = await googleSignIn();
+  const InstallID = await getInstallID();
+  console.log("OAuthID :", OAuthID); // -- test
+  console.log("InstallID :", InstallID); // -- test
+  console.log("mnemonic :", data?.mnemonic); // -- test
+  console.log("passphrase :", data?.passphrase); // -- test
+  const result = await tidewallet.init({
+    user: {
+      OAuthID,
+      InstallID,
+      mnemonic: data?.mnemonic,
+      password: data?.passphrase,
+    },
+    api,
+  });
+  console.log(result);
+  if (result) {
+    getUserInfo(tidewallet);
+  }
 };

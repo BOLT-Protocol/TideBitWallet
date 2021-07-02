@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1625223188057
+      // 1625233609007
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6084,10 +6084,6 @@ class ViewController {
     this.walletVersion = wallet.getVersion();
     this.walletMode = "development"; // wallet.getMode(); // ++
   }
-  updateFiat(fiat) {
-    this.fiatObj = fiat;
-    this.walletFiat = fiat.name;
-  }
   updateUser(user) {
     this.userBalanceInFiat = user?.balance;
     this.userAssets = user?.assets;
@@ -6098,7 +6094,10 @@ class ViewController {
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
     this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
-    if (fiat) this.walletFiat = fiat;
+    if (fiat) {
+      this.fiat = fiat;
+      this.walletFiat = this.fiat.name;
+    }
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     switch (view) {
       case "assets":
@@ -6172,7 +6171,6 @@ class ViewController {
     console.log(screen);
     switch (screen) {
       case "landing":
-        // data is callback
         _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion, this.wallet);
         break;
       case "assets":
@@ -6214,7 +6212,7 @@ class ViewController {
         _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset, this.wallet);
         break;
       case "mnemonic":
-        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen, data);
+        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen);
         break;
       default:
         break;
@@ -6272,7 +6270,7 @@ class AddressContentElement extends HTMLElement {
    * ETH || BTC
    */
   setCoinbase() {
-    this.setAttribute(this.asset.symbol, "");
+    this.setAttribute(this.asset.accountType, "");
   }
   renderAddress = () => {
     qrcode__WEBPACK_IMPORTED_MODULE_0__.toCanvas(
@@ -6314,7 +6312,9 @@ class AddressContent {
     this.element.asset = asset;
   }
   update(address) {
-    this.element = document.querySelector(`address-content[id="${this.asset.id}"]`);
+    this.element = document.querySelector(
+      `address-content[id="${this.asset.id}"]`
+    );
     this.element.address = address;
     this.element.renderAddress();
   }
@@ -7339,7 +7339,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     });
     this.mnemonicButton = new _widget_button__WEBPACK_IMPORTED_MODULE_1__.default(
       "Recover Wallet",
-      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("mnemonic", this.callback),
+      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("mnemonic"),
       {
         style: ["round", "fill-primary"],
       }
@@ -7528,6 +7528,30 @@ class Bill {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Bill);
+
+
+/***/ }),
+
+/***/ "./src/frontend/javascript/model/fiat.js":
+/*!***********************************************!*\
+  !*** ./src/frontend/javascript/model/fiat.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+class Fiat {
+  constructor({ name, exchangeRate, currency }) {
+    this.id = currency;
+    this.name = name;
+    this.exchangeRate = exchangeRate;
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Fiat);
 
 
 /***/ }),
@@ -7769,65 +7793,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/frontend/javascript/layout/third_party_signin_container.js");
-/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/asset */ "./src/frontend/javascript/model/asset.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/frontend/javascript/layout/third_party_signin_container.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
-
-
-
-const getUserInfo = async (tidewallet, data = {}) => {
-  const api = {
-    apiURL: "https://service.tidewallet.io/api/v1",
-    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
-    apiSecret: "9e37d67450dc906042fde75113ecb78c",
-  };
-  const OAuthID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.googleSignin)();
-  const InstallID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.getInstallID)();
-  console.log("OAuthID :", OAuthID); // -- test
-  console.log("InstallID :", InstallID); // -- test
-  console.log("mnemonic :", data?.mnemonic); // -- test
-  console.log("passphrase :", data?.passphrase); // -- test
-  const result = await tidewallet.init({
-    user: {
-      OAuthID,
-      InstallID,
-      mnemonic: data?.mnemonic,
-      password: data?.passphrase,
-    },
-    api,
-  });
-  console.log(result);
-  if (result) {
-    const fiat = await tidewallet.getFiat();
-    console.log(fiat);
-    _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateFiat(fiat);
-    _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("assets");
-    const dashboard = await tidewallet.overview();
-    console.log(dashboard);
-    const balance = dashboard?.balance;
-    const assets = dashboard?.currencies?.map(
-      (currency) => new _model_asset__WEBPACK_IMPORTED_MODULE_3__.default(currency)
-    );
-    console.log(balance, assets);
-    _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateUser({
-      balance,
-      assets,
-    });
-  }
-};
 
 class Landing {
   constructor() {}
   render(screen, version, wallet) {
-    this.body = new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_2__.default(version, "white", (data) =>
-      getUserInfo(wallet, data)
+    this.body = new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", (data) =>
+      (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.initUser)(wallet, data)
     );
-    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.body, this.footer);
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
     this.body.parent = this.scaffold;
     this.scaffold.view = screen;
   }
@@ -7850,95 +7829,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
-/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
-/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
-/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../widget/input */ "./src/frontend/javascript/widget/input.js");
+/* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 
-
-
-class MnemonicFormElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.className = "mnemonic-form";
-    this.innerHTML = `
-        <div class="mnemonic-form__text">Please use spaces to separate different mnemonic words</div>
-        <div class="mnemonic-form__text-area">
-            <div class="mnemonic-form__label">Enter mnemonic</div>
-            <textarea rows="5"></textarea>
-        </div>
-        <div class="mnemonic-form__input"></div>
-        <div class="mnemonic-form__input"></div>
-        <div class="mnemonic-form__button"></div>
-        `;
-    this.passphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
-      inputType: "text",
-      label: "passphrase [Optional]",
-    });
-    this.retypePassphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
-      inputType: "text",
-      label: "retype passphrase [Optional]",
-      errorMessage: "Retype passphrase is different from the first typed",
-      validation: (value) => {
-        return value === this.passphraseInput.inputValue;
-      },
-    });
-    this.confirmButton = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("confirm", () => {}, {
-      style: ["round", "fill-primary"],
-    });
-    // this.children[4].children[0].disabled = true;x
-    this.confirmButton.disabled = true;
-    this.passphraseInput.render(this.children[2]);
-    this.retypePassphraseInput.render(this.children[3]);
-    this.confirmButton.render(this.children[4]);
-    this.children[1].children[1].addEventListener("input", (e) => {
-      this.inputValue = e.target.value;
-      if (e.target.value) {
-        // this.children[4].children[0].disabled = false;
-        this.confirmButton.disabled = false;
-      } else {
-        // this.children[4].children[0].disabled = true;
-        this.confirmButton.disabled = true;
-      }
-    });
-    // confirmButton
-    this.children[4].children[0].addEventListener("click", (_) => {
-      this.parent?.openPopover("loading");
-      this.callback({
-        mnemonic: this.inputValue,
-        passphrase: this.passphraseInput.inputValue || "",
-      });
-    });
-  }
-  disconnectedCallback() {}
-}
-
-customElements.define("mnemonic-form", MnemonicFormElement);
-
-class MnemonicForm {
-  constructor(callback) {
-    this.element = document.createElement("mnemonic-form");
-    this.element.callback = callback;
-  }
-  set parent(element) {
-    this.element.parent = element;
-  }
-  render(parentElement) {
-    parentElement.insertAdjacentElement("afterbegin", this.element);
-  }
-}
 
 class Mnemonic {
   constructor() {}
-  render(screen, callback) {
-    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
-    this.body = new MnemonicForm(callback);
-    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default(this.header, this.body);
+  render(screen) {
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(screen);
+    this.body = new Mnemonic((data) => (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.initUser)(wallet, data));
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.body);
     this.body.parent = this.scaffold;
   }
 }
@@ -8142,8 +8045,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter),
 /* harmony export */   "currentView": () => (/* binding */ currentView),
 /* harmony export */   "getInstallID": () => (/* binding */ getInstallID),
-/* harmony export */   "googleSignin": () => (/* binding */ googleSignin)
+/* harmony export */   "googleSignIn": () => (/* binding */ googleSignIn),
+/* harmony export */   "getUserInfo": () => (/* binding */ getUserInfo),
+/* harmony export */   "initUser": () => (/* binding */ initUser)
 /* harmony export */ });
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../model/asset */ "./src/frontend/javascript/model/asset.js");
+/* harmony import */ var _model_fiat__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../model/fiat */ "./src/frontend/javascript/model/fiat.js");
+
+
+
+
 const randomHex = (n) => {
   var ID = "";
   var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -8248,7 +8160,7 @@ const getAuthToken = () =>
     });
   });
 
-const googleSignin = async () => {
+const googleSignIn = async () => {
   // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
   const token = await getAuthToken();
   const init = {
@@ -8266,6 +8178,44 @@ const googleSignin = async () => {
   ).then((respose) => respose.json());
   console.log(data);
   return data.id;
+};
+
+const getUserInfo = async (tidewallet) => {
+  const _fiat = await tidewallet.getFiat();
+  const fiat = new _model_fiat__WEBPACK_IMPORTED_MODULE_2__.default(_fiat);
+  const dashboard = await tidewallet.overview();
+  console.log(dashboard); // -- test
+  const balance = dashboard?.balance;
+  const assets = dashboard?.currencies?.map((currency) => new _model_asset__WEBPACK_IMPORTED_MODULE_1__.default(currency));
+  console.log(balance, assets); // -- test
+  _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateAssets(assets, balance, fiat);
+};
+
+const initUser = async (tidewallet, data = {}) => {
+  const api = {
+    apiURL: "https://service.tidewallet.io/api/v1",
+    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+    apiSecret: "9e37d67450dc906042fde75113ecb78c",
+  };
+  const OAuthID = await googleSignIn();
+  const InstallID = await getInstallID();
+  console.log("OAuthID :", OAuthID); // -- test
+  console.log("InstallID :", InstallID); // -- test
+  console.log("mnemonic :", data?.mnemonic); // -- test
+  console.log("passphrase :", data?.passphrase); // -- test
+  const result = await tidewallet.init({
+    user: {
+      OAuthID,
+      InstallID,
+      mnemonic: data?.mnemonic,
+      password: data?.passphrase,
+    },
+    api,
+  });
+  console.log(result);
+  if (result) {
+    getUserInfo(tidewallet);
+  }
 };
 
 
@@ -9367,7 +9317,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("f5bd8d3c9feb61dc8544")
+/******/ 		__webpack_require__.h = () => ("73873772ee4b2c194f3b")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

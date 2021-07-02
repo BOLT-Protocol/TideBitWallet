@@ -5,3 +5,5 @@ class Fiat {
     this.exchangeRate = exchangeRate;
   }
 }
+
+export default Fiat;

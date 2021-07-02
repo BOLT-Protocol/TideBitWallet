@@ -18,10 +18,6 @@ class ViewController {
     this.walletVersion = wallet.getVersion();
     this.walletMode = "development"; // wallet.getMode(); // ++
   }
-  updateFiat(fiat) {
-    this.fiatObj = fiat;
-    this.walletFiat = fiat.name;
-  }
   updateUser(user) {
     this.userBalanceInFiat = user?.balance;
     this.userAssets = user?.assets;
@@ -32,7 +28,10 @@ class ViewController {
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
     this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
-    if (fiat) this.walletFiat = fiat;
+    if (fiat) {
+      this.fiat = fiat;
+      this.walletFiat = this.fiat.name;
+    }
     const view = currentView();
     switch (view) {
       case "assets":
@@ -106,7 +105,6 @@ class ViewController {
     console.log(screen);
     switch (screen) {
       case "landing":
-        // data is callback
         Landing.render(screen, this.walletVersion, this.wallet);
         break;
       case "assets":
@@ -148,7 +146,7 @@ class ViewController {
         AddressScreen.render(screen, this.currentAsset, this.wallet);
         break;
       case "mnemonic":
-        MnemonicScreen.render(screen, data);
+        MnemonicScreen.render(screen);
         break;
       default:
         break;
