@@ -1,7 +1,6 @@
 import Scaffold from "../layout/scaffold";
 import Header from "../layout/header";
 import Form from "../layout/form";
-import * as popup from "../utils/popup";
 import { currentView } from "../utils/utils";
 
 /**

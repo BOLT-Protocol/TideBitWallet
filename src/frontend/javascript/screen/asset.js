@@ -11,15 +11,17 @@ class Asset {
     console.log("wallet getAssetDetail");
     wallet
       .getAssetDetail({ assetID: asset.id })
-      .then((objs) => {
-        console.log(objs);
-        return objs?.map((obj) => {
-          console.log(obj);
-          return new Bill(obj);
-        });
+      .then((data) => {
+        const asset = data.asset;
+        const bills = data.transactions.map((obj) => new Bill(obj));
+        console.log(data);
+        return {
+          asset,
+          bills,
+        };
       })
-      .then((bills) => {
-        this.updateBills(bills || []);
+      .then((obj) => {
+        this.updateBills(obj.asset, obj.bills);
       });
 
     this.header = new Header(screen, { asset, fiat });

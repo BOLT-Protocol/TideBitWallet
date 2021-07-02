@@ -7195,15 +7195,16 @@ class Asset {
     console.log("wallet getAssetDetail");
     wallet
       .getAssetDetail({ assetID: asset.id })
-      .then((objs) => {
-        console.log(objs);
-        return objs?.map((obj) => {
-          console.log(obj);
-          return new Bill(obj);
-        });
+      .then((data) => {
+        const asset = data.asset;
+        const bills = data.transactions.map((obj) => new Bill(obj));
+        return {
+          asset,
+          bills,
+        };
       })
-      .then((bills) => {
-        this.updateBills(bills || []);
+      .then((obj) => {
+        this.updateBills(obj.asset, obj.bills);
       });
 
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen, { asset, fiat });
@@ -8830,7 +8831,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d9067d80fe4ff5411826")
+/******/ 		__webpack_require__.h = () => ("ad52c2b20616ef06a6b9")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

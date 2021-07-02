@@ -1,20 +1,20 @@
 class Asset {
   constructor({
     id,
-    name,
+    // name,
     symbol,
     network,
-    decimals,
+    // decimals,
     publish,
     image,
     balance,
     inFiat,
   }) {
     this.id = id;
-    this.name = name;
+    // this.name = name;
     this.symbol = symbol;
     this.network = network;
-    this.decimals = decimals;
+    // this.decimals = decimals;
     this.publish = publish;
     this.image = image;
     this.balance = balance;

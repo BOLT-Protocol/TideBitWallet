@@ -6,6 +6,7 @@ import BillScreen from "../screen/bill";
 import AddressScreen from "../screen/address";
 import Transaction from "../screen/transaction";
 import MnemonicScreen from "../screen/mnemonic";
+import Asset from "../model/asset";
 
 class ViewController {
   constructor() {
@@ -19,18 +20,19 @@ class ViewController {
     this.walletMode = mode || "development";
   }
   updateFiat(fiat) {
-    this.walletFiat = fiat;
+    this.fiatObj = fiat;
+    this.walletFiat = fiat.name;
   }
   updateUser(user) {
     this.userBalanceInFiat = user?.balance;
-    this.userAssets = user?.currencies;
+    this.userAssets = user?.assets;
     if (this.userAssets) {
       this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
     }
   }
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
-    this.userBalanceInFiat = userBalanceInFiat;
+    this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
     if (fiat) this.walletFiat = fiat;
     const view = currentView();
     switch (view) {
