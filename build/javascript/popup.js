@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1625234096804
+      // 1625234721299
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -7051,7 +7051,7 @@ class MnemonicFormElement extends HTMLElement {
     this.confirmButton = new _widget_button__WEBPACK_IMPORTED_MODULE_0__.default("confirm", () => {}, {
       style: ["round", "fill-primary"],
     });
-    // this.children[4].children[0].disabled = true;x
+    // this.children[4].children[0].disabled = true;
     this.confirmButton.disabled = true;
     this.passphraseInput.render(this.children[2]);
     this.retypePassphraseInput.render(this.children[3]);
@@ -7067,8 +7067,8 @@ class MnemonicFormElement extends HTMLElement {
       }
     });
     // confirmButton
-    this.children[4].children[0].addEventListener("click", (_) => {
-      if (this.confirmButton.disabled) return;
+    this.confirmButton.element.addEventListener("click", (_) => {
+      if (!this.inputValue) return;
       this.parent?.openPopover("loading");
       this.callback({
         mnemonic: this.inputValue,
@@ -8294,7 +8294,10 @@ const initUser = async (tidewallet, data = {}) => {
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
-  const OAuthID = await googleSignIn();
+  let OAuthID;
+  if (!data) {
+    OAuthID = await googleSignIn();
+  }
   const InstallID = await getInstallID();
   console.log("OAuthID :", OAuthID); // -- test
   console.log("InstallID :", InstallID); // -- test
@@ -9414,7 +9417,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("579c02cd87d2bc30e809")
+/******/ 		__webpack_require__.h = () => ("fd77f27633f9736a3b3f")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

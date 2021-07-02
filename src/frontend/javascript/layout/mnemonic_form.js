@@ -32,7 +32,7 @@ class MnemonicFormElement extends HTMLElement {
     this.confirmButton = new Button("confirm", () => {}, {
       style: ["round", "fill-primary"],
     });
-    // this.children[4].children[0].disabled = true;x
+    // this.children[4].children[0].disabled = true;
     this.confirmButton.disabled = true;
     this.passphraseInput.render(this.children[2]);
     this.retypePassphraseInput.render(this.children[3]);
@@ -48,8 +48,8 @@ class MnemonicFormElement extends HTMLElement {
       }
     });
     // confirmButton
-    this.children[4].children[0].addEventListener("click", (_) => {
-      if (this.confirmButton.disabled) return;
+    this.confirmButton.element.addEventListener("click", (_) => {
+      if (!this.inputValue) return;
       this.parent?.openPopover("loading");
       this.callback({
         mnemonic: this.inputValue,

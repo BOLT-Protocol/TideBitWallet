@@ -143,7 +143,10 @@ export const initUser = async (tidewallet, data = {}) => {
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
-  const OAuthID = await googleSignIn();
+  let OAuthID;
+  if (!data) {
+    OAuthID = await googleSignIn();
+  }
   const InstallID = await getInstallID();
   console.log("OAuthID :", OAuthID); // -- test
   console.log("InstallID :", InstallID); // -- test
