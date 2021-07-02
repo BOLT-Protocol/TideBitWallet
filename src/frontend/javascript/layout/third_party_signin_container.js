@@ -27,7 +27,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     });
     this.mnemonicButton = new Button(
       "Recover Wallet",
-      () => viewController.route("mnemonic"),
+      () => viewController.route("mnemonic", this.callback),
       {
         style: ["round", "fill-primary"],
       }

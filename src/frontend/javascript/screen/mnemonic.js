@@ -21,25 +21,26 @@ class MnemonicFormElement extends HTMLElement {
         `;
     this.passphraseInput = new Input({
       inputType: "text",
-      label: "passphrase",
+      label: "passphrase [Optional]",
     });
     this.retypePassphraseInput = new Input({
       inputType: "text",
-      label: "retype passphrase",
+      label: "retype passphrase [Optional]",
+      errorMessage: "Retype passphrase is different from the first typed",
+      validation: (value) => {
+        return value === this.passphraseInput.inputValue;
+      },
     });
-    this.confirmButton = new Button(
-      "confirm",
-      () => viewController.route("screen"),
-      {
-        style: ["round", "fill-primary"],
-      }
-    );
+    this.confirmButton = new Button("confirm", () => {}, {
+      style: ["round", "fill-primary"],
+    });
     // this.children[4].children[0].disabled = true;x
     this.confirmButton.disabled = true;
     this.passphraseInput.render(this.children[2]);
     this.retypePassphraseInput.render(this.children[3]);
     this.confirmButton.render(this.children[4]);
     this.children[1].children[1].addEventListener("input", (e) => {
+      this.inputValue = e.target.value;
       if (e.target.value) {
         // this.children[4].children[0].disabled = false;
         this.confirmButton.disabled = false;
@@ -48,14 +49,27 @@ class MnemonicFormElement extends HTMLElement {
         this.confirmButton.disabled = true;
       }
     });
+    // confirmButton
+    this.children[4].children[0].addEventListener("click", (_) => {
+      this.parent?.openPopover("loading");
+      this.callback({
+        mnemonic: this.inputValue,
+        passphrase: this.passphraseInput.inputValue || "",
+      });
+    });
   }
+  disconnectedCallback() {}
 }
 
 customElements.define("mnemonic-form", MnemonicFormElement);
 
 class MnemonicForm {
-  constructor() {
+  constructor(callback) {
     this.element = document.createElement("mnemonic-form");
+    this.element.callback = callback;
+  }
+  set parent(element) {
+    this.element.parent = element;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -64,10 +78,11 @@ class MnemonicForm {
 
 class Mnemonic {
   constructor() {}
-  render(screen, wallet) {
+  render(screen, callback) {
     this.header = new Header(screen);
-    this.body = new MnemonicForm(wallet);
+    this.body = new MnemonicForm(callback);
     this.scaffold = new Scaffold(this.header, this.body);
+    this.body.parent = this.scaffold;
   }
 }
 

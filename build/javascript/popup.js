@@ -5768,8 +5768,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _screen_address__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../screen/address */ "./src/frontend/javascript/screen/address.js");
 /* harmony import */ var _screen_transaction__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../screen/transaction */ "./src/frontend/javascript/screen/transaction.js");
 /* harmony import */ var _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../screen/mnemonic */ "./src/frontend/javascript/screen/mnemonic.js");
-/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../model/asset */ "./src/frontend/javascript/model/asset.js");
-
 
 
 
@@ -5785,10 +5783,10 @@ class ViewController {
     this.currentBill;
     this.currentScreen;
   }
-  updateConfig(wallet, version, mode) {
+  setup(wallet) {
     this.wallet = wallet;
-    this.walletVersion = version;
-    this.walletMode = mode || "development";
+    this.walletVersion = wallet.getVersion();
+    this.walletMode = "development"; // wallet.getMode(); // ++
   }
   updateFiat(fiat) {
     this.fiatObj = fiat;
@@ -5831,7 +5829,7 @@ class ViewController {
         }
         break;
       case "asset":
-        // ++ 2021/6/22 Emily
+        _screen_asset__WEBPACK_IMPORTED_MODULE_1__.default.updateAsset(asset);
         break;
       default:
         break;
@@ -5868,7 +5866,6 @@ class ViewController {
         break;
       case "bill":
         if (bill.id !== this.currentBill.id) return;
-        // ++
         _screen_bill__WEBPACK_IMPORTED_MODULE_4__.default.update(asset, bill);
         break;
       default:
@@ -5879,7 +5876,8 @@ class ViewController {
     console.log(screen);
     switch (screen) {
       case "landing":
-        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion, data);
+        // data is callback
+        _screen_landing__WEBPACK_IMPORTED_MODULE_2__.default.render(screen, this.walletVersion, this.wallet);
         break;
       case "assets":
       case "settings":
@@ -5909,13 +5907,18 @@ class ViewController {
         break;
       case "bill":
         this.currentBill = data; //Bill
-        _screen_bill__WEBPACK_IMPORTED_MODULE_4__.default.render(screen, this.currentAsset, this.currentBill);
+        _screen_bill__WEBPACK_IMPORTED_MODULE_4__.default.render(
+          screen,
+          this.currentAsset,
+          this.currentBill,
+          this.wallet
+        );
         break;
       case "address":
-        _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset);
+        _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset, this.wallet);
         break;
       case "mnemonic":
-        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen);
+        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen, data);
         break;
       default:
         break;
@@ -7040,7 +7043,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     });
     this.mnemonicButton = new _widget_button__WEBPACK_IMPORTED_MODULE_1__.default(
       "Recover Wallet",
-      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("mnemonic"),
+      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("mnemonic", this.callback),
       {
         style: ["round", "fill-primary"],
       }
@@ -7091,25 +7094,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 class Asset {
   constructor({
-    id,
-    // name,
+    accountcurrencyId,
+    accountType,
+    name,
     symbol,
     network,
-    // decimals,
+    decimals,
     publish,
     image,
     balance,
     inFiat,
   }) {
-    this.id = id;
-    // this.name = name;
+    this.id = accountcurrencyId;
+    this.accountType = accountType
+    this.name = name;
     this.symbol = symbol;
     this.network = network;
-    // this.decimals = decimals;
-    this.publish = publish;
+    this.decimals = decimals;
+    this.publish = publish || true; // -- temporary
     this.image = image;
     this.balance = balance;
-    this.inFiat = inFiat;
+    this.inFiat = inFiat || "0"; // -- temporary
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Asset);
@@ -7134,26 +7139,28 @@ __webpack_require__.r(__webpack_exports__);
 class Bill {
   constructor({
     id,
-    txid,
+    txId,
     amount,
     fee,
     message,
     timestamp,
     direction,
-    from,
-    to,
+    sourceAddresses,
+    destinationAddresses,
     confirmations,
+    status,
   }) {
     this.id = id;
-    this.txid = txid;
+    this.txid = txId;
     this.amount = amount;
     this.fee = fee;
     this.message = message;
     this.timestamp = timestamp;
     this._direction = direction;
-    this.from = from;
-    this.to = to;
+    this.from = sourceAddresses;
+    this.to = destinationAddresses;
     this.confirmations = confirmations;
+    this._status = status;
   }
 
   get dateTime() {
@@ -7161,21 +7168,18 @@ class Bill {
   }
 
   get status() {
-    if (this.confirmations === 0) {
-      return "Pending";
-    } else if (this.confirmations > 0 && this.confirmations <= 6) {
+    if (this._status === "fail") return "Failed";
+    else if (this.confirmations === 0) return "Pending";
+    else if (this.confirmations > 0 && this.confirmations <= 6)
       return "Confirming";
-    } else if (this.confirmations > 6) {
-      return "Completed";
-    } else {
-      return "Failed";
-    }
+    else if (this.confirmations > 6) return "Completed";
+    else return "Failed";
   }
   get action() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return "Receive";
-      case "send":
+      case "sent":
         return "Send";
       default:
         return "Unknown";
@@ -7183,9 +7187,9 @@ class Bill {
   }
   get direction() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return "Receive from";
-      case "send":
+      case "sent":
         return "Transfer to";
       default:
         return "Unknown";
@@ -7193,9 +7197,9 @@ class Bill {
   }
   get address() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return this.from;
-      case "send":
+      case "sent":
         return this.to;
       default:
         return "Unknown";
@@ -7207,9 +7211,9 @@ class Bill {
   }
   get sign() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return "+";
-      case "send":
+      case "sent":
         return "-";
       default:
         return "Unknown";
@@ -7217,9 +7221,9 @@ class Bill {
   }
   formattedAmount(asset) {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return this.sign + " " + this.amount + " " + asset.symbol;
-      case "send":
+      case "sent":
         return this.sign + " " + this.amount + " " + asset.symbol;
       default:
         return "Unknown";
@@ -7290,27 +7294,25 @@ __webpack_require__.r(__webpack_exports__);
 
 class Address {
   constructor() {}
-  initialize(screen, asset) {
-    // ++ if tidewallet is ready
-    // tidewallet.getReceiveAddress({ asset.id });
+  initialize(screen, asset, wallet) {
+    console.log("wallet getReceivingAddress"); // -- test
+    wallet.getReceivingAddress({ asset: asset.id }).then((data) => {
+      this.scaffold.closePopover();
+      console.log(data); // -- test
+      this.address = data;
+      this.update(this.address);
+    });
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_2__.default(screen);
     this.addressContent = new _layout_address_content__WEBPACK_IMPORTED_MODULE_3__.default(asset);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.addressContent);
-    this.scaffold.openPopover("loading", "loading...");
+    this.scaffold.openPopover("loading");
   }
-  render(screen, asset) {
+  render(screen, asset, wallet) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_0__.currentView)();
     if (!view || view !== "address" || !this.scaffold) {
-      this.initialize(screen, asset);
+      this.initialize(screen, asset, wallet);
     }
-    // -- test
-    setTimeout(() => {
-      this.scaffold.closePopover();
-      const address = "0xd885833741f554a0e64ffd1141887d65e0dded01";
-      this.update(address);
-    }, 1000);
   }
-  // ++ Emily 2021/6/22
   update(address) {
     this.addressContent.update(address);
   }
@@ -7348,14 +7350,13 @@ __webpack_require__.r(__webpack_exports__);
 class Asset {
   constructor() {}
   initialize(screen, asset, fiat, wallet) {
-    // ++ if tidewallet is ready
-    console.log("wallet getAssetDetail");
+    console.log("wallet getAssetDetail"); // -- test
     wallet
       .getAssetDetail({ assetID: asset.id })
       .then((data) => {
-        const asset = data.asset;
+        console.log(data); // -- test
+        const asset = new Asset(data.asset);
         const bills = data.transactions.map((obj) => new Bill(obj));
-        console.log(data);
         return {
           asset,
           bills,
@@ -7384,6 +7385,9 @@ class Asset {
     if (!view || view !== "asset" || !this.scaffold) {
       this.initialize(screen, asset, fiat, wallet);
     }
+  }
+  updateAsset(asset) {
+    this.header.update(this.screen, { asset });
   }
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });
@@ -7428,17 +7432,25 @@ __webpack_require__.r(__webpack_exports__);
 
 class Bill {
   constructor() {}
-  initialize(screen, asset, bill) {
+  initialize(screen, asset, bill, wallet) {
+    // ++ not necessary ui dont need more detail to show
+    // this.asset = asset;
+    // wallet
+    //   .getTransactionDetail({ assetID: asset.id, transactionID: bill.id })
+    //   .then((data) => {
+    //     console.log(data); // -- test
+    //     this.update(this.asset, new Bill(data));
+    //   });
     const header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
     this.billContent = new _layout_bill_content__WEBPACK_IMPORTED_MODULE_2__.default(asset, bill);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(header, this.billContent);
     this.scaffold.view = screen;
     this.screen = screen;
   }
-  render(screen, asset, bill) {
+  render(screen, asset, bill, wallet) {
     const view = (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.currentView)();
     if (!view || view !== "bill" || !this.scaffold) {
-      this.initialize(screen, asset, bill);
+      this.initialize(screen, asset, bill, wallet);
     }
   }
   update(asset, bill) {
@@ -7465,16 +7477,65 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
-/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/frontend/javascript/layout/third_party_signin_container.js");
+/* harmony import */ var _controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/third_party_signin_container */ "./src/frontend/javascript/layout/third_party_signin_container.js");
+/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../model/asset */ "./src/frontend/javascript/model/asset.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
+
+
+
+
+const getUserInfo = async (tidewallet, data = {}) => {
+  const api = {
+    apiURL: "https://service.tidewallet.io/api/v1",
+    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+    apiSecret: "9e37d67450dc906042fde75113ecb78c",
+  };
+  const OAuthID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.googleSignin)();
+  const InstallID = await (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.getInstallID)();
+  console.log("OAuthID :", OAuthID); // -- test
+  console.log("InstallID :", InstallID); // -- test
+  console.log("mnemonic :", data?.mnemonic); // -- test
+  console.log("passphrase :", data?.passphrase); // -- test
+  const result = await tidewallet.init({
+    user: {
+      OAuthID,
+      InstallID,
+      mnemonic: data?.mnemonic,
+      password: data?.passphrase,
+    },
+    api,
+  });
+  console.log(result);
+  if (result) {
+    const fiat = await tidewallet.getFiat();
+    console.log(fiat);
+    _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateFiat(fiat);
+    _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("assets");
+    const dashboard = await tidewallet.overview();
+    console.log(dashboard);
+    const balance = dashboard?.balance;
+    const assets = dashboard?.currencies?.map(
+      (currency) => new _model_asset__WEBPACK_IMPORTED_MODULE_3__.default(currency)
+    );
+    console.log(balance, assets);
+    _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateUser({
+      balance,
+      assets,
+    });
+  }
+};
 
 class Landing {
   constructor() {}
-  render(screen, version, callback) {
-    this.body = new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_1__.default(version, "white", callback);
-    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_0__.default(this.header, this.body, this.footer);
+  render(screen, version, wallet) {
+    this.body = new _layout_third_party_signin_container__WEBPACK_IMPORTED_MODULE_2__.default(version, "white", (data) =>
+      getUserInfo(wallet, data)
+    );
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.body, this.footer);
     this.body.parent = this.scaffold;
     this.scaffold.view = screen;
   }
@@ -7525,41 +7586,55 @@ class MnemonicFormElement extends HTMLElement {
         `;
     this.passphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
       inputType: "text",
-      label: "passphrase",
+      label: "passphrase [Optional]",
     });
     this.retypePassphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_4__.default({
       inputType: "text",
-      label: "retype passphrase",
+      label: "retype passphrase [Optional]",
+      errorMessage: "Retype passphrase is different from the first typed",
+      validation: (value) => {
+        return value === this.passphraseInput.inputValue;
+      },
     });
-    this.confirmButton = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default(
-      "confirm",
-      () => _controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("screen"),
-      {
-        style: ["round", "fill-primary"],
-      }
-    );
+    this.confirmButton = new _widget_button__WEBPACK_IMPORTED_MODULE_3__.default("confirm", () => {}, {
+      style: ["round", "fill-primary"],
+    });
     // this.children[4].children[0].disabled = true;x
     this.confirmButton.disabled = true;
     this.passphraseInput.render(this.children[2]);
     this.retypePassphraseInput.render(this.children[3]);
     this.confirmButton.render(this.children[4]);
     this.children[1].children[1].addEventListener("input", (e) => {
+      this.inputValue = e.target.value;
       if (e.target.value) {
         // this.children[4].children[0].disabled = false;
         this.confirmButton.disabled = false;
-      }else{
+      } else {
         // this.children[4].children[0].disabled = true;
         this.confirmButton.disabled = true;
       }
     });
+    // confirmButton
+    this.children[4].children[0].addEventListener("click", (_) => {
+      this.parent?.openPopover("loading");
+      this.callback({
+        mnemonic: this.inputValue,
+        passphrase: this.passphraseInput.inputValue || "",
+      });
+    });
   }
+  disconnectedCallback() {}
 }
 
 customElements.define("mnemonic-form", MnemonicFormElement);
 
 class MnemonicForm {
-  constructor() {
+  constructor(callback) {
     this.element = document.createElement("mnemonic-form");
+    this.element.callback = callback;
+  }
+  set parent(element) {
+    this.element.parent = element;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("afterbegin", this.element);
@@ -7567,12 +7642,12 @@ class MnemonicForm {
 }
 
 class Mnemonic {
-  constructor() {
-    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default("mnemonic");
-    this.body = new MnemonicForm();
-  }
-  render() {
+  constructor() {}
+  render(screen, callback) {
+    this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_1__.default(screen);
+    this.body = new MnemonicForm(callback);
     this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default(this.header, this.body);
+    this.body.parent = this.scaffold;
   }
 }
 
@@ -8807,107 +8882,111 @@ class TabBar {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frontend/javascript/controller/view */ "./src/frontend/javascript/controller/view.js");
-/* harmony import */ var _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./frontend/javascript/model/asset */ "./src/frontend/javascript/model/asset.js");
-/* harmony import */ var _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend/javascript/model/bill */ "./src/frontend/javascript/model/bill.js");
-/* harmony import */ var _frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frontend/javascript/utils/utils */ "./src/frontend/javascript/utils/utils.js");
+/* harmony import */ var _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frontend/javascript/model/asset */ "./src/frontend/javascript/model/asset.js");
+/* harmony import */ var _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./frontend/javascript/model/bill */ "./src/frontend/javascript/model/bill.js");
+/* harmony import */ var _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend/javascript/controller/view */ "./src/frontend/javascript/controller/view.js");
 
 
 
+/**
+ * viewContoller 提供頁面跳轉及頁面更新的功能
+ * @param {String} screen
+ * @param {dynamic} data Asset || Bill
+ * 頁面跳轉 => viewController.route(screen, [data])
+ * screen: 
+ * viewController.route('landing') => 登入頁面
+ * viewController.route('mnemonic') => 輸入助記詞頁面
+ * viewController.route('assets') => asset 清單 
+ * viewController.route('settings') => 設定頁面
+ * viewController.route('asset', asset) => asset 的交易清單
+ * viewController.route('bill', bill) => 交易細節
+ * viewController.route('transaction') => 交易畫面
+ * viewController.route('address') => 收款頁面
+ * 頁面更新
+ * @param {Array} assets,  
+ * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703, 
+ * @param {Fiat} fiat[optional], 參考model Fiat
+ * viewController.updateAssets(assets, balance, fiat.name)
+ * @param {Array} asset,  
+ * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703, 
+ * viewController.updateAsset(asset, balance)
+ * @param {Asset} asset
+ * @param {Array} bills
+ * viewController.updateBills(asset, bills)
+ * @param {Asset} asset
+ * @param {Bill} bill
+ * viewController.updateBill(asset, bill)
+ */
 
-
-const getUserInfo = async (tidewallet) => {
-  const api = {
-    apiURL: "https://service.tidewallet.io/api/v1",
-    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
-    apiSecret: "9e37d67450dc906042fde75113ecb78c",
-  };
-  const OAuthID = await (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_3__.googleSignin)();
-  const InstallID = await (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_3__.getInstallID)();
-  console.log(OAuthID, InstallID);
-  const result = await tidewallet.init({ user: { OAuthID, InstallID }, api });
-  console.log(result);
-  if (result) {
-    const fiat = await tidewallet.getFiat();
-    console.log(fiat);
-    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateFiat(fiat);
-    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("assets");
-    const dashboard = await tidewallet.overview();
-    console.log(dashboard);
-    const balance = dashboard?.balance;
-    const assets = dashboard?.currencies?.map(
-      (currency) =>
-        new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default({
-          id: currency.accountcurrencyId,
-          symbol: currency.symbol,
-          network: "Did not provide", //++ ropsten, mainnet, testnet
-          publish: true, //++ Boolean "Did not provide",
-          image: currency.image,
-          balance: currency.balance,
-          inFiat: "0", //++ string "Did not provide",
-        })
-    );
-    console.log(balance, assets);
-    _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateUser({
-      balance,
-      assets,
-    });
-  }
-};
-
+// START
+// setup tidewallet
 const tidewallet = new window.TideWallet();
-_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateConfig(tidewallet, tidewallet.getVersion());
 
+//[Crucial step] pass tidewallet to the page which would need it
+_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.setup(tidewallet);
+
+// 監聽 tidewallet 事件
+// on ready
 tidewallet.on("ready", (data) => {
-  console.log("TideWallet is Ready", data);
+  console.log("TideWallet is Ready", data); // -- test
 });
+// on update
+/**
+ * event: OnUpdateCurrency 
+ * => 更新單個或是多個asset, 更新錢包的法幣也用這個event
+ * => 影響頁面 overview(assetList & settingList) 及 asset, 
+ * => 更新參數
+ * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703, 
+ * @param {Array} assets,  
+ * @param {Fiat} fiat[optional], 參考model Fiat
+ * event: OnUpdateTransactions
+ */
+/**
+ * event: OnUpdateTransactions
+ * => 更新某個 asset 的交易清單, 同 getAssetDetail() function
+ * => 影響頁面 asset & bill(Transaction Detail)
+ * => 更新參數
+ * @param {Asset} asset
+ * @param {Array} bill
+ */
 tidewallet.on("update", (data) => {
-  console.log("TideWallet Data Updated", data);
+  console.log("TideWallet Data Updated", data); // -- test
   switch (data.evt) {
     case "OnUpdateCurrency":
       if (Array.isArray(data.value)) {
-        const currencies = data.value;
-        const assets = currencies.map(
-          (currency) =>
-            new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default({
-              id: currency.accountcurrencyId,
-              symbol: currency.symbol,
-              network: "Did not provide", //++ ropsten, mainnet, testnet
-              publish: true, //++ Boolean "Did not provide",
-              image: currency.image,
-              balance: currency.balance,
-              inFiat: "0", //++ string "Did not provide",
-            })
-        );
+        const assets = data.value.map((currency) => new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_0__.default(currency));
         if (data.value.length === 1) {
-          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateAsset(assets[0]);
+          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(assets[0]);
         } else {
-          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateAssets(assets);
+          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAssets(assets);
         }
       }
       break;
     case "OnUpdateTransactions":
-      const currency = data.value.currency;
-      const asset = new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default({
-        id: currency.accountcurrencyId,
-        symbol: currency.symbol,
-        network: "Did not provide", //++ ropsten, mainnet, testnet
-        publish: true, //++ Boolean "Did not provide",
-        image: currency.image,
-        balance: currency.balance,
-        inFiat: "0", //++ string "Did not provide",
-      });
-      const transactions = data.value.transactions;
-      const bills = transactions.map((transaction) => new _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_2__.default(transaction));
-      _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.updateBills(asset, bills);
+      const asset = new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_0__.default(data.value.currency);
+      const bills = data.value.transactions.map(
+        (transaction) => new _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_1__.default(transaction)
+      );
+      _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(asset, bills);
+      break;
+    case "OnUpdateTransaction":
+      // ++ 0702 Emily update UncomfirmTransaction
       break;
   }
 });
+// on notice
 tidewallet.on("notice", (data) => {
-  console.log("TideWallet Say Hello", data);
+  console.log("TideWallet Say Hello", data); // -- test
 });
 
-_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route("landing", () => getUserInfo(tidewallet));
+// 顯示登入頁面
+/**
+ * 需要在 viewController.setup(tidewallet)之後呼叫
+ * 因為landing頁面提供的兩種登錄方式,均會使用 tidewallet 提供的funcion
+ * GoogleSignIn
+ * Recovery Wallet
+ */
+_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("landing");
 
 
 /***/ })
@@ -8994,7 +9073,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_0__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("73922c3470a672f42b89")
+/******/ 		__webpack_require__.h = () => ("2769f48da1554adb12c9")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
