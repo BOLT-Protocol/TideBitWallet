@@ -40,6 +40,7 @@ build/*
 !build/popup.html
 !build/mainfest.json
 !build/javascript/TideWallet.js
+!build/image/*
 
 # Dependency directories
 node_modules/
