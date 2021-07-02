@@ -3,26 +3,28 @@ import * as utils from "../utils/utils";
 class Bill {
   constructor({
     id,
-    txid,
+    txId,
     amount,
     fee,
     message,
     timestamp,
     direction,
-    from,
-    to,
+    sourceAddresses,
+    destinationAddresses,
     confirmations,
+    status,
   }) {
     this.id = id;
-    this.txid = txid;
+    this.txid = txId;
     this.amount = amount;
     this.fee = fee;
     this.message = message;
     this.timestamp = timestamp;
     this._direction = direction;
-    this.from = from;
-    this.to = to;
+    this.from = sourceAddresses;
+    this.to = destinationAddresses;
     this.confirmations = confirmations;
+    this._status = status;
   }
 
   get dateTime() {
@@ -30,21 +32,18 @@ class Bill {
   }
 
   get status() {
-    if (this.confirmations === 0) {
-      return "Pending";
-    } else if (this.confirmations > 0 && this.confirmations <= 6) {
+    if (this._status === "fail") return "Failed";
+    else if (this.confirmations === 0) return "Pending";
+    else if (this.confirmations > 0 && this.confirmations <= 6)
       return "Confirming";
-    } else if (this.confirmations > 6) {
-      return "Completed";
-    } else {
-      return "Failed";
-    }
+    else if (this.confirmations > 6) return "Completed";
+    else return "Failed";
   }
   get action() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return "Receive";
-      case "send":
+      case "sent":
         return "Send";
       default:
         return "Unknown";
@@ -52,9 +51,9 @@ class Bill {
   }
   get direction() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return "Receive from";
-      case "send":
+      case "sent":
         return "Transfer to";
       default:
         return "Unknown";
@@ -62,9 +61,9 @@ class Bill {
   }
   get address() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return this.from;
-      case "send":
+      case "sent":
         return this.to;
       default:
         return "Unknown";
@@ -76,9 +75,9 @@ class Bill {
   }
   get sign() {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return "+";
-      case "send":
+      case "sent":
         return "-";
       default:
         return "Unknown";
@@ -86,9 +85,9 @@ class Bill {
   }
   formattedAmount(asset) {
     switch (this._direction) {
-      case "receive":
+      case "received":
         return this.sign + " " + this.amount + " " + asset.symbol;
-      case "send":
+      case "sent":
         return this.sign + " " + this.amount + " " + asset.symbol;
       default:
         return "Unknown";

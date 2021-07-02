@@ -5,27 +5,25 @@ import AddressContent from "../layout/address_content";
 
 class Address {
   constructor() {}
-  initialize(screen, asset) {
-    // ++ if tidewallet is ready
-    // tidewallet.getReceiveAddress({ asset.id });
+  initialize(screen, asset, wallet) {
+    console.log("wallet getReceivingAddress"); // -- test
+    wallet.getReceivingAddress({ asset: asset.id }).then((data) => {
+      this.scaffold.closePopover();
+      console.log(data); // -- test
+      this.address = data;
+      this.update(this.address);
+    });
     this.header = new Header(screen);
     this.addressContent = new AddressContent(asset);
     this.scaffold = new Scaffold(this.header, this.addressContent);
-    this.scaffold.openPopover("loading", "loading...");
+    this.scaffold.openPopover("loading");
   }
-  render(screen, asset) {
+  render(screen, asset, wallet) {
     const view = currentView();
     if (!view || view !== "address" || !this.scaffold) {
-      this.initialize(screen, asset);
+      this.initialize(screen, asset, wallet);
     }
-    // -- test
-    setTimeout(() => {
-      this.scaffold.closePopover();
-      const address = "0xd885833741f554a0e64ffd1141887d65e0dded01";
-      this.update(address);
-    }, 1000);
   }
-  // ++ Emily 2021/6/22
   update(address) {
     this.addressContent.update(address);
   }

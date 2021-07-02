@@ -7,14 +7,13 @@ import { currentView } from "../utils/utils";
 class Asset {
   constructor() {}
   initialize(screen, asset, fiat, wallet) {
-    // ++ if tidewallet is ready
-    console.log("wallet getAssetDetail");
+    console.log("wallet getAssetDetail"); // -- test
     wallet
       .getAssetDetail({ assetID: asset.id })
       .then((data) => {
-        const asset = data.asset;
+        console.log(data); // -- test
+        const asset = new Asset(data.asset);
         const bills = data.transactions.map((obj) => new Bill(obj));
-        console.log(data);
         return {
           asset,
           bills,
@@ -43,6 +42,9 @@ class Asset {
     if (!view || view !== "asset" || !this.scaffold) {
       this.initialize(screen, asset, fiat, wallet);
     }
+  }
+  updateAsset(asset) {
+    this.header.update(this.screen, { asset });
   }
   updateBills(asset, bills) {
     this.header.update(this.screen, { asset });

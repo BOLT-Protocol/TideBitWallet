@@ -43,7 +43,7 @@ class MnemonicFormElement extends HTMLElement {
       if (e.target.value) {
         // this.children[4].children[0].disabled = false;
         this.confirmButton.disabled = false;
-      }else{
+      } else {
         // this.children[4].children[0].disabled = true;
         this.confirmButton.disabled = true;
       }
@@ -63,11 +63,10 @@ class MnemonicForm {
 }
 
 class Mnemonic {
-  constructor() {
-    this.header = new Header("mnemonic");
-    this.body = new MnemonicForm();
-  }
-  render() {
+  constructor() {}
+  render(screen, wallet) {
+    this.header = new Header(screen);
+    this.body = new MnemonicForm(wallet);
     this.scaffold = new Scaffold(this.header, this.body);
   }
 }

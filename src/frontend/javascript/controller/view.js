@@ -6,7 +6,6 @@ import BillScreen from "../screen/bill";
 import AddressScreen from "../screen/address";
 import Transaction from "../screen/transaction";
 import MnemonicScreen from "../screen/mnemonic";
-import Asset from "../model/asset";
 
 class ViewController {
   constructor() {
@@ -14,10 +13,10 @@ class ViewController {
     this.currentBill;
     this.currentScreen;
   }
-  updateConfig(wallet, version, mode) {
+  setup(wallet) {
     this.wallet = wallet;
-    this.walletVersion = version;
-    this.walletMode = mode || "development";
+    this.walletVersion = wallet.getVersion();
+    this.walletMode = "development"; // wallet.getMode(); // ++
   }
   updateFiat(fiat) {
     this.fiatObj = fiat;
@@ -60,7 +59,7 @@ class ViewController {
         }
         break;
       case "asset":
-        // ++ 2021/6/22 Emily
+        AssetScreen.updateAsset(asset);
         break;
       default:
         break;
@@ -97,7 +96,6 @@ class ViewController {
         break;
       case "bill":
         if (bill.id !== this.currentBill.id) return;
-        // ++
         BillScreen.update(asset, bill);
         break;
       default:
@@ -108,7 +106,8 @@ class ViewController {
     console.log(screen);
     switch (screen) {
       case "landing":
-        Landing.render(screen, this.walletVersion, data);
+        // data is callback
+        Landing.render(screen, this.walletVersion, this.wallet);
         break;
       case "assets":
       case "settings":
@@ -138,13 +137,18 @@ class ViewController {
         break;
       case "bill":
         this.currentBill = data; //Bill
-        BillScreen.render(screen, this.currentAsset, this.currentBill);
+        BillScreen.render(
+          screen,
+          this.currentAsset,
+          this.currentBill,
+          this.wallet
+        );
         break;
       case "address":
-        AddressScreen.render(screen, this.currentAsset);
+        AddressScreen.render(screen, this.currentAsset, this.wallet);
         break;
       case "mnemonic":
-        MnemonicScreen.render(screen);
+        MnemonicScreen.render(screen, this.wallet);
         break;
       default:
         break;
