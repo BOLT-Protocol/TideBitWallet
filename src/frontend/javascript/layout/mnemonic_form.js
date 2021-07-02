@@ -49,6 +49,7 @@ class MnemonicFormElement extends HTMLElement {
     });
     // confirmButton
     this.children[4].children[0].addEventListener("click", (_) => {
+      if (this.confirmButton.disabled) return;
       this.parent?.openPopover("loading");
       this.callback({
         mnemonic: this.inputValue,
@@ -73,3 +74,5 @@ class MnemonicForm {
     parentElement.insertAdjacentElement("afterbegin", this.element);
   }
 }
+
+export default MnemonicForm;

@@ -720,7 +720,7 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
     if(true) {
-      // 1625233609007
+      // 1625234096804
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -6212,7 +6212,7 @@ class ViewController {
         _screen_address__WEBPACK_IMPORTED_MODULE_5__.default.render(screen, this.currentAsset, this.wallet);
         break;
       case "mnemonic":
-        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen);
+        _screen_mnemonic__WEBPACK_IMPORTED_MODULE_7__.default.render(screen, this.wallet);
         break;
       default:
         break;
@@ -7000,6 +7000,101 @@ class Header {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Header);
+
+
+/***/ }),
+
+/***/ "./src/frontend/javascript/layout/mnemonic_form.js":
+/*!*********************************************************!*\
+  !*** ./src/frontend/javascript/layout/mnemonic_form.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _widget_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../widget/button */ "./src/frontend/javascript/widget/button.js");
+/* harmony import */ var _widget_input__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../widget/input */ "./src/frontend/javascript/widget/input.js");
+
+
+
+class MnemonicFormElement extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.className = "mnemonic-form";
+    this.innerHTML = `
+          <div class="mnemonic-form__text">Please use spaces to separate different mnemonic words</div>
+          <div class="mnemonic-form__text-area">
+              <div class="mnemonic-form__label">Enter mnemonic</div>
+              <textarea rows="5"></textarea>
+          </div>
+          <div class="mnemonic-form__input"></div>
+          <div class="mnemonic-form__input"></div>
+          <div class="mnemonic-form__button"></div>
+          `;
+    this.passphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "text",
+      label: "passphrase [Optional]",
+    });
+    this.retypePassphraseInput = new _widget_input__WEBPACK_IMPORTED_MODULE_1__.default({
+      inputType: "text",
+      label: "retype passphrase [Optional]",
+      errorMessage: "Retype passphrase is different from the first typed",
+      validation: (value) => {
+        return value === this.passphraseInput.inputValue;
+      },
+    });
+    this.confirmButton = new _widget_button__WEBPACK_IMPORTED_MODULE_0__.default("confirm", () => {}, {
+      style: ["round", "fill-primary"],
+    });
+    // this.children[4].children[0].disabled = true;x
+    this.confirmButton.disabled = true;
+    this.passphraseInput.render(this.children[2]);
+    this.retypePassphraseInput.render(this.children[3]);
+    this.confirmButton.render(this.children[4]);
+    this.children[1].children[1].addEventListener("input", (e) => {
+      this.inputValue = e.target.value;
+      if (e.target.value) {
+        // this.children[4].children[0].disabled = false;
+        this.confirmButton.disabled = false;
+      } else {
+        // this.children[4].children[0].disabled = true;
+        this.confirmButton.disabled = true;
+      }
+    });
+    // confirmButton
+    this.children[4].children[0].addEventListener("click", (_) => {
+      if (this.confirmButton.disabled) return;
+      this.parent?.openPopover("loading");
+      this.callback({
+        mnemonic: this.inputValue,
+        passphrase: this.passphraseInput.inputValue || "",
+      });
+    });
+  }
+  disconnectedCallback() {}
+}
+
+customElements.define("mnemonic-form", MnemonicFormElement);
+
+class MnemonicForm {
+  constructor(callback) {
+    this.element = document.createElement("mnemonic-form");
+    this.element.callback = callback;
+  }
+  set parent(element) {
+    this.element.parent = element;
+  }
+  render(parentElement) {
+    parentElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MnemonicForm);
 
 
 /***/ }),
@@ -7830,18 +7925,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _layout_header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/header */ "./src/frontend/javascript/layout/header.js");
-/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
+/* harmony import */ var _layout_mnemonic_form__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/mnemonic_form */ "./src/frontend/javascript/layout/mnemonic_form.js");
+/* harmony import */ var _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/scaffold */ "./src/frontend/javascript/layout/scaffold.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
+
 
 
 
 
 class Mnemonic {
   constructor() {}
-  render(screen) {
+  render(screen, wallet) {
     this.header = new _layout_header__WEBPACK_IMPORTED_MODULE_0__.default(screen);
-    this.body = new Mnemonic((data) => (0,_utils_utils__WEBPACK_IMPORTED_MODULE_2__.initUser)(wallet, data));
-    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_1__.default(this.header, this.body);
+    this.body = new _layout_mnemonic_form__WEBPACK_IMPORTED_MODULE_1__.default((data) => (0,_utils_utils__WEBPACK_IMPORTED_MODULE_3__.initUser)(wallet, data));
+    this.scaffold = new _layout_scaffold__WEBPACK_IMPORTED_MODULE_2__.default(this.header, this.body);
     this.body.parent = this.scaffold;
   }
 }
@@ -9317,7 +9414,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("73873772ee4b2c194f3b")
+/******/ 		__webpack_require__.h = () => ("579c02cd87d2bc30e809")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
