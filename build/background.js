@@ -1,4 +1,5 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/background.js":
@@ -7,25 +8,33 @@
   \***************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _helpers_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/helper */ "./src/helpers/helper.js");
-/* harmony import */ var _helpers_helper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_helpers_helper__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frontend/javascript/utils/utils */ "./src/frontend/javascript/utils/utils.js");
 
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ InstallID: (0,_helpers_helper__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32) });
+  chrome.storage.sync.set({ InstallID: (0,_frontend_javascript_utils_utils__WEBPACK_IMPORTED_MODULE_0__.randomHex)(32) });
 });
 
 
 /***/ }),
 
-/***/ "./src/helpers/helper.js":
-/*!*******************************!*\
-  !*** ./src/helpers/helper.js ***!
-  \*******************************/
-/***/ ((module) => {
+/***/ "./src/frontend/javascript/utils/utils.js":
+/*!************************************************!*\
+  !*** ./src/frontend/javascript/utils/utils.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "randomHex": () => (/* binding */ randomHex),
+/* harmony export */   "to": () => (/* binding */ to),
+/* harmony export */   "dateFormatter": () => (/* binding */ dateFormatter),
+/* harmony export */   "addressFormatter": () => (/* binding */ addressFormatter),
+/* harmony export */   "currentView": () => (/* binding */ currentView),
+/* harmony export */   "getInstallID": () => (/* binding */ getInstallID),
+/* harmony export */   "googleSignin": () => (/* binding */ googleSignin)
+/* harmony export */ });
 const randomHex = (n) => {
   var ID = "";
   var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -39,8 +48,115 @@ const randomHex = (n) => {
   return ID;
 };
 
-module.exports = {
-  randomHex,
+const pad = (n) => {
+  return n < 10 ? "0" + n : n;
+};
+
+const to = (promise) => {
+  return promise
+    .then((data) => {
+      return [null, data];
+    })
+    .catch((err) => [err, null]);
+};
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const dateFormatter = (timestamp) => {
+  const dateTime = new Date(timestamp);
+  const date = dateTime.getDate();
+  const month = dateTime.getMonth();
+  const year = dateTime.getFullYear();
+  let hours = dateTime.getHours();
+  const minutes = dateTime.getMinutes();
+  let suffix = "AM";
+  if (hours - 12 > 0) {
+    hours -= 12;
+    suffix = "PM";
+  }
+  const mmddyyyykkmm =
+    monthNames[month] +
+    " " +
+    pad(date) +
+    ", " +
+    year +
+    " " +
+    hours +
+    ":" +
+    pad(minutes) +
+    " " +
+    suffix;
+  return mmddyyyykkmm;
+};
+
+const addressFormatter = (address, showLength = 6) => {
+  if (address.length <= showLength * 2) return address;
+  const prefix = address.slice(0, showLength);
+  const suffix = address.slice(address.length - showLength, address.length);
+  return prefix + "..." + suffix;
+};
+
+const currentView = () => {
+  const scaffold = document.querySelector("scaffold-widget");
+  const view = scaffold?.attributes?.view?.value;
+  return view;
+};
+
+const getInstallID = () => {
+  const key = "InstallID";
+  let InstallID;
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get([key], (result) => {
+      console.log(result);
+      if (result[key] === undefined) {
+        InstallID = randomHex(32);
+        chrome.storage.sync.set({ InstallID });
+      } else {
+        InstallID = result[key];
+      }
+      resolve(InstallID);
+    });
+  });
+};
+
+const getAuthToken = () =>
+  new Promise((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      console.log(token);
+      resolve(token);
+    });
+  });
+
+const googleSignin = async () => {
+  // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
+  const token = await getAuthToken();
+  const init = {
+    method: "GET",
+    async: true,
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    contentType: "json",
+  };
+  const data = await fetch(
+    "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+    init
+  ).then((respose) => respose.json());
+  console.log(data);
+  return data.id;
 };
 
 
@@ -91,18 +207,6 @@ module.exports = {
 /******/ 	__webpack_require__.i = [];
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -131,7 +235,7 @@ module.exports = {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("0bd93dcfec3ab9a9c936")
+/******/ 		__webpack_require__.h = () => ("c1d0da81fc32f48cc177")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
