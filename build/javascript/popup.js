@@ -433,6 +433,302 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 /***/ }),
 
+/***/ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js ***!
+  \*******************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+/* eslint-env browser */
+
+/*
+  eslint-disable
+  no-console,
+  func-names
+*/
+var normalizeUrl = __webpack_require__(/*! ./normalize-url */ "./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js");
+
+var srcByModuleId = Object.create(null);
+var noDocument = typeof document === 'undefined';
+var forEach = Array.prototype.forEach;
+
+function debounce(fn, time) {
+  var timeout = 0;
+  return function () {
+    var self = this; // eslint-disable-next-line prefer-rest-params
+
+    var args = arguments;
+
+    var functionCall = function functionCall() {
+      return fn.apply(self, args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
+}
+
+function noop() {}
+
+function getCurrentScriptUrl(moduleId) {
+  var src = srcByModuleId[moduleId];
+
+  if (!src) {
+    if (document.currentScript) {
+      src = document.currentScript.src;
+    } else {
+      var scripts = document.getElementsByTagName('script');
+      var lastScriptTag = scripts[scripts.length - 1];
+
+      if (lastScriptTag) {
+        src = lastScriptTag.src;
+      }
+    }
+
+    srcByModuleId[moduleId] = src;
+  }
+
+  return function (fileMap) {
+    if (!src) {
+      return null;
+    }
+
+    var splitResult = src.split(/([^\\/]+)\.js$/);
+    var filename = splitResult && splitResult[1];
+
+    if (!filename) {
+      return [src.replace('.js', '.css')];
+    }
+
+    if (!fileMap) {
+      return [src.replace('.js', '.css')];
+    }
+
+    return fileMap.split(',').map(function (mapRule) {
+      var reg = new RegExp("".concat(filename, "\\.js$"), 'g');
+      return normalizeUrl(src.replace(reg, "".concat(mapRule.replace(/{fileName}/g, filename), ".css")));
+    });
+  };
+}
+
+function updateCss(el, url) {
+  if (!url) {
+    if (!el.href) {
+      return;
+    } // eslint-disable-next-line
+
+
+    url = el.href.split('?')[0];
+  }
+
+  if (!isUrlRequest(url)) {
+    return;
+  }
+
+  if (el.isLoaded === false) {
+    // We seem to be about to replace a css link that hasn't loaded yet.
+    // We're probably changing the same file more than once.
+    return;
+  }
+
+  if (!url || !(url.indexOf('.css') > -1)) {
+    return;
+  } // eslint-disable-next-line no-param-reassign
+
+
+  el.visited = true;
+  var newEl = el.cloneNode();
+  newEl.isLoaded = false;
+  newEl.addEventListener('load', function () {
+    if (newEl.isLoaded) {
+      return;
+    }
+
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.addEventListener('error', function () {
+    if (newEl.isLoaded) {
+      return;
+    }
+
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.href = "".concat(url, "?").concat(Date.now());
+
+  if (el.nextSibling) {
+    el.parentNode.insertBefore(newEl, el.nextSibling);
+  } else {
+    el.parentNode.appendChild(newEl);
+  }
+}
+
+function getReloadUrl(href, src) {
+  var ret; // eslint-disable-next-line no-param-reassign
+
+  href = normalizeUrl(href, {
+    stripWWW: false
+  }); // eslint-disable-next-line array-callback-return
+
+  src.some(function (url) {
+    if (href.indexOf(src) > -1) {
+      ret = url;
+    }
+  });
+  return ret;
+}
+
+function reloadStyle(src) {
+  if (!src) {
+    return false;
+  }
+
+  var elements = document.querySelectorAll('link');
+  var loaded = false;
+  forEach.call(elements, function (el) {
+    if (!el.href) {
+      return;
+    }
+
+    var url = getReloadUrl(el.href, src);
+
+    if (!isUrlRequest(url)) {
+      return;
+    }
+
+    if (el.visited === true) {
+      return;
+    }
+
+    if (url) {
+      updateCss(el, url);
+      loaded = true;
+    }
+  });
+  return loaded;
+}
+
+function reloadAll() {
+  var elements = document.querySelectorAll('link');
+  forEach.call(elements, function (el) {
+    if (el.visited === true) {
+      return;
+    }
+
+    updateCss(el);
+  });
+}
+
+function isUrlRequest(url) {
+  // An URL is not an request if
+  // It is not http or https
+  if (!/^https?:/i.test(url)) {
+    return false;
+  }
+
+  return true;
+}
+
+module.exports = function (moduleId, options) {
+  if (noDocument) {
+    console.log('no window.document found, will not HMR CSS');
+    return noop;
+  }
+
+  var getScriptSrc = getCurrentScriptUrl(moduleId);
+
+  function update() {
+    var src = getScriptSrc(options.filename);
+    var reloaded = reloadStyle(src);
+
+    if (options.locals) {
+      console.log('[HMR] Detected local css modules. Reload all css');
+      reloadAll();
+      return;
+    }
+
+    if (reloaded) {
+      console.log('[HMR] css reload %s', src.join(' '));
+    } else {
+      console.log('[HMR] Reload all css');
+      reloadAll();
+    }
+  }
+
+  return debounce(update, 50);
+};
+
+/***/ }),
+
+/***/ "./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/hmr/normalize-url.js ***!
+  \************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+/* eslint-disable */
+function normalizeUrl(pathComponents) {
+  return pathComponents.reduce(function (accumulator, item) {
+    switch (item) {
+      case '..':
+        accumulator.pop();
+        break;
+
+      case '.':
+        break;
+
+      default:
+        accumulator.push(item);
+    }
+
+    return accumulator;
+  }, []).join('/');
+}
+
+module.exports = function (urlString) {
+  urlString = urlString.trim();
+
+  if (/^data:/i.test(urlString)) {
+    return urlString;
+  }
+
+  var protocol = urlString.indexOf('//') !== -1 ? urlString.split('//')[0] + '//' : '';
+  var components = urlString.replace(new RegExp(protocol, 'i'), '').split('/');
+  var host = components[0].toLowerCase().replace(/\.$/, '');
+  components[0] = '';
+  var path = normalizeUrl(components);
+  return protocol + host + path;
+};
+
+/***/ }),
+
+/***/ "./src/frontend/scss/main.scss":
+/*!*************************************!*\
+  !*** ./src/frontend/scss/main.scss ***!
+  \*************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+    if(true) {
+      // 1625220972910
+      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.id, {"locals":false});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
+
+/***/ }),
+
 /***/ "./node_modules/qrcode/lib/browser.js":
 /*!********************************************!*\
   !*** ./node_modules/qrcode/lib/browser.js ***!
@@ -7341,7 +7637,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_tab_bar_navigator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/tab_bar_navigator */ "./src/frontend/javascript/layout/tab_bar_navigator.js");
 /* harmony import */ var _layout_bill_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/bill_list */ "./src/frontend/javascript/layout/bill_list.js");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./src/frontend/javascript/utils/utils.js");
-// import Bill from "./model/bill";
+/* harmony import */ var _model_bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../model/bill */ "./src/frontend/javascript/model/bill.js");
+/* harmony import */ var _model_asset__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../model/asset */ "./src/frontend/javascript/model/asset.js");
+
+
 
 
 
@@ -7355,8 +7654,8 @@ class Asset {
       .getAssetDetail({ assetID: asset.id })
       .then((data) => {
         console.log(data); // -- test
-        const asset = new Asset(data.asset);
-        const bills = data.transactions.map((obj) => new Bill(obj));
+        const asset = new _model_asset__WEBPACK_IMPORTED_MODULE_6__.default(data.asset);
+        const bills = data.transactions.map((obj) => new _model_bill__WEBPACK_IMPORTED_MODULE_5__.default(obj));
         return {
           asset,
           bills,
@@ -8882,9 +9181,11 @@ class TabBar {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frontend/javascript/model/asset */ "./src/frontend/javascript/model/asset.js");
-/* harmony import */ var _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./frontend/javascript/model/bill */ "./src/frontend/javascript/model/bill.js");
-/* harmony import */ var _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend/javascript/controller/view */ "./src/frontend/javascript/controller/view.js");
+/* harmony import */ var _frontend_scss_main_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./frontend/scss/main.scss */ "./src/frontend/scss/main.scss");
+/* harmony import */ var _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./frontend/javascript/model/asset */ "./src/frontend/javascript/model/asset.js");
+/* harmony import */ var _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frontend/javascript/model/bill */ "./src/frontend/javascript/model/bill.js");
+/* harmony import */ var _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frontend/javascript/controller/view */ "./src/frontend/javascript/controller/view.js");
+
 
 
 
@@ -8923,7 +9224,7 @@ __webpack_require__.r(__webpack_exports__);
 const tidewallet = new window.TideWallet();
 
 //[Crucial step] pass tidewallet to the page which would need it
-_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.setup(tidewallet);
+_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.setup(tidewallet);
 
 // 監聽 tidewallet 事件
 // on ready
@@ -8954,20 +9255,20 @@ tidewallet.on("update", (data) => {
   switch (data.evt) {
     case "OnUpdateCurrency":
       if (Array.isArray(data.value)) {
-        const assets = data.value.map((currency) => new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_0__.default(currency));
+        const assets = data.value.map((currency) => new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default(currency));
         if (data.value.length === 1) {
-          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAsset(assets[0]);
+          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.updateAsset(assets[0]);
         } else {
-          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateAssets(assets);
+          _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.updateAssets(assets);
         }
       }
       break;
     case "OnUpdateTransactions":
-      const asset = new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_0__.default(data.value.currency);
+      const asset = new _frontend_javascript_model_asset__WEBPACK_IMPORTED_MODULE_1__.default(data.value.currency);
       const bills = data.value.transactions.map(
-        (transaction) => new _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_1__.default(transaction)
+        (transaction) => new _frontend_javascript_model_bill__WEBPACK_IMPORTED_MODULE_2__.default(transaction)
       );
-      _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.updateBills(asset, bills);
+      _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.updateBills(asset, bills);
       break;
     case "OnUpdateTransaction":
       // ++ 0702 Emily update UncomfirmTransaction
@@ -8986,7 +9287,7 @@ tidewallet.on("notice", (data) => {
  * GoogleSignIn
  * Recovery Wallet
  */
-_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route("landing");
+_frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_3__.default.route("landing");
 
 
 /***/ })
@@ -9006,7 +9307,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
+/******/ 			id: moduleId,
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
@@ -9073,7 +9374,7 @@ _frontend_javascript_controller_view__WEBPACK_IMPORTED_MODULE_2__.default.route(
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("2769f48da1554adb12c9")
+/******/ 		__webpack_require__.h = () => ("9990aed823b15d69cd4b")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

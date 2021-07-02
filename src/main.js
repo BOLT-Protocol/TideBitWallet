@@ -1,3 +1,4 @@
+import "./frontend/scss/main.scss"
 import Asset from "./frontend/javascript/model/asset";
 import Bill from "./frontend/javascript/model/bill";
 import viewController from "./frontend/javascript/controller/view";

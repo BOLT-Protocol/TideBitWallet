@@ -1,9 +1,10 @@
-// import Bill from "./model/bill";
 import Scaffold from "../layout/scaffold";
 import Header from "../layout/header";
 import TarBarNavigator from "../layout/tab_bar_navigator";
 import BillList from "../layout/bill_list";
 import { currentView } from "../utils/utils";
+import Bill from "../model/bill";
+import AssetModel from "../model/asset";
 class Asset {
   constructor() {}
   initialize(screen, asset, fiat, wallet) {
@@ -12,7 +13,7 @@ class Asset {
       .getAssetDetail({ assetID: asset.id })
       .then((data) => {
         console.log(data); // -- test
-        const asset = new Asset(data.asset);
+        const asset = new AssetModel(data.asset);
         const bills = data.transactions.map((obj) => new Bill(obj));
         return {
           asset,

@@ -740,7 +740,8 @@ body {
   .button[disabled] {
     color: #9B9B9B !important;
     background-color: #ECECEC !important;
-    border: 1px solid #ECECEC !important; }
+    border: 1px solid #ECECEC !important;
+    cursor: not-allowed; }
   .button[grey] {
     color: #9B9B9B;
     background-color: #ECECEC;
