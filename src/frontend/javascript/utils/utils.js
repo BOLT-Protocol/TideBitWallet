@@ -129,6 +129,7 @@ export const googleSignIn = async () => {
 export const getUserInfo = async (tidewallet) => {
   const _fiat = await tidewallet.getFiat();
   const fiat = new Fiat(_fiat);
+  viewController.route('assets');
   const dashboard = await tidewallet.overview();
   console.log(dashboard); // -- test
   const balance = dashboard?.balance;
