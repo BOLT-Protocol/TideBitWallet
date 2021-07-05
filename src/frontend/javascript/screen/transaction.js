@@ -9,28 +9,37 @@ import { currentView } from "../utils/utils";
  * ui.sendTransaction(transaction);
  */
 
+const getTransactionFee = async (wallet, asset) => {
+  const fee = await wallet.getTransactionFee({ accountID: asset.id });
+  console.log(fee);
+  return fee;
+};
+
+const sendTransaction = (transaction, wallet) => {
+  console.log("to", transaction.to);
+  console.log("amount", transaction.amount);
+  console.log("priority", transaction.priority);
+  console.log("gasPrice", transaction.gasPrice);
+  console.log("gas", transaction.gas);
+  this.scaffold.openPopover("success", "Success!");
+};
+
 class Transaction {
   constructor() {}
-  sendTransaction = (transaction) => {
-    console.log("to", transaction.to);
-    console.log("amount", transaction.amount);
-    console.log("priority", transaction.priority);
-    console.log("gasPrice", transaction.gasPrice);
-    console.log("gas", transaction.gas);
-    this.scaffold.openPopover("success", "Success!");
-  };
-  initialize(screen, asset, fiat, wallet) {
+
+  async initialize(screen, asset, fiat, wallet) {
     this.wallet = wallet;
     this.header = new Header(screen);
-    this.form = new Form(wallet, asset, fiat, (val) =>
+    this.form = new Form(wallet, asset, fiat, (data) =>
       this.scaffold.openPopover(
         "confirm",
         "Are you sure to make this transaction?",
-        () => this.sendTransaction(val),
+        () => sendTransaction(data, wallet),
         false
       )
     );
     this.scaffold = new Scaffold(this.header, this.form);
+    await getTransactionFee(wallet, asset);
   }
   render(screen, asset, fiat, wallet) {
     const view = currentView();

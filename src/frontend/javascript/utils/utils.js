@@ -163,6 +163,8 @@ export const initUser = async (tidewallet, data = {}, isGoogleSignIn = false) =>
     api,
   });
   console.log(result);
+  // -- test
+  window.tidewallet = tidewallet;
   if (result) {
     getUserInfo(tidewallet);
   }
