@@ -6,7 +6,7 @@ class Landing {
   constructor() {}
   render(screen, version, wallet) {
     this.body = new ThirdPartySigninContainer(version, "white", (data) =>
-      initUser(wallet, data)
+      initUser(wallet, data, true)
     );
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.body.parent = this.scaffold;

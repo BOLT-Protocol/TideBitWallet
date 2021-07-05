@@ -137,14 +137,14 @@ export const getUserInfo = async (tidewallet) => {
   viewController.updateAssets(assets, balance, fiat);
 };
 
-export const initUser = async (tidewallet, data = {}) => {
+export const initUser = async (tidewallet, data = {}, isGoogleSignIn = false) => {
   const api = {
     apiURL: "https://service.tidewallet.io/api/v1",
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
   let OAuthID;
-  if (!data) {
+  if (isGoogleSignIn) {
     OAuthID = await googleSignIn();
   }
   const InstallID = await getInstallID();
