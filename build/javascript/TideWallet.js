@@ -61007,7 +61007,7 @@ class AccountCore {
           default:
         }
 
-        if (svc && !this._currencies[acc.accountid]) {
+        if (svc && !this._currencies[acc.accountId]) {
           this._currencies[acc.accountId] = [];
 
           this._services.push(svc);
@@ -61025,7 +61025,7 @@ class AccountCore {
     } catch (error) {
       console.trace(error);
     }
-    this._addAccount(this._accounts);
+    this._addAccount(this._accounts, this._currencies);
   }
 
   /**
@@ -61124,11 +61124,13 @@ class AccountCore {
     return result;
   }
 
-  async _addAccount(local) {
+  async _addAccount(local, currencies) {
     try {
       const res = await this._TideWalletCommunicator.AccountList();
       let list = res ?? [];
-
+      console.log(list)
+      console.log(local)
+      console.log(currencies)
       const user = await this._DBOperator.userDao.findUser();
 
       for (const account of list) {
@@ -61142,7 +61144,7 @@ class AccountCore {
             network_id: account["blockchain_id"],
           });
           await this._DBOperator.accountDao.insertAccount(entity);
-
+          console.log(entity)
           local.push(entity);
         }
       }
@@ -61225,11 +61227,11 @@ class AccountCore {
 
   async getTransactionFee(accountcurrencyId, { to, amount, data } = {}) {
     const svc = this.getService(accountcurrencyId);
-    const blockchainID = this.getBlockchainID(accountID);
-    console.log("blockchainID", blockchainID);
-    const fees = svc.getTransactionFee(blockchainID);
+    const blockchainID = this.getBlockchainID(accountcurrencyId);
+    const fees = await svc.getTransactionFee(blockchainID); // ++ to CoinUint 0706
     let gasLimit = 21000;
-    if (to) gasLimit = svc.estimateGasLimit(blockchainID, to, amount, data);
+    if (to)
+      gasLimit = await svc.estimateGasLimit(blockchainID, to, amount, data);
     console.log("fees", fees);
     console.log("gasLimit", gasLimit);
     return { ...fees, gasLimit };

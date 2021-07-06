@@ -9,8 +9,8 @@ import { currentView } from "../utils/utils";
  * ui.sendTransaction(transaction);
  */
 
-const getTransactionFee = async (wallet, asset) => {
-  const fee = await wallet.getTransactionFee({ accountID: asset.id });
+const getTransactionFee = async (wallet, asset, { to, amount, data } = {}) => {
+  const fee = await wallet.getTransactionFee(asset.id, { to, amount, data });
   console.log(fee);
   return fee;
 };

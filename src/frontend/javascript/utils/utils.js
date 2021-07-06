@@ -127,20 +127,22 @@ export const googleSignIn = async () => {
 };
 
 export const getUserInfo = async (tidewallet) => {
+  viewController.route("assets");
   const _fiat = await tidewallet.getFiat();
   const fiat = new Fiat(_fiat);
-  viewController.route('assets');
   const dashboard = await tidewallet.overview();
-  console.log(dashboard); // -- test
   const balance = dashboard?.balance;
   const assets = dashboard?.currencies?.map((currency) => new Asset(currency));
-  console.log(balance, assets); // -- test
   viewController.updateAssets(assets, balance, fiat);
 };
 
-export const initUser = async (tidewallet, data = {}, isGoogleSignIn = false) => {
+export const initUser = async (
+  tidewallet,
+  data = {},
+  isGoogleSignIn = false
+) => {
   const api = {
-    apiURL: "https://service.tidewallet.io/api/v1",
+    apiURL: "https://staging.tidewallet.io/api/v1",
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
@@ -153,7 +155,7 @@ export const initUser = async (tidewallet, data = {}, isGoogleSignIn = false) =>
   console.log("InstallID :", InstallID); // -- test
   console.log("mnemonic :", data?.mnemonic); // -- test
   console.log("passphrase :", data?.passphrase); // -- test
-  const result = await tidewallet.init({
+  tidewallet.init({
     user: {
       OAuthID,
       InstallID,
@@ -162,10 +164,4 @@ export const initUser = async (tidewallet, data = {}, isGoogleSignIn = false) =>
     },
     api,
   });
-  console.log(result);
-  // -- test
-  window.tidewallet = tidewallet;
-  if (result) {
-    getUserInfo(tidewallet);
-  }
 };
