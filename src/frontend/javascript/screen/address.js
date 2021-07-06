@@ -7,10 +7,10 @@ class Address {
   constructor() {}
   initialize(screen, asset, wallet) {
     console.log("wallet getReceivingAddress", wallet); // -- test
-    wallet.getReceivingAddress({ asset: asset.id }).then((data) => {
+    wallet.getReceivingAddress({ accountID: asset.id }).then((data) => {
       this.scaffold.closePopover();
       console.log(data); // -- test
-      this.address = data;
+      this.address = Array.isArray(data) ? data[0] : data;
       this.update(this.address);
     });
     this.header = new Header(screen);
