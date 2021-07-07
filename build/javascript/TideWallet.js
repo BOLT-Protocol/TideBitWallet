@@ -61163,7 +61163,7 @@ class AccountCore {
   async _addSupportedCurrencies(local) {
     try {
       const res = await this._TideWalletCommunicator.CurrencyList();
-
+console.log(res)
       let list = res;
 
       list = list
@@ -61171,6 +61171,7 @@ class AccountCore {
           local.findIndex((l) => l.currencyId === c["currency_id"] > -1)
         )
         .map((c) => this._DBOperator.currencyDao.entity(c));
+        console.log(list)
 
       await this._DBOperator.currencyDao.insertCurrencies(list);
     } catch (error) {
@@ -64386,6 +64387,7 @@ class TideWallet {
 
     initObj.TideWalletCore = this.core;
     this.account = new Account(initObj);
+    console.log(initObj)
     this.account.setMessenger();
     await this.account.init();
 
