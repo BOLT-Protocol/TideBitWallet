@@ -114,7 +114,7 @@ class FormElement extends HTMLElement {
         this.callback(new Transaction({ to, amount, priority }));
       }
     });
-    this.wallet.getTransactionFee();
+
   }
 
   /**

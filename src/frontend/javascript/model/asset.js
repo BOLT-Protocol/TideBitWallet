@@ -1,6 +1,6 @@
 class Asset {
   constructor({
-    accountcurrencyId,
+    id,
     accountType,
     name,
     symbol,
@@ -11,7 +11,7 @@ class Asset {
     balance,
     inFiat,
   }) {
-    this.id = accountcurrencyId;
+    this.id = id;
     this.accountType = accountType
     this.name = name;
     this.symbol = symbol;
