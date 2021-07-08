@@ -63803,11 +63803,11 @@ class AccountDao extends DAO {
     balance, // Join AccountCurrency
     last_sync_time, // Join AccountCurrency
     purpose, // Join Account
-    coin_type__account, // Join Account
+    coin_type_account, // Join Account
     account_index, // Join Account
     curve_type, // Join Account
     blockchain, // Join Blockchain
-    coin_type__blockchain, // Join Blockchain
+    coin_type_blockchain, // Join Blockchain
     publish, // Join Blockchain
     chain_id, // Join Blockchain  || network_id
     name, // Join Currency
@@ -63829,11 +63829,11 @@ class AccountDao extends DAO {
       balance,
       lastSyncTime: last_sync_time,
       purpose,
-      accountCoinType: coin_type__account,
+      accountCoinType: coin_type_account,
       accountIndex: account_index,
       curveType: curve_type,
       blockchain,
-      blockchainCoinType: coin_type__blockchain,
+      blockchainCoinType: coin_type_blockchain,
       publish,
       chainId: chain_id,
       name,
@@ -65122,11 +65122,10 @@ class AccountServiceBase extends AccountService {
           ...account,
           id: token["account_token_id"],
           currency_id: token["token_id"],
-          blockchain_id: token["blockchain_id"],
           name: token["name"], // Join Token
           symbol: token["symbol"], // Join Token
           type: token["type"], // Join Token
-          publish: token["publish"],
+          publish: token["publish"], // Join Token
           decimals: token["decimals"], // Join Token
           total_supply: token["total_supply"], // Join Token
           contract: token["contract"], // Join Token
