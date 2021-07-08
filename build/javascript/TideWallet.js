@@ -60969,7 +60969,6 @@ class AccountCore {
 
     const srvStart = [];
     for (const acc of accounts) {
-      console.log(acc);
       let currency = currencies.find((c) => c.currencyId === acc.currencyId);
       if (currency) {
         acc.name = currency.name;
@@ -60983,14 +60982,16 @@ class AccountCore {
         acc.exchangeRate = currency.exchangeRate;
       }
 
-      let chain = chains.find((c) => c.blockchainId === acc.blockchainId);
+
+      let chain = chains.find(
+        (chain) => chain.blockchainId === acc.blockchainId
+      );
+
       if (chain) {
         acc.blockchainCoinType = chain.coinType;
-        acc.blockchainId = chain.blockchainId;
         acc.chainId = chain.chainId;
         acc.publish = chain.publish;
-        console.log(acc);
-        await this._DBOperator.accountDao.insertAccount(acc);
+
         let svc;
         let _ACCOUNT;
         switch (chain.coinType) {
@@ -61024,6 +61025,7 @@ class AccountCore {
         }
 
         if (svc && !this._accounts[acc.accountId]) {
+          await this._DBOperator.accountDao.insertAccount(acc);
           this._accounts[acc.accountId] = [];
 
           this._services.push(svc);
