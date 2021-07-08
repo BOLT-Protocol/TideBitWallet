@@ -79,7 +79,7 @@ tidewallet.on("update", (data) => {
       }
       break;
     case "OnUpdateTransactions":
-      const asset = new Asset(data.value.currency);
+      const asset = new Asset(data.value.account);
       const bills = data.value.transactions.map(
         (transaction) => new Bill(transaction)
       );

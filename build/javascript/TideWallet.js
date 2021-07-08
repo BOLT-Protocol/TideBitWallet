@@ -60910,22 +60910,21 @@ const BigNumber = require("bignumber.js");
 
 class AccountCore {
   static instance;
-  _currencies = {};
-  _accounts = [];
+  _accounts = {};
   _messenger = null;
   _settingOptions = [];
   _DBOperator = null;
 
-  get currencies() {
-    return this._currencies;
+  get accounts() {
+    return this._accounts;
   }
 
   get messenger() {
     return this._messenger;
   }
 
-  set currencies(currs) {
-    this._currencies = currs;
+  set accounts(accounts) {
+    this._accounts = accounts;
   }
 
   get settingOptions() {
@@ -60955,28 +60954,46 @@ class AccountCore {
     this._messenger = new Subject();
   }
 
-  async init(debugMode = false) {
+  async init({ debugMode = false, networkPublish = network_publish }) {
     this._debugMode = debugMode;
+    this._networkPublish = networkPublish;
     this._isInit = true;
 
     await this._initAccounts();
   }
 
   async _initAccounts() {
-    const chains = await this._getNetworks(network_publish);
-    this._accounts = await this._getAccounts();
-    await this._getSupportedCurrencies();
+    const chains = await this._getNetworks(this._networkPublish);
+    const accounts = await this._getAccounts();
+    const currencies = await this._getSupportedCurrencies();
 
     const srvStart = [];
-    for (const acc of this._accounts) {
-      let blockIndex = chains.findIndex(
-        (chain) => chain.networkId === acc.networkId
-      );
+    for (const acc of accounts) {
+      console.log(acc);
+      let currency = currencies.find((c) => c.currencyId === acc.currencyId);
+      if (currency) {
+        acc.name = currency.name;
+        acc.description = currency.description;
+        acc.symbol = currency.symbol;
+        acc.decimals = currency.decimals;
+        acc.totalSupply = currency.totalSupply;
+        acc.contract = currency.contract;
+        acc.type = currency.type;
+        acc.image = currency.image;
+        acc.exchangeRate = currency.exchangeRate;
+      }
 
-      if (blockIndex > -1) {
+      let chain = chains.find((c) => c.blockchainId === acc.blockchainId);
+      if (chain) {
+        acc.blockchainCoinType = chain.coinType;
+        acc.blockchainId = chain.blockchainId;
+        acc.chainId = chain.chainId;
+        acc.publish = chain.publish;
+        console.log(acc);
+        await this._DBOperator.accountDao.insertAccount(acc);
         let svc;
         let _ACCOUNT;
-        switch (chains[blockIndex].coinType) {
+        switch (chain.coinType) {
           case 0:
           case 1:
             svc = new BitcoinService(
@@ -61003,12 +61020,11 @@ class AccountCore {
             );
             _ACCOUNT = ACCOUNT.CFC;
             break;
-
           default:
         }
 
-        if (svc && !this._currencies[acc.accountId]) {
-          this._currencies[acc.accountId] = [];
+        if (svc && !this._accounts[acc.accountId]) {
+          this._accounts[acc.accountId] = [];
 
           this._services.push(svc);
 
@@ -61020,17 +61036,18 @@ class AccountCore {
       }
     }
 
+    await this._getSupportedToken(chains);
+
     try {
       const srvStartRes = await Promise.all(srvStart);
     } catch (error) {
       console.trace(error);
     }
-    this._addAccount(this._accounts, this._currencies);
   }
 
   /**
-   * close all services
-   * @method close
+   * sync service
+   * @method sync
    */
   async sync() {
     if (this._isInit) {
@@ -61080,28 +61097,38 @@ class AccountCore {
    * @returns {string} The blockchainID
    */
   getBlockchainID(accountId) {
-    const account = this._accounts.find((acc) => acc.accountId === accountId);
-    return account.networkId;
+    const account = this._accounts[accountId][0];
+    return account.blockchainId;
   }
 
+  /**
+   *
+   * @param {Boolean} publish
+   * @returns NetworkDao entity
+   */
+  // get supported blockchain from DB
   async _getNetworks(publish = true) {
     let networks = await this._DBOperator.networkDao.findAllNetworks();
 
+    // if DB is empty get supported blockchain from backend service
     if (!networks || networks.length < 1) {
       try {
         const res = await this._TideWalletCommunicator.BlockchainList();
-        const enties = res.map((n) =>
+        const enties = res?.map((n) =>
           this._DBOperator.networkDao.entity({
-            network_id: n["blockchain_id"],
+            blockchain_id: n["blockchain_id"],
             network: n["name"],
             coin_type: n["coin_type"],
             chain_id: n["network_id"],
             publish: n["publish"],
           })
         );
+        console.log(enties);
         networks = enties;
-        await this._DBOperator.networkDao.insertNetworks(enties);
-      } catch (error) {}
+        await this._DBOperator.networkDao.insertNetworks(networks);
+      } catch (error) {
+        console.log(error); // ++ throw exception
+      }
     }
 
     if (this._debugMode || !publish) {
@@ -61113,69 +61140,145 @@ class AccountCore {
     }
   }
 
+  /**
+   *
+   * @returns AccountDao entity
+   */
   async _getAccounts() {
-    let result = await this._DBOperator.accountDao.findAllAccounts();
+    let accounts = await this._DBOperator.accountDao.findAllAccounts();
 
-    if (result.length < 1) {
-      result = await this._addAccount(result);
-      return result;
+    // Filter accounts by current User
+    accounts = accounts.filter(
+      (acc) => acc.userId === this._TideWalletCore.userInfo.id
+    );
+
+    if (!accounts || accounts.length < 1) {
+      try {
+        const res = await this._TideWalletCommunicator.AccountList();
+        /**
+         * a
+         * account_id
+         * purpose ++
+         * coin_type__account ++
+         * account_index
+         * curve_type ++
+         * balance --
+         * blockchain_id
+         * currency_id
+         * network_id --
+         * publish --
+         *
+         */
+        const enties = res?.map((a) =>
+          this._DBOperator.accountDao.entity({
+            ...a,
+            id: a["account_id"],
+            user_id: this._TideWalletCore.userInfo.id,
+            purpose: 84,
+            coin_type__account: 3324,
+            curve_type: 0,
+            chain_id: a["network_id"],
+          })
+        );
+        accounts = enties;
+        // await this._DBOperator.accountDao.insertAccounts(accounts);
+      } catch (error) {
+        console.log(error); // ++ throw exception
+      }
     }
 
-    return result;
+    return accounts;
   }
 
-  async _addAccount(local, currencies) {
-    try {
-      const res = await this._TideWalletCommunicator.AccountList();
-      let list = res ?? [];
-      console.log(list)
-      console.log(local)
-      console.log(currencies)
-      const user = await this._DBOperator.userDao.findUser();
+  /**
+   *
+   * @returns CurrencyDao entity
+   */
+  async _getSupportedCurrencies() {
+    // get supported currencies from DB
+    let currencies = await this._DBOperator.currencyDao.findAllCurrencies();
 
-      for (const account of list) {
-        const id = account["account_id"];
-        const exist = local.findIndex((el) => el.accountId === id) > -1;
+    // if DB is empty get supported currencies from backend service
+    if (!currencies || currencies.length < 1) {
+      try {
+        const res = await this._TideWalletCommunicator.CurrencyList();
+        /**
+         * c
+         * currency_id
+         * name
+         * description ++
+         * symbol
+         * decimals
+         * total_supply ++
+         * contract ++
+         * type
+         * icon
+         * exchange_rate
+         * publish --
+         */
+        const enties = res?.map((c) => this._DBOperator.currencyDao.entity(c));
+        currencies = enties;
+        // write currencies to DB
+        await this._DBOperator.currencyDao.insertCurrencies(currencies);
+      } catch (error) {
+        console.log(error); // ++ throw exception
+      }
+    }
+    return currencies;
+  }
 
-        if (!exist) {
-          const entity = this._DBOperator.accountDao.entity({
-            ...account,
-            user_id: user.userId,
-            network_id: account["blockchain_id"],
-          });
-          await this._DBOperator.accountDao.insertAccount(entity);
-          console.log(entity)
-          local.push(entity);
+  /**
+   * Load setting page token list
+   * get each blockchain supported token and add it to _AccountCore.settingOptions
+   * @method _getSupportedToken
+   * @returns {void}
+   */
+  async _getSupportedToken(chains) {
+    for (let chain of chains) {
+      let tokens =
+        await this._DBOperator.currencyDao.findAllCurrenciesByBlockchainId(
+          chain.blockchainId
+        );
+      if (!tokens || tokens.length < 1) {
+        try {
+          const res = await this._TideWalletCommunicator.TokenList(
+            chain.blockchainId
+          );
+          /**
+         * CFC: 9bdfe7b7-7bef-4009-a6fb-6b628265d885
+         * 0:
+          blockchain_id: "80001F51"
+          contract: "0x44bf3a96420c0688d657aca23e343e79581304b1"
+          currency_id: "2c64a81c-bb62-41e2-abef-2fc524bb9124"
+          decimals: 18
+          exchange_rate: null
+          icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@9ab8d6934b83a4aa8ae5e8711609a70ca0ab1b2b/32/icon/xpa.png"
+          name: "XPlay"
+          publish: false
+          symbol: "XPA"
+          type: 2
+         * 1:
+          blockchain_id: "80001F51"
+          contract: "0x323ba586e7a634db733fea42956e71e9d2c992da"
+          currency_id: "051b654c-30d1-4a3c-b2b4-46ed7c08d461"
+          decimals: 0
+          exchange_rate: null
+          icon: "https://service.tidewallet.io/icon/ERC20.png"
+          name: "TestTokenTransfer"
+          publish: false
+          symbol: "TTT"
+          type: 2
+         */
+          if (res) {
+            tokens = res.map((t) => this._DBOperator.currencyDao.entity(t));
+            await this._DBOperator.currencyDao.insertCurrencies(tokens);
+          }
+        } catch (error) {
+          console.log(error); // ++ throw exception
         }
       }
-    } catch (error) {}
-    return local;
-  }
-
-  async _getSupportedCurrencies() {
-    const local = await this._DBOperator.currencyDao.findAllCurrencies();
-
-    if (local.length < 1) {
-      await this._addSupportedCurrencies(local);
-    }
-  }
-
-  async _addSupportedCurrencies(local) {
-    try {
-      const res = await this._TideWalletCommunicator.CurrencyList();
-console.log(res)
-      let list = res;
-
-      list = list
-        .filter((c) =>
-          local.findIndex((l) => l.currencyId === c["currency_id"] > -1)
-        )
-        .map((c) => this._DBOperator.currencyDao.entity(c));
-        console.log(list)
-
-      await this._DBOperator.currencyDao.insertCurrencies(list);
-    } catch (error) {
-      console.log(error);
+      console.log(tokens)
+      this.settingOptions += tokens;
     }
   }
 
@@ -61186,7 +61289,7 @@ console.log(res)
    * @returns {Array} The currency list
    */
   getCurrencies(accountId) {
-    return this._currencies[accountId];
+    return this._accounts[accountId];
   }
 
   /**
@@ -61195,7 +61298,7 @@ console.log(res)
    * @returns {Array} The currency list
    */
   getAllCurrencies() {
-    return Object.values(this._currencies).reduce(
+    return Object.values(this._accounts).reduce(
       (list, curr) => list.concat(curr),
       []
     );
@@ -61226,6 +61329,14 @@ console.log(res)
     return address;
   }
 
+  /**
+   * Get TransactionFee and gasLimit by accountcurrencyId
+   * @param {string} accountcurrencyId
+   * @param {string} to [optional]
+   * @param {string} amount [optional]
+   * @param {string} data [optional]
+   * @returns
+   */
   async getTransactionFee(accountcurrencyId, { to, amount, data } = {}) {
     const svc = this.getService(accountcurrencyId);
     const blockchainID = this.getBlockchainID(accountcurrencyId);
@@ -61259,7 +61370,7 @@ console.log(res)
     switch (accountCurrency.accountType) {
       case ACCOUNT.ETH:
       case ACCOUNT.CFC:
-        safeSigner = this._TideWalletCore.getSafeSigner("m/84'/3324'/0'/0/0");
+        safeSigner = this._TideWalletCore.getSafeSigner("m/84'/3324'/0'/0/0"); // ++ get path from accountDao
         const svc = this.getService(accountCurrency.accountId);
         const address = svc.getReceivingAddress(
           accountCurrency.accountcurrencyId
@@ -61268,7 +61379,7 @@ console.log(res)
           (acc) => acc.accountId === svc.accountId
         );
 
-        const nonce = await svc.getNonce(account.networkId, address);
+        const nonce = await svc.getNonce(account.blockchainId, address);
 
         const txSvc = new ETHTransaction(new TransactionBase(), safeSigner);
         const signedTx = txSvc.prepareTransaction({
@@ -61281,7 +61392,7 @@ console.log(res)
         });
 
         const [success, tx] = await svc.publishTransaction(
-          account.networkId,
+          account.blockchainId,
           signedTx
         );
 
@@ -62403,7 +62514,7 @@ class TideWalletCore {
 
   constructor() {
     if (!TideWalletCore.instance) {
-      this._userInfo = {};
+      this.userInfo = {};
       TideWalletCore.instance = this;
     }
 
@@ -62421,7 +62532,7 @@ class TideWalletCore {
    * @returns 
    */
    setUserInfo(userInfo) {
-    this._userInfo = userInfo;
+    this.userInfo = userInfo;
     console.log(userInfo)
   }
 
@@ -62462,14 +62573,14 @@ class TideWalletCore {
    * @returns {String} password
    */
    _getPassword({ userIdentifier, userId, installId, timestamp }) {
-    const userIdentifierBuff = Buffer.from(userIdentifier || this._userInfo.thirdPartyId, "utf8").toString(
+    const userIdentifierBuff = Buffer.from(userIdentifier || this.userInfo.thirdPartyId, "utf8").toString(
       "hex"
     );
-    const installIdBuff = Buffer.from(installId  || this._userInfo.installId).toString("hex");
+    const installIdBuff = Buffer.from(installId  || this.userInfo.installId).toString("hex");
     const pwseed = Cryptor.keccak256round(
       Cryptor.keccak256round(
           Cryptor.keccak256round(userIdentifierBuff, 1) + 
-          Cryptor.keccak256round(userId || this._userInfo.id, 1),
+          Cryptor.keccak256round(userId || this.userInfo.id, 1),
       ) +
       Cryptor.keccak256round(
         Cryptor.keccak256round(
@@ -62627,12 +62738,12 @@ class TideWalletCore {
    */
   async _getSeedByKeyStore() {
     const password = this._getPassword({
-      userIdentifier: this._userInfo.thirdPartyId,
-      userId: this._userInfo.id,
-      installId: this._userInfo.installId,
-      timestamp: this._userInfo.timestamp
+      userIdentifier: this.userInfo.thirdPartyId,
+      userId: this.userInfo.id,
+      installId: this.userInfo.installId,
+      timestamp: this.userInfo.timestamp
     })
-    const keystore = this._userInfo.keystore;
+    const keystore = this.userInfo.keystore;
     const pk = PaperWallet.recoverFromJson(keystore, password);
     const seed = PaperWallet.magicSeed(pk);
     return seed;
@@ -62721,8 +62832,13 @@ class Trader {
 
     if (!Array.isArray(local) || !local[0] || now - local[0].lastSyncTime > Trader.syncInterval) {
       try {
-        const fiats = await this._TideWalletCommunicator.FiatsRate();
-        const cryptos = await this._TideWalletCommunicator.CryptoRate();
+        const works = [
+          this._TideWalletCommunicator.FiatsRate(),
+          this._TideWalletCommunicator.CryptoRate()
+        ]
+        const res = await Promise.all(works);
+        const fiats = res[0];
+        const cryptos = res[1];
         const rates = [
           ...fiats.map(
             (e) => this._DBOperator.exchangeRateDao.entity({
@@ -62884,24 +63000,34 @@ class User {
     this._communicator = TideWalletCommunicator;
     this._DBOperator = DBOperator;
     this._TideWalletCore = new TideWalletCore();
+    this._initFromRegist = false;
   }
 
   /**
    * check user
    * @returns {boolean}
    */
-  async checkUser() {
-    // TODO: find user table
-    const user = await this._DBOperator.userDao.findUser();
+  async checkUser(userIdentifier) {
+    try {
+      if (!this.id) {
+        const userInfo = await this._getUser(userIdentifier);
+        this.id = userInfo[0];
+      }
+      const user = await this._DBOperator.userDao.findUser(this.id);
+      
+      // TODO: Remove this log
+      console.log("checkUser: ", user);
 
-    // TODO: Remove this log
-    console.log("checkUser: ", user);
-
-    if (user) {
-      await this._initUser(user);
-      return true;
+      if (user) {
+        this._initFromRegist = false;
+        await this._initUser(user);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.trace(error);
+      return false;
     }
-    return false;
   }
 
   /**
@@ -62987,6 +63113,7 @@ class User {
       const res = await this._communicator.register(installId, installId, extendPublicKey);
 
       await this._DBOperator.prefDao.setAuthItem(
+        userId,
         res.token,
         res.tokenSecret
       );
@@ -63001,6 +63128,7 @@ class User {
         backup_status: false,
       });
       await this._DBOperator.userDao.insertUser(user);
+      this._initFromRegist = true;
       await this._initUser(user);
       return true;
     } catch (error) {
@@ -63057,7 +63185,7 @@ class User {
    * @returns {}
    */
   async updatePassword(oldPassword, newpassword) {
-    const user = await this._DBOperator.userDao.findUser();
+    const user = await this._DBOperator.userDao.findUser(this.id);
 
     const wallet = await this.restorePaperWallet(user.keystore, oldPassword);
   }
@@ -63106,7 +63234,7 @@ class User {
    * @returns isBackup
    */
   async checkWalletBackup() {
-    const _user = await this._DBOperator.userDao.findUser();
+    const _user = await this._DBOperator.userDao.findUser(this.id);
     if (_user != null) {
       return _user.backupStatus;
     }
@@ -63119,7 +63247,7 @@ class User {
    */
   async backupWallet() {
     try {
-      const _user = await this._DBOperator.userDao.findUser();
+      const _user = await this._DBOperator.userDao.findUser(this.id);
 
       // TODO: updateUser condition
       await this._DBOperator.userDao.updateUser({ backupStatus: true });
@@ -63151,8 +63279,8 @@ class User {
     }
     this._TideWalletCore.setUserInfo(userInfo);
 
-    const item = await this._DBOperator.prefDao.getAuthItem();
-    if (item != null) {
+    const item = await this._DBOperator.prefDao.getAuthItem(user.userId);
+    if (item != null && !this._initFromRegist) {
       let _token = item.token
       let _tokenSecret = item.tokenSecret
       try {
@@ -63164,6 +63292,7 @@ class User {
           _token = res.token
           _tokenSecret = res.tokenSecret
           await this._DBOperator.prefDao.setAuthItem(
+            user.userId,
             _token,
             _tokenSecret
           );
@@ -63176,6 +63305,7 @@ class User {
           _token = res.token
           _tokenSecret = res.tokenSecret
           await this._DBOperator.prefDao.setAuthItem(
+            user.userId,
             _token,
             _tokenSecret
           );
@@ -63204,7 +63334,7 @@ class User {
    * @returns {String} keystore
    */
   async getKeystore() {
-    const user = await this._DBOperator.userDao.findUser();
+    const user = await this._DBOperator.userDao.findUser(this.id);
 
     return user.keystore;
   }
@@ -63214,7 +63344,7 @@ class User {
    * @returns {Boolean}
    */
   async deleteUser() {
-    const user = await this._DBOperator.userDao.findUser();
+    const user = await this._DBOperator.userDao.findUser(this.id);
     const item = await this._DBOperator.userDao.deleteUser(user);
 
     if (item < 0) return false;
@@ -63386,8 +63516,11 @@ class IndexedDB {
   _createTable(version) {
     if (version <= 1) {
       const accounts = this.db.createObjectStore(OBJ_ACCOUNT, {
-        keyPath: "accountId",
+        keyPath: "id",
       });
+
+      let accountIndex = accounts.createIndex("accountId", "accountId");
+      let blockchainIndex = accounts.createIndex("blockchainId", "blockchainId");
 
       const txs = this.db.createObjectStore(OBJ_TX, {
         keyPath: "transactionId",
@@ -63397,14 +63530,14 @@ class IndexedDB {
       const currency = this.db.createObjectStore(OBJ_CURRENCY, {
         keyPath: "currencyId",
       });
-      let currencyIndex = currency.createIndex("accountId", "accountId");
+      let currencyIndex = currency.createIndex("blockchainId", "blockchainId");
 
       const user = this.db.createObjectStore(OBJ_USER, {
         keyPath: "userId",
       });
 
       const network = this.db.createObjectStore(OBJ_NETWORK, {
-        keyPath: "networkId",
+        keyPath: "blockchainId",
       });
 
       const utxo = this.db.createObjectStore(OBJ_UTXO, {
@@ -63655,8 +63788,8 @@ class UserDao extends DAO {
     };
   }
 
-  findUser() {
-    return this._read();
+  findUser(userId) {
+    return this._read(userId);
   }
 
   insertUser(userEntity) {
@@ -63667,8 +63800,8 @@ class UserDao extends DAO {
     return this._write(userEntity);
   }
 
-  deleteUser() {
-    return this._delete(1);
+  deleteUser(userId) {
+    return this._delete(userId);
   }
 }
 
@@ -63680,12 +63813,58 @@ class AccountDao extends DAO {
   /**
    * @override
    */
-  entity({ account_id, user_id, network_id, account_index }) {
+  entity({
+    id, // account_token_id || account_id
+    account_id,
+    user_id,
+    blockchain_id, // || network_id ++,
+    currency_id, // currency_id || token_id
+    balance, // Join AccountCurrency
+    last_sync_time, // Join AccountCurrency
+    purpose, // Join Account
+    coin_type__account, // Join Account
+    account_index, // Join Account
+    curve_type, // Join Account
+    blockchain, // Join Blockchain
+    coin_type__blockchain, // Join Blockchain
+    publish, // Join Blockchain
+    chain_id, // Join Blockchain  || network_id
+    name, // Join Currency
+    description, // Join Currency
+    symbol, // Join Currency
+    decimals, // Join Currency
+    total_supply, // Join Currency
+    contract, // Join Currency
+    type, // Join Currency
+    icon, // Join Currency || url
+    exchange_rate, // ++ Join Currency || inUSD,
+  }) {
     return {
-      accountId: account_id,
+      id,
       userId: user_id,
-      networkId: network_id,
+      accountId: account_id,
+      blockchainId: blockchain_id,
+      currencyId: currency_id,
+      balance,
+      lastSyncTime: last_sync_time,
+      purpose,
+      accountCoinType: coin_type__account,
       accountIndex: account_index,
+      curveType: curve_type,
+      blockchain,
+      blockchainCoinType: coin_type__blockchain,
+      publish,
+      chainId: chain_id,
+      name,
+      description,
+      symbol,
+      decimals,
+      totalSupply: total_supply,
+      contract,
+      type,
+      icon,
+      exchangeRate: exchange_rate,
+      // tokens,
     };
   }
 
@@ -63693,8 +63872,12 @@ class AccountDao extends DAO {
     return this._readAll();
   }
 
-  findAccount(accountId) {
-    return this._read(accountId);
+  findAccount(id) {
+    return this._read(id);
+  }
+
+  findAllByAccountId(accountId) {
+    return this._readAll(accountId, "accountId");
   }
 
   insertAccount(accountEntiry) {
@@ -63712,29 +63895,34 @@ class CurrencyDao extends DAO {
    */
   entity({
     currency_id,
-    name,
-    description,
-    symbol,
     decimals,
-    // address,
-    total_supply,
-    contract,
-    type,
+    exchange_rate,
     icon,
+    name,
+    symbol,
+    type,
+    blockchain_id, // ++ for token
+    description, // ++ [Did not provided by Backend Service]
+    // address,  // ++ [Did not provided by Backend Service]
+    total_supply, // ++ [Did not provided by Backend Service]
+    contract, // ++ [Did not provided by Backend Service]
   }) {
     const _type = type === 0 ? "fiat" : type === 1 ? "currency" : "token";
 
     return {
       currencyId: currency_id,
-      name,
-      description,
-      symbol,
       decimals,
+      exchangeRate: exchange_rate,
+      image: icon,
+      name,
+      symbol,
+      type: _type,
+
+      blockchainId: blockchain_id,
+      description,
       address: contract,
       totalSupply: total_supply,
       contract,
-      type: _type,
-      image: icon,
     };
   }
   constructor(db, name) {
@@ -63753,8 +63941,8 @@ class CurrencyDao extends DAO {
     return this._readAll();
   }
 
-  findAllCurrenciesByAccountId(accountId) {
-    return this._readAll(accountId, "accountId");
+  findAllCurrenciesByBlockchainId(blockchainId) {
+    return this._readAll(blockchainId, "blockchainId");
   }
 }
 
@@ -63762,9 +63950,9 @@ class NetworkDao extends DAO {
   /**
    * @override
    */
-  entity({ network_id, network, coin_type, publish, chain_id }) {
+  entity({ blockchain_id, network, coin_type, publish, chain_id }) {
     return {
-      networkId: network_id,
+      blockchainId: blockchain_id,
       network,
       coinType: coin_type,
       publish,
@@ -63847,8 +64035,6 @@ class AccountCurrencyDao extends DAO {
     last_sync_time,
     token_id,
     account_token_id,
-    image,
-    symbol
   }) {
     return {
       accountcurrencyId: account_token_id ?? account_id,
@@ -63858,8 +64044,6 @@ class AccountCurrencyDao extends DAO {
       numberOfUsedExternalKey: number_of_used_external_key,
       numberOfUsedInternalKey: number_of_used_internal_key,
       lastSyncTime: last_sync_time,
-      image,
-      symbol
     };
   }
   constructor(db, name) {
@@ -63921,7 +64105,7 @@ class UtxoDao extends DAO {
     key_index,
     script,
     timestamp,
-    address
+    address,
   }) {
     const DEFAULT_SEQUENCE = 0xffffffff; // temp
     return {
@@ -63939,9 +64123,9 @@ class UtxoDao extends DAO {
       address,
       // sequence: BitcoinTransaction.DEFAULT_SEQUENCE,
       sequence: DEFAULT_SEQUENCE, // temp
-    }
+    };
   }
-    
+
   constructor(db, name) {
     super(db, name);
   }
@@ -63959,9 +64143,9 @@ class PrefDao extends DAO {
   static AUTH_ITEM_KEY = 1;
   static SELECTED_FIAT_KEY = 2;
 
-  entity({ token, tokenSecret }) {
+  entity({ userId, token, tokenSecret }) {
     return {
-      prefId: PrefDao.AUTH_ITEM_KEY,
+      prefId: `${PrefDao.AUTH_ITEM_KEY}-${userId}`,
       token,
       tokenSecret,
     };
@@ -63970,15 +64154,15 @@ class PrefDao extends DAO {
     super(db, name);
   }
 
-  async getAuthItem() {
-    const result = await this._read(PrefDao.AUTH_ITEM_KEY);
+  async getAuthItem(userId) {
+    const result = await this._read(`${PrefDao.AUTH_ITEM_KEY}-${userId}`);
 
     return result;
   }
 
-  setAuthItem(token, tokenSecret) {
+  setAuthItem(userId, token, tokenSecret) {
     return this._write({
-      prefId: PrefDao.AUTH_ITEM_KEY,
+      prefId: `${PrefDao.AUTH_ITEM_KEY}-${userId}`,
       token,
       tokenSecret,
     });
@@ -64364,7 +64548,7 @@ class TideWallet {
     return this;
   }
 
-  async init({ user, api }) {
+  async init({ user, api, debugMode = false, networkPublish = true }) {
     const communicator = new TideWalletCommunicator(api);
     const db = new DBOperator();
     await db.init();
@@ -64372,7 +64556,7 @@ class TideWallet {
 
     this.user = new User(initObj);
 
-    const exist = await this.user.checkUser();
+    const exist = await this.user.checkUser(user.OAuthID);
     if (!exist) {
       if (user.mnemonic && user.password) {
         this.core = await this.user.createUserWithSeed(
@@ -64383,13 +64567,14 @@ class TideWallet {
       } else {
         this.core = await this.user.createUser(user.OAuthID, user.InstallID);
       }
+    } else {
+      this.core = this.user._TideWalletCore;
     }
 
     initObj.TideWalletCore = this.core;
     this.account = new Account(initObj);
-    console.log(initObj)
     this.account.setMessenger();
-    await this.account.init();
+    await this.account.init({ debugMode, networkPublish });
 
     this.trader = new Trader(initObj);
     await this.trader.getFiatList();
@@ -64553,7 +64738,7 @@ if (isBrowser()) {
       InstallID:
         "11f6d3e524f367952cb838bf7ef24e0cfb5865d7b8a8fe5c699f748b2fada249",
     };
-    await tw.init({ user: user2, api });
+    await tw.init({ user: user2, api, debugMode: false, networkPublish: true });
     //test
     console.log("overview:", await tw.overview());
     console.log(
@@ -64574,6 +64759,59 @@ if (isBrowser()) {
 module.exports = TideWallet;
 
 },{"../package.json":349,"./constants/config":350,"./cores/Account":351,"./cores/PaperWallet":352,"./cores/TideWalletCommunicator":355,"./cores/TideWalletCore":356,"./cores/Trader":357,"./cores/User":358,"./database/dbOperator":359,"./helpers/env":363,"bignumber.js":30,"buffer":"buffer"}],369:[function(require,module,exports){
+class Account {
+  constructor({
+    id,
+    account_id,
+    user_id,
+    blockchain_id,
+    currency_id,
+    balance,
+    last_sync_time,
+    purpose,
+    coin_type__account,
+    account_index,
+    curve_type,
+    blockchain,
+    coin_type__blockchain,
+    publish,
+    chain_id,
+    name,
+    description,
+    symbol,
+    decimals,
+    total_supply,
+    contract,
+    type,
+    image,
+    exchange_rate,
+  }) {
+    this.id = id;
+    this.accountId = account_id;
+    this.userId = user_id;
+    this.blockchainId = blockchain_id;
+    this.currencyId = currency_id;
+    this.balance = balance;
+    this.lastSyncTime = last_sync_time;
+    this.purpose = purpose;
+    this.accountCoinType = coin_type__account;
+    this.accountIndex = account_index;
+    this.curve_type = curve_type;
+    this.blockchain = blockchain;
+    this.blockchainCoinType = coin_type__blockchain;
+    this.publish = publish;
+    this.chainId = chain_id;
+    this.name = name;
+    this.description = description;
+    this.symbol = symbol;
+    this.decimals = decimals;
+    this.totalSupply = total_supply;
+    this.contract = contract;
+    this.type = type;
+    this.image = image;
+    this.exchangeRate = exchange_rate;
+  }
+}
 const ACCOUNT_EVT = {
   OnUpdateAccount: "OnUpdateAccount",
   OnUpdateCurrency: "OnUpdateCurrency",
@@ -64584,14 +64822,15 @@ const ACCOUNT_EVT = {
 };
 
 const ACCOUNT = {
-  ETH: 'ETH',
-  BTC: 'BTC',
-  CFC: 'CFC'
-}
+  ETH: "ETH",
+  BTC: "BTC",
+  CFC: "CFC",
+};
 
 module.exports = {
+  Account,
   ACCOUNT_EVT,
-  ACCOUNT
+  ACCOUNT,
 };
 
 },{}],370:[function(require,module,exports){
@@ -64826,20 +65065,20 @@ class AccountServiceBase extends AccountService {
    * @returns {void}
    */
   async _pushResult() {
-    let cs = await this._DBOperator.accountCurrencyDao.findJoinedByAccountId(
+    let accounts = await this._DBOperator.accountDao.findAllByAccountId(
       this._accountId
     );
 
-    cs = cs.map((c) => ({
-      ...c,
+    accounts = accounts.map((a) => ({
+      ...a,
       accountType: this._base,
     }));
 
-    this._AccountCore.currencies[this._accountId] = cs;
+    this._AccountCore.accounts[this._accountId] = accounts;
 
     const msg = {
       evt: ACCOUNT_EVT.OnUpdateCurrency,
-      value: cs,
+      value: accounts,
     };
 
     this._AccountCore.messenger.next(msg);
@@ -64853,30 +65092,83 @@ class AccountServiceBase extends AccountService {
    */
   async _getData() {
     try {
-      const res = await this._TideWalletCommunicator.AccountDetail(this._accountId)
+      const res = await this._TideWalletCommunicator.AccountDetail(
+        this._accountId
+      );
+      const account = await this._DBOperator.accountDao.findAccount(
+        this._accountId
+      );
+      /**
+       * res
+       * account_id: "8d047ea8-0420-4324-aed5-64352a602a30"
+       * account_index: "0"
+       * balance: "0"
+       * blockchain_id: "8000003C"
+       * currency_id: "5b755dacd5dd99000b3d92b2"
+       * curve_type: 0
+       * icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@9ab8d6934b83a4aa8ae5e8711609a70ca0ab1b2b/32/icon/eth.png"
+       * purpose: 3324
+       * symbol: "ETH"
+       * tokens: [
+       *         {
+       *          "account_token_id": "488c3047-ced5-4049-9967-8ececb41ced1",
+                  "token_id": "5b1ea92e584bf50020130617",
+                  "blockchain_id": "80000060",
+                  "name": "Tether",
+                  "symbol": "USDT",
+                  "type": 2,
+                  "publish": true,
+                  "decimals": 2,
+                  "total_supply": "26,310,299,179",
+                  "contract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+                  "balance": "0"
+       *     }
+       *  ]
+       */
       const acc = res;
-      const tokens = acc["tokens"];
+      let tokens = acc["tokens"];
       const currs = await this._DBOperator.currencyDao.findAllCurrencies();
       const newTokens = [];
 
-      tokens.forEach((token) => {
+      tokens = tokens.map((token) => {
         const index = currs.findIndex(
           (c) => c.currencyId === token["token_id"]
         );
-
         if (index < 0) {
           newTokens.push(cur);
         }
+        const entity = this._DBOperator.accountDao.entity({
+          ...account,
+          id: token["account_token_id"],
+          currency_id: token["token_id"],
+          blockchain_id: token["blockchain_id"],
+          name: token["name"], // Join Token
+          symbol: token["symbol"], // Join Token
+          type: token["type"], // Join Token
+          publish: token["publish"],
+          decimals: token["decimals"], // Join Token
+          total_supply: token["total_supply"], // Join Token
+          contract: token["contract"], // Join Token
+          description: token["description"], // Join Token
+          icon: currs[index].image, // Join Currency || url
+          exchange_rate: currs[index].exchangeRate, // ++ Join Currency || inUSD,
+          balance: token["balance"],
+        });
+        return entity;
       });
+      console.log("insertAccount", tokens)
+      await this._DBOperator.accountDao.insertAccounts(tokens);
 
       if (newTokens.length > 0) {
         await Promise.all(
           newTokens.map((token) => {
             return new Promise(async (resolve, reject) => {
-              const res = await this._TideWalletCommunicator.TokenDetail(token["blockchain_id"], token["token_id"]);
+              const res = await this._TideWalletCommunicator.TokenDetail(
+                token["blockchain_id"],
+                token["token_id"]
+              );
               if (res != null) {
                 const token = this._DBOperator.currencyDao.entity(res);
-
                 await this._DBOperator.currencyDao.insertCurrency(token);
               }
             });
@@ -64892,49 +65184,20 @@ class AccountServiceBase extends AccountService {
   }
 
   /**
-   * If there is not any tokens, get tokens
-   * @method _getSupportedToken
-   * @returns {void}
-   */
-  async _getSupportedToken() {
-    const tokens =
-      await this._DBOperator.currencyDao.findAllCurrenciesByAccountId(
-        this._accountId
-      );
-
-    if (tokens.length < 1) {
-      const acc = await this._DBOperator.accountDao.findAccount(
-        this._accountId
-      );
-      try {
-        const res = await this._TideWalletCommunicator.TokenList(acc.networkId);
-        if (res) {
-          const tokens = res.map((t) =>
-            this._DBOperator.currencyDao.entity(t)
-          );
-          await this._DBOperator.currencyDao.insertCurrencies(tokens);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
-
-  /**
    * Sync transctions belong this account
    * And push subject event to AccountCore messenger
    * @method _syncTransactions
    * @returns {void}
    */
   async _syncTransactions() {
-    const currencies = this._AccountCore.currencies[this._accountId];
-    const qureries = currencies.map((currency) => {
+    const accounts = this._AccountCore.accounts[this._accountId];
+    const qureries = accounts.map((account) => {
       return new Promise(async (resolve) => {
-        const transactions = await this._getTransaction(currency);
+        const transactions = await this._getTransaction(account);
         const txMsg = {
           evt: ACCOUNT_EVT.OnUpdateTransactions,
           value: {
-            currency,
+            account,
             transactions,
           },
         };
@@ -64957,16 +65220,18 @@ class AccountServiceBase extends AccountService {
   /**
    * Get transctions
    * @method _getTransaction
-   * @param {Object} currency The accountcurrency object
+   * @param {Object} account The account object
    * @returns {Array} The sorted transactions
    */
-  async _getTransaction(currency) {
+  async _getTransaction(account) {
     try {
-      const res = await this._TideWalletCommunicator.ListTransactions(currency.accountcurrencyId);
+      const res = await this._TideWalletCommunicator.ListTransactions(
+        account.id
+      );
       const txs = res.map((t) =>
         this._DBOperator.transactionDao.entity({
           ...t,
-          accountcurrencyId: currency.accountcurrencyId,
+          accountcurrencyId: account.id,
         })
       );
 
@@ -64975,44 +65240,23 @@ class AccountServiceBase extends AccountService {
       console.log(error);
     }
 
-    return this._loadTransactions(currency.id);
+    return this._loadTransactions(account.id);
   }
 
   /**
    * Load transctions from database
    * @method _loadTransactions
-   * @param {string} currency The accountcurrency Id
+   * @param {string} accountId The account Id
    * @returns {Array} The sorted transactions
    */
-  async _loadTransactions(currencyId) {
+  async _loadTransactions(accountId) {
     const transactions =
-      await this._DBOperator.transactionDao.findAllTransactionsById(currencyId);
+      await this._DBOperator.transactionDao.findAllTransactionsById(accountId);
 
     const txNull = transactions.filter((t) => t.timestamp === null);
     const txReady = transactions.filter((t) => t.timestamp !== null);
 
     return [...txNull, ...txReady];
-  }
-
-  /**
-   * Load setting page token list
-   * @method _getSettingTokens
-   * @returns {void}
-   */
-  async _getSettingTokens() {
-    const tokens =
-      await this._DBOperator.currencyDao.findAllCurrenciesByAccountId(
-        this._accountId
-      );
-    if (tokens.length > 0) {
-      const acc = await this._DBOperator.accountDao.findAccount(this._accountId);
-      const ds = tokens.map((tk) => ({
-        ...tk,
-        accountId: this._accountId,
-        blockchainId: acc.networkId,
-      }));
-      this._AccountCore.settingOptions += ds;
-    }
   }
 
   /**
@@ -65028,14 +65272,11 @@ class AccountServiceBase extends AccountService {
    * @override
    */
   async start() {
-    const select =
-      await this._DBOperator.accountCurrencyDao.findOneByAccountyId(
-        this._accountId
-      );
+    const select = await this._DBOperator.accountDao.findAccount(
+      this._accountId
+    );
 
-    await this._pushResult();
-    await this._getSupportedToken();
-    await this._getSettingTokens();
+    this._pushResult();
 
     if (select) {
       this._lastSyncTimestamp = select.lastSyncTime;
@@ -65085,17 +65326,17 @@ class AccountServiceBase extends AccountService {
    * This function would be call by notification
    * @override
    * @method updateTransaction
-   * @param {string} currency The accountcurrency Id
+   * @param {string} id The id
    * @param {Object} transaction The transaction
    * @returns {void}
    */
-  async updateTransaction(currencyId, transaction) {
-    const currencies = this._AccountCore.currencies[this.accountId];
-    const currency = currencies.find((c) => c.currencyId === currencyId);
+  async updateTransaction(id, transaction) {
+    const accounts = this._AccountCore.accounts[this.accountId];
+    const account = accounts.find((acc) => acc.id === id);
 
     const txMsg = {
-      currency,
-      transactions,
+      account,
+      transaction,
     };
 
     this._AccountCore.messenger.next(txMsg);
@@ -65108,24 +65349,20 @@ class AccountServiceBase extends AccountService {
    * This function would be call by notification
    * @override
    * @method updateCurrency
-   * @param {string} currency The accountcurrency Id
+   * @param {string} id The Id
    * @param {Array} transactions The transaction list
    * @returns {void}
    */
-  async updateCurrency(currencyId, payload) {
-    const acs = await this._DBOperator.accountCurrencyDao.findAllCurrencies();
-    const ac = acs.find((a) => a.currencyId === currencyId);
-    const updated = this._DBOperator.accountCurrencyDao.entity({
-      accountcurrency_id: ac.accountcurrencyId,
-      account_id: this._accountId,
-      currency_id: ac.currencyId,
+  async updateCurrency(id, payload) {
+    const accounts = this._AccountCore.accounts[this.accountId];
+    const account = accounts.find((acc) => acc.id === id);
+    const updated = this._DBOperator.accountDao.entity({
+      ...account,
       balance: `${payload["balance"]}`,
-      number_of_used_external_key: ac.numberOfUsedExternalKey,
-      number_of_used_internal_key: ac.numberOfUsedInternalKey,
       last_sync_time: Date.now(),
     });
-
-    await this._DBOperator.accountCurrencyDao.insertAccount(updated);
+    console.log("insertAccount", updated)
+    await this._DBOperator.accountDao.insertAccount(updated);
     this._pushResult();
   }
 
@@ -65140,16 +65377,15 @@ class AccountServiceBase extends AccountService {
     const now = Date.now();
 
     if (now - this._lastSyncTimestamp > this._syncInterval || force) {
-      const currs = await this._getData();
-      const v = currs.map((c) => this._DBOperator.accountCurrencyDao.entity({
-        ...c,
-        accountcurrency_id: c['account_id'] ?? c['account_token_id'],
-        account_id: this._accountId,
-        last_sync_time: now,
-        image: c['icon']
-      }));
-
-      await this._DBOperator.accountCurrencyDao.insertCurrencies(v);
+      const accounts = await this._getData();
+      const v = accounts.map((acc) =>
+        this._DBOperator.accountDao.entity({
+          ...acc,
+          last_sync_time: now,
+        })
+      );
+      console.log("insertAccount", v)
+      await this._DBOperator.accountDao.insertAccounts(v);
       this._lastSyncTimestamp = now;
     }
 
@@ -65486,19 +65722,17 @@ class EthereumService extends AccountServiceDecorator {
   /**
    * getReceivingAddress
    * @override
-   * @param {String} accountcurrencyId
+   * @param {String} id Account id
    * @returns {Array.<{address: String || error, code: Number}>} result
    */
-  async getReceivingAddress(accountcurrencyId) {
+  async getReceivingAddress(id) {
     if (this._address === null) {
       try {
-        const response = await this._TideWalletCommunicator.AccountReceive(
-          accountcurrencyId
-        );
+        const response = await this._TideWalletCommunicator.AccountReceive(id);
         const address = response["address"];
         this._address = address;
       } catch (error) {
-        console.log(error);
+        console.log(error)
         //TODO
         return ["error", 0];
       }
@@ -65509,11 +65743,11 @@ class EthereumService extends AccountServiceDecorator {
   /**
    * getChangingAddress
    * @override
-   * @param {String} currencyId
+   * @param {String} id Account id
    * @returns {{address: String || error, code: Number}[]} result
    */
-  async getChangingAddress(currencyId) {
-    return await this.getReceivingAddress(currencyId);
+  async getChangingAddress(id) {
+    return await this.getReceivingAddress(id);
   }
 
   /**
@@ -65531,9 +65765,7 @@ class EthereumService extends AccountServiceDecorator {
       Date.now() - this._feeTimestamp > this.AVERAGE_FETCH_FEE_TIME
     ) {
       try {
-        const response = await this._TideWalletCommunicator.GetFee(
-          blockchainId
-        );
+        const response = await this._TideWalletCommunicator.GetFee(blockchainId);
         const { slow, standard, fast } = response;
         this._fee = {
           slow,
@@ -65542,7 +65774,7 @@ class EthereumService extends AccountServiceDecorator {
         };
         this._feeTimestamp = Date.now();
       } catch (error) {
-        console.log(error);
+        console.log(error)
         // TODO fee = null 前面會出錯
       }
     }
@@ -65561,11 +65793,8 @@ class EthereumService extends AccountServiceDecorator {
       const body = {
         hex:
           "0x" + Buffer.from(transaction.serializeTransaction).toString("hex"),
-      };
-      const response = await this._TideWalletCommunicator.PublishTransaction(
-        blockchainId,
-        body
-      );
+      }
+      const response = await this._TideWalletCommunicator.PublishTransaction(blockchainId, body);
       transaction.txId = response["txid"];
       transaction.timestamp = Date.now();
       transaction.confirmations = 0;
@@ -65612,16 +65841,12 @@ class EthereumService extends AccountServiceDecorator {
    * @param {Object} token
    * @returns {Boolean} result
    */
+  // ++ need update => accountCurrencyDao => accountDao
   async addToken(blockchainId, token) {
     try {
-      const res = await this._TideWalletCommunicator.TokenRegist(
-        blockchainId,
-        token.contract
-      );
+      const res = await this._TideWalletCommunicator.TokenRegist(blockchainId, token.contract);
       const { token_id: id } = res;
-      const updateResult = await this._TideWalletCommunicator.AccountDetail(
-        this.service.accountId
-      );
+      const updateResult = await this._TideWalletCommunicator.AccountDetail(this.service.accountId);
 
       const accountItem = updateResult;
       const tokens = [accountItem, ...accountItem.tokens];
@@ -65680,16 +65905,16 @@ class EthereumService extends AccountServiceDecorator {
    * estimateGasLimit
    * @override
    * @param {String} blockchainId
+   * @param {String} from
    * @param {String} to
    * @param {String} amount
    * @param {String} message
    * @returns {Boolean} result
    */
-  async estimateGasLimit(blockchainId, to, amount = 0, message = "0x") {
+  async estimateGasLimit(blockchainId, from, to, amount, message) {
     if (message == "0x" && this._gasLimit != null) {
       return this._gasLimit;
     } else {
-      const from = await this.getReceivingAddress();
       const payload = {
         fromAddress: from,
         toAddress: to,
@@ -65697,10 +65922,7 @@ class EthereumService extends AccountServiceDecorator {
         data: message,
       };
       try {
-        const response = await this._TideWalletCommunicator.GetGasLimit(
-          blockchainId,
-          payload
-        );
+        const response = await this._TideWalletCommunicator.GetGasLimit(blockchainId, payload);
         this._gasLimit = Number(response.gasLimit);
       } catch (error) {
         // TODO
@@ -65720,10 +65942,7 @@ class EthereumService extends AccountServiceDecorator {
    */
   async getNonce(blockchainId, address) {
     try {
-      const response = await this._TideWalletCommunicator.GetNonce(
-        blockchainId,
-        address
-      );
+      const response = await this._TideWalletCommunicator.GetNonce(blockchainId, address);
       const nonce = Number(response["nonce"]);
       this._nonce = nonce;
       return nonce;
@@ -65736,7 +65955,6 @@ class EthereumService extends AccountServiceDecorator {
 }
 
 module.exports = EthereumService;
-
 }).call(this)}).call(this,require("buffer").Buffer)
 },{"../models/account.model":369,"./accountServiceDecorator":374,"buffer":"buffer"}],377:[function(require,module,exports){
 /**
