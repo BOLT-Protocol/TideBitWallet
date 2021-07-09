@@ -1,7 +1,18 @@
+const BigNumber = require("bignumber.js");
 import TabBar from "../widget/tar-bar";
 import Input from "../widget/input";
 import Button from "../widget/button";
 import Transaction from "../model/transaction";
+
+const getTransactionFee = async (
+  wallet,
+  assetId,
+  { to, amount, data } = {}
+) => {
+  const fee = await wallet.getTransactionFee(assetId, to, amount, data);
+  console.log(fee);
+  return fee;
+};
 
 class FormElement extends HTMLElement {
   constructor() {
@@ -13,15 +24,28 @@ class FormElement extends HTMLElement {
         this.handleToggle(this.toggleContent);
       });
     }
+    this.buttons.forEach((button, index) =>
+      button.element.removeEventListener("click", () => this.updateFee(index))
+    );
+    this.transactionButton.removeEventListener("click", this.sendTransaction);
   }
-  connectedCallback() {
+  async connectedCallback() {
+    this.selected = 1;
     this.className = "form";
     this.addressInput = new Input({
       inputType: "text",
       label: "Send to",
       errorMessage: "Invalid Address",
-      validation: (value) => {
-        return value.startsWith("0x");
+      validation: async (value) => {
+        let validateResult = value.startsWith("0x") && value.length === 42;
+        if (validateResult)
+          this.fee = await getTransactionFee(this.wallet, this.asset.id, {
+            to: value,
+            amount: this.amountInput.isValid
+              ? this.amountInput.inputValue
+              : undefined,
+          });
+        return validateResult;
       },
       action: {
         icon: "qrcode",
@@ -34,8 +58,16 @@ class FormElement extends HTMLElement {
       inputType: "number",
       label: "Amount",
       errorMessage: "Invalid Amount",
-      validation: (value) => {
-        return parseFloat(value) > 0;
+      validation: async (value) => {
+        let validateResult = parseFloat(value) > 0;
+        if (validateResult)
+          this.fee = await getTransactionFee(this.wallet, this.asset.id, {
+            to: this.addressInput.isValid
+              ? this.addressInput.inputValue
+              : undefined,
+            amount: value,
+          });
+        return validateResult;
       },
       pattern: `\d*.?\d*`,
     });
@@ -52,7 +84,10 @@ class FormElement extends HTMLElement {
     this.buttons = ["Slow", "Standard", "Fast"].map(
       (str) => new Button(str, () => {}, { style: ["round", "grey"] })
     );
-    this.tabBar = new TabBar(this.buttons, { defaultFocus: 1 });
+    this.tabBar = new TabBar(this.buttons, { defaultFocus: this.selected });
+    this.buttons.forEach((button, index) =>
+      button.element.addEventListener("click", () => this.updateFee(index))
+    );
     this.action = new Button("Next", () => {}, { style: ["round", "outline"] });
     this.innerHTML = `
     <div class="form__input"></div>
@@ -101,21 +136,47 @@ class FormElement extends HTMLElement {
       this.toggle = false;
     }
     this.transactionButton = this.children[this.childElementCount - 1];
-    this.transactionButton.addEventListener("click", () => {
-      const to = this.addressInput.inputValue;
-      const amount = this.amountInput.inputValue;
-      let gasPrice, gas, priority;
-      if (this.onAdvanced) {
-        gasPrice = this.gasPrice.inputValue;
-        gas = this.gas.inputValue;
-        this.callback(new Transaction({ to, amount, gasPrice, gas }));
-      } else {
-        priority = this.tabBar.selected;
-        this.callback(new Transaction({ to, amount, priority }));
-      }
-    });
-
+    this.transactionButton.addEventListener("click", this.sendTransaction);
+    this.fee = await getTransactionFee(this.wallet, this.asset.id);
+    this.updateFee();
   }
+
+  set fee(fee) {
+    this.feePerUnit = Object.values(fee.feePerUnit);
+    console.log(fee.feePerUnit)
+    console.log(this.feePerUnit)
+    this.feeUnit = fee.unit;
+  }
+
+  updateFee(index) {
+    console.log("updateFee index", index);
+    if (index !== undefined) this.selected = index;
+    console.log("updateFee feePerUnit", this.feePerUnit[this.selected]);
+    console.log("updateFee feeUnit", this.feeUnit);
+    this.estimateFee = BigNumber(this.feePerUnit[this.selected])
+      .multipliedBy(BigNumber(this.feeUnit))
+      .toFixed();
+    if (this.toggleButton.checked) {
+      this.gasPriceInput.inputValue = this.feePerUnit[this.selected];
+      this.gasInput.inputValue = this.feeUnit;
+    }
+  }
+
+  sendTransaction() {
+    const to = this.addressInput.inputValue;
+    const amount = this.amountInput.inputValue;
+    let gasPrice, gas, priority;
+    if (this.onAdvanced) {
+      gasPrice = this.gasPrice.inputValue;
+      gas = this.gas.inputValue;
+      this.callback(new Transaction({ to, amount, gasPrice, gas }));
+    } else {
+      priority = this.tabBar.selected;
+      this.callback(new Transaction({ to, amount, priority }));
+    }
+  }
+
+  handleTabBar() {}
 
   /**
    *
@@ -127,8 +188,11 @@ class FormElement extends HTMLElement {
     if (this.toggleButton.checked) {
       this.gasPriceInput.render(toggleContent);
       this.gasInput.render(toggleContent);
+      this.updateFee();
       this.setAttribute("on", "");
     } else {
+      console.log("handleToggle", this.selected);
+      this.tabBar = new TabBar(this.buttons, { defaultFocus: this.selected });
       this.tabBar.render(toggleContent);
       this.removeAttribute("on");
     }

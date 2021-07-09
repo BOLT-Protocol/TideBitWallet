@@ -9,12 +9,6 @@ import { currentView } from "../utils/utils";
  * ui.sendTransaction(transaction);
  */
 
-const getTransactionFee = async (wallet, asset, { to, amount, data } = {}) => {
-  const fee = await wallet.getTransactionFee(asset.id, { to, amount, data });
-  console.log(fee);
-  return fee;
-};
-
 const sendTransaction = (transaction, wallet) => {
   console.log("to", transaction.to);
   console.log("amount", transaction.amount);
@@ -39,7 +33,6 @@ class Transaction {
       )
     );
     this.scaffold = new Scaffold(this.header, this.form);
-    await getTransactionFee(wallet, asset);
   }
   render(screen, asset, fiat, wallet) {
     const view = currentView();

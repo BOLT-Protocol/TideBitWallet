@@ -15,6 +15,7 @@ class InputElement extends HTMLElement {
     }
     let checked;
     if (this.validator !== undefined) {
+      this.isValid = this.validator(e.target.value);
       checked = e.target.value === "" || this.validator(e.target.value);
     }
     if (checked !== undefined) {
@@ -54,6 +55,13 @@ class InputElement extends HTMLElement {
       this.handleInput(e)
     );
     this.children[0].children[1].children[1].style.display = "none";
+  }
+
+  set inputValue(value) {
+    if(value){
+      this.hasValue = true;
+      this.children[0].children[1].children[0].value = value;
+    }
   }
   get hasValue() {
     return this.hasAttribute("has-value");
@@ -157,6 +165,15 @@ class Input {
   }
   get inputValue() {
     return this.element.inputValue;
+  }
+
+  set inputValue(value) {
+    console.log(value)
+    this.element.inputValue = value;
+  }
+
+  get isValid() {
+    return this.element.isValid;
   }
 }
 
