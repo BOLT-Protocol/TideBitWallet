@@ -143,16 +143,11 @@ class FormElement extends HTMLElement {
 
   set fee(fee) {
     this.feePerUnit = Object.values(fee.feePerUnit);
-    console.log(fee.feePerUnit)
-    console.log(this.feePerUnit)
     this.feeUnit = fee.unit;
   }
 
   updateFee(index) {
-    console.log("updateFee index", index);
     if (index !== undefined) this.selected = index;
-    console.log("updateFee feePerUnit", this.feePerUnit[this.selected]);
-    console.log("updateFee feeUnit", this.feeUnit);
     this.estimateFee = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
@@ -176,8 +171,6 @@ class FormElement extends HTMLElement {
     }
   }
 
-  handleTabBar() {}
-
   /**
    *
    * @param {Boolean} val
@@ -191,8 +184,7 @@ class FormElement extends HTMLElement {
       this.updateFee();
       this.setAttribute("on", "");
     } else {
-      console.log("handleToggle", this.selected);
-      this.tabBar = new TabBar(this.buttons, { defaultFocus: this.selected });
+      this.tabBar = new TabBar(this.buttons);
       this.tabBar.render(toggleContent);
       this.removeAttribute("on");
     }
