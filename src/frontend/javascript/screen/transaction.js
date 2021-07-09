@@ -9,30 +9,15 @@ import { currentView } from "../utils/utils";
  * ui.sendTransaction(transaction);
  */
 
-const sendTransaction = (transaction, wallet) => {
-  console.log("to", transaction.to);
-  console.log("amount", transaction.amount);
-  console.log("priority", transaction.priority);
-  console.log("gasPrice", transaction.gasPrice);
-  console.log("gas", transaction.gas);
-  this.scaffold.openPopover("success", "Success!");
-};
-
 class Transaction {
   constructor() {}
 
   async initialize(screen, asset, fiat, wallet) {
     this.wallet = wallet;
     this.header = new Header(screen);
-    this.form = new Form(wallet, asset, fiat, (data) =>
-      this.scaffold.openPopover(
-        "confirm",
-        "Are you sure to make this transaction?",
-        () => sendTransaction(data, wallet),
-        false
-      )
-    );
+    this.form = new Form(wallet, asset, fiat);
     this.scaffold = new Scaffold(this.header, this.form);
+    this.form.parent = this.scaffold;
   }
   render(screen, asset, fiat, wallet) {
     const view = currentView();

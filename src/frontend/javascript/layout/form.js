@@ -3,6 +3,7 @@ import TabBar from "../widget/tar-bar";
 import Input from "../widget/input";
 import Button from "../widget/button";
 import Transaction from "../model/transaction";
+import viewController from "../controller/view";
 
 const getTransactionFee = async (
   wallet,
@@ -136,7 +137,14 @@ class FormElement extends HTMLElement {
       this.toggle = false;
     }
     this.transactionButton = this.children[this.childElementCount - 1];
-    this.transactionButton.addEventListener("click", this.sendTransaction);
+    this.transactionButton.addEventListener("click", () =>
+      this.sendTransaction(
+        this.addressInput.inputValue,
+        this.amountInput.inputValue,
+        this.feePerUnit[this.selected],
+        this.feeUnit
+      )
+    );
     this.fee = await getTransactionFee(this.wallet, this.asset.id);
     this.updateFee();
   }
@@ -157,18 +165,32 @@ class FormElement extends HTMLElement {
     }
   }
 
-  sendTransaction() {
-    const to = this.addressInput.inputValue;
-    const amount = this.amountInput.inputValue;
-    let gasPrice, gas, priority;
-    if (this.onAdvanced) {
-      gasPrice = this.gasPrice.inputValue;
-      gas = this.gas.inputValue;
-      this.callback(new Transaction({ to, amount, gasPrice, gas }));
-    } else {
-      priority = this.tabBar.selected;
-      this.callback(new Transaction({ to, amount, priority }));
-    }
+  sendTransaction(to, amount, feePerUnit, feeUnit) {
+    this.parent.openPopover(
+      "confirm",
+      "Are you sure to make this transaction?",
+      async () => {
+        const transaction = new Transaction({
+          to,
+          amount,
+          feePerUnit,
+          feeUnit,
+        });
+        console.log("to", transaction.to);
+        console.log("amount", transaction.amount);
+        console.log("feePerUnit", transaction.feePerUnit);
+        console.log("feeUnit", transaction.feeUnit);
+        // this.parent.openPopover("loading");
+        // try {
+        //   const response = await this.wallet.sendTransaction(transaction);
+        //   if (response) viewController.route("asset");
+          if (true) this.parent.openPopover("success", "Success!");
+        // } catch {
+        //   this.parent.openPopover("error");
+        // }
+      },
+      false
+    );
   }
 
   /**
@@ -226,15 +248,17 @@ class FormElement extends HTMLElement {
 customElements.define("transaction-form", FormElement);
 
 class Form {
-  constructor(wallet, asset, fiat, callback) {
+  constructor(wallet, asset, fiat) {
     this.element = document.createElement("transaction-form");
     this.element.wallet = wallet;
     this.element.asset = asset;
     this.element.fiat = fiat;
-    this.element.callback = callback;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
+  }
+  set parent(element) {
+    this.element.parent = element;
   }
 }
 
