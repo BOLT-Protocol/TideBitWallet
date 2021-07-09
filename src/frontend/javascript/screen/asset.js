@@ -9,7 +9,7 @@ class Asset {
   constructor() {}
   initialize(screen, asset, fiat, wallet) {
     console.log("wallet getAssetDetail"); // -- test
-    wallet.getAssetDetail({ assetID: asset.id }).then((data) => {
+    wallet.getAssetDetail(asset.id).then((data) => {
       console.log(data); // -- test
       const asset = new AssetModel(data.asset[0]);
       console.log(asset); // -- test

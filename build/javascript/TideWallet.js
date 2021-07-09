@@ -60905,8 +60905,9 @@ const EthereumService = require("../services/ethereumService");
 const BitcoinService = require("../services/bitcoinService");
 const { network_publish } = require("../constants/config");
 const TransactionBase = require("../services/transactionService");
-const ETHTransaction = require("../services/transactionServiceETH");
+const ETHTransactionSvc = require("../services/transactionServiceETH");
 const BigNumber = require("bignumber.js");
+const { Transaction } = require("../models/tranasction.model");
 
 class AccountCore {
   static instance;
@@ -61166,6 +61167,8 @@ class AccountCore {
             coin_type__account: 3324,
             curve_type: 0,
             chain_id: a["network_id"],
+            number_of_used_external_key: a["number_of_used_external_key"] ?? 0,
+            number_of_used_internal_key: a["number_of_used_internal_key"] ?? 0,
           })
         );
         accounts = enties;
@@ -61313,7 +61316,8 @@ class AccountCore {
   async getReceiveAddress(accountcurrencyId) {
     const svc = this.getService(accountcurrencyId);
     const address = await svc.getReceivingAddress(accountcurrencyId);
-    return address;
+    console.log(address)
+    return address[0];
   }
 
   /**
@@ -61338,45 +61342,65 @@ class AccountCore {
     return fees;
   }
 
+  async verifyAddress(id, address) {
+    const account = this._accounts[id].find((acc) => acc.id === id);
+    const txSvc = new ETHTransactionSvc(
+      new TransactionBase(account.decimals),
+      this._TideWalletCore.getSafeSigner(
+        `m/${account.purpose}'/${account.accountCoinType}'/${account.accountIndex}'/0/${account.numberOfUsedExternalKey}`
+      )
+    );
+    // ++ TODO pulish 當初理解的意義不同, 當初理解成publish = true 就是mainnet, 反之為 testnet. publish 實際意義為該account 要不要顯示給用戶看. 會影響地址的計算
+    // 對 ETH 沒差, 對Bitcoin有差
+    return txSvc.verifyAddress(address, account.publish);
+  }
+
+  // ++ TODO 2021/07/08
+  async verifyAmount(id, amount, fee) {
+    const account = this._accounts[id].find((acc) => acc.id === id);
+    const txSvc = new ETHTransactionSvc(
+      new TransactionBase(account.decimals),
+      this._TideWalletCore.getSafeSigner(
+        `m/${account.purpose}'/${account.accountCoinType}'/${account.accountIndex}'/0/${account.numberOfUsedExternalKey}`
+      )
+    );
+    return txSvc.verifyAmount(account.balance, amount, fee);
+  }
+
   /**
    * Send transaction
    * @method sendTransaction
-   * @param {string} accountcurrencyId The accountcurrencyId
-   * @param {object} param The transaction content
-   * @param {number} param.amount
-   * @param {string} param.to
-   * @param {number} param.gasPrice
-   * @param {number} param.gasUsed
-   * @param {string} param.gasPrice
-   * @param {number} param.keyIndex
+   * @param {string} id The account id
+   * @param {Transaction} transaction The transaction content
+   * @param {string} transaction.to
+   * @param {string} transaction.amount
+   * @param {string} transaction.feePerUnit
+   * @param {string} transaction.feeUnit
    * @returns {boolean}} success
    */
-  async sendTransaction(
-    accountCurrency,
-    { amount, to, gasPrice, gasUsed, message }
-  ) {
+  async sendTransaction(id, transaction) {
+    const account = this._accounts[id].find((acc) => acc.id === id);
     let safeSigner;
-    switch (accountCurrency.accountType) {
+    switch (account.accountType) {
       case ACCOUNT.ETH:
       case ACCOUNT.CFC:
-        safeSigner = this._TideWalletCore.getSafeSigner("m/84'/3324'/0'/0/0"); // ++ get path from accountDao
-        const svc = this.getService(accountCurrency.accountId);
-        const address = svc.getReceivingAddress(
-          accountCurrency.accountcurrencyId
+        safeSigner = this._TideWalletCore.getSafeSigner(
+          `m/${account.purpose}'/${account.accountCoinType}'/${account.accountIndex}'/0/${account.numberOfUsedExternalKey}`
         );
-        const account = this._accounts.find(
-          (acc) => acc.accountId === svc.accountId
-        );
-
+        const svc = this.getService(account.accountId);
+        const address = svc.getReceivingAddress(id);
         const nonce = await svc.getNonce(account.blockchainId, address);
-
-        const txSvc = new ETHTransaction(new TransactionBase(), safeSigner);
+        const txSvc = new ETHTransactionSvc(
+          new TransactionBase(account.decimals),
+          safeSigner
+        );
+        console.log(transaction);
         const signedTx = txSvc.prepareTransaction({
-          amount: BigNumber(amount),
-          to,
-          gasPrice: BigNumber(gasPrice),
-          gasUsed: BigNumber(gasUsed),
-          message,
+          amount: BigNumber(transaction.amount),
+          to: transaction.to,
+          gasPrice: BigNumber(transaction.feePerUnit),
+          gasUsed: BigNumber(transaction.feeUnit),
+          message: transaction.message,
           nonce,
         });
 
@@ -61396,7 +61420,7 @@ class AccountCore {
 
 module.exports = AccountCore;
 
-},{"../constants/config":350,"../models/account.model":369,"../services/accountServiceBase":373,"../services/bitcoinService":375,"../services/ethereumService":376,"../services/transactionService":377,"../services/transactionServiceETH":378,"bignumber.js":30,"rxjs":195}],352:[function(require,module,exports){
+},{"../constants/config":350,"../models/account.model":369,"../models/tranasction.model":370,"../services/accountServiceBase":373,"../services/bitcoinService":375,"../services/ethereumService":376,"../services/transactionService":377,"../services/transactionServiceETH":378,"bignumber.js":30,"rxjs":195}],352:[function(require,module,exports){
 const keyStore = require('key-store');
 const bitcoin = require("bitcoinjs-lib");
 
@@ -63482,10 +63506,6 @@ class IndexedDB {
         this._networkDao = new NetworkDao(this.db, OBJ_NETWORK);
         this._txDao = new TransactionDao(this.db, OBJ_TX);
         this._utxoDao = new UtxoDao(this.db, OBJ_UTXO);
-        this._accountcurrencyDao = new AccountCurrencyDao(
-          this.db,
-          OBJ_ACCOUNT_CURRENCY
-        );
         this._exchangeRateDao = new ExchangeRateDao(this.db, OBJ_EXCHANGE_RATE);
         this._prefDao = new PrefDao(this.db, OBJ_PREF);
 
@@ -63794,6 +63814,8 @@ class AccountDao extends DAO {
     currency_id, // currency_id || token_id
     balance, // Join AccountCurrency
     last_sync_time, // Join AccountCurrency
+    number_of_used_external_key,
+    number_of_used_internal_key,
     purpose, // Join Account
     coin_type_account, // Join Account
     account_index, // Join Account
@@ -63820,6 +63842,8 @@ class AccountDao extends DAO {
       currencyId: currency_id,
       balance,
       lastSyncTime: last_sync_time,
+      numberOfUsedExternalKey: number_of_used_external_key,
+      numberOfUsedInternalKey: number_of_used_internal_key,
       purpose,
       accountCoinType: coin_type_account,
       accountIndex: account_index,
@@ -63997,54 +64021,6 @@ class TransactionDao extends DAO {
     return this._writeAll(txs);
   }
 }
-
-class AccountCurrencyDao extends DAO {
-  entity({
-    // accountcurrency_id,
-    account_id,
-    currency_id,
-    balance,
-    number_of_used_external_key,
-    number_of_used_internal_key,
-    last_sync_time,
-    token_id,
-    account_token_id,
-  }) {
-    return {
-      accountcurrencyId: account_token_id ?? account_id,
-      accountId: account_id,
-      currencyId: currency_id ?? token_id,
-      balance,
-      numberOfUsedExternalKey: number_of_used_external_key,
-      numberOfUsedInternalKey: number_of_used_internal_key,
-      lastSyncTime: last_sync_time,
-    };
-  }
-  constructor(db, name) {
-    super(db, name);
-  }
-
-  findOneByAccountyId(id) {
-    return this._read(id);
-  }
-
-  findAllCurrencies() {
-    return this._readAll();
-  }
-
-  findJoinedByAccountId(accountId) {
-    return this._readAll(accountId, "accountId");
-  }
-
-  insertAccount(entity) {
-    return this._write(entity);
-  }
-
-  insertCurrencies(currencies) {
-    return this._writeAll(currencies);
-  }
-}
-
 class ExchangeRateDao extends DAO {
   entity({ currency_id, name, rate, timestamp, type }) {
     return {
@@ -64649,46 +64625,45 @@ class TideWallet {
 
   /**
    *
-   * @param {object} accountInfo
-   * @param {string} accountInfo.assetID
+   * @param {string} id
    */
-  async getAssetDetail({ assetID }) {
-    const asset = await this.account.getCurrencies(assetID);
-    const transactions = await this.account.getTransactions(assetID);
+  async getAssetDetail(id) {
+    const asset = await this.account.getCurrencies(id);
+    const transactions = await this.account.getTransactions(id);
 
     return { asset, transactions };
   }
 
-  async getTransactionDetail({ assetID, transactionID }) {
-    const txs = await this.account.getTransactions(assetID);
-    const tx = txs.find((r) => r.txId === transactionID);
+  async getTransactionDetail(id, transactionId) {
+    const txs = await this.account.getTransactions(id);
+    const tx = txs.find((r) => r.txId === transactionId);
     return tx;
   }
 
-  async getReceivingAddress({ accountID }) {
-    const address = await this.account.getReceiveAddress(accountID);
+  async getReceivingAddress(id) {
+    const address = await this.account.getReceiveAddress(id);
 
     return address;
   }
 
-  async getTransactionFee(accountID, to, amount, data) {
-    const result = await this.account.getTransactionFee(
-      accountID,
-      to,
-      amount,
-      data
-    );
+  async verifyAddress(id, address) {
+    const result = await this.account.verifyAddress(id, address);
     return result;
   }
 
-  // need help
-  async prepareTransaction() {}
+  async verifyAmount(id, amount, fee) {
+    const result = await this.account.verifyAmount(id, amount, fee);
+    return result;
+  }
 
-  async sendTransaction({ accountID, blockchainID, transaction }) {
-    const svc = this.account.getService(accountID);
-    const res = svc.publishTransaction(blockchainID, transaction);
+  async getTransactionFee(id, to, amount, data) {
+    const result = await this.account.getTransactionFee(id, to, amount, data);
+    return result;
+  }
 
-    return res;
+  async sendTransaction(id, transaction) {
+    const result = await this.account.sendTransaction(id, transaction);
+    return result;
   }
 
   async sync() {
@@ -64754,11 +64729,11 @@ if (isBrowser()) {
     console.log(
       "getTransactionFee:",
       await tw.getTransactionFee({
-        assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6",
+        id: "a7255d05-eacf-4278-9139-0cfceb9abed6",
       })
     );
-    // console.log('getTransactionDetail:', await tw.getTransactionDetail({ assetID: "a7255d05-eacf-4278-9139-0cfceb9abed6", transactionID:"" }));
-    // console.log('getReceivingAddress:', await tw.getReceivingAddress({ accountID: "a7255d05-eacf-4278-9139-0cfceb9abed6" }));
+    // console.log('getTransactionDetail:', await tw.getTransactionDetail({ id: "a7255d05-eacf-4278-9139-0cfceb9abed6", transactionId:"" }));
+    // console.log('getReceivingAddress:', await tw.getReceivingAddress({ id: "a7255d05-eacf-4278-9139-0cfceb9abed6" }));
     // console.log('getWalletConfig:', await tw.getWalletConfig());
     // await tw.sync();
     // console.log('backup:', await tw.backup());
@@ -64778,6 +64753,8 @@ class Account {
     currency_id,
     balance,
     last_sync_time,
+    number_of_used_external_key,
+number_of_used_internal_key,
     purpose,
     coin_type__account,
     account_index,
@@ -64803,6 +64780,8 @@ class Account {
     this.currencyId = currency_id;
     this.balance = balance;
     this.lastSyncTime = last_sync_time;
+    this.numberOfUsedExternalKey=number_of_used_external_key;
+    this.numberOfUsedInternalKey=number_of_used_internal_key;
     this.purpose = purpose;
     this.accountCoinType = coin_type__account;
     this.accountIndex = account_index;
@@ -65106,6 +65085,7 @@ class AccountServiceBase extends AccountService {
       const res = await this._TideWalletCommunicator.AccountDetail(
         this._accountId
       );
+      console.log(res);
       const account = await this._DBOperator.accountDao.findAccount(
         this._accountId
       );
@@ -65119,7 +65099,9 @@ class AccountServiceBase extends AccountService {
        * curve_type: 0
        * icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@9ab8d6934b83a4aa8ae5e8711609a70ca0ab1b2b/32/icon/eth.png"
        * purpose: 3324
-       * symbol: "ETH"
+       * symbol: "ETH",
+       * number_of_used_external_key: 0, // ++ [API not provided]
+       * number_of_used_internal_key: 0, // ++ [API not provided]
        * tokens: [
        *         {
        *          "account_token_id": "488c3047-ced5-4049-9967-8ececb41ced1",
@@ -65150,6 +65132,8 @@ class AccountServiceBase extends AccountService {
         }
         const entity = this._DBOperator.accountDao.entity({
           ...account,
+          number_of_used_external_key: res["number_of_used_external_key"] ?? 0,
+          number_of_used_internal_key: res["number_of_used_internal_key"] ?? 0,
           id: token["account_token_id"],
           currency_id: token["token_id"],
           name: token["name"], // Join Token
@@ -65340,10 +65324,6 @@ class AccountServiceBase extends AccountService {
     const bnBase = new BigNumber(10);
     const bnDecimal = bnBase.exponentiatedBy(decimals);
     const currencyUint = bnAmount.dividedBy(bnDecimal).toFixed();
-    // -- test
-    console.log(amount);
-    console.log(currencyUint);
-    // -- test
     return currencyUint;
   }
 
@@ -65801,11 +65781,6 @@ class EthereumService extends AccountServiceDecorator {
     const bnBase = new BigNumber(10);
     const bnDecimal = bnBase.exponentiatedBy(9);
     const wei = bnAmount.multipliedBy(bnDecimal).toFixed();
-    // -- test
-    console.log(amount);
-    console.log(wei);
-    this._WeiToGWei(wei);
-    // -- test
     return wei;
   }
 
@@ -65814,10 +65789,6 @@ class EthereumService extends AccountServiceDecorator {
     const bnBase = new BigNumber(10);
     const bnDecimal = bnBase.exponentiatedBy(9);
     const gwei = bnAmount.dividedBy(bnDecimal).toFixed();
-    // -- test
-    console.log(amount);
-    console.log(gwei);
-    // -- test
     return gwei;
   }
 
@@ -65992,26 +65963,30 @@ module.exports = EthereumService;
  @abstract
 **/
 class TransactionService {
+  constructor(decimal) {
+    this._currencyDecimals = decimal;
+  }
+
   _base;
-  _currencyDecimals = 18;
 
   set base(base) {
     this._base = base;
   }
 
   get base() {
-      return this._base;
+    return this._base;
   }
 
   set currencyDecimals(decimal) {
-      this._currencyDecimals = decimal;
+    this._currencyDecimals = decimal;
   }
 
   get currencyDecimals() {
-      return this._currencyDecimals;
+    return this._currencyDecimals;
   }
 
   verifyAddress(address, publish = true) {}
+  verifyAmount(balance, amount) {}
   extractAddressData(address, publish = true) {}
   prepareTransaction() {}
 }
@@ -66030,23 +66005,28 @@ const {
 } = require("../helpers/ethereumUtils");
 const EthereumTransaction = require("../models/transactionETH.model");
 const { Signature } = require("../models/tranasction.model");
+const BigNumber = require("bignumber.js");
 
 class TransactionServiceETH extends TransactionDecorator {
   service = null;
   _base = ACCOUNT.ETH;
-  _currencyDecimals = 18;
 
   constructor(service, signer) {
     this.service = service;
     this.signer = signer;
+    this._currencyDecimals = this.service.currencyDecimals;
   }
 
   _signTransaction(transaction) {
     const payload = encodeToRlp(transaction);
+    console.log(payload);
+
     const rawDataHash = Buffer.from(
       Cryptor.keccak256round(payload.toString("hex"), 1),
       "hex"
     );
+    console.log(rawDataHash);
+
     const signature = this.signer.sign({ data: rawDataHash });
     console.log("ETH signature: ", signature);
 
@@ -66059,6 +66039,7 @@ class TransactionServiceETH extends TransactionDecorator {
       r: signature.r,
       s: signature.s,
     });
+    console.log(chainIdV);
 
     transaction.signature = signature;
     return transaction;
@@ -66067,7 +66048,21 @@ class TransactionServiceETH extends TransactionDecorator {
   /**
    * @override
    */
-  verifyAddress() {
+  verifyAmount(balance, amount, fee) {
+    // ++ TODO 2021/07/08
+    console.log("balance", balance);
+    console.log("amount", amount);
+    console.log("fee", fee);
+    return BigNumber(balance).isGreaterThanOrEqualTo(
+      BigNumber(amount).plus(BigNumber(fee))
+    );
+  }
+
+  /**
+   * @override
+   */
+  verifyAddress(address) {
+    console.log("address", address);
     const result = verifyEthereumAddress(address);
     return result;
   }
@@ -66090,7 +66085,7 @@ class TransactionServiceETH extends TransactionDecorator {
    * @param {stringm} param.message
    * @param {number} param.chainId
    * @param {number} param.nonce
-   * @returns {ETHTransaction} transaction 
+   * @returns {ETHTransaction} transaction
    */
   prepareTransaction({
     to,
@@ -66108,10 +66103,10 @@ class TransactionServiceETH extends TransactionDecorator {
       gasUsed,
       message,
       chainId,
-      fee: gasLimit * gasPrice,
+      fee: gasLimit.multipliedBy(gasPrice).toFixed(),
       nonce,
     });
-
+    console.log(transaction);
     return this._signTransaction(transaction, privKey);
   }
 }
@@ -66119,7 +66114,7 @@ class TransactionServiceETH extends TransactionDecorator {
 module.exports = TransactionServiceETH;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"../helpers/Cryptor":361,"../helpers/ethereumUtils":364,"../models/account.model":369,"../models/tranasction.model":370,"../models/transactionETH.model":371,"./accountServiceDecorator":374,"buffer":"buffer"}],379:[function(require,module,exports){
+},{"../helpers/Cryptor":361,"../helpers/ethereumUtils":364,"../models/account.model":369,"../models/tranasction.model":370,"../models/transactionETH.model":371,"./accountServiceDecorator":374,"bignumber.js":30,"buffer":"buffer"}],379:[function(require,module,exports){
 'use strict';
 
 const asn1 = exports;

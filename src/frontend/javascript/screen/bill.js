@@ -8,7 +8,7 @@ class Bill {
     // ++ not necessary ui dont need more detail to show
     // this.asset = asset;
     // wallet
-    //   .getTransactionDetail({ assetID: asset.id, transactionID: bill.id })
+    //   .getTransactionDetail(asset.id, bill.id)
     //   .then((data) => {
     //     console.log(data); // -- test
     //     this.update(this.asset, new Bill(data));

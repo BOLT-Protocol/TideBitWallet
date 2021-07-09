@@ -4,17 +4,6 @@ import Input from "../widget/input";
 import Button from "../widget/button";
 import Transaction from "../model/transaction";
 import viewController from "../controller/view";
-
-const getTransactionFee = async (
-  wallet,
-  assetId,
-  { to, amount, data } = {}
-) => {
-  const fee = await wallet.getTransactionFee(assetId, to, amount, data);
-  console.log(fee);
-  return fee;
-};
-
 class FormElement extends HTMLElement {
   constructor() {
     super();
@@ -31,65 +20,6 @@ class FormElement extends HTMLElement {
     this.transactionButton.removeEventListener("click", this.sendTransaction);
   }
   async connectedCallback() {
-    this.selected = 1;
-    this.className = "form";
-    this.addressInput = new Input({
-      inputType: "text",
-      label: "Send to",
-      errorMessage: "Invalid Address",
-      validation: async (value) => {
-        let validateResult = value.startsWith("0x") && value.length === 42;
-        if (validateResult)
-          this.fee = await getTransactionFee(this.wallet, this.asset.id, {
-            to: value,
-            amount: this.amountInput.isValid
-              ? this.amountInput.inputValue
-              : undefined,
-          });
-        return validateResult;
-      },
-      action: {
-        icon: "qrcode",
-        onPressed: () => {
-          console.log("action on pressed!");
-        },
-      },
-    });
-    this.amountInput = new Input({
-      inputType: "number",
-      label: "Amount",
-      errorMessage: "Invalid Amount",
-      validation: async (value) => {
-        let validateResult = parseFloat(value) > 0;
-        if (validateResult)
-          this.fee = await getTransactionFee(this.wallet, this.asset.id, {
-            to: this.addressInput.isValid
-              ? this.addressInput.inputValue
-              : undefined,
-            amount: value,
-          });
-        return validateResult;
-      },
-      pattern: `\d*.?\d*`,
-    });
-    this.gasPriceInput = new Input({
-      inputType: "number",
-      label: `Custom Gas Price (${this.asset?.symbol || "ETH"})`, //test
-      pattern: `\d*.?\d*`,
-    });
-    this.gasInput = new Input({
-      inputType: "number",
-      label: "Custom Gas (unit)",
-      pattern: `\d*`,
-    });
-    this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new Button(str, () => {}, { style: ["round", "grey"] })
-    );
-    this.tabBar = new TabBar(this.buttons, { defaultFocus: this.selected });
-    this.buttons.forEach((button, index) =>
-      button.element.addEventListener("click", () => this.updateFee(index))
-    );
-    this.action = new Button("Next", () => {}, { style: ["round", "outline"] });
     this.innerHTML = `
     <div class="form__input"></div>
     <p class="form__secondary-text form__align-end">
@@ -118,6 +48,46 @@ class FormElement extends HTMLElement {
     </div>
     <div class="form__button"></div>
     `;
+    this.selected = 1;
+    this.className = "form";
+    this.addressInput = new Input({
+      inputType: "text",
+      label: "Send to",
+      errorMessage: "Invalid Address",
+      validation: (value) => this.verifyAddress(this.asset.id, value),
+      action: {
+        icon: "qrcode",
+        onPressed: () => {
+          console.log("action on pressed!");
+        },
+      },
+    });
+    this.amountInput = new Input({
+      inputType: "number",
+      label: "Amount",
+      errorMessage: "Invalid Amount",
+      validation: (value) =>
+        this.verifyAmount(this.asset.id, value, this.feeInCurrencyUnit),
+      pattern: `\d*.?\d*`,
+    });
+    this.gasPriceInput = new Input({
+      inputType: "number",
+      label: `Custom Gas Price (${this.asset?.symbol || "ETH"})`, //test
+      pattern: `\d*.?\d*`,
+    });
+    this.gasInput = new Input({
+      inputType: "number",
+      label: "Custom Gas (unit)",
+      pattern: `\d*`,
+    });
+    this.buttons = ["Slow", "Standard", "Fast"].map(
+      (str) => new Button(str, () => {}, { style: ["round", "grey"] })
+    );
+    this.tabBar = new TabBar(this.buttons, { defaultFocus: this.selected });
+    this.buttons.forEach((button, index) =>
+      button.element.addEventListener("click", () => this.updateFee(index))
+    );
+    this.action = new Button("Next", () => {}, { style: ["round", "outline"] });
     this.addressInput.render(this.children[0]);
     this.amountInput.render(this.children[0]);
     this.tabBar.render(this.children[5]);
@@ -145,27 +115,79 @@ class FormElement extends HTMLElement {
         this.feeUnit
       )
     );
-    this.fee = await getTransactionFee(this.wallet, this.asset.id);
+    this.fee = await this.getTransactionFee();
     this.updateFee();
   }
 
   set fee(fee) {
     this.feePerUnit = Object.values(fee.feePerUnit);
     this.feeUnit = fee.unit;
+    this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
+      .multipliedBy(BigNumber(this.feeUnit))
+      .toFixed();
   }
 
   updateFee(index) {
     if (index !== undefined) this.selected = index;
-    this.estimateFee = BigNumber(this.feePerUnit[this.selected])
+    this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
+    this.estimateFee = this.feeInCurrencyUnit;
     if (this.toggleButton.checked) {
       this.gasPriceInput.inputValue = this.feePerUnit[this.selected];
       this.gasInput.inputValue = this.feeUnit;
     }
   }
 
-  sendTransaction(to, amount, feePerUnit, feeUnit) {
+  async verifyAddress(id, address) {
+    // let validateResult = this.wallet.verifyAddress(id, address);
+    console.log("verifyAddress", address);
+    let validateResult = address.startsWith("0x") && address.length === 42;
+    if (validateResult)
+      this.fee = await this.getTransactionFee({
+        to: address,
+        amount: this.amountInput.isValid
+          ? this.amountInput.inputValue
+          : undefined,
+      });
+    return validateResult;
+  }
+
+  async verifyAmount(id, amount, fee) {
+    // let validateResult = this.wallet.verifyAmount(id, amount, fee);
+    console.log("verifyAmount", amount);
+    let validateResult = parseFloat(amount) > 0;
+    if (validateResult)
+      this.fee = await this.getTransactionFee({
+        to: this.addressInput.isValid
+          ? this.addressInput.inputValue
+          : undefined,
+        amount: amount,
+      });
+    return validateResult;
+  }
+
+  async getTransactionFee({ to, amount, data } = {}) {
+    const fee = await this.wallet.getTransactionFee(
+      this.asset.id,
+      to,
+      amount,
+      data
+    );
+    console.log(fee);
+    return fee;
+  }
+
+  /**
+   * getEstimateTime().then((timeString) => {
+   *    const estimateTimeEl = document.querySelector('.estimate-time');
+   *    estimateTimeEl.textContent = timeString;
+   * }).catch((error) => {
+   *    estimateTimeEl.textContent = "would take longer than you can expected";
+   * })
+   */
+
+  async sendTransaction(to, amount, feePerUnit, feeUnit) {
     this.parent.openPopover(
       "confirm",
       "Are you sure to make this transaction?",
@@ -176,18 +198,17 @@ class FormElement extends HTMLElement {
           feePerUnit,
           feeUnit,
         });
-        console.log("to", transaction.to);
-        console.log("amount", transaction.amount);
-        console.log("feePerUnit", transaction.feePerUnit);
-        console.log("feeUnit", transaction.feeUnit);
-        // this.parent.openPopover("loading");
-        // try {
-        //   const response = await this.wallet.sendTransaction(transaction);
-        //   if (response) viewController.route("asset");
-          if (true) this.parent.openPopover("success", "Success!");
-        // } catch {
-        //   this.parent.openPopover("error");
-        // }
+        this.parent.openPopover("loading");
+        try {
+          const response = await this.wallet.sendTransaction(
+            this.asset.id,
+            transaction
+          );
+          if (response) viewController.route("asset");
+          // if (response) this.parent.openPopover("success", "Success!");
+        } catch {
+          // this.parent.openPopover("error");
+        }
       },
       false
     );
