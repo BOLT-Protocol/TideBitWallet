@@ -28,6 +28,6 @@
     ]
   },
   "permissions": [
-    "identity", "management", "storage", "activeTab", "scripting"
+    "identity", "management", "storage", "scripting"
   ]
 }
