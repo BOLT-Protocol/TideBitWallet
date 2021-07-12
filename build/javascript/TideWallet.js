@@ -61148,7 +61148,7 @@ class AccountCore {
          * a
          * account_id
          * purpose ++
-         * coin_type__account ++
+         * coin_type_account ++
          * account_index
          * curve_type ++
          * balance --
@@ -61164,7 +61164,7 @@ class AccountCore {
             id: a["account_id"],
             user_id: this._TideWalletCore.userInfo.id,
             purpose: 84,
-            coin_type__account: 3324,
+            coin_type_account: 3324,
             curve_type: 0,
             chain_id: a["network_id"],
             number_of_used_external_key: a["number_of_used_external_key"] ?? 0,
@@ -61317,7 +61317,7 @@ class AccountCore {
     const svc = this.getService(accountId);
     const address = await svc.getReceivingAddress(accountId);
     console.log(address)
-    return address[0];
+    return address;
   }
 
   /**
@@ -61332,6 +61332,7 @@ class AccountCore {
     const svc = this.getService(id);
     const account = this._accounts[id].find((acc) => acc.id === id);
     const fees = await svc.getTransactionFee(
+      account.id,
       account.blockchainId,
       account.decimals,
       to,
@@ -61380,6 +61381,8 @@ class AccountCore {
    */
   async sendTransaction(id, transaction) {
     const account = this._accounts[id].find((acc) => acc.id === id);
+    console.log("sendTransaction account",account)
+    console.log("sendTransaction transaction",transaction)
     let safeSigner;
     switch (account.accountType) {
       case ACCOUNT.ETH:
@@ -61388,20 +61391,25 @@ class AccountCore {
           `m/${account.purpose}'/${account.accountCoinType}'/${account.accountIndex}'/0/${account.numberOfUsedExternalKey}`
         );
         const svc = this.getService(account.accountId);
-        const address = svc.getReceivingAddress(id);
-        const nonce = await svc.getNonce(account.blockchainId, address);
+        const from = await svc.getReceivingAddress(id);
+        console.log(from);
+        const nonce = await svc.getNonce(account.blockchainId, from);
+        console.log(nonce);
         const txSvc = new ETHTransactionSvc(
           new TransactionBase(account.decimals),
           safeSigner
         );
-        console.log(transaction);
+        console.log(`m/${account.purpose}'/${account.accountCoinType}'/${account.accountIndex}'/0/${account.numberOfUsedExternalKey}`);
+        console.log(safeSigner);
         const signedTx = txSvc.prepareTransaction({
+          from,
           amount: BigNumber(transaction.amount),
           to: transaction.to,
           gasPrice: BigNumber(transaction.feePerUnit),
           gasUsed: BigNumber(transaction.feeUnit),
           message: transaction.message,
           nonce,
+          chainId: account.chainId
         });
 
         const [success, tx] = await svc.publishTransaction(
@@ -62776,6 +62784,7 @@ class TideWalletCore {
     const safeSigner = new SafeSigner((data) => {
       return this.signBuffer({ keyPath, data });
     });
+    return safeSigner;
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -64268,6 +64277,7 @@ module.exports = {
 },{}],364:[function(require,module,exports){
 (function (Buffer){(function (){
 const rlp = require("rlp");
+const Cryptor = require("./Cryptor");
 
 /**
  * Checks if the given string is an address
@@ -64302,7 +64312,7 @@ var isAddress = function (address) {
 var isChecksumAddress = function (address) {
   // Check each case
   address = address.replace("0x", "");
-  var addressHash = sha3(address.toLowerCase());
+  var addressHash = Cryptor.keccak256round(address.toLowerCase(), 1);
   for (var i = 0; i < 40; i++) {
     // the nth letter should be uppercase if the nth digit of casemap is 1
     if (
@@ -64318,7 +64328,7 @@ var isChecksumAddress = function (address) {
 };
 
 function verifyEthereumAddress(address) {
-  if (address.contains(":")) {
+  if (address.includes(":")) {
     address = address.split(":")[1];
   }
 
@@ -64372,7 +64382,7 @@ module.exports = {
 };
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":"buffer","rlp":193}],365:[function(require,module,exports){
+},{"./Cryptor":361,"buffer":"buffer","rlp":193}],365:[function(require,module,exports){
 const randomHex = (n) => {
   var ID = "";
   var text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -64759,11 +64769,11 @@ class Account {
     number_of_used_external_key,
 number_of_used_internal_key,
     purpose,
-    coin_type__account,
+    coin_type_account,
     account_index,
     curve_type,
     blockchain,
-    coin_type__blockchain,
+    coin_type_blockchain,
     publish,
     chain_id,
     name,
@@ -64786,11 +64796,11 @@ number_of_used_internal_key,
     this.numberOfUsedExternalKey=number_of_used_external_key;
     this.numberOfUsedInternalKey=number_of_used_internal_key;
     this.purpose = purpose;
-    this.accountCoinType = coin_type__account;
+    this.accountCoinType = coin_type_account;
     this.accountIndex = account_index;
     this.curve_type = curve_type;
     this.blockchain = blockchain;
-    this.blockchainCoinType = coin_type__blockchain;
+    this.blockchainCoinType = coin_type_blockchain;
     this.publish = publish;
     this.chainId = chain_id;
     this.name = name;
@@ -64944,6 +64954,13 @@ class ETHTransaction extends Transaction {
     fee,
     nonce,
   }) {
+    console.log("createTransaction from: ", from);
+    console.log("createTransaction to: ", to);
+    console.log("createTransaction amount: ", amount);
+    console.log("createTransaction gasPrice: ", gasPrice);
+    console.log("createTransaction gasUsed: ", gasUsed);
+    console.log("createTransaction nonce: ", nonce);
+    console.log("createTransaction chainId: ", chainId);
     return new ETHTransaction({
       amount,
       gasPrice,
@@ -65513,11 +65530,10 @@ class BitcoinService extends AccountServiceDecorator {
       const response = await this._TideWalletCommunicator.AccountReceive(accountcurrencyId);
       const address = response["address"];
       this._numberOfUsedExternalKey = response['key_index'];
-      return [address, this._numberOfUsedExternalKey];
+      return address;
     } catch (error) {
-      console.log(error)
-      //TODO
-      return ["error", 0];
+      console.log(error);
+      // ++ Throw exception 0712
     }
   }
 
@@ -65755,18 +65771,17 @@ class EthereumService extends AccountServiceDecorator {
    * @returns {Array.<{address: String || error, code: Number}>} result
    */
   async getReceivingAddress(id) {
-    if (this._address === null) {
+    if (!this._address) {
       try {
         const response = await this._TideWalletCommunicator.AccountReceive(id);
         const address = response["address"];
         this._address = address;
       } catch (error) {
         console.log(error);
-        //TODO
-        return ["error", 0];
+        // ++ Throw exception 0712
       }
     }
-    return [this._address, null];
+    return this._address;
   }
 
   /**
@@ -65796,7 +65811,7 @@ class EthereumService extends AccountServiceDecorator {
   }
 
   /**
-   * getTransactionFee
+   * getGasPrice
    * @override
    * @param {blockchainId} string
    * @param {decimals} integer
@@ -65842,9 +65857,9 @@ class EthereumService extends AccountServiceDecorator {
    * @param {String} message
    * @returns {Boolean} result
    */
-  async estimateGasLimit(blockchainId, to, amount = "0", message = "0x") {
+  async estimateGasLimit(id, blockchainId, to, amount = "0", message = "0x") {
     if (!to) return 21000;
-    const from = await this.getReceivingAddress();
+    const from = await this.getReceivingAddress(id);
     if (message == "0x" && this._gasLimit != null) {
       return this._gasLimit;
     } else {
@@ -65867,9 +65882,10 @@ class EthereumService extends AccountServiceDecorator {
     }
   }
 
-  async getTransactionFee(blockchainId, decimals, to, amount, message) {
+  async getTransactionFee(id, blockchainId, decimals, to, amount, message) {
     const gasPrice = await this.getGasPrice(blockchainId, decimals);
     const gasLimit = await this.estimateGasLimit(
+      id,
       blockchainId,
       to,
       amount,
@@ -65942,11 +65958,15 @@ class EthereumService extends AccountServiceDecorator {
    * @returns {Number} nonce
    */
   async getNonce(blockchainId, address) {
+    console.log("blockchainId", blockchainId);
+    console.log("address", address);
+
     try {
       const response = await this._TideWalletCommunicator.GetNonce(
         blockchainId,
         address
       );
+      console.log("response", response);
       const nonce = Number(response["nonce"]);
       this._nonce = nonce;
       return nonce;
@@ -65968,6 +65988,7 @@ module.exports = EthereumService;
 class TransactionService {
   constructor(decimal) {
     this._currencyDecimals = decimal;
+    console.log(this._currencyDecimals)
   }
 
   _base;
@@ -66015,9 +66036,13 @@ class TransactionServiceETH extends TransactionDecorator {
   _base = ACCOUNT.ETH;
 
   constructor(service, signer) {
+    super();
+    console.log("TransactionServiceETH")
+
     this.service = service;
     this.signer = signer;
     this._currencyDecimals = this.service.currencyDecimals;
+    console.log(this._currencyDecimals)
   }
 
   _signTransaction(transaction) {
@@ -66091,6 +66116,7 @@ class TransactionServiceETH extends TransactionDecorator {
    * @returns {ETHTransaction} transaction
    */
   prepareTransaction({
+    from,
     to,
     amount,
     gasPrice,
@@ -66099,7 +66125,15 @@ class TransactionServiceETH extends TransactionDecorator {
     chainId,
     nonce,
   }) {
+    console.log("prepareTransaction from: ", from);
+    console.log("prepareTransaction to: ", to);
+    console.log("prepareTransaction amount: ", amount);
+    console.log("prepareTransaction gasPrice: ", gasPrice);
+    console.log("prepareTransaction gasUsed: ", gasUsed);
+    console.log("prepareTransaction nonce: ", nonce);
+    console.log("prepareTransaction chainId: ", chainId);
     const transaction = EthereumTransaction.createTransaction({
+      from,
       to,
       amount,
       gasPrice,

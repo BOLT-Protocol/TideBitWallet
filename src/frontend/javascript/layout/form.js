@@ -17,7 +17,7 @@ class FormElement extends HTMLElement {
     this.buttons.forEach((button, index) =>
       button.element.removeEventListener("click", () => this.updateFee(index))
     );
-    this.transactionButton.removeEventListener("click", this.sendTransaction);
+    this.transactionButton.removeEventListener("click", () => this.sendTransaction(this.addressInput.inputValue, this.amountInput.inputValue, this.feePerUnit[this.selected], this.feeUnit));
   }
   async connectedCallback() {
     this.innerHTML = `
@@ -81,20 +81,26 @@ class FormElement extends HTMLElement {
       pattern: `\d*`,
     });
     this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new Button(str, () => {}, { style: ["round", "grey"] })
+      (str) => new Button(str, () => {}, {
+        style: ["round", "grey"]
+      })
     );
-    this.tabBar = new TabBar(this.buttons, { defaultFocus: this.selected });
+    this.tabBar = new TabBar(this.buttons, {
+      defaultFocus: this.selected
+    });
     this.buttons.forEach((button, index) =>
       button.element.addEventListener("click", () => this.updateFee(index))
     );
-    this.action = new Button("Next", () => {}, { style: ["round", "outline"] });
+    this.action = new Button("Next", () => {}, {
+      style: ["round", "outline"]
+    });
     this.addressInput.render(this.children[0]);
     this.amountInput.render(this.children[0]);
     this.tabBar.render(this.children[5]);
     this.estimateTime = "10 ~ 30 minutes";
     this.availableAmount = this.asset;
     this.action.render(this.children[8]);
-    if (this.asset.symbol === "ETH") {
+    if (this.asset.accountType === "ETH" || "CFC") {
       // -- test
       this.toggle = true;
       this.toggleButton = document.querySelector(
@@ -107,14 +113,8 @@ class FormElement extends HTMLElement {
       this.toggle = false;
     }
     this.transactionButton = this.children[this.childElementCount - 1];
-    this.transactionButton.addEventListener("click", () =>
-      this.sendTransaction(
-        this.addressInput.inputValue,
-        this.amountInput.inputValue,
-        this.feePerUnit[this.selected],
-        this.feeUnit
-      )
-    );
+    this.transactionButton.addEventListener("click", () => 
+      this.sendTransaction(this.addressInput.inputValue, this.amountInput.inputValue, this.feePerUnit[this.selected], this.feeUnit));
     this.fee = await this.getTransactionFee();
     this.updateFee();
   }
@@ -133,41 +133,42 @@ class FormElement extends HTMLElement {
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
     this.estimateFee = this.feeInCurrencyUnit;
-    if (this.toggleButton.checked) {
+    if (this.toggleButton?.checked) {
       this.gasPriceInput.inputValue = this.feePerUnit[this.selected];
       this.gasInput.inputValue = this.feeUnit;
     }
   }
 
   async verifyAddress(id, address) {
-    // let validateResult = this.wallet.verifyAddress(id, address);
+    let validateResult = this.wallet.verifyAddress(id, address);
     console.log("verifyAddress", address);
-    let validateResult = address.startsWith("0x") && address.length === 42;
+    // let validateResult = address.startsWith("0x") && address.length === 42;
     if (validateResult)
       this.fee = await this.getTransactionFee({
         to: address,
-        amount: this.amountInput.isValid
-          ? this.amountInput.inputValue
-          : undefined,
+        amount: this.amountInput.isValid ?
+          this.amountInput.inputValue : undefined,
       });
     return validateResult;
   }
 
   async verifyAmount(id, amount, fee) {
-    // let validateResult = this.wallet.verifyAmount(id, amount, fee);
-    console.log("verifyAmount", amount);
-    let validateResult = parseFloat(amount) > 0;
+    let validateResult = this.wallet.verifyAmount(id, amount, fee);
+    // let validateResult = parseFloat(amount) > 0;
     if (validateResult)
       this.fee = await this.getTransactionFee({
-        to: this.addressInput.isValid
-          ? this.addressInput.inputValue
-          : undefined,
+        to: this.addressInput.isValid ?
+          this.addressInput.inputValue : undefined,
         amount: amount,
       });
     return validateResult;
   }
 
-  async getTransactionFee({ to, amount, data } = {}) {
+  async getTransactionFee({
+    to,
+    amount,
+    data
+  } = {}) {
     const fee = await this.wallet.getTransactionFee(
       this.asset.id,
       to,
@@ -188,29 +189,31 @@ class FormElement extends HTMLElement {
    */
 
   async sendTransaction(to, amount, feePerUnit, feeUnit) {
+    const transaction = new Transaction({
+      to,
+      amount,
+      feePerUnit,
+      feeUnit,
+    });
+    console.log(transaction)
     this.parent.openPopover(
       "confirm",
       "Are you sure to make this transaction?",
       async () => {
-        const transaction = new Transaction({
-          to,
-          amount,
-          feePerUnit,
-          feeUnit,
-        });
-        this.parent.openPopover("loading");
-        try {
-          const response = await this.wallet.sendTransaction(
-            this.asset.id,
-            transaction
-          );
-          if (response) viewController.route("asset");
-          // if (response) this.parent.openPopover("success", "Success!");
-        } catch {
-          // this.parent.openPopover("error");
-        }
-      },
-      false
+
+          this.parent.openPopover("loading");
+          try {
+            const response = await this.wallet.sendTransaction(
+              this.asset.id,
+              transaction
+            );
+            if (response) viewController.route("asset");
+            // if (response) this.parent.openPopover("success", "Success!");
+          } catch {
+            // this.parent.openPopover("error");
+          }
+        },
+        false
     );
   }
 
@@ -221,7 +224,7 @@ class FormElement extends HTMLElement {
    */
   handleToggle(toggleContent) {
     toggleContent.replaceChildren();
-    if (this.toggleButton.checked) {
+    if (this.toggleButton?.checked) {
       this.gasPriceInput.render(toggleContent);
       this.gasInput.render(toggleContent);
       this.updateFee();
