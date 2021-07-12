@@ -3,10 +3,10 @@ import * as utils from "../utils/utils";
 class Bill {
   constructor({
     id,
-    txId,
+    txid,
     amount,
     fee,
-    message,
+    note,
     timestamp,
     direction,
     sourceAddresses,
@@ -15,10 +15,10 @@ class Bill {
     status,
   }) {
     this.id = id;
-    this.txid = txId;
+    this.txid = txid;
     this.amount = amount;
     this.fee = fee;
-    this.message = message;
+    this.message = note;
     this.timestamp = timestamp;
     this._direction = direction;
     this.from = sourceAddresses;
@@ -41,9 +41,11 @@ class Bill {
   }
   get action() {
     switch (this._direction) {
+      case "receive":
       case "received":
         return "Receive";
       case "sent":
+      case "send":
         return "Send";
       default:
         return "Unknown";
@@ -51,9 +53,11 @@ class Bill {
   }
   get direction() {
     switch (this._direction) {
+      case "receive":
       case "received":
         return "Receive from";
       case "sent":
+      case "send":
         return "Transfer to";
       default:
         return "Unknown";
@@ -61,9 +65,11 @@ class Bill {
   }
   get address() {
     switch (this._direction) {
+      case "receive":
       case "received":
         return this.from;
       case "sent":
+      case "send":
         return this.to;
       default:
         return "Unknown";
@@ -75,9 +81,11 @@ class Bill {
   }
   get sign() {
     switch (this._direction) {
+      case "receive":
       case "received":
         return "+";
       case "sent":
+      case "send":
         return "-";
       default:
         return "Unknown";
@@ -85,9 +93,11 @@ class Bill {
   }
   formattedAmount(asset) {
     switch (this._direction) {
+      case "receive":
       case "received":
         return this.sign + " " + this.amount + " " + asset.symbol;
       case "sent":
+      case "send":
         return this.sign + " " + this.amount + " " + asset.symbol;
       default:
         return "Unknown";

@@ -42,7 +42,7 @@ const monthNames = [
   "Dec",
 ];
 export const dateFormatter = (timestamp) => {
-  const dateTime = new Date(timestamp);
+  const dateTime = new Date(timestamp * 1000);
   const date = dateTime.getDate();
   const month = dateTime.getMonth();
   const year = dateTime.getFullYear();
