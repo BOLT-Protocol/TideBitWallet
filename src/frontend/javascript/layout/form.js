@@ -194,6 +194,7 @@ class FormElement extends HTMLElement {
       amount,
       feePerUnit,
       feeUnit,
+      fee: this.feeInCurrencyUnit
     });
     console.log(transaction)
     this.parent.openPopover(

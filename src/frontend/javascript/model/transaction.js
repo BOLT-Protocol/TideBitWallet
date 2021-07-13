@@ -1,11 +1,10 @@
 class Transaction {
-  constructor({ publish, to, amount, priority, feePerUnit, feeUnit, message }) {
-    this.publish = publish;
+  constructor({ to, amount, feePerUnit, feeUnit, fee, message }) {
     this.to = to;
     this.amount = amount;
-    this.priority = priority
     this.feePerUnit = feePerUnit;
     this.feeUnit = feeUnit;
+    this.fee = fee;
     this.message = message;
   }
 }
