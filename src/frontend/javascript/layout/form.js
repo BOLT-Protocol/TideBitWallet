@@ -17,7 +17,14 @@ class FormElement extends HTMLElement {
     this.buttons.forEach((button, index) =>
       button.element.removeEventListener("click", () => this.updateFee(index))
     );
-    this.transactionButton.removeEventListener("click", () => this.sendTransaction(this.addressInput.inputValue, this.amountInput.inputValue, this.feePerUnit[this.selected], this.feeUnit));
+    this.transactionButton.removeEventListener("click", () =>
+      this.sendTransaction(
+        this.addressInput.inputValue,
+        this.amountInput.inputValue,
+        this.feePerUnit[this.selected],
+        this.feeUnit
+      )
+    );
   }
   async connectedCallback() {
     this.innerHTML = `
@@ -81,18 +88,19 @@ class FormElement extends HTMLElement {
       pattern: `\d*`,
     });
     this.buttons = ["Slow", "Standard", "Fast"].map(
-      (str) => new Button(str, () => {}, {
-        style: ["round", "grey"]
-      })
+      (str) =>
+        new Button(str, () => {}, {
+          style: ["round", "grey"],
+        })
     );
     this.tabBar = new TabBar(this.buttons, {
-      defaultFocus: this.selected
+      defaultFocus: this.selected,
     });
     this.buttons.forEach((button, index) =>
       button.element.addEventListener("click", () => this.updateFee(index))
     );
     this.action = new Button("Next", () => {}, {
-      style: ["round", "outline"]
+      style: ["round", "outline"],
     });
     this.addressInput.render(this.children[0]);
     this.amountInput.render(this.children[0]);
@@ -113,8 +121,14 @@ class FormElement extends HTMLElement {
       this.toggle = false;
     }
     this.transactionButton = this.children[this.childElementCount - 1];
-    this.transactionButton.addEventListener("click", () => 
-      this.sendTransaction(this.addressInput.inputValue, this.amountInput.inputValue, this.feePerUnit[this.selected], this.feeUnit));
+    this.transactionButton.addEventListener("click", () =>
+      this.sendTransaction(
+        this.addressInput.inputValue,
+        this.amountInput.inputValue,
+        this.feePerUnit[this.selected],
+        this.feeUnit
+      )
+    );
     this.fee = await this.getTransactionFee();
     this.updateFee();
   }
@@ -146,8 +160,9 @@ class FormElement extends HTMLElement {
     if (validateResult)
       this.fee = await this.getTransactionFee({
         to: address,
-        amount: this.amountInput.isValid ?
-          this.amountInput.inputValue : undefined,
+        amount: this.amountInput.isValid
+          ? this.amountInput.inputValue
+          : undefined,
       });
     return validateResult;
   }
@@ -157,18 +172,15 @@ class FormElement extends HTMLElement {
     // let validateResult = parseFloat(amount) > 0;
     if (validateResult)
       this.fee = await this.getTransactionFee({
-        to: this.addressInput.isValid ?
-          this.addressInput.inputValue : undefined,
+        to: this.addressInput.isValid
+          ? this.addressInput.inputValue
+          : undefined,
         amount: amount,
       });
     return validateResult;
   }
 
-  async getTransactionFee({
-    to,
-    amount,
-    data
-  } = {}) {
+  async getTransactionFee({ to, amount, data } = {}) {
     const fee = await this.wallet.getTransactionFee(
       this.asset.id,
       to,
@@ -194,27 +206,30 @@ class FormElement extends HTMLElement {
       amount,
       feePerUnit,
       feeUnit,
-      fee: this.feeInCurrencyUnit
+      fee: this.feeInCurrencyUnit,
     });
-    console.log(transaction)
+    console.log(transaction);
     this.parent.openPopover(
       "confirm",
       "Are you sure to make this transaction?",
       async () => {
-
-          this.parent.openPopover("loading");
-          try {
-            const response = await this.wallet.sendTransaction(
-              this.asset.id,
-              transaction
-            );
-            if (response) viewController.route("asset");
-            // if (response) this.parent.openPopover("success", "Success!");
-          } catch {
-            // this.parent.openPopover("error");
+        this.parent.openPopover("loading");
+        try {
+          const response = await this.wallet.sendTransaction(
+            this.asset.id,
+            transaction
+          );
+          if (response) viewController.route("asset");
+          else {
+            this.parent.openPopover("error", "Transaction Failed");
           }
-        },
-        false
+          // if (response) this.parent.openPopover("success", "Success!");
+        } catch (e) {
+          console.log(e);
+          this.parent.openPopover("error");
+        }
+      },
+      false
     );
   }
 

@@ -57,11 +57,6 @@ class PopoverElement extends HTMLElement {
     }
   }
   closePopover = () => {
-    if (this.open) {
-      this.open = false;
-      this.click = 0;
-      this.textElement.textContent = "";
-    }
     if (this.confirm) {
       this.removeAttribute("confirm");
     }
@@ -71,8 +66,13 @@ class PopoverElement extends HTMLElement {
     if (this.success) {
       this.removeAttribute("success");
     }
-    if (this.loading) {
+    if (this.loading || this.hasAttribute("loading")) {
       this.removeAttribute("loading");
+    }
+    if (this.open) {
+      this.open = false;
+      this.click = 0;
+      this.textElement.textContent = "";
     }
   };
   disconnectedCallback() {
@@ -99,19 +99,27 @@ class PopoverElement extends HTMLElement {
   }
 
   errorPopup(text) {
+    this.closePopover();
     this.setAttribute("error", "");
+    this.setAttribute("open", "");
     this.children[0].children[0].children[1].textContent =
       text || "Some thing went wrong";
   }
   successPopup(text) {
+    this.closePopover();
     this.setAttribute("success", "");
+    this.setAttribute("open", "");
     this.children[0].children[0].children[1].textContent = text || "Success";
   }
   loadingPopup(text) {
+    this.closePopover();
     this.setAttribute("loading", "");
+    this.setAttribute("open", "");
     this.children[0].children[0].children[1].textContent = text || "Loading";
   }
   confirmPopup(text, onConfirm) {
+    this.closePopover();
+    this.setAttribute("open", "");
     this.setAttribute("confirm", "");
     // this.cancellable = false;
     this.onConfirm = onConfirm;
