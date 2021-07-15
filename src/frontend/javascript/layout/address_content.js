@@ -27,7 +27,24 @@ class AddressContentElement extends HTMLElement {
    * ETH || BTC
    */
   setCoinbase() {
-    this.setAttribute(this.asset.accountType, "");
+    let accountType;
+    console.log(this.asset.accountType)
+    switch (this.asset.accountType) {
+      case "CFC":
+      case "ETH":
+        accountType = "ETH";
+        break;
+      case "BTC":
+      case "LTC":
+      case "BCH":
+      case "ETH":
+        accountType = "BTC";
+        break;
+      default:
+        accountType = "ETH";
+        break;
+    }
+    this.setAttribute(accountType, "");
   }
   renderAddress = () => {
     QRCode.toCanvas(
