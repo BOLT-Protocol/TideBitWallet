@@ -7,7 +7,7 @@ class InputElement extends HTMLElement {
   static get observedAttributes() {
     return ["focus", "has-value", "error"];
   }
-  handleInput(e) {
+  async handleInput(e) {
     if (e.target.value !== "") {
       this.hasValue = true;
     } else {
@@ -15,8 +15,8 @@ class InputElement extends HTMLElement {
     }
     let checked;
     if (this.validator !== undefined) {
-      this.isValid = this.validator(e.target.value);
-      checked = e.target.value === "" || this.validator(e.target.value);
+      this.isValid = await this.validator(e.target.value);
+      checked = e.target.value === "" || (await this.validator(e.target.value));
     }
     if (checked !== undefined) {
       this.error = !checked;
