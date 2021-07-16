@@ -222,11 +222,23 @@ class FormElement extends HTMLElement {
           );
           if (response) viewController.route("asset");
           else {
+            this.amountInput.inputValue = "";
+            this.addressInput.inputValue = "";
+            if (this.toggleButton?.checked) {
+              this.gasPriceInput.inputValue = "";
+              this.gasInput.inputValue = "";
+            }
             this.parent.openPopover("error", "Transaction Failed");
           }
           // if (response) this.parent.openPopover("success", "Success!");
         } catch (e) {
           console.log(e);
+          this.amountInput.inputValue = "";
+          this.addressInput.inputValue = "";
+          if (this.toggleButton?.checked) {
+            this.gasPriceInput.inputValue = "";
+            this.gasInput.inputValue = "";
+          }
           this.parent.openPopover("error");
         }
       },
