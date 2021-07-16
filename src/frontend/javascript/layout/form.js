@@ -4,6 +4,7 @@ import Input from "../widget/input";
 import Button from "../widget/button";
 import Transaction from "../model/transaction";
 import viewController from "../controller/view";
+import { async } from "../../../../build/javascript/TideWallet";
 class FormElement extends HTMLElement {
   constructor() {
     super();
@@ -18,7 +19,7 @@ class FormElement extends HTMLElement {
       button.element.removeEventListener("click", () => this.updateFee(index))
     );
     this.transactionButton.removeEventListener("click", () =>
-      this.sendTransaction(
+      this.onSend(
         this.addressInput.inputValue,
         this.amountInput.inputValue,
         this.feePerUnit[this.selected],
@@ -123,7 +124,7 @@ class FormElement extends HTMLElement {
     }
     this.transactionButton = this.children[this.childElementCount - 1];
     this.transactionButton.addEventListener("click", () =>
-      this.sendTransaction(
+      this.onSend(
         this.addressInput.inputValue,
         this.amountInput.inputValue,
         this.feePerUnit[this.selected],
@@ -192,14 +193,16 @@ class FormElement extends HTMLElement {
     return fee;
   }
 
-  /**
-   * getEstimateTime().then((timeString) => {
-   *    const estimateTimeEl = document.querySelector('.estimate-time');
-   *    estimateTimeEl.textContent = timeString;
-   * }).catch((error) => {
-   *    estimateTimeEl.textContent = "would take longer than you can expected";
-   * })
-   */
+  async resetInput() {
+    this.amountInput.inputValue = "";
+    this.addressInput.inputValue = "";
+    if (this.toggleButton?.checked) {
+      this.gasPriceInput.inputValue = "";
+      this.gasInput.inputValue = "";
+    }
+    this.fee = await this.getTransactionFee();
+    this.updateFee();
+  }
 
   async sendTransaction(to, amount, feePerUnit, feeUnit) {
     const transaction = new Transaction({
@@ -209,38 +212,39 @@ class FormElement extends HTMLElement {
       feeUnit,
       fee: this.feeInCurrencyUnit,
     });
-    console.log(transaction);
+    try {
+      console.trace(transaction);
+      const response = await this.wallet.sendTransaction(
+        this.asset.id,
+        transaction
+      );
+      if (response) return { success: true };
+      else {
+        await this.resetInput();
+        return { success: false, errorMessage: "Transaction Failed" };
+      }
+    } catch (e) {
+      console.log(e);
+      await this.resetInput();
+      return { success: false };
+    }
+  }
+
+  async onSend(to, amount, feePerUnit, feeUnit) {
+    let _func = async () =>
+      await this.sendTransaction(to, amount, feePerUnit, feeUnit);
+    console.log(_func);
     this.parent.openPopover(
       "confirm",
       "Are you sure to make this transaction?",
       async () => {
         this.parent.openPopover("loading");
-        try {
-          const response = await this.wallet.sendTransaction(
-            this.asset.id,
-            transaction
-          );
-          if (response) viewController.route("asset");
-          else {
-            this.amountInput.inputValue = "";
-            this.addressInput.inputValue = "";
-            if (this.toggleButton?.checked) {
-              this.gasPriceInput.inputValue = "";
-              this.gasInput.inputValue = "";
-            }
-            this.parent.openPopover("error", "Transaction Failed");
-          }
-          // if (response) this.parent.openPopover("success", "Success!");
-        } catch (e) {
-          console.log(e);
-          this.amountInput.inputValue = "";
-          this.addressInput.inputValue = "";
-          if (this.toggleButton?.checked) {
-            this.gasPriceInput.inputValue = "";
-            this.gasInput.inputValue = "";
-          }
-          this.parent.openPopover("error");
-        }
+        let response = await _func();
+        response.success
+          ? viewController.route("asset")
+          : response.errorMessage
+          ? this.parent.openPopover("error", response.errorMessage)
+          : this.parent.openPopover("error");
       },
       false
     );

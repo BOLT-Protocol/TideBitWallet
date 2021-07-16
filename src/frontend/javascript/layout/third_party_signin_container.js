@@ -32,7 +32,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
         style: ["round", "fill-primary"],
       }
     );
-    this.mnemonicButton.render(this.children[2]);
+    // this.mnemonicButton.render(this.children[2]);
   }
   disconnectedCallback() {
     this.googleSignInButton.removeEventListener("click", () => {
