@@ -4,7 +4,7 @@ import Input from "../widget/input";
 import Button from "../widget/button";
 import Transaction from "../model/transaction";
 import viewController from "../controller/view";
-import { async } from "../../../../build/javascript/TideWallet";
+
 class FormElement extends HTMLElement {
   constructor() {
     super();
