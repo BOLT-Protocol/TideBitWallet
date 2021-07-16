@@ -61,7 +61,8 @@ class FormElement extends HTMLElement {
       inputType: "text",
       label: "Send to",
       errorMessage: "Invalid Address",
-      validation: (value) => this.verifyAddress(this.asset.id, value),
+      validation: async (value) =>
+        await this.verifyAddress(this.asset.id, value),
       action: {
         icon: "qrcode",
         onPressed: () => {
@@ -154,9 +155,9 @@ class FormElement extends HTMLElement {
   }
 
   async verifyAddress(id, address) {
-    let validateResult = this.wallet.verifyAddress(id, address);
+    let validateResult = await this.wallet.verifyAddress(id, address);
     console.log("verifyAddress", address);
-    // let validateResult = address.startsWith("0x") && address.length === 42;
+    console.log("validateResult", validateResult);
     if (validateResult)
       this.fee = await this.getTransactionFee({
         to: address,
@@ -169,7 +170,7 @@ class FormElement extends HTMLElement {
 
   async verifyAmount(id, amount, fee) {
     let validateResult = this.wallet.verifyAmount(id, amount, fee);
-    // let validateResult = parseFloat(amount) > 0;
+    console.log("validateResult", validateResult);
     if (validateResult)
       this.fee = await this.getTransactionFee({
         to: this.addressInput.isValid
@@ -221,11 +222,23 @@ class FormElement extends HTMLElement {
           );
           if (response) viewController.route("asset");
           else {
+            this.amountInput.inputValue = "";
+            this.addressInput.inputValue = "";
+            if (this.toggleButton?.checked) {
+              this.gasPriceInput.inputValue = "";
+              this.gasInput.inputValue = "";
+            }
             this.parent.openPopover("error", "Transaction Failed");
           }
           // if (response) this.parent.openPopover("success", "Success!");
         } catch (e) {
           console.log(e);
+          this.amountInput.inputValue = "";
+          this.addressInput.inputValue = "";
+          if (this.toggleButton?.checked) {
+            this.gasPriceInput.inputValue = "";
+            this.gasInput.inputValue = "";
+          }
           this.parent.openPopover("error");
         }
       },

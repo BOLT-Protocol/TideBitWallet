@@ -7,16 +7,11 @@ class InputElement extends HTMLElement {
   static get observedAttributes() {
     return ["focus", "has-value", "error"];
   }
-  handleInput(e) {
-    if (e.target.value !== "") {
-      this.hasValue = true;
-    } else {
-      this.hasValue = false;
-    }
+  async handleInput(e) {
     let checked;
     if (this.validator !== undefined) {
-      this.isValid = this.validator(e.target.value);
-      checked = e.target.value === "" || this.validator(e.target.value);
+      this.isValid = await this.validator(e.target.value);
+      checked = e.target.value === "" || (await this.validator(e.target.value));
     }
     if (checked !== undefined) {
       this.error = !checked;
@@ -27,6 +22,7 @@ class InputElement extends HTMLElement {
       //   this.value = this.value.replace(/[^0-9.]/g, '');
       //   this.value = this.value.replace(/(\..*)\./g, '$1');
     }
+    console.log("inputValue", e.target.value);
     this.inputValue = e.target.value;
   }
   connectedCallback() {
@@ -83,6 +79,17 @@ class InputElement extends HTMLElement {
     } else {
       this.removeAttribute("error");
     }
+  }
+  get inputValue() {
+    return this.children[0].children[1].children[0].value;
+  }
+  set inputValue(val) {
+    if (val !== "") {
+      this.hasValue = true;
+    } else {
+      this.hasValue = false;
+    }
+    this.children[0].children[1].children[0].value = val;
   }
   set inputType(val) {
     this.children[0].children[1].children[0].type = val;
@@ -159,6 +166,10 @@ class Input {
   }
   get inputValue() {
     return this.element.inputValue;
+  }
+
+  set inputValue(value) {
+    this.element.inputValue = value;
   }
 
   get isValid() {
