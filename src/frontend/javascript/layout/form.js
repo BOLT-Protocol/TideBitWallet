@@ -157,8 +157,7 @@ class FormElement extends HTMLElement {
 
   async verifyAddress(id, address) {
     let validateResult = await this.wallet.verifyAddress(id, address);
-    console.log("verifyAddress", address);
-    console.log("validateResult", validateResult);
+    this.isAddressValid = validateResult;
     if (validateResult)
       this.fee = await this.getTransactionFee({
         to: address,
@@ -171,7 +170,7 @@ class FormElement extends HTMLElement {
 
   async verifyAmount(id, amount, fee) {
     let validateResult = this.wallet.verifyAmount(id, amount, fee);
-    console.log("validateResult", validateResult);
+    this.isAmountValid = validateResult;
     if (validateResult)
       this.fee = await this.getTransactionFee({
         to: this.addressInput.isValid
@@ -231,6 +230,10 @@ class FormElement extends HTMLElement {
   }
 
   async onSend(to, amount, feePerUnit, feeUnit) {
+    if (!this.isAddressValid || !this.isAmountValid) {
+      this.parent.openPopover("error", "Input is not valid");
+      return;
+    }
     let _func = async () =>
       await this.sendTransaction(to, amount, feePerUnit, feeUnit);
     console.log(_func);
