@@ -58,6 +58,7 @@ class ViewController {
         }
         break;
       case "asset":
+        if (asset.id !== this.currentAsset.id) return;
         AssetScreen.updateAsset(asset);
         break;
       default:
