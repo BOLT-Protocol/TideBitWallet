@@ -44,15 +44,20 @@ class ThirdPartySigninContainerElement extends HTMLElement {
 
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
-  constructor(version, colorMode, callback) {
+  constructor(version, colorMode, callback, debugMode) {
     this.version = version;
     this.element = document.createElement("third-party-signin");
     this.element.colorMode = colorMode;
     this.element.version = version;
     this.element.callback = callback;
+    this.element.debugMode = debugMode;
   }
   set parent(element) {
     this.element.parent = element;
+    if (this.element.debugMode !== undefined) {
+      this.element.parent.openPopover("loading");
+      this.element.callback();
+    }
   }
   render(parentElement) {
     this.parentElement = parentElement;

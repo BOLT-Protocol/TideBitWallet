@@ -106,14 +106,20 @@ class ViewController {
     console.log(screen);
     switch (screen) {
       case "landing":
-        Landing.render(screen, this.walletVersion, this.wallet);
+        Landing.render(screen, this.walletVersion, this.wallet, data);
         break;
       case "assets":
       case "settings":
-        Overview.render(screen, this.walletFiat, this.walletVersion, {
-          totalAsset: this.userBalanceInFiat,
-          assets: this.userAssets,
-        });
+        Overview.render(
+          screen,
+          this.wallet,
+          this.walletFiat,
+          this.walletVersion,
+          {
+            totalAsset: this.userBalanceInFiat,
+            assets: this.userAssets,
+          }
+        );
         break;
       case "asset":
         if (data) {

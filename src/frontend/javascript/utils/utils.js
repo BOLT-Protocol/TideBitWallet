@@ -1,3 +1,4 @@
+import mode from "../constant/config";
 import viewController from "../controller/view";
 import Asset from "../model/asset";
 import Fiat from "../model/fiat";
@@ -136,25 +137,22 @@ export const getUserInfo = async (tidewallet) => {
   viewController.updateAssets(assets, balance, fiat);
 };
 
-export const initUser = async (
-  tidewallet,
-  data = {},
-  isGoogleSignIn = false
-) => {
+export const initUser = async (tidewallet, data = {}, debugMode) => {
   const api = {
     apiURL: "https://staging.tidewallet.io/api/v1",
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
-  let OAuthID;
-  if (isGoogleSignIn) {
-    OAuthID = await googleSignIn();
-  }
+  const OAuthID = await googleSignIn();
   const InstallID = await getInstallID();
   console.log("OAuthID :", OAuthID); // -- test
   console.log("InstallID :", InstallID); // -- test
   console.log("mnemonic :", data?.mnemonic); // -- test
   console.log("passphrase :", data?.passphrase); // -- test
+  console.log("Utils initUser debugMode :", debugMode); // -- test
+  mode.debug = debugMode ?? false;
+  console.log("Utils initUser  mode.debug :",  mode.debug); // -- test
+
   tidewallet.init({
     user: {
       OAuthID,
@@ -163,5 +161,6 @@ export const initUser = async (
       password: data?.passphrase,
     },
     api,
+    debugMode: mode.debug,
   });
 };
