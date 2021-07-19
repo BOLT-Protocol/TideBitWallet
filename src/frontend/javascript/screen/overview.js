@@ -16,7 +16,6 @@ class Overview {
     this.footer = new BottomNavigator(0);
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.scaffold.view = screen;
-    this.settingList.parent = this.scaffold;
     this.screen = screen;
     if (!assets) {
       this.scaffold.openPopover("loading");
@@ -25,10 +24,7 @@ class Overview {
   render(screen, fiat, version, { totalAsset, assets } = {}) {
     const view = currentView();
     if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
-      this.initialize(screen, fiat, version, {
-        totalAsset,
-        assets,
-      });
+      this.initialize(screen, fiat, version, { totalAsset, assets });
     } else {
       this.screen = screen;
       switch (this.screen) {

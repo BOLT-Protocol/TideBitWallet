@@ -85,9 +85,6 @@ class SettingList {
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);
   }
-  set parent(element) {
-    this.element.parent = element;
-  }
 }
 
 export default SettingList;
