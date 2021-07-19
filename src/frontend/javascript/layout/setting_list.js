@@ -1,7 +1,7 @@
 import viewController from "../controller/view";
 import SettingColumn from "../widget/setting_column";
 
-const getSettings = (tidewallet, fiat) => [
+const getSettings = (fiat) => [
   {
     title: "Security center",
     items: [
@@ -73,8 +73,8 @@ class SettingListElement extends HTMLElement {
 
 customElements.define("setting-list", SettingListElement);
 class SettingList {
-  constructor(tidewallet, fiat, version) {
-    const settings = getSettings(tidewallet, fiat);
+  constructor(fiat, version) {
+    const settings = getSettings(fiat);
     this.element = document.createElement("setting-list");
     this.element.version = version;
     this.element.fiat = fiat;

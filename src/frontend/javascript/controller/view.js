@@ -110,16 +110,10 @@ class ViewController {
         break;
       case "assets":
       case "settings":
-        Overview.render(
-          screen,
-          this.wallet,
-          this.walletFiat,
-          this.walletVersion,
-          {
-            totalAsset: this.userBalanceInFiat,
-            assets: this.userAssets,
-          }
-        );
+        Overview.render(screen, this.walletFiat, this.walletVersion, {
+          totalAsset: this.userBalanceInFiat,
+          assets: this.userAssets,
+        });
         break;
       case "asset":
         if (data) {
