@@ -115,6 +115,7 @@ export const googleSignIn = async () => {
   } catch (e) {
     throw e;
   }
+
   if (!token) return;
   const init = {
     method: "GET",
@@ -150,7 +151,7 @@ export const getUserInfo = async (tidewallet) => {
  * @returns {Array} response[0] is Boolean, represent excution result
  * @returns {Array} if process got error, response[1] is Error Object, else is undefined.
  */
-export const initUser = async (tidewallet, data = {}, debugMode) => {
+export const checkUser = async (tidewallet, data = {}, debugMode) => {
   const api = {
     apiURL: "https://staging.tidewallet.io/api/v1",
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
@@ -171,9 +172,33 @@ export const initUser = async (tidewallet, data = {}, debugMode) => {
     error = e;
     return [false, error];
   }
-
   console.log("OAuthID :", OAuthID); // -- test
   console.log("InstallID :", InstallID); // -- test
+  return [true];
+  try {
+    const user = await tidewallet.checkUser({
+      user: {
+        OAuthID,
+        InstallID,
+      },
+      api,
+    });
+    return [true, user];
+  } catch (e) {
+    console.log("checkUser error :", e); // -- test
+    return [false, e];
+  }
+};
+
+/**
+ *
+ * @param {Object} tidewallet
+ * @param {Object} data
+ * @param {Boolean} debugMode
+ * @returns {Array} response[0] is Boolean, represent excution result
+ * @returns {Array} if process got error, response[1] is Error Object, else is undefined.
+ */
+export const initUser = async (tidewallet, data = {}, debugMode) => {
   console.log("mnemonic :", data?.mnemonic); // -- test
   console.log("passphrase :", data?.passphrase); // -- test
   console.log("Utils initUser debugMode :", debugMode); // -- test

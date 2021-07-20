@@ -1,5 +1,5 @@
-import viewController from "../controller/view";
-import Button from "../widget/button";
+import { checkUser } from "../utils/utils";
+import CreateWallet from "../widget/create_wallet";
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
     super();
@@ -23,17 +23,16 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.appleSignInButton = this.children[2].children[1];
     this.googleSignInButton.addEventListener("click", async () => {
       this.parent?.openPopover("loading");
-      const response = await this.callback();
+      const response = await checkUser();
       if (!response[0]) this.parent?.openPopover("error");
-    });
-    this.mnemonicButton = new Button(
-      "Recover Wallet",
-      () => viewController.route("mnemonic"),
-      {
-        style: ["round", "fill-primary"],
+      else {
+        this.parent?.customPopup(
+          new CreateWallet(() => {
+            this.parent?.openPopover("loading");
+          })
+        );
       }
-    );
-    this.mnemonicButton.render(this.children[2]);
+    });
   }
   disconnectedCallback() {
     this.googleSignInButton.removeEventListener("click", async () => {
@@ -46,12 +45,12 @@ class ThirdPartySigninContainerElement extends HTMLElement {
 
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
-  constructor(version, colorMode, callback, debugMode) {
+  constructor(wallet, version, colorMode, debugMode) {
+    this.wallet = wallet;
     this.version = version;
     this.element = document.createElement("third-party-signin");
     this.element.colorMode = colorMode;
     this.element.version = version;
-    this.element.callback = callback;
     this.element.debugMode = debugMode;
   }
   set parent(element) {
