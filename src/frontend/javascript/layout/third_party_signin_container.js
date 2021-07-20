@@ -21,9 +21,10 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     `;
     this.googleSignInButton = this.children[2].children[0];
     this.appleSignInButton = this.children[2].children[1];
-    this.googleSignInButton.addEventListener("click", () => {
+    this.googleSignInButton.addEventListener("click", async () => {
       this.parent?.openPopover("loading");
-      this.callback();
+      const response = await this.callback();
+      if (!response[0]) this.parent?.openPopover("error");
     });
     this.mnemonicButton = new Button(
       "Recover Wallet",
@@ -32,12 +33,13 @@ class ThirdPartySigninContainerElement extends HTMLElement {
         style: ["round", "fill-primary"],
       }
     );
-    // this.mnemonicButton.render(this.children[2]);
+    this.mnemonicButton.render(this.children[2]);
   }
   disconnectedCallback() {
-    this.googleSignInButton.removeEventListener("click", () => {
+    this.googleSignInButton.removeEventListener("click", async () => {
       this.parent?.openPopover("loading");
-      this.callback();
+      const response = await this.callback();
+      if (!response[0]) this.parent?.openPopover("error");
     });
   }
 }

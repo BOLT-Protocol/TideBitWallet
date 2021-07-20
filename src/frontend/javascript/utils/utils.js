@@ -102,14 +102,20 @@ export const getInstallID = () => {
 const getAuthToken = () =>
   new Promise((resolve, reject) => {
     chrome.identity.getAuthToken({ interactive: true }, (token) => {
-      console.log(token);
-      resolve(token);
+      if (token) resolve(token);
+      else reject(new Error("The user did not approve access"));
     });
   });
 
 export const googleSignIn = async () => {
   // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
-  const token = await getAuthToken();
+  let token;
+  try {
+    token = await getAuthToken();
+  } catch (e) {
+    throw e;
+  }
+  if (!token) return;
   const init = {
     method: "GET",
     async: true,
@@ -136,31 +142,57 @@ export const getUserInfo = async (tidewallet) => {
   const assets = dashboard?.currencies?.map((currency) => new Asset(currency));
   viewController.updateAssets(assets, balance, fiat);
 };
-
+/**
+ *
+ * @param {Object} tidewallet
+ * @param {Object} data
+ * @param {Boolean} debugMode
+ * @returns {Array} response[0] is Boolean, represent excution result
+ * @returns {Array} if process got error, response[1] is Error Object, else is undefined.
+ */
 export const initUser = async (tidewallet, data = {}, debugMode) => {
   const api = {
     apiURL: "https://staging.tidewallet.io/api/v1",
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
-  const OAuthID = await googleSignIn();
-  const InstallID = await getInstallID();
+  let OAuthID, InstallID, error;
+  try {
+    OAuthID = await googleSignIn();
+  } catch (e) {
+    console.log(e);
+    error = e;
+    return [false, error];
+  }
+  try {
+    InstallID = await getInstallID();
+  } catch (e) {
+    console.log(e);
+    error = e;
+    return [false, error];
+  }
+
   console.log("OAuthID :", OAuthID); // -- test
   console.log("InstallID :", InstallID); // -- test
   console.log("mnemonic :", data?.mnemonic); // -- test
   console.log("passphrase :", data?.passphrase); // -- test
   console.log("Utils initUser debugMode :", debugMode); // -- test
   mode.debug = debugMode ?? false;
-  console.log("Utils initUser  mode.debug :",  mode.debug); // -- test
-
-  tidewallet.init({
-    user: {
-      OAuthID,
-      InstallID,
-      mnemonic: data?.mnemonic,
-      password: data?.passphrase,
-    },
-    api,
-    debugMode: mode.debug,
-  });
+  console.log("Utils initUser  mode.debug :", mode.debug); // -- test
+  try {
+    await tidewallet.init({
+      user: {
+        OAuthID,
+        InstallID,
+        mnemonic: data?.mnemonic,
+        password: data?.passphrase,
+      },
+      api,
+      debugMode: mode.debug,
+    });
+    return [true];
+  } catch (e) {
+    error = e;
+    return [false, error];
+  }
 };
