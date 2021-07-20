@@ -1,3 +1,5 @@
+import ToggleSwitch from "./toggle_switch";
+
 class SettingColumnElement extends HTMLElement {
   constructor() {
     super();
@@ -8,11 +10,17 @@ class SettingColumnElement extends HTMLElement {
     if (Array.isArray(this.items)) {
       this.items.forEach((item, index) => {
         this.addItem(item);
-        this.children[index + 1].addEventListener("click", item.onPressed);
+        this.children[index + 1].addEventListener(
+          "click",
+          item.next ? item.onPressed : null
+        );
       });
     } else {
       this.addItem(this.items);
-      this.children[index + 1].addEventListener("click", items.onPressed);
+      this.children[index + 1].addEventListener(
+        "click",
+        items.next ? items.onPressed : null
+      );
     }
   }
   disconnectedCallback() {
@@ -34,10 +42,16 @@ class SettingColumnElement extends HTMLElement {
     <div class="setting__item">
         <div class="setting__item-name">${item.name}</div>
         <div class="setting__item-suffix">${item.label || ""}</div>
-        <div class="setting__item-icon"><i class="fas fa-chevron-right"></i></div>
+        <div class="setting__item-icon">${
+          item.next ? `<i class="fas fa-chevron-right">` : ``
+        }</i></div>
     </div>
     `;
     this.insertAdjacentHTML("beforeend", markup);
+    if (!item.next) {
+      this.toggleSwitch = new ToggleSwitch(item.onPressed);
+      this.toggleSwitch.render(this.children[1].children[2]);
+    }
   }
 }
 

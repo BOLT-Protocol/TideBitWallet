@@ -1,3 +1,4 @@
+import viewController from "../controller/view";
 import SettingColumn from "../widget/setting_column";
 
 const getSettings = (fiat) => [
@@ -9,6 +10,7 @@ const getSettings = (fiat) => [
         onPressed: () => {
           console.log("Reset Wallet Request");
         },
+        next: true,
       },
     ],
   },
@@ -21,6 +23,7 @@ const getSettings = (fiat) => [
         onPressed: () => {
           console.log("Popup options of fiat currency");
         },
+        next: true,
       },
     ],
   },
@@ -32,12 +35,24 @@ const getSettings = (fiat) => [
         onPressed: () => {
           console.log("Getting Complain");
         },
+        next: true,
       },
       {
         name: "Terms of Service and Security policy",
         onPressed: () => {
           console.log("Ah!");
         },
+        next: true,
+      },
+    ],
+  },
+  {
+    title: "Developer Option",
+    items: [
+      {
+        name: "Debug mode",
+        onPressed: (debugMode) => viewController.route("landing", debugMode),
+        next: false,
       },
     ],
   },
