@@ -147,7 +147,7 @@ class ViewController {
         AddressScreen.render(screen, this.currentAsset, this.wallet);
         break;
       case "mnemonic":
-        MnemonicScreen.render(screen, this.wallet);
+        MnemonicScreen.render(screen, data); // data is a callback function
         break;
       default:
         break;

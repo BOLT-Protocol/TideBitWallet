@@ -1,4 +1,6 @@
-import { checkUser } from "../utils/utils";
+import { async } from "../../../../build/javascript/TideWallet";
+import viewController from "../controller/view";
+import { checkUser, initUser } from "../utils/utils";
 import CreateWallet from "../widget/create_wallet";
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
@@ -23,12 +25,45 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.appleSignInButton = this.children[2].children[1];
     this.googleSignInButton.addEventListener("click", async () => {
       this.parent?.openPopover("loading");
-      const response = await checkUser();
-      if (!response[0]) this.parent?.openPopover("error");
-      else {
+      let exist, user, result;
+      // Check is User exist
+      try {
+        [exist, user] = await checkUser(this.wallet);
+      } catch (error) {
+        console.log("error ", error);
+        this.parent?.openPopover("error");
+        return;
+      }
+
+      // if exist, init User
+      if (exist) {
+        this.parent?.openPopover("loading");
+        result = await initUser(this.wallet, user);
+        // if not exist, init User with two way
+      } else {
         this.parent?.customPopup(
-          new CreateWallet(() => {
-            this.parent?.openPopover("loading");
+          new CreateWallet({
+            onAutomatic: async () => {
+              this.parent?.openPopover("loading");
+              try {
+                await initUser(this.wallet, user);
+              } catch (error) {
+                this.parent?.openPopover("error");
+              }
+            },
+            onMnemonic: () => {
+              viewController.route("mnemonic", async (data) => {
+                try {
+                  await initUser(this.wallet, {
+                    ...user,
+                    mnemonic: data?.mnemonic,
+                    passphrase: data?.passphrase,
+                  });
+                } catch (error) {
+                  this.parent?.openPopover("error");
+                }
+              });
+            },
           })
         );
       }
@@ -46,9 +81,9 @@ class ThirdPartySigninContainerElement extends HTMLElement {
 customElements.define("third-party-signin", ThirdPartySigninContainerElement);
 class ThirdPartySigninContainer {
   constructor(wallet, version, colorMode, debugMode) {
-    this.wallet = wallet;
     this.version = version;
     this.element = document.createElement("third-party-signin");
+    this.element.wallet = wallet;
     this.element.colorMode = colorMode;
     this.element.version = version;
     this.element.debugMode = debugMode;

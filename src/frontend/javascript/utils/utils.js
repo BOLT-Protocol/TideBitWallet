@@ -143,52 +143,6 @@ export const getUserInfo = async (tidewallet) => {
   const assets = dashboard?.currencies?.map((currency) => new Asset(currency));
   viewController.updateAssets(assets, balance, fiat);
 };
-/**
- *
- * @param {Object} tidewallet
- * @param {Object} data
- * @param {Boolean} debugMode
- * @returns {Array} response[0] is Boolean, represent excution result
- * @returns {Array} if process got error, response[1] is Error Object, else is undefined.
- */
-export const checkUser = async (tidewallet, data = {}, debugMode) => {
-  const api = {
-    apiURL: "https://staging.tidewallet.io/api/v1",
-    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
-    apiSecret: "9e37d67450dc906042fde75113ecb78c",
-  };
-  let OAuthID, InstallID, error;
-  try {
-    OAuthID = await googleSignIn();
-  } catch (e) {
-    console.log(e);
-    error = e;
-    return [false, error];
-  }
-  try {
-    InstallID = await getInstallID();
-  } catch (e) {
-    console.log(e);
-    error = e;
-    return [false, error];
-  }
-  console.log("OAuthID :", OAuthID); // -- test
-  console.log("InstallID :", InstallID); // -- test
-  return [true];
-  try {
-    const user = await tidewallet.checkUser({
-      user: {
-        OAuthID,
-        InstallID,
-      },
-      api,
-    });
-    return [true, user];
-  } catch (e) {
-    console.log("checkUser error :", e); // -- test
-    return [false, e];
-  }
-};
 
 /**
  *
@@ -198,26 +152,57 @@ export const checkUser = async (tidewallet, data = {}, debugMode) => {
  * @returns {Array} response[0] is Boolean, represent excution result
  * @returns {Array} if process got error, response[1] is Error Object, else is undefined.
  */
-export const initUser = async (tidewallet, data = {}, debugMode) => {
-  console.log("mnemonic :", data?.mnemonic); // -- test
-  console.log("passphrase :", data?.passphrase); // -- test
-  console.log("Utils initUser debugMode :", debugMode); // -- test
+export const initUser = async (tidewallet, user, debugMode) => {
+  console.log("user :", user); // -- test
   mode.debug = debugMode ?? false;
   console.log("Utils initUser  mode.debug :", mode.debug); // -- test
+  if (!user.thirdPartyId) {
+    try {
+      user.thirdPartyId = await googleSignIn();
+    } catch (error) {
+      throw error;
+    }
+  }
+  if (!user.installId) {
+    try {
+      user.installId = await getInstallID();
+    } catch (error) {
+      throw error;
+    }
+  }
   try {
     await tidewallet.init({
-      user: {
-        OAuthID,
-        InstallID,
-        mnemonic: data?.mnemonic,
-        password: data?.passphrase,
-      },
-      api,
+      user,
       debugMode: mode.debug,
     });
     return [true];
   } catch (e) {
-    error = e;
-    return [false, error];
+    return [false, e];
   }
+};
+
+export const checkUser = async (tidewallet) => {
+  const api = {
+    apiURL: "https://staging.tidewallet.io/api/v1",
+    apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
+    apiSecret: "9e37d67450dc906042fde75113ecb78c",
+  };
+  const user = {};
+  try {
+    user.thirdPartyId = await googleSignIn();
+    console.log("user.thirdPartyId ", user.thirdPartyId);
+    if (!user.thirdPartyId) throw new Error("Unauthenticate");
+  } catch (error) {
+    throw error;
+  }
+  let result;
+  try {
+    result = await tidewallet.checkUser({
+      user,
+      api,
+    });
+  } catch (error) {
+    throw error;
+  }
+  return result;
 };

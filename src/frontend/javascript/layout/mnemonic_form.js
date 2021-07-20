@@ -48,27 +48,16 @@ class MnemonicFormElement extends HTMLElement {
       }
     });
     // confirmButton
-    this.confirmButton.element.addEventListener("click", async () => {
+    this.confirmButton.element.addEventListener("click", (_) => {
       if (!this.inputValue) return;
       this.parent?.openPopover("loading");
-      const response = this.callback({
+      this.callback({
         mnemonic: this.inputValue,
         passphrase: this.passphraseInput.inputValue || "",
       });
-      if (!response[0]) this.parent?.openPopover("error");
     });
   }
-  disconnectedCallback() {
-    this.confirmButton.element.removeEventListener("click", async () => {
-      if (!this.inputValue) return;
-      this.parent?.openPopover("loading");
-      const response = this.callback({
-        mnemonic: this.inputValue,
-        passphrase: this.passphraseInput.inputValue || "",
-      });
-      if (!response[0]) this.parent?.openPopover("error");
-    });
-  }
+  disconnectedCallback() {}
 }
 
 customElements.define("mnemonic-form", MnemonicFormElement);
