@@ -65,46 +65,7 @@ class ThirdPartySigninContainerElement extends HTMLElement {
     this.googleSignInButton.addEventListener("click", this.init);
   }
   disconnectedCallback() {
-    this.googleSignInButton.removeEventListener("click", async () => {
-      this.parent?.openPopover("loading");
-      const [success, user] = await utils.initUser({
-        tidewallet: this.wallet,
-        debugMode: this.debugMode,
-      });
-      if (!success) {
-        this.parent?.openPopover("error");
-        return;
-      }
-      if (user) {
-        this.parent?.customPopup(
-          new CreateWallet({
-            onAutomatic: async () => {
-              this.parent?.openPopover("loading");
-              const result = await utils.createUser({
-                tidewallet: this.wallet,
-                user,
-              });
-              if (!result) {
-                this.parent?.openPopover("error");
-                return;
-              }
-            },
-            onMnemonic: async () => {
-              viewController.route("mnemonic", async (data) => {
-                await utils.createUser({
-                  tidewallet: this.wallet,
-                  user: {
-                    ...user,
-                    mnemonic: data.mnemonic,
-                    password: data.passphrase,
-                  },
-                });
-              });
-            },
-          })
-        );
-      }
-    });
+    this.googleSignInButton.removeEventListener("click", this.init);
   }
 }
 
