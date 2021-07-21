@@ -1,6 +1,5 @@
-import { async } from "../../../../build/javascript/TideWallet";
 import viewController from "../controller/view";
-import { checkUser, initUser } from "../utils/utils";
+import * as utils from "../utils/utils";
 import CreateWallet from "../widget/create_wallet";
 class ThirdPartySigninContainerElement extends HTMLElement {
   constructor() {
@@ -21,59 +20,90 @@ class ThirdPartySigninContainerElement extends HTMLElement {
         <div id="appleid-signin" class="third-party-signin__button signin-button" data-color="${this.colorMode}" data-border="true" data-type="sign-in"></div>
     </div>
     `;
-    this.googleSignInButton = this.children[2].children[0];
-    this.appleSignInButton = this.children[2].children[1];
-    this.googleSignInButton.addEventListener("click", async () => {
+    this.init = async () => {
       this.parent?.openPopover("loading");
-      let exist, user, result;
-      // Check is User exist
-      try {
-        [exist, user] = await checkUser(this.wallet);
-      } catch (error) {
-        console.log("error ", error);
+      const [success, user] = await utils.initUser({
+        tidewallet: this.wallet,
+        debugMode: this.debugMode,
+      });
+      if (!success) {
         this.parent?.openPopover("error");
         return;
       }
-
-      // if exist, init User
-      if (exist) {
-        this.parent?.openPopover("loading");
-        result = await initUser(this.wallet, user);
-        // if not exist, init User with two way
-      } else {
+      if (user) {
         this.parent?.customPopup(
           new CreateWallet({
             onAutomatic: async () => {
               this.parent?.openPopover("loading");
-              try {
-                await initUser(this.wallet, user);
-              } catch (error) {
+              const result = await utils.createUser({
+                tidewallet: this.wallet,
+                user,
+              });
+              if (!result) {
                 this.parent?.openPopover("error");
+                return;
               }
             },
-            onMnemonic: () => {
+            onMnemonic: async () => {
               viewController.route("mnemonic", async (data) => {
-                try {
-                  await initUser(this.wallet, {
+                await utils.createUser({
+                  tidewallet: this.wallet,
+                  user: {
                     ...user,
-                    mnemonic: data?.mnemonic,
-                    passphrase: data?.passphrase,
-                  });
-                } catch (error) {
-                  this.parent?.openPopover("error");
-                }
+                    mnemonic: data.mnemonic,
+                    password: data.passphrase,
+                  },
+                });
               });
             },
           })
         );
       }
-    });
+    };
+    this.googleSignInButton = this.children[2].children[0];
+    this.appleSignInButton = this.children[2].children[1];
+    this.googleSignInButton.addEventListener("click", this.init);
   }
   disconnectedCallback() {
     this.googleSignInButton.removeEventListener("click", async () => {
       this.parent?.openPopover("loading");
-      const response = await this.callback();
-      if (!response[0]) this.parent?.openPopover("error");
+      const [success, user] = await utils.initUser({
+        tidewallet: this.wallet,
+        debugMode: this.debugMode,
+      });
+      if (!success) {
+        this.parent?.openPopover("error");
+        return;
+      }
+      if (user) {
+        this.parent?.customPopup(
+          new CreateWallet({
+            onAutomatic: async () => {
+              this.parent?.openPopover("loading");
+              const result = await utils.createUser({
+                tidewallet: this.wallet,
+                user,
+              });
+              if (!result) {
+                this.parent?.openPopover("error");
+                return;
+              }
+            },
+            onMnemonic: async () => {
+              viewController.route("mnemonic", async (data) => {
+                await utils.createUser({
+                  tidewallet: this.wallet,
+                  user: {
+                    ...user,
+                    mnemonic: data.mnemonic,
+                    password: data.passphrase,
+                  },
+                });
+              });
+            },
+          })
+        );
+      }
     });
   }
 }
@@ -86,13 +116,16 @@ class ThirdPartySigninContainer {
     this.element.wallet = wallet;
     this.element.colorMode = colorMode;
     this.element.version = version;
-    this.element.debugMode = debugMode;
+    this.debugMode = debugMode;
   }
   set parent(element) {
     this.element.parent = element;
-    if (this.element.debugMode !== undefined) {
-      this.element.parent.openPopover("loading");
-      this.element.callback();
+    if (this.debugMode !== undefined) {
+      this.element.parent?.openPopover("loading");
+      utils.initUser({
+        tidewallet: this.element.wallet,
+        debugMode: this.debugMode,
+      });
     }
   }
   render(parentElement) {

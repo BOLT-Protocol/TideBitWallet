@@ -152,57 +152,55 @@ export const getUserInfo = async (tidewallet) => {
  * @returns {Array} response[0] is Boolean, represent excution result
  * @returns {Array} if process got error, response[1] is Error Object, else is undefined.
  */
-export const initUser = async (tidewallet, user, debugMode) => {
-  console.log("user :", user); // -- test
-  mode.debug = debugMode ?? false;
-  console.log("Utils initUser  mode.debug :", mode.debug); // -- test
-  if (!user.thirdPartyId) {
-    try {
-      user.thirdPartyId = await googleSignIn();
-    } catch (error) {
-      throw error;
-    }
-  }
-  if (!user.installId) {
-    try {
-      user.installId = await getInstallID();
-    } catch (error) {
-      throw error;
-    }
-  }
-  try {
-    await tidewallet.init({
-      user,
-      debugMode: mode.debug,
-    });
-    return [true];
-  } catch (e) {
-    return [false, e];
-  }
-};
-
-export const checkUser = async (tidewallet) => {
+export const initUser = async ({ tidewallet, debugMode }) => {
   const api = {
     apiURL: "https://staging.tidewallet.io/api/v1",
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
+
   const user = {};
   try {
     user.thirdPartyId = await googleSignIn();
-    console.log("user.thirdPartyId ", user.thirdPartyId);
-    if (!user.thirdPartyId) throw new Error("Unauthenticate");
   } catch (error) {
-    throw error;
+    console.log("error ", error);
+    return [false, error];
   }
-  let result;
   try {
-    result = await tidewallet.checkUser({
+    user.installId = await getInstallID();
+  } catch (error) {
+    console.log("error ", error);
+    return [false, error];
+  }
+
+  mode.debug = debugMode ?? false;
+  console.log("initUser mode :", mode.debug); // -- test
+
+  try {
+    const result = await tidewallet.init({
       user,
       api,
+      debugMode: mode.debug,
     });
+    if (result) {
+      return [true, result];
+    }
+    return [true];
   } catch (error) {
-    throw error;
+    console.log("error ", error);
+    return [false, error];
   }
-  return result;
+};
+
+export const createUser = async ({ tidewallet, user }) => {
+  console.log("createUser user: ", user);
+  try {
+    await tidewallet.createUser({
+      user,
+    });
+    return [true];
+  } catch (error) {
+    console.log("error ", error);
+    return [false, error];
+  }
 };
