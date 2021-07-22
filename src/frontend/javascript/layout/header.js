@@ -12,6 +12,8 @@ const getHeaderInfo = (screen) => {
       return { screenTitle: "My Wallet" };
     case "mnemonic":
       return { screenTitle: "" };
+    case "setting-fiat":
+      return { screenTitle: "Fiat" };
   }
 };
 
@@ -108,6 +110,8 @@ class HeaderElement extends HTMLElement {
         this.headerLeading =
           this.screen === "mnemonic"
             ? new BackButton("landing")
+            : this.screen === "setting-fiat"
+            ? new BackButton("settings")
             : new BackButton("asset");
         this.headerLeading.render(this);
         break;

@@ -6,6 +6,7 @@ import BillScreen from "../screen/bill";
 import AddressScreen from "../screen/address";
 import Transaction from "../screen/transaction";
 import MnemonicScreen from "../screen/mnemonic";
+import SettingFiatScreen from "../screen/setting_fiat";
 
 class ViewController {
   constructor() {
@@ -103,13 +104,13 @@ class ViewController {
     }
   };
   route = (screen, data) => {
-    console.log(screen);
     switch (screen) {
       case "landing":
         Landing.render(screen, this.walletVersion, this.wallet, data);
         break;
       case "assets":
       case "settings":
+        if (data) this.walletFiat = data;
         Overview.render(screen, this.walletFiat, this.walletVersion, {
           totalAsset: this.userBalanceInFiat,
           assets: this.userAssets,
@@ -149,6 +150,8 @@ class ViewController {
       case "mnemonic":
         MnemonicScreen.render(screen, data); // data is a callback function
         break;
+      case "setting-fiat":
+        SettingFiatScreen.render(screen, this.wallet, this.walletFiat);
       default:
         break;
     }
