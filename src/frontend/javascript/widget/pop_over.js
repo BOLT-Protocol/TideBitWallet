@@ -4,7 +4,7 @@ class PopoverElement extends HTMLElement {
     this.click = 0;
     this.addEventListener("click", (_) => {
       this.click += 1;
-      if ((this.success || this.error || this.loading) && this.click > 1) {
+      if ((this.success && this.click > 1) || this.error) {
         this.closePopover();
       }
     });

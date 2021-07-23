@@ -11,12 +11,15 @@ class FormElement extends HTMLElement {
   }
   disconnectedCallback() {
     if (this.toggle) {
-      this.toggleButton.removeEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
+      this.toggleButton.removeEventListener("change", async (_) => {
+        await this.handleToggle(this.toggleContent);
       });
     }
     this.buttons.forEach((button, index) =>
-      button.element.removeEventListener("click", () => this.updateFee(index))
+      button.element.removeEventListener(
+        "click",
+        async (_) => await this.updateFee(index)
+      )
     );
     this.transactionButton.removeEventListener("click", () =>
       this.onSend(
@@ -26,6 +29,19 @@ class FormElement extends HTMLElement {
         this.feeUnit
       )
     );
+  }
+
+  getSpeed(index) {
+    switch (index) {
+      case 0:
+        return "slow";
+      case 1:
+        return "standard";
+      case 2:
+        return "fast";
+      default:
+        return "standard";
+    }
   }
   async connectedCallback() {
     this.innerHTML = `
@@ -99,7 +115,10 @@ class FormElement extends HTMLElement {
       defaultFocus: this.selected,
     });
     this.buttons.forEach((button, index) =>
-      button.element.addEventListener("click", () => this.updateFee(index))
+      button.element.addEventListener(
+        "click",
+        async (_) => await this.updateFee(index)
+      )
     );
     this.action = new Button("Next", () => {}, {
       style: ["round", "outline"],
@@ -110,14 +129,14 @@ class FormElement extends HTMLElement {
     this.estimateTime = "10 ~ 30 minutes";
     this.availableAmount = this.asset;
     this.action.render(this.children[8]);
-    if (this.asset.accountType === "ETH" || "CFC") {
+    if (this.asset.accountType === "ETH" || this.asset.accountType === "CFC") {
       // -- test
       this.toggle = true;
       this.toggleButton = document.querySelector(
         ".form input[type='checkbox']"
       );
-      this.toggleButton.addEventListener("change", (e) => {
-        this.handleToggle(this.toggleContent);
+      this.toggleButton.addEventListener("change", async (_) => {
+        await this.handleToggle(this.toggleContent);
       });
     } else {
       this.toggle = false;
@@ -131,8 +150,7 @@ class FormElement extends HTMLElement {
         this.feeUnit
       )
     );
-    this.fee = await this.getTransactionFee();
-    this.updateFee();
+    await this.updateFee();
   }
 
   set fee(fee) {
@@ -143,8 +161,11 @@ class FormElement extends HTMLElement {
       .toFixed();
   }
 
-  updateFee(index) {
+  async updateFee(index) {
     if (index !== undefined) this.selected = index;
+    this.fee = await this.getTransactionFee({
+      speed: this.getSpeed(this.selected),
+    });
     this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
@@ -181,13 +202,14 @@ class FormElement extends HTMLElement {
     return validateResult;
   }
 
-  async getTransactionFee({ to, amount, data } = {}) {
-    const fee = await this.wallet.getTransactionFee(
-      this.asset.id,
+  async getTransactionFee({ to, amount, data, speed } = {}) {
+    const fee = await this.wallet.getTransactionFee({
+      id: this.asset.id,
       to,
       amount,
-      data
-    );
+      data,
+      speed,
+    });
     console.log(fee);
     return fee;
   }
@@ -199,8 +221,7 @@ class FormElement extends HTMLElement {
       this.gasPriceInput.inputValue = "";
       this.gasInput.inputValue = "";
     }
-    this.fee = await this.getTransactionFee();
-    this.updateFee();
+    await this.updateFee();
   }
 
   async sendTransaction(to, amount, feePerUnit, feeUnit) {
@@ -258,12 +279,12 @@ class FormElement extends HTMLElement {
    * @param {Boolean} val
    *
    */
-  handleToggle(toggleContent) {
+  async handleToggle(toggleContent) {
     toggleContent.replaceChildren();
     if (this.toggleButton?.checked) {
       this.gasPriceInput.render(toggleContent);
       this.gasInput.render(toggleContent);
-      this.updateFee();
+      await this.updateFee();
       this.setAttribute("on", "");
     } else {
       this.tabBar = new TabBar(this.buttons);
