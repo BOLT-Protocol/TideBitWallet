@@ -41,7 +41,9 @@ class SettingColumnElement extends HTMLElement {
     const markup = `
     <div class="setting__item">
         <div class="setting__item-name">${item.name}</div>
-        <div class="setting__item-suffix">${item.label || ""}</div>
+        <div class="setting__item-suffix" ${item.label ? item.label.key : ""}>${
+      item?.label?.value || ""
+    }</div>
         <div class="setting__item-icon">${
           item.next ? `<i class="fas fa-chevron-right">` : ``
         }</i></div>

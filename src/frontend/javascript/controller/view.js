@@ -6,6 +6,7 @@ import BillScreen from "../screen/bill";
 import AddressScreen from "../screen/address";
 import Transaction from "../screen/transaction";
 import MnemonicScreen from "../screen/mnemonic";
+import SettingFiatScreen from "../screen/setting_fiat";
 
 class ViewController {
   constructor() {
@@ -15,28 +16,25 @@ class ViewController {
   }
   setup(wallet) {
     this.wallet = wallet;
-    this.walletVersion = wallet.getVersion();
-    this.walletMode = "development"; // wallet.getMode(); // ++
+    this.version = wallet.getVersion();
+    this.mode = "development"; // wallet.getMode(); // ++
   }
-  updateUser(user) {
-    this.userBalanceInFiat = user?.balance;
-    this.userAssets = user?.assets;
-    if (this.userAssets) {
-      this.updateAssets(this.userAssets, this.userBalanceInFiat, this.fiat);
-    }
-  }
+  /**
+   *
+   * @param {Array of Objects} assets
+   * @param {string} userBalanceInFiat
+   * @param {Object} fiat
+   * @param {string} fiat.name
+   */
   updateAssets = (assets, userBalanceInFiat, fiat) => {
     this.userAssets = assets;
     this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
-    if (fiat) {
-      this.fiat = fiat;
-      this.walletFiat = this.fiat.name;
-    }
+    if (fiat) this.fiat = fiat;
     const view = currentView();
     switch (view) {
       case "assets":
       case "settings":
-        Overview.updateAssets(this.userBalanceInFiat, this.walletFiat, assets);
+        Overview.updateAssets(this.userBalanceInFiat, this.fiat.name, assets);
         break;
       default:
         break;
@@ -103,14 +101,14 @@ class ViewController {
     }
   };
   route = (screen, data) => {
-    console.log(screen);
     switch (screen) {
       case "landing":
-        Landing.render(screen, this.walletVersion, this.wallet, data);
+        Landing.render(screen, this.version, this.wallet, data);
         break;
       case "assets":
       case "settings":
-        Overview.render(screen, this.walletFiat, this.walletVersion, {
+        if (data) this.fiat = data;
+        Overview.render(screen, this.fiat?.name, this.version, {
           totalAsset: this.userBalanceInFiat,
           assets: this.userAssets,
         });
@@ -122,7 +120,7 @@ class ViewController {
         AssetScreen.render(
           screen,
           this.currentAsset,
-          this.walletFiat,
+          this.fiat.name,
           this.wallet
         );
         break;
@@ -130,7 +128,7 @@ class ViewController {
         Transaction.render(
           screen,
           this.currentAsset,
-          this.walletFiat,
+          this.fiat.name,
           this.wallet
         );
         break;
@@ -149,6 +147,8 @@ class ViewController {
       case "mnemonic":
         MnemonicScreen.render(screen, data); // data is a callback function
         break;
+      case "setting-fiat":
+        SettingFiatScreen.render(screen, this.wallet, this.fiat.name);
       default:
         break;
     }

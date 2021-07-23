@@ -1,4 +1,5 @@
 import viewController from "../controller/view";
+import { formateDecimal } from "../utils/utils";
 class AssetItemElement extends HTMLElement {
   constructor() {
     super(); // always call super() first in the constructor.
@@ -24,8 +25,11 @@ class AssetItemElement extends HTMLElement {
       `<img src=${this.asset.image} alt=${this.asset.symbol.toUpperCase()}>`
     );
     this.children[1].textContent = this.asset.symbol.toUpperCase();
-    this.children[2].textContent = this.asset.balance;
-    this.children[3].children[1].textContent = this.asset.inFiat;
+    this.children[2].textContent = formateDecimal(this.asset.balance, 18);
+    this.children[3].children[1].textContent = formateDecimal(
+      this.asset.inFiat,
+      12
+    );
     this.children[3].children[2].textContent = this.fiat;
   }
   connectedCallback() {

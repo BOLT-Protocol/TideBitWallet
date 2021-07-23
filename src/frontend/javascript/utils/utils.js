@@ -76,6 +76,31 @@ export const addressFormatter = (address, showLength = 6) => {
   return prefix + "..." + suffix;
 };
 
+/**
+ *
+ * @param {string} amount
+ * @param {number} decimalLength
+ * @param {number} maxLength
+ * @returns {string}
+ */
+export const formateDecimal = (amount, maxLength = 18, decimalLength = 8) => {
+  const splitChunck = amount.split(".");
+  if (splitChunck.length > 1) {
+    // if (splitChunck[1].length > decimalLength ?? 8) {
+    if (amount.length > maxLength)
+      splitChunck[1] = splitChunck[1].substring(
+        0,
+        maxLength - splitChunck[0].length - 1
+      );
+    // else splitChunck[1] = splitChunck[1].substring(0, decimalLength ?? 8);
+    // }
+    return splitChunck[1].length > 0
+      ? `${splitChunck[0]}.${splitChunck[1]}`
+      : splitChunck[0];
+  }
+  return amount;
+};
+
 export const currentView = () => {
   const scaffold = document.querySelector("scaffold-widget");
   const view = scaffold?.attributes?.view?.value;
@@ -135,13 +160,20 @@ export const googleSignIn = async () => {
 };
 
 export const getUserInfo = async (tidewallet) => {
-  viewController.route("assets");
-  const _fiat = await tidewallet.getFiat();
-  const fiat = new Fiat(_fiat);
-  const dashboard = await tidewallet.overview();
-  const balance = dashboard?.balance;
-  const assets = dashboard?.currencies?.map((currency) => new Asset(currency));
-  viewController.updateAssets(assets, balance, fiat);
+
+  try {
+    const dashboard = await tidewallet.overview();
+    const balance = dashboard.balance;
+    const fiat = new Fiat(dashboard.fiat);
+    const assets = dashboard.currencies.map((currency) => new Asset(currency));
+    console.log("getUserInfo assets", assets)
+    console.log("getUserInfo fiat", fiat)
+    console.log("getUserInfo dashboard.balance", dashboard.balance)
+   
+    viewController.updateAssets(assets, balance, fiat);
+  } catch (error) {
+    throw error;
+  }
 };
 
 /**

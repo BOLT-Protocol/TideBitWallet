@@ -19,9 +19,12 @@ const getSettings = (fiat) => [
     items: [
       {
         name: "Fiat currency unit",
-        label: fiat,
+        label: {
+          key: "fiat",
+          value: fiat,
+        },
         onPressed: () => {
-          console.log("Popup options of fiat currency");
+          viewController.route("setting-fiat");
         },
         next: true,
       },
@@ -77,10 +80,13 @@ class SettingList {
     const settings = getSettings(fiat);
     this.element = document.createElement("setting-list");
     this.element.version = version;
-    this.element.fiat = fiat;
     this.element.settings = settings.map(
       (setting) => new SettingColumn(setting)
     );
+  }
+  updateFiat(fiat) {
+    const fiatSelector = document.querySelector(".setting__item-suffix[fiat]");
+    fiatSelector.innerHTML = fiat;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);

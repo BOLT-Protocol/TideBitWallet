@@ -13,6 +13,9 @@ class BottomNavigator {
     this.tabBar = new TabBar(this.bottomNavigatorItems, this.focusIndex);
     this.tabBar.render(parentElement);
   }
+  set focus(index) {
+    this.tabBar.selected = index;
+  }
 }
 
 export default BottomNavigator;
