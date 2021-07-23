@@ -1,29 +1,30 @@
-import "./frontend/scss/main.scss"
+import "./frontend/scss/main.scss";
 import Asset from "./frontend/javascript/model/asset";
 import Bill from "./frontend/javascript/model/bill";
 import viewController from "./frontend/javascript/controller/view";
 import { getUserInfo } from "./frontend/javascript/utils/utils";
+import Fiat from "./frontend/javascript/model/fiat";
 /**
  * viewContoller 提供頁面跳轉及頁面更新的功能
  * @param {String} screen
  * @param {dynamic} data Asset || Bill
  * 頁面跳轉 => viewController.route(screen, [data])
- * screen: 
+ * screen:
  * viewController.route('landing') => 登入頁面
  * viewController.route('mnemonic') => 輸入助記詞頁面
- * viewController.route('assets') => asset 清單 
+ * viewController.route('assets') => asset 清單
  * viewController.route('settings') => 設定頁面
  * viewController.route('asset', asset) => asset 的交易清單
  * viewController.route('bill', bill) => 交易細節
  * viewController.route('transaction') => 交易畫面
  * viewController.route('address') => 收款頁面
  * 頁面更新
- * @param {Array} assets,  
- * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703, 
+ * @param {Array} assets,
+ * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703,
  * @param {Fiat} fiat[optional], 參考model Fiat
  * viewController.updateAssets(assets, balance, fiat.name)
- * @param {Array} asset,  
- * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703, 
+ * @param {Array} asset,
+ * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703,
  * viewController.updateAsset(asset, balance)
  * @param {Asset} asset
  * @param {Array} bills
@@ -44,16 +45,17 @@ viewController.setup(tidewallet);
 // on ready
 tidewallet.on("ready", (data) => {
   console.log("TideWallet is Ready", data); // -- test
+  viewController.route("assets");
   getUserInfo(tidewallet);
 });
 // on update
 /**
- * event: OnUpdateCurrency 
+ * event: OnUpdateCurrency
  * => 更新單個或是多個asset, 更新錢包的法幣也用這個event
- * => 影響頁面 overview(assetList & settingList) 及 asset, 
+ * => 影響頁面 overview(assetList & settingList) 及 asset,
  * => 更新參數
- * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703, 
- * @param {Array} assets,  
+ * @param {String} balance [目前tidewalletJS沒有提供]// ++ 20210703,
+ * @param {Array} assets,
  * @param {Fiat} fiat[optional], 參考model Fiat
  * event: OnUpdateTransactions
  */
@@ -69,12 +71,13 @@ tidewallet.on("update", (data) => {
   console.log("TideWallet Data Updated", data); // -- test
   switch (data.evt) {
     case "OnUpdateCurrency":
-      if (Array.isArray(data.value)) {
-        const assets = data.value.map((currency) => new Asset(currency));
-        if (data.value.length === 1) {
-          viewController.updateAsset(assets[0]);
+      if (Array.isArray(data.accounts)) {
+        const assets = data.accounts.map((account) => new Asset(account));
+        const fiat = new Fiat(data.fiat);
+        if (data.accounts.length === 1) {
+          viewController.updateAsset(assets[0], data.userBalanceInFiat);
         } else {
-          viewController.updateAssets(assets);
+          viewController.updateAssets(assets, data.userBalanceInFiat, fiat);
         }
       }
       break;

@@ -73,7 +73,6 @@ class BillItemElement extends HTMLElement {
 customElements.define("bill-item", BillItemElement);
 class BillItem {
   constructor(asset, bill) {
-    console.log(bill)
     this.bill = bill;
     this.element =
       document.querySelector(`bill-item[id="${this.bill.id}"]`) ||

@@ -1,6 +1,7 @@
 // https://unicode-table.com/cn/2248/
 
 import viewController from "../controller/view";
+import { formateDecimal } from "../utils/utils";
 
 const getHeaderInfo = (screen) => {
   switch (screen) {
@@ -58,7 +59,7 @@ class HeaderElement extends HTMLElement {
       <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
         <span class="user-total-balance">${
-          totalAsset ? totalAsset : "Loading..."
+          totalAsset ? formateDecimal(totalAsset, 18) : "Loading..."
         }</span>
         <span class="currency-unit">${totalAsset ? fiat : ""}</span>
       </div>
@@ -71,7 +72,7 @@ class HeaderElement extends HTMLElement {
       <img src=${asset.image}  alt=${asset.symbol.toUpperCase()}>
     </div>
     <div class="header__icon-title">${asset.symbol.toUpperCase()}</div>
-    <div class="header__title">${asset.balance}</div>
+    <div class="header__title">${formateDecimal(asset.balance, 18)}</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
       <span class="balance">${asset.inFiat}</span>

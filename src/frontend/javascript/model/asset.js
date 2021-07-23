@@ -20,7 +20,7 @@ class Asset {
     this.publish = publish;
     this.image = image;
     this.balance = balance;
-    this.inFiat = inFiat || "0"; // -- temporary
+    this.inFiat = inFiat;
   }
 }
 export default Asset;

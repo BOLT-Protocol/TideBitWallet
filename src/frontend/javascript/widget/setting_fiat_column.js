@@ -1,5 +1,3 @@
-import viewController from "../controller/view";
-
 class SettingFiatColumnElement extends HTMLElement {
   constructor() {
     super();
@@ -11,19 +9,13 @@ class SettingFiatColumnElement extends HTMLElement {
       this.removeAttribute("selected");
     }
   }
-  set fiat(fiat) {
-    this.setAttribute("fiat", fiat);
-  }
-  get fiat() {
-    return this.getAttribute("fiat");
-  }
   connectedCallback() {
     this.className = "setting-fiat__column";
     this.innerHTML = `
-      <div class="setting-fiat__title">${this.fiat}</div>
+      <div class="setting-fiat__title">${this.fiat.name}</div>
       <div class="setting-fiat__label"><i class="fas fa-check"></i></div>
       `;
-    this.selected = this.fiat === this.selectedFiat;
+    this.selected = this.fiat.name === this.selectedFiat;
     this.addEventListener("click", (_) => {
       this.callback(this.fiat);
     });
