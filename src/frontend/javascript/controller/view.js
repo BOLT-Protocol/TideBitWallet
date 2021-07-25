@@ -108,7 +108,7 @@ class ViewController {
       case "assets":
       case "settings":
         if (data) this.fiat = data;
-        Overview.render(screen, this.fiat?.name, this.version, {
+        Overview.render(screen, this.wallet, this.fiat?.name, this.version, {
           totalAsset: this.userBalanceInFiat,
           assets: this.userAssets,
         });

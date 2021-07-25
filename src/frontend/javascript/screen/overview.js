@@ -22,23 +22,24 @@ class Overview {
         break;
     }
   }
-  initialize(screen, fiat, version, { totalAsset, assets } = {}) {
+  initialize(screen, wallet, fiat, version, { totalAsset, assets } = {}) {
     this.header = new Header(screen, { fiat, totalAsset });
     this.assetList = new AssetList(assets, fiat);
-    this.settingList = new SettingList(fiat, version);
+    this.settingList = new SettingList(wallet, fiat, version);
     this.body = new SlidesContainer([this.assetList, this.settingList]);
     this.footer = new BottomNavigator(this.index);
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.scaffold.view = screen;
+    this.settingList.parent = this.scaffold;
     if (!assets) {
       this.scaffold.openPopover("loading");
     }
   }
-  render(screen, fiat, version, { totalAsset, assets } = {}) {
+  render(screen, wallet, fiat, version, { totalAsset, assets } = {}) {
     const view = currentView();
     this.getIndex(screen);
     if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
-      this.initialize(screen, fiat, version, { totalAsset, assets });
+      this.initialize(screen, wallet, fiat, version, { totalAsset, assets });
     }
     this.body.focus = this.index;
   }
