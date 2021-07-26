@@ -12,25 +12,31 @@ class SettingColumnElement extends HTMLElement {
         this.addItem(item);
         this.children[index + 1].addEventListener(
           "click",
-          item.next ? item.onPressed : null
+          item.next ? () => item.onPressed(this.parent) : null
         );
       });
     } else {
       this.addItem(this.items);
       this.children[index + 1].addEventListener(
         "click",
-        items.next ? items.onPressed : null
+        items.next ? () => item.onPressed(this.parent) : null
       );
     }
   }
   disconnectedCallback() {
     if (Array.isArray(this.items)) {
       this.items.forEach((item, index) => {
-        this.children[index + 1].removeEventListener("click", item.onPressed);
+        this.children[index + 1].removeEventListener(
+          "click",
+          item.next ? () => item.onPressed(this.parent) : null
+        );
       });
     } else {
       addItem(this.items);
-      this.children[index + 1].removeEventListener("click", items.onPressed);
+      this.children[index + 1].removeEventListener(
+        "click",
+        items.next ? () => item.onPressed(this.parent) : null
+      );
     }
   }
   addTitle(title) {
@@ -64,6 +70,9 @@ class SettingColumn {
     this.element = document.createElement("setting-column");
     this.element.title = setting.title;
     this.element.items = setting.items.map((item) => ({ ...item }));
+  }
+  set parent(element) {
+    this.element.parent = element;
   }
   render(parentElement) {
     parentElement.insertAdjacentElement("beforeend", this.element);

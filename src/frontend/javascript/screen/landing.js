@@ -4,6 +4,7 @@ import ThirdPartySigninContainer from "../layout/third_party_signin_container";
 class Landing {
   constructor() {}
   render(screen, version, wallet, debugMode) {
+    console.log("Landing debugMode", debugMode)
     this.body = new ThirdPartySigninContainer(
       wallet,
       version,

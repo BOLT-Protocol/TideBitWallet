@@ -1,4 +1,3 @@
-import mode from "../constant/config";
 import viewController from "../controller/view";
 import Asset from "../model/asset";
 import Fiat from "../model/fiat";
@@ -160,16 +159,15 @@ export const googleSignIn = async () => {
 };
 
 export const getUserInfo = async (tidewallet) => {
-
   try {
     const dashboard = await tidewallet.overview();
     const balance = dashboard.balance;
     const fiat = new Fiat(dashboard.fiat);
     const assets = dashboard.currencies.map((currency) => new Asset(currency));
-    console.log("getUserInfo assets", assets)
-    console.log("getUserInfo fiat", fiat)
-    console.log("getUserInfo dashboard.balance", dashboard.balance)
-   
+    console.log("getUserInfo assets", assets);
+    console.log("getUserInfo fiat", fiat);
+    console.log("getUserInfo dashboard.balance", dashboard.balance);
+
     viewController.updateAssets(assets, balance, fiat);
   } catch (error) {
     throw error;
@@ -205,15 +203,13 @@ export const initUser = async ({ tidewallet, debugMode }) => {
     return [false, error];
   }
 
-  mode.debug = debugMode ?? false;
-  console.log("initUser mode :", mode.debug); // -- test
-
   try {
     const result = await tidewallet.init({
       user,
       api,
-      debugMode: mode.debug,
+      debugMode,
     });
+
     if (result) {
       return [true, result];
     }
