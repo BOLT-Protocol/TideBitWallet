@@ -41,6 +41,16 @@ class Overview {
     if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
       this.initialize(screen, wallet, fiat, version, { totalAsset, assets });
     }
+    this.reload = document.querySelector(".header__leading[refresh]");
+    this.reload.addEventListener("click", async (_) => {
+      this.scaffold.openPopover("loading");
+      try {
+        await wallet.sync();
+        this.scaffold.closePopover();
+      } catch (error) {
+        this.scaffold.openPopover("error");
+      }
+    });
     this.body.focus = this.index;
   }
   /**

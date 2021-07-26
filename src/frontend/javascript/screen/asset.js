@@ -36,6 +36,16 @@ class Asset {
     if (!view || view !== "asset" || !this.scaffold) {
       this.initialize(screen, asset, fiat, wallet);
     }
+    this.reload = document.querySelector(".header__leading[refresh]");
+    this.reload.addEventListener("click", async (_) => {
+      this.scaffold.openPopover("loading");
+      try {
+        await wallet.sync();
+        this.scaffold.closePopover();
+      } catch (error) {
+        this.scaffold.openPopover("error");
+      }
+    });
   }
   updateAsset(asset) {
     this.header.update(this.screen, { asset });

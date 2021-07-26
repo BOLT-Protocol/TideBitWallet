@@ -15,7 +15,7 @@ const getSettings = (wallet, fiat) => [
               try {
                 scaffold.openPopover("loading");
                 await wallet.resetWallet();
-                viewController("landing");
+                viewController.route("landing");
               } catch (error) {
                 console.log(error);
                 scaffold.openPopover("error");

@@ -63,6 +63,7 @@ class HeaderElement extends HTMLElement {
         }</span>
         <span class="currency-unit">${totalAsset ? fiat : ""}</span>
       </div>
+      <div class="header__leading" refresh>Refresh</div>
     `;
     return markup;
   };
@@ -78,6 +79,7 @@ class HeaderElement extends HTMLElement {
       <span class="balance">${asset.inFiat}</span>
       <span class="currency-unit">${fiat}</span>
     </div>
+    <div class="header__leading" refresh>Refresh</div>
     `;
     return markup;
   };
@@ -104,7 +106,6 @@ class HeaderElement extends HTMLElement {
         this.headerLeading = new BackButton("assets");
         this.headerLeading.render(this);
         break;
-
       default:
         this.classList = ["header header--default"];
         this.innerHTML = this.defaultHeader(this.screen);
