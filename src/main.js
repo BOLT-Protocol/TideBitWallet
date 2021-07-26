@@ -4,6 +4,7 @@ import Bill from "./frontend/javascript/model/bill";
 import viewController from "./frontend/javascript/controller/view";
 import { getUserInfo } from "./frontend/javascript/utils/utils";
 import Fiat from "./frontend/javascript/model/fiat";
+import mode from "./frontend/javascript/constant/config";
 /**
  * viewContoller 提供頁面跳轉及頁面更新的功能
  * @param {String} screen
@@ -44,7 +45,7 @@ viewController.setup(tidewallet);
 // 監聽 tidewallet 事件
 // on ready
 tidewallet.on("ready", (data) => {
-  console.log("TideWallet is Ready", data); // -- test
+  mode.debug = data.debugMode;
   viewController.route("assets");
   getUserInfo(tidewallet);
 });
