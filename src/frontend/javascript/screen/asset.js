@@ -13,7 +13,7 @@ class Asset {
       this.scaffold.openPopover("loading");
       try {
         console.log("sync");
-        await this.wallet.sync();
+        await this.wallet.partialSync(this.asset.id);
         this.scaffold.closePopover();
       } catch (error) {
         console.log(error);
@@ -24,6 +24,7 @@ class Asset {
   initialize(screen, asset, fiat, wallet) {
     console.log("wallet getAssetDetail"); // -- test
     this.wallet = wallet;
+    this.asset = asset;
     wallet.getAssetDetail(asset.id).then((data) => {
       console.log(data); // -- test
       const asset = new AssetModel(data.asset[0]);
