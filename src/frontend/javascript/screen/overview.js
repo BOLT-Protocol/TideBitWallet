@@ -71,12 +71,14 @@ class Overview {
     this.assetList.updateAssets(assets, fiat);
     this.settingList.updateFiat(fiat);
   }
-  updateAsset(index, totalAsset, asset) {
-    this.header.update(this.screen, { totalAsset });
+  updateAsset(index, totalAsset, fiat, asset) {
+    this.scaffold.closePopover();
+    this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAsset(index, asset);
   }
-  addNewAsset(totalAsset, asset) {
-    this.header.update(this.screen, { totalAsset });
+  addNewAsset(totalAsset, fiat, asset) {
+    this.scaffold.closePopover();
+    this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.addNewAsset(asset);
   }
 }

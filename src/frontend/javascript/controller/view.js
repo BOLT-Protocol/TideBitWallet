@@ -40,7 +40,8 @@ class ViewController {
         break;
     }
   };
-  updateAsset = (asset, userBalanceInFiat) => {
+  updateAsset = (asset, userBalanceInFiat, fiat) => {
+    if (fiat) this.fiat = fiat;
     const index = this.userAssets.findIndex((ass) => ass.id === asset.id);
     this.userBalanceInFiat = userBalanceInFiat || this.userBalanceInFiat;
     const view = currentView();
@@ -49,10 +50,15 @@ class ViewController {
       case "settings":
         if (index > -1) {
           this.userAssets[index] = asset;
-          Overview.updateAsset(index, this.userBalanceInFiat, asset);
+          Overview.updateAsset(
+            index,
+            this.userBalanceInFiat,
+            this.fiat.name,
+            asset
+          );
         } else {
           this.userAssets.push(asset);
-          Overview.addNewAsset(this.userBalanceInFiat, asset);
+          Overview.addNewAsset(this.userBalanceInFiat,  this.fiat.name,asset);
         }
         break;
       case "asset":
