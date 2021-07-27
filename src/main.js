@@ -71,15 +71,20 @@ tidewallet.on("ready", (data) => {
 tidewallet.on("update", (data) => {
   console.log("TideWallet Data Updated", data); // -- test
   switch (data.evt) {
+    case "OnUpdateCurrencies":
+      const fiat = new Fiat(data.fiat);
+      viewController.updateAssets(assets, data.userBalanceInFiat, fiat);
+      break;
     case "OnUpdateCurrency":
       if (Array.isArray(data.accounts)) {
-        const assets = data.accounts.map((account) => new Asset(account));
         const fiat = new Fiat(data.fiat);
-        if (data.accounts.length === 1) {
-          viewController.updateAsset(assets[0], data.userBalanceInFiat);
-        } else {
-          viewController.updateAssets(assets, data.userBalanceInFiat, fiat);
-        }
+        data.accounts.forEach((account) => {
+          const asset = new Asset(account);
+          viewController.updateAsset(asset, data.userBalanceInFiat, fiat);
+        });
+      } else {
+        const asset = new Asset(data.accounts);
+        viewController.updateAsset(asset, data.userBalanceInFiat, fiat);
       }
       break;
     case "OnUpdateTransactions":
