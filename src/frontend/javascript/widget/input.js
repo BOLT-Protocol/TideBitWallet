@@ -164,7 +164,7 @@ class Input {
     if (this.pattern !== undefined) this.element.pattern = this.pattern;
   }
   get inputValue() {
-    return this.element.inputValue;
+    return this.element?.inputValue;
   }
 
   set inputValue(value) {
