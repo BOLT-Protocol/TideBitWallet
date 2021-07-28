@@ -41,7 +41,6 @@ class BillElement extends HTMLElement {
         <div class="bill__title">Fee</div>
         <div class="bill__content">
             <span class="bill__fee">${this.bill.fee}</span>
-            <span class="bill__unit">${this.asset.symbol}</span>
         </div>
     </div>
     <div class="bill__cell">

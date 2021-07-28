@@ -2,6 +2,7 @@
   border-bottom: 1px solid $color-grey-light-2;
   padding: 1rem 2rem;
   color: $color-grey-dark-2;
+
   &__main {
     display: flex;
     flex-direction: row;
@@ -18,6 +19,9 @@
   }
   &[receive] &__icon {
     background-image: url(../image/icon/ic_receive_black.png);
+  }
+  &[failed] &__icon {
+    background-image: none;
   }
   &__title {
     width: 100%;
@@ -47,6 +51,10 @@
   &[pending][receive] &__amount {
     color: $color-grey-dark-1;
   }
+
+  &[failed] * {
+    color: $color-grey-dark-3 !important;
+  }
   &__sub {
     margin-top: 4px;
   }
@@ -54,6 +62,7 @@
   &__sub * {
     opacity: 0;
   }
+
   &[pending],
   &[confirming] {
     .bill-item__sub,

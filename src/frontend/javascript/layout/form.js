@@ -18,7 +18,7 @@ class FormElement extends HTMLElement {
     this.buttons.forEach((button, index) =>
       button.element.removeEventListener(
         "click",
-        async (_) => await this.updateFee(index)
+        async (_) => await this.updateFee({ index, lazy: true })
       )
     );
     this.transactionButton.removeEventListener("click", () =>
@@ -26,7 +26,7 @@ class FormElement extends HTMLElement {
         this.addressInput.inputValue,
         this.amountInput.inputValue,
         this.feePerUnit[this.selected],
-        this.feeUnit
+        this.gasInput?.inputValue ?? this.feeUnit
       )
     );
   }
@@ -117,7 +117,7 @@ class FormElement extends HTMLElement {
     this.buttons.forEach((button, index) =>
       button.element.addEventListener(
         "click",
-        async (_) => await this.updateFee(index)
+        async (_) => await this.updateFee({ index, lazy: true })
       )
     );
     this.action = new Button("Next", () => {}, {
@@ -147,7 +147,7 @@ class FormElement extends HTMLElement {
         this.addressInput.inputValue,
         this.amountInput.inputValue,
         this.feePerUnit[this.selected],
-        this.feeUnit
+        this.gasInput?.inputValue ?? this.feeUnit
       )
     );
     await this.updateFee();
@@ -159,17 +159,19 @@ class FormElement extends HTMLElement {
     this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
+    this.feeSymbol = fee.symbol;
   }
 
-  async updateFee(index) {
+  async updateFee({ index, lazy } = {}) {
     if (index !== undefined) this.selected = index;
-    this.fee = await this.getTransactionFee({
-      speed: this.getSpeed(this.selected),
-    });
+    if (!lazy)
+      this.fee = await this.getTransactionFee({
+        speed: this.getSpeed(this.selected),
+      });
     this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
-    this.estimateFee = this.feeInCurrencyUnit;
+    this.estimateFee = this.feeInCurrencyUnit + " " + this.feeSymbol;
     if (this.toggleButton?.checked) {
       this.gasPriceInput.inputValue = this.feePerUnit[this.selected];
       this.gasInput.inputValue = this.feeUnit;
@@ -177,14 +179,12 @@ class FormElement extends HTMLElement {
   }
 
   async verifyAddress(id, address) {
-    let validateResult = await this.wallet.verifyAddress(id, address);
+    let validateResult = this.wallet.verifyAddress(id, address);
     this.isAddressValid = validateResult;
-    if (validateResult)
+    if (validateResult && this.amountInput.inputValue)
       this.fee = await this.getTransactionFee({
         to: address,
-        amount: this.amountInput.isValid
-          ? this.amountInput.inputValue
-          : undefined,
+        amount: this.amountInput.inputValue,
       });
     return validateResult;
   }
@@ -192,11 +192,9 @@ class FormElement extends HTMLElement {
   async verifyAmount(id, amount, fee) {
     let validateResult = this.wallet.verifyAmount(id, amount, fee);
     this.isAmountValid = validateResult;
-    if (validateResult)
+    if (validateResult && this.addressInput.inputValues)
       this.fee = await this.getTransactionFee({
-        to: this.addressInput.isValid
-          ? this.addressInput.inputValue
-          : undefined,
+        to: this.addressInput.inputValue,
         amount: amount,
       });
     return validateResult;
@@ -255,9 +253,9 @@ class FormElement extends HTMLElement {
       this.parent.openPopover("error", "Input is not valid");
       return;
     }
+    console.log("onSend feeUnit", feeUnit);
     let _func = async () =>
       await this.sendTransaction(to, amount, feePerUnit, feeUnit);
-    console.log(_func);
     this.parent.openPopover(
       "confirm",
       "Are you sure to make this transaction?",
@@ -284,7 +282,7 @@ class FormElement extends HTMLElement {
     if (this.toggleButton?.checked) {
       this.gasPriceInput.render(toggleContent);
       this.gasInput.render(toggleContent);
-      await this.updateFee();
+      await this.updateFee({ lazy: true });
       this.setAttribute("on", "");
     } else {
       this.tabBar = new TabBar(this.buttons);
@@ -300,7 +298,7 @@ class FormElement extends HTMLElement {
       asset.balance + " " + asset.symbol;
   }
   set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + this.asset.symbol;
+    this.children[6].children[1].textContent = fee;
   }
   set estimateTime(time) {
     this.children[3].children[1].textContent = time;
