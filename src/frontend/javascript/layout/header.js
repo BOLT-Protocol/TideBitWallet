@@ -148,7 +148,7 @@ class HeaderElement extends HTMLElement {
         if (totalAsset !== this.totalAsset) {
           this.totalAsset = totalAsset;
           document.querySelector(".user-total-balance").textContent =
-            totalAsset;
+          formateDecimal(totalAsset, 18);
         }
         if (!this.fiat || (fiat && this.fiat !== fiat)) {
           this.fiat = fiat;

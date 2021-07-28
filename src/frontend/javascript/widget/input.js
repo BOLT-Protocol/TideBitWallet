@@ -8,7 +8,7 @@ class InputElement extends HTMLElement {
     return ["focus", "has-value", "error"];
   }
   async handleInput(e) {
-    this.hasValue = e.target.value === "" ? false : true;
+    this.inputValue =  e.target.value
     let checked;
     if (this.validator !== undefined) {
       this.isValid = await this.validator(e.target.value);
