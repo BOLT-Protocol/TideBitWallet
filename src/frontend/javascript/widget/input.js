@@ -8,6 +8,7 @@ class InputElement extends HTMLElement {
     return ["focus", "has-value", "error"];
   }
   async handleInput(e) {
+    this.hasValue = e.target.value === "" ? false : true;
     let checked;
     if (this.validator !== undefined) {
       this.isValid = await this.validator(e.target.value);
@@ -22,7 +23,6 @@ class InputElement extends HTMLElement {
       //   this.value = this.value.replace(/[^0-9.]/g, '');
       //   this.value = this.value.replace(/(\..*)\./g, '$1');
     }
-    this.inputValue = e.target.value;
   }
   connectedCallback() {
     this.className = "input__controller";

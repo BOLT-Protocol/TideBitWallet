@@ -24,7 +24,7 @@ class Asset {
     this.asset = asset;
     wallet.getAssetDetail(asset.id).then((data) => {
       console.log(data); // -- test
-      const asset = new AssetModel(data.asset[0]);
+      const asset = new AssetModel(data.asset);
       console.log(asset); // -- test
       const bills = data.transactions.map((obj) => new Bill(obj));
       this.updateBills(asset, bills);

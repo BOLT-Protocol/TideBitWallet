@@ -159,6 +159,7 @@ class FormElement extends HTMLElement {
     this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
+    this.feeSymbol = fee.symbol;
   }
 
   async updateFee(index) {
@@ -169,7 +170,7 @@ class FormElement extends HTMLElement {
     this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
-    this.estimateFee = this.feeInCurrencyUnit;
+    this.estimateFee = this.feeInCurrencyUnit + " " + this.feeSymbol;
     if (this.toggleButton?.checked) {
       this.gasPriceInput.inputValue = this.feePerUnit[this.selected];
       this.gasInput.inputValue = this.feeUnit;
@@ -300,7 +301,7 @@ class FormElement extends HTMLElement {
       asset.balance + " " + asset.symbol;
   }
   set estimateFee(fee) {
-    this.children[6].children[1].textContent = fee + " " + this.asset.symbol;
+    this.children[6].children[1].textContent = fee;
   }
   set estimateTime(time) {
     this.children[3].children[1].textContent = time;
