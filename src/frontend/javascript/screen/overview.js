@@ -8,34 +8,56 @@ import { currentView } from "../utils/utils";
 
 class Overview {
   constructor() {}
-  initialize(screen, fiat, version, { totalAsset, assets } = {}) {
-    this.header = new Header(screen, { fiat, totalAsset });
+  async refresh(scaffold, wallet) {
+    scaffold.openPopover("loading");
+    try {
+      console.trace("Overview sync");
+      await wallet.sync();
+      scaffold.closePopover();
+    } catch (error) {
+      console.log(error);
+      scaffold.openPopover("error");
+    }
+  }
+  getIndex(screen) {
+    this.screen = screen;
+    switch (this.screen) {
+      case "assets":
+        this.index = 0;
+        break;
+      case "settings":
+        this.index = 1;
+        break;
+      default:
+        this.index = 0;
+        break;
+    }
+  }
+  initialize(screen, wallet, fiat, version, { totalAsset, assets } = {}) {
+    this.wallet = wallet;
+    this.header = new Header(screen, {
+      fiat,
+      totalAsset,
+      callback: async () => await this.refresh(this.scaffold, this.wallet),
+    });
     this.assetList = new AssetList(assets, fiat);
-    this.settingList = new SettingList(fiat, version);
+    this.settingList = new SettingList(wallet, fiat, version);
     this.body = new SlidesContainer([this.assetList, this.settingList]);
-    this.footer = new BottomNavigator(0);
+    this.footer = new BottomNavigator(this.index);
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.scaffold.view = screen;
-    this.screen = screen;
+    this.settingList.parent = this.scaffold;
     if (!assets) {
       this.scaffold.openPopover("loading");
     }
   }
-  render(screen, fiat, version, { totalAsset, assets } = {}) {
+  render(screen, wallet, fiat, version, { totalAsset, assets } = {}) {
     const view = currentView();
+    this.getIndex(screen);
     if (!view || (view !== "assets" && view !== "settings") || !this.scaffold) {
-      this.initialize(screen, fiat, version, { totalAsset, assets });
-    } else {
-      this.screen = screen;
-      switch (this.screen) {
-        case "assets":
-          this.body.focus = 0;
-          break;
-        case "settings":
-          this.body.focus = 1;
-          break;
-      }
+      this.initialize(screen, wallet, fiat, version, { totalAsset, assets });
     }
+    this.body.focus = this.index;
   }
   /**
    * @param {List of Asset} assets
@@ -47,13 +69,16 @@ class Overview {
     this.scaffold.closePopover();
     this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAssets(assets, fiat);
+    this.settingList.updateFiat(fiat);
   }
-  updateAsset(index, totalAsset, asset) {
-    this.header.update(this.screen, { totalAsset });
+  updateAsset(index, totalAsset, fiat, asset) {
+    this.scaffold.closePopover();
+    this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.updateAsset(index, asset);
   }
-  addNewAsset(totalAsset, asset) {
-    this.header.update(this.screen, { totalAsset });
+  addNewAsset(totalAsset, fiat, asset) {
+    this.scaffold.closePopover();
+    this.header.update(this.screen, { fiat, totalAsset });
     this.assetList.addNewAsset(asset);
   }
 }

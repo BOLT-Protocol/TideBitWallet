@@ -19,6 +19,7 @@
 
 @import "screen/bill";
 @import "screen/address";
+@import "screen/setting_fiat";
 
 @import "widget/asset_item";
 @import "widget/bill_item";
@@ -27,3 +28,4 @@
 @import "widget/input";
 @import "widget/setting_column";
 @import "widget/lds_ring";
+@import "widget/create_wallet";

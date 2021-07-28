@@ -46,6 +46,9 @@ class TabBar {
     }
     this.element.focus = this.focus;
   }
+  set selected(index){
+    this.element.focus = index;
+  }
   get selected() {
     return this.element.focus;
   }

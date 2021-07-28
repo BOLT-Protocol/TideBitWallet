@@ -79,6 +79,10 @@ class Scaffold {
         break;
     }
   };
+  customPopup = (customElement) => {
+    this.element.popover.open = true;
+    this.element.popover.customPopup(customElement);
+  }
   closePopover = (timeout) => {
     if (timeout !== undefined) {
       setTimeout(() => {

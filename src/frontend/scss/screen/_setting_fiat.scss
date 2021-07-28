@@ -1,0 +1,37 @@
+.setting-fiat {
+  &__list {
+    display: flex;
+    height: 533px;//100%;
+    flex-direction: column;
+    overflow: scroll;
+  }
+  &__column {
+    padding: 5px 1rem;
+    border-bottom: 1px solid $color-grey-light-2;
+    display: flex;
+    flex-direction: row;
+    background-color: $color-white;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  &__title {
+    padding: 5px 1rem;
+    color: $color-grey-dark-1;
+    font-size: $default-font-size * 0.7;
+  }
+  &__label {
+    display: none;
+    color: $color-primary;
+    min-width: 1rem;
+    padding: 5px 1rem;
+    & > i {
+      font-size: $default-font-size * 0.8;
+      font-weight: 300;
+    }
+  }
+
+  &__column[selected] &__label {
+    display: block;
+  }
+}

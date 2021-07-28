@@ -75,6 +75,31 @@ export const addressFormatter = (address, showLength = 6) => {
   return prefix + "..." + suffix;
 };
 
+/**
+ *
+ * @param {string} amount
+ * @param {number} decimalLength
+ * @param {number} maxLength
+ * @returns {string}
+ */
+export const formateDecimal = (amount, maxLength = 18, decimalLength = 8) => {
+  const splitChunck = amount.split(".");
+  if (splitChunck.length > 1) {
+    // if (splitChunck[1].length > decimalLength ?? 8) {
+    if (amount.length > maxLength)
+      splitChunck[1] = splitChunck[1].substring(
+        0,
+        maxLength - splitChunck[0].length - 1
+      );
+    // else splitChunck[1] = splitChunck[1].substring(0, decimalLength ?? 8);
+    // }
+    return splitChunck[1].length > 0
+      ? `${splitChunck[0]}.${splitChunck[1]}`
+      : splitChunck[0];
+  }
+  return amount;
+};
+
 export const currentView = () => {
   const scaffold = document.querySelector("scaffold-widget");
   const view = scaffold?.attributes?.view?.value;
@@ -101,14 +126,21 @@ export const getInstallID = () => {
 const getAuthToken = () =>
   new Promise((resolve, reject) => {
     chrome.identity.getAuthToken({ interactive: true }, (token) => {
-      console.log(token);
-      resolve(token);
+      if (token) resolve(token);
+      else reject(new Error("The user did not approve access"));
     });
   });
 
 export const googleSignIn = async () => {
   // https://stackoverflow.com/questions/44968953/how-to-create-a-login-using-google-in-chrome-extension/44987478
-  const token = await getAuthToken();
+  let token;
+  try {
+    token = await getAuthToken();
+  } catch (e) {
+    throw e;
+  }
+
+  if (!token) return;
   const init = {
     method: "GET",
     async: true,
@@ -127,41 +159,76 @@ export const googleSignIn = async () => {
 };
 
 export const getUserInfo = async (tidewallet) => {
-  viewController.route("assets");
-  const _fiat = await tidewallet.getFiat();
-  const fiat = new Fiat(_fiat);
-  const dashboard = await tidewallet.overview();
-  const balance = dashboard?.balance;
-  const assets = dashboard?.currencies?.map((currency) => new Asset(currency));
-  viewController.updateAssets(assets, balance, fiat);
+  try {
+    const dashboard = await tidewallet.overview();
+    const balance = dashboard.balance;
+    const fiat = new Fiat(dashboard.fiat);
+    const assets = dashboard.currencies.map((currency) => new Asset(currency));
+    console.log("getUserInfo assets", assets);
+    console.log("getUserInfo fiat", fiat);
+    console.log("getUserInfo dashboard.balance", dashboard.balance);
+
+    viewController.updateAssets(assets, balance, fiat);
+  } catch (error) {
+    throw error;
+  }
 };
 
-export const initUser = async (
-  tidewallet,
-  data = {},
-  isGoogleSignIn = false
-) => {
+/**
+ *
+ * @param {Object} tidewallet
+ * @param {Object} data
+ * @param {Boolean} debugMode
+ * @returns {Array} response[0] is Boolean, represent excution result
+ * @returns {Array} if process got error, response[1] is Error Object, else is undefined.
+ */
+export const initUser = async ({ tidewallet, debugMode }) => {
   const api = {
     apiURL: "https://staging.tidewallet.io/api/v1",
     apiKey: "f2a76e8431b02f263a0e1a0c34a70466",
     apiSecret: "9e37d67450dc906042fde75113ecb78c",
   };
-  let OAuthID;
-  if (isGoogleSignIn) {
-    OAuthID = await googleSignIn();
+
+  const user = {};
+  try {
+    user.thirdPartyId = await googleSignIn();
+  } catch (error) {
+    console.log("error ", error);
+    return [false, error];
   }
-  const InstallID = await getInstallID();
-  console.log("OAuthID :", OAuthID); // -- test
-  console.log("InstallID :", InstallID); // -- test
-  console.log("mnemonic :", data?.mnemonic); // -- test
-  console.log("passphrase :", data?.passphrase); // -- test
-  tidewallet.init({
-    user: {
-      OAuthID,
-      InstallID,
-      mnemonic: data?.mnemonic,
-      password: data?.passphrase,
-    },
-    api,
-  });
+  try {
+    user.installId = await getInstallID();
+  } catch (error) {
+    console.log("error ", error);
+    return [false, error];
+  }
+
+  try {
+    const result = await tidewallet.init({
+      user,
+      api,
+      debugMode,
+    });
+
+    if (result) {
+      return [true, result];
+    }
+    return [true];
+  } catch (error) {
+    console.log("error ", error);
+    return [false, error];
+  }
+};
+
+export const createUser = async ({ tidewallet, user }) => {
+  console.log("createUser user: ", user);
+  try {
+    await tidewallet.createUser({
+      user,
+    });
+    return [true];
+  } catch (error) {
+    console.log("error ", error);
+    return [false, error];
+  }
 };

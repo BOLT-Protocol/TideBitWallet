@@ -1,12 +1,15 @@
 import Scaffold from "../layout/scaffold";
 import ThirdPartySigninContainer from "../layout/third_party_signin_container";
-import { initUser } from "../utils/utils";
 
 class Landing {
   constructor() {}
-  render(screen, version, wallet) {
-    this.body = new ThirdPartySigninContainer(version, "white", (data) =>
-      initUser(wallet, data, true)
+  render(screen, version, wallet, debugMode) {
+    console.log("Landing debugMode", debugMode)
+    this.body = new ThirdPartySigninContainer(
+      wallet,
+      version,
+      "white",
+      debugMode
     );
     this.scaffold = new Scaffold(this.header, this.body, this.footer);
     this.body.parent = this.scaffold;

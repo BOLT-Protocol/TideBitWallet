@@ -1,6 +1,7 @@
 // https://unicode-table.com/cn/2248/
 
 import viewController from "../controller/view";
+import { formateDecimal } from "../utils/utils";
 
 const getHeaderInfo = (screen) => {
   switch (screen) {
@@ -12,6 +13,8 @@ const getHeaderInfo = (screen) => {
       return { screenTitle: "My Wallet" };
     case "mnemonic":
       return { screenTitle: "" };
+    case "setting-fiat":
+      return { screenTitle: "Fiat" };
   }
 };
 
@@ -56,10 +59,11 @@ class HeaderElement extends HTMLElement {
       <div class="header__title-sub">
         <span class="almost-equal-to">&#8776;</span>
         <span class="user-total-balance">${
-          totalAsset ? totalAsset : "Loading..."
+          totalAsset ? formateDecimal(totalAsset, 18) : "Loading..."
         }</span>
         <span class="currency-unit">${totalAsset ? fiat : ""}</span>
       </div>
+      <div class="header__leading" refresh>Refresh</div>
     `;
     return markup;
   };
@@ -69,12 +73,13 @@ class HeaderElement extends HTMLElement {
       <img src=${asset.image}  alt=${asset.symbol.toUpperCase()}>
     </div>
     <div class="header__icon-title">${asset.symbol.toUpperCase()}</div>
-    <div class="header__title">${asset.balance}</div>
+    <div class="header__title">${formateDecimal(asset.balance, 18)}</div>
     <div class="header__title-sub">
       <span class="almost-equal-to">&#8776;</span>
-      <span class="balance">${asset.inFiat}</span>
+      <span class="balance">${formateDecimal(asset.inFiat, 18)}</span>
       <span class="currency-unit">${fiat}</span>
     </div>
+    <div class="header__leading" refresh>Refresh</div>
     `;
     return markup;
   };
@@ -94,22 +99,45 @@ class HeaderElement extends HTMLElement {
       case "settings":
         this.classList = ["header header--overview"];
         this.innerHTML = this.overviewHeader(this.totalAsset, this.fiat);
+        this.children[this.childElementCount - 1].addEventListener(
+          "click",
+          this.callback
+        );
         break;
       case "asset":
         this.classList = ["header header--asset"];
         this.innerHTML = this.assetHeader(this.asset, this.fiat);
         this.headerLeading = new BackButton("assets");
         this.headerLeading.render(this);
+        this.children[this.childElementCount - 1].addEventListener(
+          "click",
+          this.callback
+        );
         break;
-
       default:
         this.classList = ["header header--default"];
         this.innerHTML = this.defaultHeader(this.screen);
         this.headerLeading =
           this.screen === "mnemonic"
             ? new BackButton("landing")
+            : this.screen === "setting-fiat"
+            ? new BackButton("settings")
             : new BackButton("asset");
         this.headerLeading.render(this);
+        break;
+    }
+  }
+  disconnectedCallback() {
+    switch (this.screen) {
+      case "assets":
+      case "settings":
+      case "asset":
+        this.children[this.childElementCount - 1].removeEventListener(
+          "click",
+          this.callback
+        );
+        break;
+      default:
         break;
     }
   }
@@ -132,9 +160,15 @@ class HeaderElement extends HTMLElement {
           this.fiat = fiat;
         }
         this.asset = JSON.parse(JSON.stringify(asset));
-        this.innerHTML = this.assetHeader(asset, this.fiat);
-        this.headerLeading = new BackButton("assets");
-        this.headerLeading.render(this);
+        document.querySelector(".header__title").textContent = formateDecimal(
+          asset.balance,
+          18
+        );
+        document.querySelector(".header__title-sub .balance").textContent =
+          formateDecimal(asset.inFiat, 18);
+        document.querySelector(
+          ".header__title-sub .currency-unit"
+        ).textContent = this.fiat;
         break;
     }
   }
@@ -143,9 +177,10 @@ class HeaderElement extends HTMLElement {
 customElements.define("header-widget", HeaderElement);
 
 class Header {
-  constructor(screen, { fiat, totalAsset, asset } = {}) {
+  constructor(screen, { fiat, totalAsset, asset, callback } = {}) {
     this.element = document.createElement("header-widget");
     this.element.screen = screen;
+    this.element.callback = callback;
     if (totalAsset) this.element.totalAsset = totalAsset;
     if (fiat) this.element.fiat = fiat;
     if (asset) this.element.asset = JSON.parse(JSON.stringify(asset));

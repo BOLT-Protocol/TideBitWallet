@@ -4,7 +4,7 @@ class PopoverElement extends HTMLElement {
     this.click = 0;
     this.addEventListener("click", (_) => {
       this.click += 1;
-      if ((this.success || this.error || this.loading) && this.click > 1) {
+      if ((this.success && this.click > 1) || this.error) {
         this.closePopover();
       }
     });
@@ -72,7 +72,7 @@ class PopoverElement extends HTMLElement {
     if (this.open) {
       this.open = false;
       this.click = 0;
-      this.textElement.textContent = "";
+      this.textElement.replaceChildren();
     }
   };
   disconnectedCallback() {
@@ -96,6 +96,12 @@ class PopoverElement extends HTMLElement {
         });
       }
     }
+  }
+
+  customPopup(customElement) {
+    this.closePopover();
+    this.setAttribute("open", "");
+    customElement.render(this.children[0].children[0].children[1]);
   }
 
   errorPopup(text) {
@@ -159,6 +165,9 @@ class Popover {
   }
   confirmPopup(text, onConfirm) {
     this.element.confirmPopup(text, onConfirm);
+  }
+  customPopup(customElement) {
+    this.element.customPopup(customElement);
   }
   /**
    * @param {Boolean} value

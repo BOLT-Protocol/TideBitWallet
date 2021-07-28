@@ -22,7 +22,6 @@ class InputElement extends HTMLElement {
       //   this.value = this.value.replace(/[^0-9.]/g, '');
       //   this.value = this.value.replace(/(\..*)\./g, '$1');
     }
-    console.log("inputValue", e.target.value);
     this.inputValue = e.target.value;
   }
   connectedCallback() {
