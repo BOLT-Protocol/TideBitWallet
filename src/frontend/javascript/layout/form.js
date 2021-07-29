@@ -165,9 +165,16 @@ class FormElement extends HTMLElement {
   async updateFee({ index, lazy } = {}) {
     if (index !== undefined) this.selected = index;
     if (!lazy)
-      this.fee = await this.getTransactionFee({
-        speed: this.getSpeed(this.selected),
-      });
+      try {
+        this.fee = await this.wallet.getTransactionFee({
+          id: this.asset.id,
+          speed: this.getSpeed(this.selected),
+          to: this.addressInput.inputValue,
+          amount: this.amountInput.inputValue,
+          message: "0x",
+        });
+      } catch (error) {}
+
     this.feeInCurrencyUnit = BigNumber(this.feePerUnit[this.selected])
       .multipliedBy(BigNumber(this.feeUnit))
       .toFixed();
@@ -181,35 +188,17 @@ class FormElement extends HTMLElement {
   async verifyAddress(id, address) {
     let validateResult = this.wallet.verifyAddress(id, address);
     this.isAddressValid = validateResult;
-    if (validateResult && this.amountInput.inputValue)
-      this.fee = await this.getTransactionFee({
-        to: address,
-        amount: this.amountInput.inputValue,
-      });
+    if (this.isAmountValid && this.isAddressValid)
+      await this.updateFee({ lazy: false });
     return validateResult;
   }
 
   async verifyAmount(id, amount, fee) {
     let validateResult = this.wallet.verifyAmount(id, amount, fee);
     this.isAmountValid = validateResult;
-    if (validateResult && this.addressInput.inputValues)
-      this.fee = await this.getTransactionFee({
-        to: this.addressInput.inputValue,
-        amount: amount,
-      });
+    if (this.isAmountValid && this.isAddressValid)
+      await this.updateFee({ lazy: false });
     return validateResult;
-  }
-
-  async getTransactionFee({ to, amount, data, speed } = {}) {
-    const fee = await this.wallet.getTransactionFee({
-      id: this.asset.id,
-      to,
-      amount,
-      data,
-      speed,
-    });
-    console.log(fee);
-    return fee;
   }
 
   async resetInput() {
