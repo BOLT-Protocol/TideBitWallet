@@ -1,7 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const frontend = {
   mode: "development",
@@ -57,7 +56,7 @@ const frontend = {
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
-  devtool: "cheap-module-source-map",
+  devtool: false, //"cheap-module-source-map",
 };
 
 const background = {
@@ -76,7 +75,7 @@ const background = {
     compress: true,
     port: 9000,
   },
-  devtool: "cheap-module-source-map",
+  devtool: false, //"cheap-module-source-map",
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     fallback: {
@@ -91,10 +90,7 @@ const background = {
     }),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin({
-      cleanStaleWebpackAssets: false,
-      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, "./dist")],
-    }),
+
   ],
 };
 

@@ -34,3 +34,17 @@ Chrome Extension for TideWallet3
 
 ```
 
+[使用GoogleSignIn](https://developer.chrome.com/docs/apps/app_identity/)
+
+1. Add permissions to your manifest and upload your app.
+```
+"permissions": [
+  "identity"
+]
+```
+2. Copy key in the installed manifest.json to your source manifest, so that your application ID will stay constant during development.
+3. [Get an OAuth2 client ID for your Chrome App.](https://console.cloud.google.com/home/dashboard?project=tidebitwallet-317901&authuser=0&orgonly=true&supportedpurview=organizationId)
+3.1 API和服務 => 建立 OAuth 用戶端 ID
+3.2 API和服務 => OAuth同意畫面 => 測試使用者新增
+4. Update your manifest to include the client ID and scopes.
+5. Get the authentication token.

@@ -25,10 +25,10 @@ class AssetItemElement extends HTMLElement {
       `<img src=${this.asset.image} alt=${this.asset.symbol.toUpperCase()}>`
     );
     this.children[1].textContent = this.asset.symbol.toUpperCase();
-    this.children[2].textContent = formateDecimal(this.asset.balance, 18);
+    this.children[2].textContent = formateDecimal(this.asset.balance, 12);
     this.children[3].children[1].textContent = formateDecimal(
       this.asset.inFiat,
-      12
+      8
     );
     this.children[3].children[2].textContent = this.fiat;
   }
