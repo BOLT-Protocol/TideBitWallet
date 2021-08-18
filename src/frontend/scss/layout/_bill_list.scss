@@ -1,0 +1,17 @@
+.bill-list {
+  height: 349px;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+
+  & > * {
+    background-color: $color-grey-light-1;
+    cursor: pointer;
+  }
+  & > *:hover {
+    background-color: $color-grey-light-2;
+    & .bill-item__progress{
+      background-color: darken($color-grey-light-3, 10%);
+    }
+  }
+}

@@ -1,0 +1,92 @@
+.bill-item {
+  border-bottom: 1px solid $color-grey-light-2;
+  padding: 1rem 2rem;
+  color: $color-grey-dark-2;
+
+  &__main {
+    display: flex;
+    flex-direction: row;
+  }
+  &__icon {
+    margin-right: 1rem;
+    min-width: 2rem;
+    height: 2rem;
+    background-position: center;
+    background-size: cover;
+  }
+  &[send] &__icon {
+    background-image: url(../image/icon/ic_send_black.png);
+  }
+  &[receive] &__icon {
+    background-image: url(../image/icon/ic_receive_black.png);
+  }
+  &[failed] &__icon {
+    background-image: none;
+  }
+  &__title {
+    width: 100%;
+    font-size: $default-font-size * 0.75;
+  }
+  &__amount {
+    font-size: $default-font-size * 0.75;
+  }
+  &__suffix {
+    width: 100%;
+    text-align: right;
+  }
+  & &__time,
+  & &__direction,
+  & &__address {
+    color: $color-grey-dark-1;
+    font-size: $default-font-size * 0.6;
+  }
+  &[send] &__amount {
+    color: $color-tertiary;
+  }
+  &[receive] &__amount {
+    color: $color-secondary;
+  }
+  &[pending] &__status,
+  &[pending][send] &__amount,
+  &[pending][receive] &__amount {
+    color: $color-grey-dark-1;
+  }
+
+  &[failed] * {
+    color: $color-grey-dark-3 !important;
+  }
+  &__sub {
+    margin-top: 4px;
+  }
+  &__sub,
+  &__sub * {
+    opacity: 0;
+  }
+
+  &[pending],
+  &[confirming] {
+    .bill-item__sub,
+    .bill-item__sub * {
+      opacity: 1;
+    }
+  }
+
+  &__progress {
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+    background-color: $color-grey-light-3;
+    & span {
+      display: block;
+      border-radius: 3px;
+      height: 100%;
+      background-color: $color-primary;
+      transition: width ease 0.2s;
+    }
+  }
+  &__status {
+    text-align: right;
+    font-size: $default-font-size * 0.6;
+    color: $color-primary;
+  }
+}

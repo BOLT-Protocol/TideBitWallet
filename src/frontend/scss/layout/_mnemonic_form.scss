@@ -1,0 +1,39 @@
+.mnemonic-form {
+  flex: auto;
+  background-color: $color-white;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__text {
+    font-size: $default-font-size * 0.75;
+    color: $color-grey-dark-2;
+    padding: 1rem;
+    background-color: rgba($color: $color-primary-light, $alpha: 0.5);
+    margin-bottom: 1rem;
+  }
+  &__label {
+    color: $color-secondary;
+    font-size: $default-font-size * 0.75;
+  }
+  &__text-area {
+    width: 100%;
+    margin-bottom: 1rem;
+    border: 1px solid $color-primary;
+    padding: 0 1rem;
+    & > textarea {
+      width: 100%;
+      border: none;
+      color: $color-secondary;
+    }
+  }
+
+  &__button {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin: 3rem 4rem;
+  }
+}

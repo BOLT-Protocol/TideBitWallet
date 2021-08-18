@@ -1,0 +1,20 @@
+.bottom-navigator {
+  display: flex;
+  flex-direction: row;
+  &__button {
+    flex: auto;
+    background-color: $color-white;
+    padding: 2rem 0;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  &__icon > i {
+    color: $color-grey-dark-2;
+    font-size: $default-font-size;
+  }
+
+  &__button[focus] > &__icon > i {
+    color: $color-primary;
+  }
+}

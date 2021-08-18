@@ -1,0 +1,91 @@
+.button {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 0;
+  width: 100%;
+  min-width: 60px;
+  border-radius: 5px;
+  align-items: center;
+  font-size: $default-font-size * 0.8;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+
+  &__text {
+    margin: 0;
+  }
+
+  &__popup {
+    visibility: hidden;
+    background-color: $color-grey-dark-1;
+    color: $color-white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 92%;
+    left: 67%;
+  }
+  /* Popup arrow */
+  &__popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 38%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: $color-grey-dark-1 transparent transparent transparent;
+  }
+  /* Toggle this class - hide and show the popup */
+  &[popup] &__popup {
+    visibility: visible;
+    -webkit-animation: fadeIn 0.3s;
+    animation: fadeIn 0.3s;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+  &__icon--suffix {
+    padding-left: 1rem;
+  }
+  &__icon--leading {
+    padding-right: 1rem;
+  }
+
+  &[round] {
+    border-radius: 30px;
+  }
+  &[outline] {
+    color: $color-secondary;
+    border: 1px solid $color-secondary;
+  }
+  &[fill] {
+    color: $color-white;
+    background-color: $color-secondary;
+    border: 1px solid $color-secondary;
+  }
+  &[focus] {
+    color: $color-white !important;
+    background-color: $color-primary !important;
+    border: 1px solid $color-primary !important;
+  }
+  &[disabled] {
+    color: $color-grey-dark-1 !important;
+    background-color: $color-grey-light-3 !important;
+    border: 1px solid $color-grey-light-3 !important;
+    cursor: not-allowed;
+  }
+  &[grey] {
+    color: $color-grey-dark-1;
+    background-color: $color-grey-light-3;
+    border: 1px solid $color-grey-light-3;
+  }
+  &[fill-primary] {
+    color: $color-white;
+    background-color: $color-primary;
+    border: 1px solid $color-primary;
+  }
+}

@@ -1,0 +1,26 @@
+.asset-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 5px;
+  height: 400px;
+  overflow: scroll;
+  & > * {
+    cursor: pointer;
+  }
+  & > *:hover {
+    background-color: lighten($color-grey-light-1, 1%);
+    // z-index: 1;
+    // box-shadow: rgba($color-grey-dark-1, 0.25) 0px 6px 12px -2px, rgba($color-grey-dark-2, 0.3) 0px 3px 7px -3px;
+    // box-shadow: rgba($color-grey-dark-1, 0.25) 0px 2px 5px -1px,
+    //   rgba($color-grey-dark-2, 0.3) 0px 1px 3px -1px;
+    // transform: translate(0, -1px);
+    transition: all 0.2s;
+  }
+}
+
+.loading__text {
+  @include absCenter;
+  font-size: $default-font-size;
+  color: $color-grey-dark-2;
+}

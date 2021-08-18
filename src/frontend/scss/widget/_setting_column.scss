@@ -1,0 +1,42 @@
+.setting {
+  &__column {
+    background-color: $color-white;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  &__title {
+    padding: 5px 1rem;
+    border-bottom: 1px solid $color-grey-light-2;
+    color: $color-grey-dark-1;
+    font-size: $default-font-size * 0.7;
+  }
+  &__item {
+    padding: 5px 1rem;
+    color: $color-grey-dark-2;
+    font-size: $default-font-size * 0.8;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+  }
+  &__text {
+    padding: 5px 1rem;
+    color: $color-grey-dark-1;
+    font-size: $default-font-size * 0.8;
+    font-weight: 300;
+  }
+  &__item-name {
+    flex: auto;
+  }
+  &__item-suffix {
+    color: $color-primary;
+  }
+  &__item-icon {
+    color: $color-grey-dark-1;
+    min-width: 1rem;
+    margin-left: 1rem;
+    & > i {
+      font-weight: 300;
+    }
+  }
+}
