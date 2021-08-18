@@ -39,7 +39,7 @@ Chrome Extension for TideWallet3
 1. Add permissions to your manifest and upload your app.
 ```
 "permissions": [
-  "identity"
+  "identity", "storage"
 ]
 ```
 2. Copy key in the installed manifest.json to your source manifest, so that your application ID will stay constant during development.
